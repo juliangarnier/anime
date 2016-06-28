@@ -27,12 +27,32 @@
       update: undef,
       complete: undef
     },
-    validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'],
-    is = function() {
+    validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY']; // Utils
+  function includes(arr, searchElement) {
+    if (arr.includes) return arr.includes(searchElement);
+    if (!Array.isArray(arr)) arr = Array.prototype.slice.call(arr);
+    var len = parseInt(arr.length, 10) || 0;
+    if (len === 0) return false;
+    var k = void 0,
+      n = parseInt(arguments[1], 10) || 0;
+    if (n >= 0) k = n;
+    else {
+      k = len + n;
+      if (k < 0) k = 0;
+    }
+    var currentElement = void 0;
+    while (k < len) {
+      currentElement = arr[k];
+      if (searchElement === currentElement || searchElement !== searchElement && currentElement !== currentElement) return true;
+      k++;
+    }
+    return false;
+  }
+  var is = function() {
       return {
         array: Array.isArray,
         object: function(a) {
-          return Object.prototype.toString.call(a).indexOf('Object') > -1;
+          return includes(Object.prototype.toString.call(a), 'Object');
         },
         html: function(a) {
           return a instanceof NodeList || a instanceof HTMLCollection;
@@ -227,7 +247,7 @@
       return (/([\+\-]?[0-9|auto\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg)?/.exec(val)[2]);
     },
     addDefaultTransformUnit = function(prop, val, intialVal) {
-      return getUnit(val) ? val : prop.indexOf('translate') > -1 ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' : prop.indexOf('rotate') > -1 || prop.indexOf('skew') > -1 ? val + 'deg' : val;
+      return getUnit(val) ? val : includes(prop, 'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' : includes(prop, 'rotate') || includes(prop, 'skew') ? val + 'deg' : val;
     }, // Values
     getAnimationType = function(el, prop) {
       if ((is.node(el) || is.svg(el)) && arrayContains(validTransforms, prop)) return 'transform';
@@ -239,7 +259,7 @@
       return getComputedStyle(el).getPropertyValue(stringToHyphens(prop));
     },
     getTransformValue = function(el, prop) {
-      var defaultVal = prop.indexOf('scale') > -1 ? 1 : 0,
+      var defaultVal = includes(prop, 'scale') ? 1 : 0,
         str = el.style.transform;
       if (!str) return defaultVal;
       var rgx = /(\w+)\((.+?)\)/g,
@@ -550,8 +570,7 @@
           }
         }
       }
-    }; // Utils
-  // Easings functions adapted from http://jqueryui.com/
+    }; // Easings functions adapted from http://jqueryui.com/
   // Strings
   // Public
   animation.speed = 1;
