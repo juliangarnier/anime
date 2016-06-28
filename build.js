@@ -28,8 +28,7 @@ let BabelOptions = {
             //"transform-es2015-typeof-symbol",
         ],
         compact: true,
-    },
-    wcPath = "./src/pre-webcomponents/"
+    };
 
 function gendocs() {
     docs(['./anime.js'], {
