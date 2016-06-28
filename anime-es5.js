@@ -31,22 +31,9 @@
   function includes(arr, searchElement) {
     if (arr.includes) return arr.includes(searchElement);
     if (!Array.isArray(arr)) arr = Array.prototype.slice.call(arr);
-    var len = parseInt(arr.length, 10) || 0;
-    if (len === 0) return false;
-    var k = void 0,
-      n = parseInt(arguments[1], 10) || 0;
-    if (n >= 0) k = n;
-    else {
-      k = len + n;
-      if (k < 0) k = 0;
-    }
-    var currentElement = void 0;
-    while (k < len) {
-      currentElement = arr[k];
-      if (searchElement === currentElement || searchElement !== searchElement && currentElement !== currentElement) return true;
-      k++;
-    }
-    return false;
+    return arr.length == 0 ? false : arr.some(function(item) {
+      return item === searchitem;
+    });
   }
   var is = function() {
       return {
@@ -171,11 +158,6 @@
         return a.concat(is.array(b) ? flattenArray(b) : b);
       }, []);
     },
-    arrayContains = function(arr, val) {
-      return arr.some(function(a) {
-        return a === val;
-      });
-    },
     groupArrayByProps = function(arr, propsArr) {
       var groups = {};
       arr.forEach(function(o) {
@@ -250,7 +232,7 @@
       return getUnit(val) ? val : includes(prop, 'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' : includes(prop, 'rotate') || includes(prop, 'skew') ? val + 'deg' : val;
     }, // Values
     getAnimationType = function(el, prop) {
-      if ((is.node(el) || is.svg(el)) && arrayContains(validTransforms, prop)) return 'transform';
+      if ((is.node(el) || is.svg(el)) && includes(validTransforms, prop)) return 'transform';
       if ((is.node(el) || is.svg(el)) && prop !== 'transform' && getCSSValue(el, prop)) return 'css';
       if ((is.node(el) || is.svg(el)) && (el.getAttribute(prop) || el[prop])) return 'attribute';
       if (!is.null(el[prop]) && !is.undef(el[prop])) return 'object';
@@ -562,7 +544,7 @@
         for (var tween, t = _animation.tweens.length - 1; t >= 0; t--) {
           tween = _animation.tweens[t];
           for (var a = tween.animatables.length - 1; a >= 0; a--) {
-            if (arrayContains(targets, tween.animatables[a].target)) {
+            if (includes(targets, tween.animatables[a].target)) {
               tween.animatables.splice(a, 1);
               if (!tween.animatables.length) _animation.tweens.splice(t, 1);
               if (!_animation.tweens.length) _animation.pause();
