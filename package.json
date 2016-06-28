@@ -1,7 +1,7 @@
 {
   "name": "animejs",
   "version": "1.0.2",
-  "description": "Polyvalent Javascript animation engine",
+  "description": "Polyvalent JavaScript animation engine",
   "main": "anime.min.js",
   "repository": {
     "type": "git",

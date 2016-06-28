@@ -1,7 +1,7 @@
 /*
- * Anime v1.0.0
+ * Anime v1.0.0 - ES6 version
  * http://anime-js.com
- * Javascript animation engine
+ * JavaScript animation engine
  * Copyright (c) 2016 Julian Garnier
  * http://juliangarnier.com
  * Released under the MIT license

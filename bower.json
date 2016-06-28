@@ -1,6 +1,6 @@
 {
   "name": "animejs",
-  "description": "Polyvalent Javascript animation engine",
+  "description": "Polyvalent JavaScript animation engine",
   "main": "anime-es5.min.js",
   "authors": [
     "Julian Garnier <hello@julian.gr>"
