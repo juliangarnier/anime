@@ -83,7 +83,7 @@ function BundlePolyfills() {
     });
 }
 
-function BabelizeBeatifyMinify(inloc, outloc) {
+function BabelizeBeautifyMinify(inloc, outloc) {
 
     babel.transformFile(inloc, BabelOptions, (err, result) => {
         if (err) throw err;
@@ -109,5 +109,5 @@ function BabelizeBeatifyMinify(inloc, outloc) {
 process.argv.forEach((val, index, array) => {
     if (val == 'docs') gendocs();
     else if (val == 'polyfills') BundlePolyfills();
-    else if (val == 'anime') BabelizeBeatifyMinify("./anime.js", "./anime-es5.js");
+    else if (val == 'anime') BabelizeBeautifyMinify("./anime.js", "./anime-es5.js");
 });

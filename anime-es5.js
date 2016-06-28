@@ -141,17 +141,21 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       if (is.color(str)) return false;
       try {
         return document.querySelectorAll(str);
-      } catch (e) {}
-      return false;
+      } catch (e) {
+        return false;
+      }
     }, // Numbers
     random = function(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }, // Arrays
     toArray = function(o) {
-      return is.array(o) ? o : is.string(o) ? o = selectString(o) || o : is.html(o) ? [].slice.call(o) : [o];
+      if (is.array(o)) return o;
+      if (is.string(o)) o = selectString(o) || o;
+      if (is.html(o)) return [].slice.call(o);
+      return [o];
     },
     flattenArray = function(arr) {
-      return toArray(arr).reduce(function(a, b) {
+      return Array.prototype.reduce.call(arr, function(a, b) {
         return a.concat(is.array(b) ? flattenArray(b) : b);
       }, []);
     },
@@ -311,8 +315,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     getTweenValues = function(prop, values, type, target) {
       var valid = {};
       if (type === 'transform') {
-        valid.from = prop + '(' + addDefaultTransformUnit(prop, values.from, values.to) + ')';
-        valid.to = prop + '(' + addDefaultTransformUnit(prop, values.to) + ')';
+        valid.from = prop + ('(' + addDefaultTransformUnit(prop, values.from, values.to) + ')');
+        valid.to = prop + ('(' + addDefaultTransformUnit(prop, values.to) + ')');
       } else {
         var originalCSS = type === 'css' ? getCSSValue(target, prop) : undefined;
         valid.from = getValidValue(values, values.from, originalCSS);

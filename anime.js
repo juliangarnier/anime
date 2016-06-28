@@ -100,18 +100,24 @@
         selectString = str => {
             if (is.color(str)) return false;
             try {
-                return (document.querySelectorAll(str));
-            } catch (e) {}
-            return false;
+                return document.querySelectorAll(str);
+            } catch (e) {
+                return false;
+            }
         },
 
         // Numbers
         random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
 
         // Arrays
-        toArray = o => is.array(o) ? o : is.string(o) ? (o = selectString(o) || o) : is.html(o) ? [].slice.call(o) : [o],
+        toArray = o => {
+            if (is.array(o)) return o;
+            if (is.string(o)) o = selectString(o) || o;
+            if (is.html(o)) return [].slice.call(o);
+            return [o];
+        },
 
-        flattenArray = arr => toArray(arr).reduce((a, b) => a.concat(is.array(b) ? flattenArray(b) : b), []),
+        flattenArray = arr => Array.prototype.reduce.call(arr, (a, b) => a.concat(is.array(b) ? flattenArray(b) : b), []),
 
         arrayContains = (arr, val) => arr.some(a => a === val),
 
@@ -155,7 +161,7 @@
         },
         hslToRgb = hsl => {
             hsl = /hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/g.exec(hsl);
-              let h = parseInt(hsl[1]) / 360,
+            let h = parseInt(hsl[1]) / 360,
                 s = parseInt(hsl[2]) / 100,
                 l = parseInt(hsl[3]) / 100,
                 r, g, b;
@@ -179,7 +185,6 @@
         addDefaultTransformUnit = (prop, val, intialVal) => getUnit(val) ? val :
         prop.indexOf('translate') > -1 ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
         prop.indexOf('rotate') > -1 || prop.indexOf('skew') > -1 ? val + 'deg' : val,
-
 
         // Values
 
@@ -270,8 +275,8 @@
         getTweenValues = (prop, values, type, target) => {
             let valid = {};
             if (type === 'transform') {
-                valid.from = prop + '(' + addDefaultTransformUnit(prop, values.from, values.to) + ')';
-                valid.to = prop + '(' + addDefaultTransformUnit(prop, values.to) + ')';
+                valid.from = prop + `(${addDefaultTransformUnit(prop, values.from, values.to)})`;
+                valid.to = prop + `(${addDefaultTransformUnit(prop, values.to)})`;
             } else {
                 let originalCSS = (type === 'css') ? getCSSValue(target, prop) : undefined;
                 valid.from = getValidValue(values, values.from, originalCSS);
@@ -317,6 +322,7 @@
                 return tween;
             });
         },
+
 
         reverseTweens = (anim, delays) => {
             anim.tweens.forEach(tween => {
