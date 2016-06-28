@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/juliangarnier/anime/issues"
   },
-  "dependencies": {
+  "devDependencies": {
     "babel-core": "^6.9.0",
     "babel-plugin-transform-merge-sibling-variables": "^6.8.0",
     "babel-preset-es2015": "^6.1.2",
