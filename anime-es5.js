@@ -12,8 +12,8 @@
   // like Node.
   else if (typeof module === 'object' && module.exports) module.exports = factory(); // Browser globals (root is window)
   else root.anime = factory();
-})(this, function() { // Defaults
-  var undef = void 0,
+})(this, function() {
+  var undef = undefined,
     defaultSettings = {
       duration: 1000,
       delay: 0,
@@ -27,7 +27,8 @@
       update: undef,
       complete: undef
     },
-    validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY']; // Utils
+    validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY']; // Defaults
+  // Utils
   function includes(arr, searchElement) {
     if (arr.includes) return arr.includes(searchElement);
     if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
@@ -489,7 +490,7 @@
           if (s.begin && time.current >= s.delay) {
             s.begin(anim);
             s.begin = undef;
-          };
+          }
           if (time.current >= anim.duration) {
             if (s.loop) {
               time.start = +new Date();
