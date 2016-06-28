@@ -1,11 +1,11 @@
 # [anime.js](http://anime-js.com) ![](https://badge-size.herokuapp.com/juliangarnier/anime/master/anime.min.js)
-*Anime* `(/ˈæn.ə.meɪ/)` is a flexible yet lightweight Javascript animation library.  
+*Anime* `(/ˈæn.ə.meɪ/)` is a flexible yet lightweight JavaScript animation library.
 It works with CSS, Individual Transforms, SVG, DOM attributes and JS Objects.
 
 **Features**
 
 * [Specific animation parameters](#specific-animation-parameters)
-* [Specific target values](#specific-target-values)  
+* [Specific target values](#specific-target-values)
 * [Multiple timing values](#multiple-timing-values)
 * [Playback controls](#playback-controls)
 * [Motion path](#motion-path)
@@ -65,8 +65,8 @@ Defines the elements or JS Objects to animate.
 | CSS Selectors | `'div'`,`'.thing'`,`'path'`
 | DOM Element | `document.querySelector('.thing')`
 | Nodelist | `document.querySelectorAll('.thing')`
-| Javascript Object | `{prop1: 100, prop2: 200}`
-| Javascript Array | `['.thing-1', 'div']`
+| JavaScript Object | `{prop1: 100, prop2: 200}`
+| JavaScript Array | `['.thing-1', 'div']`
 
 ### Parameters
 
@@ -275,6 +275,8 @@ Transforms compatible with a motion path:
 | `translateX` | follow the x path coordinate
 | `translateY` | follow the y path coordinate
 | `rotate` | follow the path angle value
+
+Notes: [IE cannot apply CSS transforms on SVG elements](https://connect.microsoft.com/IE/feedback/details/811744/ie11-bug-with-implementation-of-css-transforms-in-svg).
 
 Example:
 
