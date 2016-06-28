@@ -30,8 +30,8 @@
     validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY']; // Utils
   function includes(arr, searchElement) {
     if (arr.includes) return arr.includes(searchElement);
-    if (!Array.isArray(arr)) arr = Array.prototype.slice.call(arr);
-    return arr.length == 0 ? false : arr.some(function(item) {
+    if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
+    return arr.length === 0 ? false : arr.some(function(item) {
       return item === searchitem;
     });
   }
@@ -83,8 +83,8 @@
       };
     }(),
     easings = function() {
-      var eases = {},
-        names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'],
+      var names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'],
+        eases = {},
         functions = {
           Sine: function(t) {
             return 1 - Math.cos(t * Math.PI / 2);
@@ -131,7 +131,7 @@
       return eases;
     }(),
     numberToString = function(val) {
-      return is.string(val) ? val : val + '';
+      return is.string(val) ? val : '' + val;
     },
     stringToHyphens = function(str) {
       return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -212,7 +212,7 @@
         r = void 0,
         g = void 0,
         b = void 0;
-      if (s == 0) r = g = b = l;
+      if (s === 0) r = g = b = l;
       else {
         var q = l < 0.5 ? l * (1 + s) : l + s - l * s,
           p = 2 * l - q;
@@ -259,7 +259,7 @@
     },
     getInitialTargetValue = function(target, prop) {
       var animtype = getAnimationType(target, prop);
-      return animtype == 'transform' ? getTransformValue(target, prop) : animtype == 'css' ? getCSSValue(target, prop) : animtype == 'attribute' ? target.getAttribute(prop) : target[prop] || 0;
+      return animtype === 'transform' ? getTransformValue(target, prop) : animtype === 'css' ? getCSSValue(target, prop) : animtype === 'attribute' ? target.getAttribute(prop) : target[prop] || 0;
     },
     getValidValue = function(values, val, originalCSS) {
       if (is.color(val)) return colorToRgb(val);
@@ -413,7 +413,7 @@
         p0 = point(-1),
         p1 = point(+1),
         twnm = tween.name;
-      return twnm == 'translateX' ? p.x : twnm == 'translateY' ? p.y : twnm == 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : undef;
+      return twnm === 'translateX' ? p.x : twnm === 'translateY' ? p.y : twnm === 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : undef;
     }, // Progress
     getTweenProgress = function(tween, time) {
       var elapsed = Math.min(Math.max(time - tween.delay, 0), tween.duration),
