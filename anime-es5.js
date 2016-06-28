@@ -1,21 +1,17 @@
 /*
- * Anime v1.0.0
+ * Anime v1.0.0 - ES6 version
  * http://anime-js.com
- * Javascript animation engine
+ * JavaScript animation engine
  * Copyright (c) 2016 Julian Garnier
  * http://juliangarnier.com
  * Released under the MIT license
  */
-(function(root, factory) {
-  if (typeof define === 'function' && define.amd) { // AMD. Register as an anonymous module.
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) { // Node. Does not work with strict CommonJS, but
+(function(root, factory) { // AMD. Register as an anonymous module.
+  typeof define === 'function' && define.amd ? define([], factory) : // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
-    module.exports = factory();
-  } else { // Browser globals (root is window)
+    typeof module === 'object' && module.exports ? module.exports = factory() : // Browser globals (root is window)
     root.anime = factory();
-  }
 })(this, function() { // Defaults
   var defaultSettings = {
       duration: 1000,

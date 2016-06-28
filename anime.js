@@ -17,6 +17,7 @@
         root.anime = factory();
 }(this, () => {
     // Defaults
+    const undef = void 0;
 
     let defaultSettings = {
             duration: 1000,
@@ -27,9 +28,9 @@
             easing: 'easeOutElastic',
             elasticity: 400,
             round: false,
-            begin: undefined,
-            update: undefined,
-            complete: undefined
+            begin: undef,
+            update: undef,
+            complete: undef
         },
         validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
 
@@ -272,7 +273,7 @@
                 valid.from = prop + `(${addDefaultTransformUnit(prop, values.from, values.to)})`;
                 valid.to = prop + `(${addDefaultTransformUnit(prop, values.to)})`;
             } else {
-                let originalCSS = (type === 'css') ? getCSSValue(target, prop) : undefined;
+                let originalCSS = (type === 'css') ? getCSSValue(target, prop) : undef;
                 valid.from = getValidValue(values, values.from, originalCSS);
                 valid.to = getValidValue(values, values.to, originalCSS);
             }
@@ -457,7 +458,7 @@
                     let s = anim.settings;
                     if (s.begin && time.current >= s.delay) {
                         s.begin(anim);
-                        s.begin = undefined;
+                        s.begin = undef;
                     };
                     if (time.current >= anim.duration) {
                         if (s.loop) {
