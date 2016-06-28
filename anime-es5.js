@@ -1,5 +1,5 @@
 /*
- * Anime v1.0.0 - ES6 version
+ * Anime v1.1.0 - ES6 version
  * http://anime-js.com
  * JavaScript animation engine
  * Copyright (c) 2016 Julian Garnier
@@ -234,11 +234,11 @@
     getAnimationType = function(el, prop) {
       if ((is.node(el) || is.svg(el)) && includes(validTransforms, prop)) return 'transform';
       if ((is.node(el) || is.svg(el)) && prop !== 'transform' && getCSSValue(el, prop)) return 'css';
-      if ((is.node(el) || is.svg(el)) && (el.getAttribute(prop) || el[prop])) return 'attribute';
+      if ((is.node(el) || is.svg(el)) && (el.getAttribute(prop) || is.svg(el) && el[prop])) return 'attribute';
       if (!is.null(el[prop]) && !is.undef(el[prop])) return 'object';
     },
-    getCSSValue = function(el, prop) {
-      return getComputedStyle(el).getPropertyValue(stringToHyphens(prop));
+    getCSSValue = function(el, prop) { // Then return the property value or fallback to '0' when getPropertyValue fails
+      if (prop in el.style) return getComputedStyle(el).getPropertyValue(stringToHyphens(prop)) || '0';
     },
     getTransformValue = function(el, prop) {
       var defaultVal = includes(prop, 'scale') ? 1 : 0,
