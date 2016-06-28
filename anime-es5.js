@@ -562,5 +562,10 @@
   animation.getValue = getInitialTargetValue;
   animation.path = getPathProps;
   animation.random = random;
+  animation.includes = includes;
+  animation.cloneObject = cloneObject;
+  animation.mergeObjects = mergeObjects;
+  animation.flattenArray = flattenArray;
+  animation.removeArrayDuplicates = removeWillChange;
   return animation;
 });
