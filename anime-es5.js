@@ -7,11 +7,11 @@
  * Released under the MIT license
  */
 (function(root, factory) { // AMD. Register as an anonymous module.
-  typeof define === 'function' && define.amd ? define([], factory) : // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
-    typeof module === 'object' && module.exports ? module.exports = factory() : // Browser globals (root is window)
-    root.anime = factory();
+  if (typeof define === 'function' && define.amd) define([], factory); // Node. Does not work with strict CommonJS, but
+  // only CommonJS-like environments that support module.exports,
+  // like Node.
+  else if (typeof module === 'object' && module.exports) module.exports = factory(); // Browser globals (root is window)
+  else root.anime = factory();
 })(this, function() { // Defaults
   var undef = void 0,
     defaultSettings = {
