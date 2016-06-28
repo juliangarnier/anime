@@ -120,7 +120,7 @@
             return [o];
         },
 
-        flattenArray = arr => Array.prototype.reduce.call(arr, (a, b) => a.concat(is.array(b) ? flattenArray(b) : b), []),
+        flattenArr = arr => Array.prototype.reduce.call(arr, (a, b) => a.concat(is.array(b) ? flattenArr(b) : b), []),
 
         groupArrayByProps = (arr, propsArr) => {
             let groups = {};
@@ -132,16 +132,16 @@
             return Object.keys(groups).map(group => groups[group]);
         },
 
-        removeArrayDuplicates = arr => arr.filter((item, pos, context) => context.indexOf(item) === pos),
+        removeArrDupes = arr => arr.filter((item, pos, context) => context.indexOf(item) === pos),
 
         // Objects
-        cloneObject = o => {
+        dupeObj = o => {
             let newObject = {};
             for (let p in o) newObject[p] = o[p];
             return newObject;
         },
 
-        mergeObjects = (o1, o2) => {
+        mergeObjs = (o1, o2) => {
             for (let p in o2) o1[p] = !is.undef(o1[p]) ? o1[p] : o2[p];
             return o1;
         },
@@ -175,7 +175,7 @@
                 g = hue2rgb(p, q, h);
                 b = hue2rgb(p, q, h - 1 / 3);
             }
-            return 'rgb(' + r * 255 + ',' + g * 255 + ',' + b * 255 + ')';
+            return `rgb(${r * 255},${g * 255},${b * 255})`;
         },
         colorToRgb = val => is.rgb(val) || is.rgba(val) ? val : is.hex(val) ? hexToRgb(val) : is.hsl(val) ? hslToRgb(val) : undef,
 
@@ -183,8 +183,8 @@
         getUnit = val => /([\+\-]?[0-9|auto\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg)?/.exec(val)[2],
 
         addDefaultTransformUnit = (prop, val, intialVal) => getUnit(val) ? val :
-        includes(prop, 'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
-        includes(prop, 'rotate') || includes(prop, 'skew') ? val + 'deg' : val,
+        includes(prop, 'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : `${val}px` :
+        includes(prop, 'rotate') || includes(prop, 'skew') ? `${val}deg` : val,
 
         // Values
         getAnimationType = (el, prop) => {
@@ -244,7 +244,7 @@
 
         // Animatables
 
-        getAnimatables = targets => (targets ? (flattenArray(is.array(targets) ? targets.map(toArray) : toArray(targets))) : [])
+        getAnimatables = targets => (targets ? (flattenArr(is.array(targets) ? targets.map(toArray) : toArray(targets))) : [])
         .map((t, i) => ({
             target: t,
             id: i
@@ -256,11 +256,11 @@
             let props = [];
             for (let p in params) {
                 if (!defaultSettings.hasOwnProperty(p) && p !== 'targets') {
-                    let prop = is.object(params[p]) ? cloneObject(params[p]) : {
+                    let prop = is.object(params[p]) ? dupeObj(params[p]) : {
                         value: params[p]
                     };
                     prop.name = p;
-                    props.push(mergeObjects(prop, settings));
+                    props.push(mergeObjs(prop, settings));
                 }
             }
             return props;
@@ -298,7 +298,7 @@
                     let animType = getAnimationType(target, prop.name);
                     if (animType) {
                         let values = getPropertiesValues(target, prop.name, prop.value, i),
-                            tween = cloneObject(prop);
+                            tween = dupeObj(prop);
                         tween.animatables = animatable;
                         tween.type = animType;
                         tween.from = getTweenValues(prop.name, values, tween.type, target).from;
@@ -318,7 +318,7 @@
             let tweensProps = getTweensProps(animatables, props),
             splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
             return splittedProps.map(tweenProps => {
-                let tween = cloneObject(tweenProps[0]);
+                let tween = dupeObj(tweenProps[0]);
                 tween.animatables = tweenProps.map(p => p.animatables);
                 tween.totalDuration = tween.delay + tween.duration;
                 return tween;
@@ -349,8 +349,8 @@
                 }
             });
             return {
-                properties: removeArrayDuplicates(props).join(', '),
-                elements: removeArrayDuplicates(els)
+                properties: removeArrDupes(props).join(', '),
+                elements: removeArrDupes(els)
             };
         },
 
@@ -435,7 +435,7 @@
         createAnimation = params => {
             let anim = {
                 animatables: getAnimatables(params.targets),
-                settings: mergeObjects(params, defaultSettings),
+                settings: mergeObjs(params, defaultSettings),
                 time: 0,
                 progress: 0,
                 running: false,
@@ -493,7 +493,7 @@
             };
 
             anim.play = params => {
-                if (params) anim = mergeObjects(createAnimation(mergeObjects(params, anim.settings)), anim);
+                if (params) anim = mergeObjs(createAnimation(mergeObjs(params, anim.settings)), anim);
                 anim.pause();
                 anim.running = true;
                 time.start = +new Date();
@@ -521,7 +521,7 @@
         // Remove on one or multiple targets from all active animations.
 
         remove = elements => {
-            let targets = flattenArray(is.array(elements) ? elements.map(toArray) : toArray(elements));
+            let targets = flattenArr(is.array(elements) ? elements.map(toArray) : toArray(elements));
             for (let animation, i = animations.length - 1; i >= 0; i--) {
                 animation = animations[i];
                 for (let tween, t = animation.tweens.length - 1; t >= 0; t--) {
@@ -545,10 +545,10 @@
     animation.path = getPathProps;
     animation.random = random;
     animation.includes = includes;
-    animation.cloneObject = cloneObject;
-    animation.mergeObjects = mergeObjects;
-    animation.flattenArray = flattenArray;
-    animation.removeArrayDuplicates = removeWillChange;
+    animation.dupeObj = dupeObj;
+    animation.mergeObjs = mergeObjs;
+    animation.flattenArr = flattenArr;
+    animation.removeArrDupes = removeArrDupes;
 
     return animation;
 }));
