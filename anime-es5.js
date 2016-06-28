@@ -13,7 +13,8 @@
     typeof module === 'object' && module.exports ? module.exports = factory() : // Browser globals (root is window)
     root.anime = factory();
 })(this, function() { // Defaults
-  var defaultSettings = {
+  var undef = void 0,
+    defaultSettings = {
       duration: 1000,
       delay: 0,
       loop: false,
@@ -22,9 +23,9 @@
       easing: 'easeOutElastic',
       elasticity: 400,
       round: false,
-      begin: undefined,
-      update: undefined,
-      complete: undefined
+      begin: undef,
+      update: undef,
+      complete: undef
     },
     validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'],
     is = function() {
@@ -220,7 +221,7 @@
       return 'rgb(' + r * 255 + ',' + g * 255 + ',' + b * 255 + ')';
     },
     colorToRgb = function(val) {
-      return is.rgb(val) || is.rgba(val) ? val : is.hex(val) ? hexToRgb(val) : is.hsl(val) ? hslToRgb(val) : void 0;
+      return is.rgb(val) || is.rgba(val) ? val : is.hex(val) ? hexToRgb(val) : is.hsl(val) ? hslToRgb(val) : undef;
     }, // Units
     getUnit = function(val) {
       return (/([\+\-]?[0-9|auto\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg)?/.exec(val)[2]);
@@ -312,7 +313,7 @@
         valid.from = prop + ('(' + addDefaultTransformUnit(prop, values.from, values.to) + ')');
         valid.to = prop + ('(' + addDefaultTransformUnit(prop, values.to) + ')');
       } else {
-        var originalCSS = type === 'css' ? getCSSValue(target, prop) : undefined;
+        var originalCSS = type === 'css' ? getCSSValue(target, prop) : undef;
         valid.from = getValidValue(values, values.from, originalCSS);
         valid.to = getValidValue(values, values.to, originalCSS);
       }
@@ -410,7 +411,7 @@
         p0 = point(-1),
         p1 = point(+1),
         twnm = tween.name;
-      return twnm == 'translateX' ? p.x : twnm == 'translateY' ? p.y : twnm == 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : void 0;
+      return twnm == 'translateX' ? p.x : twnm == 'translateY' ? p.y : twnm == 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : undef;
     }, // Progress
     getTweenProgress = function(tween, time) {
       var elapsed = Math.min(Math.max(time - tween.delay, 0), tween.duration),
@@ -485,7 +486,7 @@
           var s = anim.settings;
           if (s.begin && time.current >= s.delay) {
             s.begin(anim);
-            s.begin = undefined;
+            s.begin = undef;
           };
           if (time.current >= anim.duration) {
             if (s.loop) {

@@ -36,9 +36,29 @@
 
     // Utils
 
+    function includes(arr, searchElement) {
+        if(arr.includes) return arr.includes(searchElement);
+        if (!Array.isArray(arr)) arr = Array.prototype.slice.call(arr);
+        let len = parseInt(arr.length, 10) || 0;
+        if (len === 0) return false;
+        let k, n = parseInt(arguments[1], 10) || 0;
+        if (n >= 0) k = n;
+        else {
+            k = len + n;
+            if (k < 0) k = 0;
+        }
+        let currentElement;
+        while (k < len) {
+            currentElement = arr[k];
+            if (searchElement === currentElement || (searchElement !== searchElement && currentElement !== currentElement)) return true;
+            k++;
+        }
+        return false;
+    }
+
     const is = (() => ({
         array: Array.isArray,
-        object: a => Object.prototype.toString.call(a).indexOf('Object') > -1,
+        object: a => includes(Object.prototype.toString.call(a),'Object'),
         html: a => (a instanceof NodeList || a instanceof HTMLCollection),
         node: a => a.nodeType,
         svg: a => a instanceof SVGElement,
@@ -173,14 +193,14 @@
             }
             return 'rgb(' + r * 255 + ',' + g * 255 + ',' + b * 255 + ')';
         },
-        colorToRgb = val => is.rgb(val) || is.rgba(val) ? val : is.hex(val) ? hexToRgb(val) : is.hsl(val) ? hslToRgb(val) : void 0,
+        colorToRgb = val => is.rgb(val) || is.rgba(val) ? val : is.hex(val) ? hexToRgb(val) : is.hsl(val) ? hslToRgb(val) : undef,
 
         // Units
         getUnit = val => /([\+\-]?[0-9|auto\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg)?/.exec(val)[2],
 
         addDefaultTransformUnit = (prop, val, intialVal) => getUnit(val) ? val :
-        prop.indexOf('translate') > -1 ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
-        prop.indexOf('rotate') > -1 || prop.indexOf('skew') > -1 ? val + 'deg' : val,
+        includes(prop,'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
+        includes(prop,'rotate') || includes(prop,'skew') ? val + 'deg' : val,
 
         // Values
         getAnimationType = (el, prop) => {
@@ -193,7 +213,7 @@
         getCSSValue = (el, prop) => getComputedStyle(el).getPropertyValue(stringToHyphens(prop)),
 
         getTransformValue = (el, prop) => {
-            let defaultVal = prop.indexOf('scale') > -1 ? 1 : 0,
+            let defaultVal = includes(prop,'scale') ? 1 : 0,
                 str = el.style.transform;
             if (!str) return defaultVal;
             let rgx = /(\w+)\((.+?)\)/g,
@@ -375,7 +395,7 @@
                 p0 = point(-1),
                 p1 = point(+1),
                 twnm = tween.name;
-            return twnm == 'translateX' ? p.x : twnm == 'translateY' ? p.y : twnm == 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : void 0;
+            return twnm == 'translateX' ? p.x : twnm == 'translateY' ? p.y : twnm == 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : undef;
         },
 
         // Progress
