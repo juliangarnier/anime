@@ -8,13 +8,13 @@
  */
 (function (root, factory) {
     // AMD. Register as an anonymous module.
-    typeof define === 'function' && define.amd ? define([], factory) :
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        typeof module === 'object' && module.exports ? module.exports = factory() :
-        // Browser globals (root is window)
-        root.anime = factory();
+    if (typeof define === 'function' && define.amd) define([], factory);
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    else if (typeof module === 'object' && module.exports) module.exports = factory();
+    // Browser globals (root is window)
+    else root.anime = factory();
 }(this, () => {
     // Defaults
     const undef = void 0;
@@ -37,14 +37,14 @@
     // Utils
 
     function includes(arr, searchElement) {
-        if(arr.includes) return arr.includes(searchElement);
+        if (arr.includes) return arr.includes(searchElement);
         if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
         return arr.length === 0 ? false : arr.some(item => item === searchitem);
     }
 
     const is = (() => ({
         array: Array.isArray,
-        object: a => includes(Object.prototype.toString.call(a),'Object'),
+        object: a => includes(Object.prototype.toString.call(a), 'Object'),
         html: a => (a instanceof NodeList || a instanceof HTMLCollection),
         node: a => a.nodeType,
         svg: a => a instanceof SVGElement,
@@ -183,8 +183,8 @@
         getUnit = val => /([\+\-]?[0-9|auto\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg)?/.exec(val)[2],
 
         addDefaultTransformUnit = (prop, val, intialVal) => getUnit(val) ? val :
-        includes(prop,'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
-        includes(prop,'rotate') || includes(prop,'skew') ? val + 'deg' : val,
+        includes(prop, 'translate') ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
+        includes(prop, 'rotate') || includes(prop, 'skew') ? val + 'deg' : val,
 
         // Values
         getAnimationType = (el, prop) => {
@@ -195,16 +195,16 @@
         },
 
         getCSSValue = (el, prop) => {
-          // Then return the property value or fallback to '0' when getPropertyValue fails
-          if (prop in el.style) return getComputedStyle(el).getPropertyValue(stringToHyphens(prop)) || '0';
+            // Then return the property value or fallback to '0' when getPropertyValue fails
+            if (prop in el.style) return getComputedStyle(el).getPropertyValue(stringToHyphens(prop)) || '0';
         },
 
         getTransformValue = (el, prop) => {
-            const defaultVal = includes(prop,'scale') ? 1 : 0,
+            const defaultVal = includes(prop, 'scale') ? 1 : 0,
                 str = el.style.transform;
             if (!str) return defaultVal;
             const rgx = /(\w+)\((.+?)\)/g;
-                let match = [],
+            let match = [],
                 props = [],
                 values = [];
             while (match = rgx.exec(str)) {
