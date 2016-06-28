@@ -149,11 +149,11 @@
         // Colors
         hexToRgb = hex => {
             hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => r + r + g + g + b + b);
-            let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex),
+            const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex),
                 r = parseInt(rgb[1], 16),
                 g = parseInt(rgb[2], 16),
                 b = parseInt(rgb[3], 16);
-            return 'rgb(' + r + ',' + g + ',' + b + ')';
+            return `rgb(${r},${g},${b})`;
         },
         hue2rgb = (p, q, t) => {
             if (t < 0) t += 1;
@@ -200,11 +200,11 @@
         },
 
         getTransformValue = (el, prop) => {
-            let defaultVal = includes(prop,'scale') ? 1 : 0,
+            const defaultVal = includes(prop,'scale') ? 1 : 0,
                 str = el.style.transform;
             if (!str) return defaultVal;
-            let rgx = /(\w+)\((.+?)\)/g,
-                match = [],
+            const rgx = /(\w+)\((.+?)\)/g;
+                let match = [],
                 props = [],
                 values = [];
             while (match = rgx.exec(str)) {
