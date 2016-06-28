@@ -38,8 +38,8 @@
 
     function includes(arr, searchElement) {
         if(arr.includes) return arr.includes(searchElement);
-        if (!Array.isArray(arr)) arr = Array.prototype.slice.call(arr);
-        return arr.length == 0 ? false : arr.some(item => item === searchitem);
+        if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
+        return arr.length === 0 ? false : arr.some(item => item === searchitem);
     }
 
     const is = (() => ({
@@ -63,8 +63,8 @@
     // Easings functions adapted from http://jqueryui.com/
 
     const easings = (() => {
+        const names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'];
         let eases = {},
-            names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'],
             functions = {
                 Sine: t => 1 - Math.cos(t * Math.PI / 2),
                 Circ: t => 1 - Math.sqrt(1 - t * t),
@@ -87,10 +87,10 @@
             functions[name] = t => Math.pow(t, i + 2);
         });
         Object.keys(functions).forEach(name => {
-            let easeIn = functions[name];
-            eases['easeIn' + name] = easeIn;
-            eases['easeOut' + name] = (t, m) => 1 - easeIn(1 - t, m);
-            eases['easeInOut' + name] = (t, m) => t < 0.5 ? easeIn(t * 2, m) / 2 : 1 - easeIn(t * -2 + 2, m) / 2;
+            const easeIn = functions[name];
+            eases[`easeIn${name}`] = easeIn;
+            eases[`easeOut${name}`] = (t, m) => 1 - easeIn(1 - t, m);
+            eases[`easeInOut${name}`] = (t, m) => t < 0.5 ? easeIn(t * 2, m) / 2 : 1 - easeIn(t * -2 + 2, m) / 2;
         });
         eases.linear = t => t;
         return eases;
@@ -98,7 +98,7 @@
 
     // Strings
 
-    const numberToString = val => (is.string(val)) ? val : val + '',
+    const numberToString = val => (is.string(val)) ? val : `${val}`,
         stringToHyphens = str => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase(),
         selectString = str => {
             if (is.color(str)) return false;
@@ -167,7 +167,7 @@
                 l = parseInt(hsl[3]) / 100,
                 r, g, b;
 
-            if (s == 0) r = g = b = l;
+            if (s === 0) r = g = b = l;
             else {
                 let q = l < 0.5 ? l * (1 + s) : l + s - l * s,
                     p = 2 * l - q;
@@ -217,9 +217,9 @@
 
         getInitialTargetValue = (target, prop) => {
             let animtype = getAnimationType(target, prop);
-            return animtype == 'transform' ? getTransformValue(target, prop) :
-                animtype == 'css' ? getCSSValue(target, prop) :
-                animtype == 'attribute' ? target.getAttribute(prop) :
+            return animtype === 'transform' ? getTransformValue(target, prop) :
+                animtype === 'css' ? getCSSValue(target, prop) :
+                animtype === 'attribute' ? target.getAttribute(prop) :
                 target[prop] || 0;
         },
 
@@ -381,7 +381,7 @@
                 p0 = point(-1),
                 p1 = point(+1),
                 twnm = tween.name;
-            return twnm == 'translateX' ? p.x : twnm == 'translateY' ? p.y : twnm == 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : undef;
+            return twnm === 'translateX' ? p.x : twnm === 'translateY' ? p.y : twnm === 'rotate' ? Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI : undef;
         },
 
         // Progress
