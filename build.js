@@ -25,7 +25,7 @@ let BabelOptions = {
             "transform-es2015-parameters",
             "transform-es2015-destructuring",
             "transform-es2015-block-scoping",
-            "transform-es2015-typeof-symbol",
+            //"transform-es2015-typeof-symbol",
         ],
         compact: true,
     },

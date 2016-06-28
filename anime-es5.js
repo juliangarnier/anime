@@ -1,8 +1,3 @@
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
-  return typeof obj;
-} : function(obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
 /*
  * Anime v1.0.0
  * http://anime-js.com
@@ -14,7 +9,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) { // AMD. Register as an anonymous module.
     define([], factory);
-  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) { // Node. Does not work with strict CommonJS, but
+  } else if (typeof module === 'object' && module.exports) { // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
     module.exports = factory();
