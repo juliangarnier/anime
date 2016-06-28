@@ -1,0 +1,6 @@
+#Folders
+bower_components
+node_modules
+
+#FileTypes
+*.exe
