@@ -39,21 +39,7 @@
     function includes(arr, searchElement) {
         if(arr.includes) return arr.includes(searchElement);
         if (!Array.isArray(arr)) arr = Array.prototype.slice.call(arr);
-        let len = parseInt(arr.length, 10) || 0;
-        if (len === 0) return false;
-        let k, n = parseInt(arguments[1], 10) || 0;
-        if (n >= 0) k = n;
-        else {
-            k = len + n;
-            if (k < 0) k = 0;
-        }
-        let currentElement;
-        while (k < len) {
-            currentElement = arr[k];
-            if (searchElement === currentElement || (searchElement !== searchElement && currentElement !== currentElement)) return true;
-            k++;
-        }
-        return false;
+        return arr.length == 0 ? false : arr.some(item => item === searchitem);
     }
 
     const is = (() => ({
@@ -136,8 +122,6 @@
 
         flattenArray = arr => Array.prototype.reduce.call(arr, (a, b) => a.concat(is.array(b) ? flattenArray(b) : b), []),
 
-        arrayContains = (arr, val) => arr.some(a => a === val),
-
         groupArrayByProps = (arr, propsArr) => {
             let groups = {};
             arr.forEach(o => {
@@ -204,7 +188,7 @@
 
         // Values
         getAnimationType = (el, prop) => {
-            if ((is.node(el) || is.svg(el)) && arrayContains(validTransforms, prop)) return 'transform';
+            if ((is.node(el) || is.svg(el)) && includes(validTransforms, prop)) return 'transform';
             if ((is.node(el) || is.svg(el)) && (prop !== 'transform' && getCSSValue(el, prop))) return 'css';
             if ((is.node(el) || is.svg(el)) && (el.getAttribute(prop) || el[prop])) return 'attribute';
             if (!is.null(el[prop]) && !is.undef(el[prop])) return 'object';
@@ -542,7 +526,7 @@
                 for (let tween, t = animation.tweens.length - 1; t >= 0; t--) {
                     tween = animation.tweens[t];
                     for (let a = tween.animatables.length - 1; a >= 0; a--) {
-                        if (arrayContains(targets, tween.animatables[a].target)) {
+                        if (includes(targets, tween.animatables[a].target)) {
                             tween.animatables.splice(a, 1);
                             if (!tween.animatables.length) animation.tweens.splice(t, 1);
                             if (!animation.tweens.length) animation.pause();
