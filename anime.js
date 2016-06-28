@@ -16,8 +16,8 @@
     // Browser globals (root is window)
     else root.anime = factory();
 }(this, () => {
+    const undef = undefined;
     // Defaults
-    const undef = void 0;
 
     let defaultSettings = {
             duration: 1000,
@@ -82,7 +82,7 @@
                     while (t < ((pow2 = Math.pow(2, --bounce)) - 1) / 11) {}
                     return 1 / Math.pow(4, 3 - bounce) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
                 }
-            }
+            };
         names.forEach((name, i) => {
             functions[name] = t => Math.pow(t, i + 2);
         });
@@ -237,7 +237,7 @@
                 original: val,
                 numbers: numberToString(val).match(rgx) ? numberToString(val).match(rgx).map(Number) : [0],
                 strings: numberToString(val).split(rgx)
-            }
+            };
         },
 
         recomposeValue = (numbers, strings, initialStrings) => strings.reduce((a, b, i) => (a + numbers[i - 1] + (b ? b : initialStrings[i - 1]))),
@@ -271,7 +271,7 @@
             return {
                 from: (values.length > 1) ? values[0] : getInitialTargetValue(target, prop),
                 to: (values.length > 1) ? values[1] : values[0]
-            }
+            };
         },
 
         getTweenValues = (prop, values, type, target) => {
@@ -315,9 +315,9 @@
 
         // Tweens
         getTweens = (animatables, props) => {
-            let tweensProps = getTweensProps(animatables, props);
-            let splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
-            return splittedProps.map((tweenProps) => {
+            let tweensProps = getTweensProps(animatables, props),
+            splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
+            return splittedProps.map(tweenProps => {
                 let tween = cloneObject(tweenProps[0]);
                 tween.animatables = tweenProps.map(p => p.animatables);
                 tween.totalDuration = tween.delay + tween.duration;
@@ -351,7 +351,7 @@
             return {
                 properties: removeArrayDuplicates(props).join(', '),
                 elements: removeArrayDuplicates(els)
-            }
+            };
         },
 
         setWillChange = anim => {
@@ -370,7 +370,7 @@
             return {
                 path: el,
                 value: el.getTotalLength()
-            }
+            };
         },
 
         snapProgressToPath = (tween, progress) => {
@@ -465,7 +465,7 @@
                     if (s.begin && time.current >= s.delay) {
                         s.begin(anim);
                         s.begin = undef;
-                    };
+                    }
                     if (time.current >= anim.duration) {
                         if (s.loop) {
                             time.start = +new Date();
@@ -480,7 +480,7 @@
                         time.last = 0;
                     } else time.raf = requestAnimationFrame(time.tick);
                 }
-            }
+            };
 
             anim.seek = progress => setAnimationProgress(anim, (progress / 100) * anim.duration);
 
@@ -490,7 +490,7 @@
                 removeWillChange(anim);
                 let i = animations.indexOf(anim);
                 if (i > -1) animations.splice(i, 1);
-            }
+            };
 
             anim.play = params => {
                 if (params) anim = mergeObjects(createAnimation(mergeObjects(params, anim.settings)), anim);
@@ -504,14 +504,14 @@
                 setWillChange(anim);
                 animations.push(anim);
                 time.raf = requestAnimationFrame(time.tick);
-            }
+            };
 
             anim.restart = () => {
                 if (anim.reversed) reverseTweens(anim);
                 anim.pause();
                 anim.seek(0);
                 anim.play();
-            }
+            };
 
             if (anim.settings.autoplay) anim.play();
 
@@ -535,7 +535,7 @@
                     }
                 }
             }
-        }
+        };
 
     animation.speed = 1;
     animation.list = animations;
@@ -551,5 +551,4 @@
     animation.removeArrayDuplicates = removeWillChange;
 
     return animation;
-
 }));
