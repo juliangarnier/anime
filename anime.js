@@ -37,7 +37,7 @@
     complete: undefined
   }
 
-  var validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
+  var validTransforms = ['translate', 'translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
 
   // Utils
 
@@ -244,7 +244,14 @@
 
   var getTransformValue = function(el, prop) {
     var defaultVal = prop.indexOf('scale') > -1 ? 1 : 0;
-    var str = el.style.transform;
+    var isSVG = (el instanceof SVGElement);
+    
+    /*
+     * IE has a problem with SVG and CSS transforms, so 
+     * we have to work around this.
+     */
+    var str = isSVG ? el.getAttribute('transform') : el.style.transform
+    
     if (!str) return defaultVal;
     var rgx = /(\w+)\((.+?)\)/g;
     var match = [];
@@ -325,8 +332,17 @@
   var getTweenValues = function(prop, values, type, target) {
     var valid = {};
     if (type === 'transform') {
-      valid.from = prop + '(' + addDefaultTransformUnit(prop, values.from, values.to) + ')';
-      valid.to = prop + '(' + addDefaultTransformUnit(prop, values.to) + ')';
+      /*
+       * The SVG transform attribute does not take units, so we 
+       * must test for this.
+       */
+      if (target instanceof SVGElement) {
+        valid.from = prop + '(' + values.from + ')';
+        valid.to = prop + '(' + values.to + ')';
+      } else {
+        valid.from = prop + '(' + addDefaultTransformUnit(prop, values.from, values.to) + ')';
+        valid.to = prop + '(' + addDefaultTransformUnit(prop, values.to) + ')';
+      }
     } else {
       var originalCSS = (type === 'css') ? getCSSValue(target, prop) : undefined;
       valid.from = getValidValue(values, values.from, originalCSS);
@@ -438,6 +454,7 @@
     switch (tween.name) {
       case 'translateX': return p.x;
       case 'translateY': return p.y;
+      case 'translate': return [p.x, p.y];
       case 'rotate': return Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
     }
   }
@@ -471,14 +488,29 @@
           case 'attribute': animatable.target.setAttribute(tween.name, progress); break;
           case 'object': animatable.target[tween.name] = progress; break;
           case 'transform':
-          if (!transforms) transforms = {};
-          if (!transforms[id]) transforms[id] = [];
-          transforms[id].push(progress);
-          break;
+            if (!transforms) transforms = {};
+            if (!transforms[id]) transforms[id] = [];
+            transforms[id].push(progress);
+            break;
         }
       });
     });
-    if (transforms) for (var t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
+    if (transforms) {
+      for (var t in transforms) {
+        var target = anim.animatables[t].target,
+          transformValue = transforms[t].join(' ');
+        
+        /*
+         * IE has a problem with SVG and CSS transforms, so 
+         * we have to work around this.
+         */
+        if (target instanceof SVGElement) {
+          target.setAttribute('transform', transformValue)
+        } else {
+          target.style.transform = transformValue;
+        }
+      }
+    }
     if (anim.settings.update) anim.settings.update(anim);
   }
 
