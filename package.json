@@ -1,11 +1,11 @@
 {
   "name": "animejs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Polyvalent Javascript animation engine",
   "main": "anime.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/juliangarnier/anime.git"
+    "url": "https://github.com/sauldoescode/anime.git"
   },
   "keywords": [
     "anime",
@@ -19,7 +19,16 @@
   "author": "Julian Garnier <hello@julian.gr>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/juliangarnier/anime/issues"
+    "url": "https://github.com/sauldoescode/anime/issues"
+  },
+  "dependencies": {
+    "babel-core": "^6.9.0",
+    "babel-plugin-transform-merge-sibling-variables": "^6.8.0",
+    "babel-preset-es2015": "^6.1.2",
+    "clean-css": "^3.4.12",
+    "documentation": "^4.0.0-beta2",
+    "google-closure-compiler": "^20160517.1.0",
+    "js-beautify": "^1.6.2"
   },
   "homepage": "http://anime-js.com",
   "files": ["anime.js", "anime.min.js"]
