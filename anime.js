@@ -147,8 +147,8 @@
 
         // Colors
         hexToRgb = hex => {
-            let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => r + r + g + g + b + b),
+            hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => r + r + g + g + b + b);
+            let rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex),
                 r = parseInt(rgb[1], 16),
                 g = parseInt(rgb[2], 16),
                 b = parseInt(rgb[3], 16);
@@ -181,13 +181,11 @@
         // Units
         getUnit = val => /([\+\-]?[0-9|auto\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg)?/.exec(val)[2],
 
-
         addDefaultTransformUnit = (prop, val, intialVal) => getUnit(val) ? val :
         prop.indexOf('translate') > -1 ? getUnit(intialVal) ? val + getUnit(intialVal) : val + 'px' :
         prop.indexOf('rotate') > -1 || prop.indexOf('skew') > -1 ? val + 'deg' : val,
 
         // Values
-
         getAnimationType = (el, prop) => {
             if ((is.node(el) || is.svg(el)) && arrayContains(validTransforms, prop)) return 'transform';
             if ((is.node(el) || is.svg(el)) && (prop !== 'transform' && getCSSValue(el, prop))) return 'css';
