@@ -498,6 +498,7 @@
     anim.time = 0;
     anim.progress = 0;
     anim.running = false;
+    anim.began = false;
     anim.ended = false;
     return anim;
   }
@@ -516,10 +517,11 @@
         anim.ended = false;
         time.now = +new Date();
         time.current = time.last + time.now - time.start;
-        setAnimationProgress(anim, time.current);
         var s = anim.settings;
-        if (s.begin && time.current >= s.delay) { s.begin(anim); s.begin = undefined; };
+        if (!anim.began && s.begin && time.current >= s.delay) { s.begin(anim); anim.began = true; };
+        setAnimationProgress(anim, time.current);
         if (time.current >= anim.duration) {
+          time.last = 0;
           if (s.loop) {
             time.start = +new Date();
             if (s.direction === 'alternate') reverseTweens(anim, true);
@@ -527,10 +529,10 @@
             time.raf = requestAnimationFrame(time.tick);
           } else {
             anim.ended = true;
-            if (s.complete) s.complete(anim);
             anim.pause();
+            anim.began = false;
+            if (s.complete) s.complete(anim);
           }
-          time.last = 0;
         } else {
           time.raf = requestAnimationFrame(time.tick);
         }
@@ -540,6 +542,7 @@
     anim.seek = function(progress) {
       var time = (progress / 100) * anim.duration;
       setAnimationProgress(anim, time);
+      return this;
     }
 
     anim.pause = function() {
@@ -548,6 +551,7 @@
       removeWillChange(anim);
       var i = animations.indexOf(anim);
       if (i > -1) animations.splice(i, 1);
+      return this;
     }
 
     anim.play = function(params) {
@@ -562,6 +566,7 @@
       setWillChange(anim);
       animations.push(anim);
       time.raf = requestAnimationFrame(time.tick);
+      return this;
     }
 
     anim.restart = function() {
@@ -569,6 +574,28 @@
       anim.pause();
       anim.seek(0);
       anim.play();
+      return this;
+    }
+
+    anim.begin = function(callback) {
+        if(callback == undefined) return this;
+        var s = this.settings;
+        s.begin = callback;
+        return this;
+    }
+
+    anim.update = function(callback) {
+        if(callback == undefined) return this;
+        var s = this.settings;
+        s.update = callback;
+        return this;
+    }
+
+    anim.complete = function(callback) {
+        if(callback == undefined) return this;
+        var s = this.settings;
+        s.complete = callback;
+        return this;
     }
 
     if (anim.settings.autoplay) anim.play();
