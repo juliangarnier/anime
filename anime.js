@@ -316,7 +316,7 @@
         // Tweens
         getTweens = (animatables, props) => {
             let tweensProps = getTweensProps(animatables, props),
-            splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
+                splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
             return splittedProps.map(tweenProps => {
                 let tween = dupeObj(tweenProps[0]);
                 tween.animatables = tweenProps.map(p => p.animatables);
@@ -439,6 +439,7 @@
                 time: 0,
                 progress: 0,
                 running: false,
+                began: false,
                 ended: false
             };
             anim.properties = getProperties(params, anim.settings);
@@ -460,13 +461,14 @@
                     anim.ended = false;
                     time.now = +new Date();
                     time.current = time.last + time.now - time.start;
-                    setAnimationProgress(anim, time.current);
                     let s = anim.settings;
-                    if (s.begin && time.current >= s.delay) {
+                    if (!anim.began && s.begin && time.current >= s.delay) {
                         s.begin(anim);
-                        s.begin = undef;
+                        anim.began = true;
                     }
+                    setAnimationProgress(anim, time.current);
                     if (time.current >= anim.duration) {
+                        time.last = 0;
                         if (s.loop) {
                             time.start = +new Date();
                             if (s.direction === 'alternate') reverseTweens(anim, true);
@@ -474,15 +476,18 @@
                             time.raf = requestAnimationFrame(time.tick);
                         } else {
                             anim.ended = true;
-                            if (s.complete) s.complete(anim);
                             anim.pause();
+                            anim.began = false;
+                            if (s.complete) s.complete(anim);
                         }
-                        time.last = 0;
                     } else time.raf = requestAnimationFrame(time.tick);
                 }
             };
 
-            anim.seek = progress => setAnimationProgress(anim, (progress / 100) * anim.duration);
+            anim.seek = progress => {
+                setAnimationProgress(anim, (progress / 100) * anim.duration);
+                return anim;
+            }
 
             anim.pause = () => {
                 anim.running = false;
@@ -490,6 +495,7 @@
                 removeWillChange(anim);
                 let i = animations.indexOf(anim);
                 if (i > -1) animations.splice(i, 1);
+                return anim;
             };
 
             anim.play = params => {
@@ -504,14 +510,36 @@
                 setWillChange(anim);
                 animations.push(anim);
                 time.raf = requestAnimationFrame(time.tick);
+                return anim;
             };
 
             anim.restart = () => {
                 if (anim.reversed) reverseTweens(anim);
                 anim.pause();
                 anim.seek(0);
-                anim.play();
+                return anim.play();
             };
+
+            anim.begin = callback => {
+                if(is.undef(callback)) return anim;
+                let s = anim.settings;
+                s.begin = callback;
+                return anim;
+            }
+
+            anim.update = callback => {
+                if(is.undef(callback)) return anim;
+                let s = anim.settings;
+                s.update = callback;
+                return anim;
+            }
+
+            anim.complete = callback => {
+                if(is.undef(callback)) return anim;
+                let s = anim.settings;
+                s.complete = callback;
+                return anim;
+            }
 
             if (anim.settings.autoplay) anim.play();
 

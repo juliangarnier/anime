@@ -154,9 +154,9 @@
       if (is.html(o)) return [].slice.call(o);
       return [o];
     },
-    flattenArray = function(arr) {
+    flattenArr = function(arr) {
       return Array.prototype.reduce.call(arr, function(a, b) {
-        return a.concat(is.array(b) ? flattenArray(b) : b);
+        return a.concat(is.array(b) ? flattenArr(b) : b);
       }, []);
     },
     groupArrayByProps = function(arr, propsArr) {
@@ -172,19 +172,19 @@
         return groups[group];
       });
     },
-    removeArrayDuplicates = function(arr) {
+    removeArrDupes = function(arr) {
       return arr.filter(function(item, pos, context) {
         return context.indexOf(item) === pos;
       });
     }, // Objects
-    cloneObject = function(o) {
+    dupeObj = function(o) {
       var newObject = {};
       for (var p in o) {
         newObject[p] = o[p];
       }
       return newObject;
     },
-    mergeObjects = function(o1, o2) {
+    mergeObjs = function(o1, o2) {
       for (var p in o2) {
         o1[p] = !is.undef(o1[p]) ? o1[p] : o2[p];
       }
@@ -283,7 +283,7 @@
       });
     }, // Animatables
     getAnimatables = function(targets) {
-      return (targets ? flattenArray(is.array(targets) ? targets.map(toArray) : toArray(targets)) : []).map(function(t, i) {
+      return (targets ? flattenArr(is.array(targets) ? targets.map(toArray) : toArray(targets)) : []).map(function(t, i) {
         return {
           target: t,
           id: i
@@ -294,11 +294,11 @@
       var props = [];
       for (var p in params) {
         if (!defaultSettings.hasOwnProperty(p) && p !== 'targets') {
-          var prop = is.object(params[p]) ? cloneObject(params[p]) : {
+          var prop = is.object(params[p]) ? dupeObj(params[p]) : {
             value: params[p]
           };
           prop.name = p;
-          props.push(mergeObjects(prop, settings));
+          props.push(mergeObjs(prop, settings));
         }
       }
       return props;
@@ -333,7 +333,7 @@
           var animType = getAnimationType(target, prop.name);
           if (animType) {
             var values = getPropertiesValues(target, prop.name, prop.value, i),
-              tween = cloneObject(prop);
+              tween = dupeObj(prop);
             tween.animatables = animatable;
             tween.type = animType;
             tween.from = getTweenValues(prop.name, values, tween.type, target).from;
@@ -351,7 +351,7 @@
       var tweensProps = getTweensProps(animatables, props),
         splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
       return splittedProps.map(function(tweenProps) {
-        var tween = cloneObject(tweenProps[0]);
+        var tween = dupeObj(tweenProps[0]);
         tween.animatables = tweenProps.map(function(p) {
           return p.animatables;
         });
@@ -382,8 +382,8 @@
         }
       });
       return {
-        properties: removeArrayDuplicates(props).join(', '),
-        elements: removeArrayDuplicates(els)
+        properties: removeArrDupes(props).join(', '),
+        elements: removeArrDupes(els)
       };
     },
     setWillChange = function(anim) {
@@ -463,7 +463,7 @@
     createAnimation = function(params) {
       var anim = {
         animatables: getAnimatables(params.targets),
-        settings: mergeObjects(params, defaultSettings),
+        settings: mergeObjs(params, defaultSettings),
         time: 0,
         progress: 0,
         running: false,
@@ -517,7 +517,7 @@
         if (i > -1) animations.splice(i, 1);
       };
       anim.play = function(params) {
-        if (params) anim = mergeObjects(createAnimation(mergeObjects(params, anim.settings)), anim);
+        if (params) anim = mergeObjs(createAnimation(mergeObjs(params, anim.settings)), anim);
         anim.pause();
         anim.running = true;
         time.start = +new Date();
@@ -539,7 +539,7 @@
       return anim;
     }, // Remove on one or multiple targets from all active animations.
     remove = function(elements) {
-      var targets = flattenArray(is.array(elements) ? elements.map(toArray) : toArray(elements));
+      var targets = flattenArr(is.array(elements) ? elements.map(toArray) : toArray(elements));
       for (var _animation, i = animations.length - 1; i >= 0; i--) {
         _animation = animations[i];
         for (var tween, t = _animation.tweens.length - 1; t >= 0; t--) {
@@ -564,9 +564,9 @@
   animation.path = getPathProps;
   animation.random = random;
   animation.includes = includes;
-  animation.cloneObject = cloneObject;
-  animation.mergeObjects = mergeObjects;
-  animation.flattenArray = flattenArray;
-  animation.removeArrayDuplicates = removeWillChange;
+  animation.dupeObj = dupeObj;
+  animation.mergeObjs = mergeObjs;
+  animation.flattenArr = flattenArr;
+  animation.removeArrDupes = removeArrDupes;
   return animation;
 });
