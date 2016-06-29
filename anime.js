@@ -428,6 +428,7 @@
             if (transforms)
                 for (let t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
             if (anim.settings.update) anim.settings.update(anim);
+            return anim;
         },
 
         // Animation
@@ -484,10 +485,7 @@
                 }
             };
 
-            anim.seek = progress => {
-                setAnimationProgress(anim, (progress / 100) * anim.duration);
-                return anim;
-            }
+            anim.seek = progress => setAnimationProgress(anim, (progress / 100) * anim.duration);
 
             anim.pause = () => {
                 anim.running = false;
