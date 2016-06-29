@@ -521,21 +521,21 @@
             anim.begin = callback => {
                 if(is.undef(callback)) return anim;
                 let s = anim.settings;
-                s.begin = callback;
+                s.begin = callback.bind(anim);
                 return anim;
             }
 
             anim.update = callback => {
                 if(is.undef(callback)) return anim;
                 let s = anim.settings;
-                s.update = callback;
+                s.update = callback.bind(anim);
                 return anim;
             }
 
             anim.complete = callback => {
                 if(is.undef(callback)) return anim;
                 let s = anim.settings;
-                s.complete = callback;
+                s.complete = callback.bind(anim);
                 return anim;
             }
 
