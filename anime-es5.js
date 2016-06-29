@@ -459,6 +459,7 @@
           anim.animatables[t].target.style.transform = transforms[t].join(' ');
         }
       if (anim.settings.update) anim.settings.update(anim);
+      return anim;
     }, // Animation
     createAnimation = function(params) {
       var anim = {
@@ -509,8 +510,7 @@
         }
       };
       anim.seek = function(progress) {
-        setAnimationProgress(anim, progress / 100 * anim.duration);
-        return anim;
+        return setAnimationProgress(anim, progress / 100 * anim.duration);
       };
       anim.pause = function() {
         anim.running = false;
