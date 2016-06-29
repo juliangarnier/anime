@@ -543,19 +543,19 @@
       anim.begin = function(callback) {
         if (is.undef(callback)) return anim;
         var s = anim.settings;
-        s.begin = callback;
+        s.begin = callback.bind(anim);
         return anim;
       };
       anim.update = function(callback) {
         if (is.undef(callback)) return anim;
         var s = anim.settings;
-        s.update = callback;
+        s.update = callback.bind(anim);
         return anim;
       };
       anim.complete = function(callback) {
         if (is.undef(callback)) return anim;
         var s = anim.settings;
-        s.complete = callback;
+        s.complete = callback.bind(anim);
         return anim;
       };
       if (anim.settings.autoplay) anim.play();
