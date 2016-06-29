@@ -519,25 +519,25 @@
             };
 
             anim.begin = callback => {
-                if(is.undef(callback)) return anim;
+                if (!is.func(callback)) return anim;
                 let s = anim.settings;
                 s.begin = callback.bind(anim);
                 return anim;
-            }
+            };
 
             anim.update = callback => {
-                if(is.undef(callback)) return anim;
+                if (!is.func(callback)) return anim;
                 let s = anim.settings;
                 s.update = callback.bind(anim);
                 return anim;
-            }
+            };
 
             anim.complete = callback => {
-                if(is.undef(callback)) return anim;
+                if (!is.func(callback)) return anim;
                 let s = anim.settings;
                 s.complete = callback.bind(anim);
                 return anim;
-            }
+            };
 
             if (anim.settings.autoplay) anim.play();
 
