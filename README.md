@@ -251,15 +251,15 @@ anime({
 
 Play, pause, restart, seek and rumtime callback in the animation.
 
-| Names | Infos | Return | Parameters | Note
+| Names | Infos | Return | Parameters
 | --- | --- | --- | --- | ---
-| `.play()` | Play the animation | animation object | animation parameters object |
-| `.pause()` | Pause the animation | animation object | none |
-| `.restart()` | Restart the animation | animation object | animation parameters object |
-| `.seek()` | Advance in the animation | animation object | a percentage, or an object {time: 1250} |
-| `.begin()` | Callback at animation began | animation object | function(anim) | replace begin in the anime's options
-| `.update()` | Callback at animation update | animation object | function(anim) | replace update in the anime's options
-| `.complete()` | Callback at animation ended | animation object | function(anim) | replace complete in the anime's options
+| `.play()` | Play the animation | animation object | animation parameters object
+| `.pause()` | Pause the animation | animation object | none
+| `.restart()` | Restart the animation | animation object | animation parameters object
+| `.seek()` | Advance in the animation | animation object | a percentage, or an object {time: 1250}
+| `.begin()` | Callback at animation began, replace begin in the anime's options | animation object | function(anim)
+| `.update()` | Callback at animation update, replace update in the anime's options | animation object | function(anim)
+| `.complete()` | Callback at animation ended, replace complete in the anime's options | animation object | function(anim) 
 
 ```javascript
 var myAnimation = anime({
