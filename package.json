@@ -1,8 +1,8 @@
 {
   "name": "animejs",
-  "version": "1.1.1",
+  "version": "1.1.0",
   "description": "Polyvalent JavaScript animation engine",
-  "main": "anime.min.js",
+  "main": "anime-es5.min.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/juliangarnier/anime.git"
@@ -31,5 +31,5 @@
     "js-beautify": "^1.6.2"
   },
   "homepage": "http://anime-js.com",
-  "files": ["anime.js", "anime.min.js"]
+  "files": ["anime.js", "anime-es5.min.js"]
 }
