@@ -566,7 +566,7 @@
       if (params) anim = mergeObjects(createAnimation(mergeObjects(params, anim.settings)), anim);
       anim.pause();
       anim.running = true;
-      time.start = performance.now();
+      time.start = typeof performance != "undefined" ? performance.now() : +Date.now();
       time.last = anim.ended ? 0 : anim.time;
       var s = anim.settings;
       if (s.direction === 'reverse') reverseTweens(anim);
