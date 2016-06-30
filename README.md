@@ -249,17 +249,17 @@ anime({
 
 ![Playback controls](http://anime-js.com/img/gifs/playback-controls.gif)
 
-Play, pause, restart and seek the animation.
+Play, pause, restart, seek and rumtime callback in the animation.
 
-| Names | Infos | Return | Parameters | Arguments
-| --- | --- | ---
-| `.play()` | Play the animation | animation object | animation parameters object
-| `.pause()` | Pause the animation | animation object | none
-| `.restart()` | Restart the animation | animation object | animation parameters object
-| `.seek()` | Advance in the animation | animation object | a percentage, or an object {time: 1250}
-| `.begin()` | Callback at animation began | animation object | function(anim)
-| `.update()` | Callback at animation update | animation object | function(anim)
-| `.complete()` | Callback at animation ended | animation object | function(anim)
+| Names | Infos | Return | Parameters | Note
+| --- | --- | --- | --- | ---
+| `.play()` | Play the animation | animation object | animation parameters object |
+| `.pause()` | Pause the animation | animation object | none |
+| `.restart()` | Restart the animation | animation object | animation parameters object |
+| `.seek()` | Advance in the animation | animation object | a percentage, or an object {time: 1250} |
+| `.begin()` | Callback at animation began | animation object | function(anim) | replace begin in the anime's options
+| `.update()` | Callback at animation update | animation object | function(anim) | replace update in the anime's options
+| `.complete()` | Callback at animation ended | animation object | function(anim) | replace complete in the anime's options
 
 ```javascript
 var myAnimation = anime({
@@ -268,7 +268,21 @@ var myAnimation = anime({
   autoplay: false
 });
 
-myAnimation.play(); // Manually play the animation
+myAnimation
+.begin(function(anim) {
+  console.log("Began!"); // Called the animation began
+}).play() // Manually play the animation
+.update(function(anim) {
+  console.log("Updated!"); // Called the animation updated
+})
+.complete(function(anim) {
+  console.log("completed!"); // Called the animation ended
+  anim
+  .complete(function(anim) { // Changed complete callback
+    console.log("Fully completed!");
+  })
+  .play(); // play one more time
+});
 ```
 
 [Live example on CodePen](http://codepen.io/juliangarnier/pen/d1cf92b2af5bb4166cde511e233e8a0d?editors=0010)
