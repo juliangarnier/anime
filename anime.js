@@ -533,7 +533,7 @@
         time.current = time.last + now - time.start;
         setAnimationProgress(anim, time.current);
         var s = anim.settings;
-        if (s.begin && time.current >= s.delay) { s.begin(anim); s.begin = undefined; };
+        if (s.begin && time.current >= s.delay) { s.begin(anim); anim.began = true; };
         if (time.current >= anim.duration) {
           if (s.loop) {
             time.start = now;
@@ -541,8 +541,9 @@
             if (is.number(s.loop)) s.loop--;
           } else {
             anim.ended = true;
-            if (s.complete) s.complete(anim);
             anim.pause();
+            anim.began = false;
+            if (s.complete) s.complete(anim);
           }
           time.last = 0;
         }
@@ -552,6 +553,7 @@
     anim.seek = function(progress) {
       var time = (progress / 100) * anim.duration;
       setAnimationProgress(anim, time);
+      return anim;
     }
 
     anim.pause = function() {
@@ -560,6 +562,7 @@
       var i = animations.indexOf(anim);
       if (i > -1) animations.splice(i, 1);
       if (!animations.length) engine.pause();
+      return anim;
     }
 
     anim.play = function(params) {
@@ -574,19 +577,40 @@
       setWillChange(anim);
       animations.push(anim);
       if (!raf) engine.play();
+      return anim;
     }
 
     anim.restart = function() {
       if (anim.reversed) reverseTweens(anim);
       anim.pause();
       anim.seek(0);
-      anim.play();
+      return anim.play();
+    }
+
+    anim.begin = function(callback) {
+        if(!is.func(callback)) return anim;
+        var s = this.settings;
+        s.begin = callback;
+        return anim;
+    }
+
+    anim.update = function(callback) {
+        if(!is.func(callback)) return anim;
+        var s = this.settings;
+        s.update = callback;
+        return anim;
+    }
+
+    anim.complete = function(callback) {
+        if(!is.func(callback)) return anim;
+        var s = this.settings;
+        s.complete = callback;
+        return anim;
     }
 
     if (anim.settings.autoplay) anim.play();
 
     return anim;
-
   }
 
   // Remove on one or multiple targets from all active animations.
