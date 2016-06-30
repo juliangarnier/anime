@@ -1,8 +1,8 @@
 {
   "name": "animejs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Polyvalent JavaScript animation engine",
-  "main": "anime.min.js",
+  "main": "anime.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/juliangarnier/anime.git"
@@ -22,5 +22,13 @@
     "url": "https://github.com/juliangarnier/anime/issues"
   },
   "homepage": "http://anime-js.com",
-  "files": ["anime.js", "anime.min.js"]
+  "files": [
+    "anime.js"
+  ],
+  "devDependencies": {
+    "uglify-js": "^2.6.4"
+  },
+  "scripts": {
+    "build:min": "uglifyjs anime.js -o anime.min.js"
+  }
 }

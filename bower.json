@@ -2,10 +2,10 @@
   "name": "animejs",
   "description": "Polyvalent JavaScript animation engine",
   "main": "anime.js",
-  "authors": [
-    "Julian Garnier <hello@julian.gr>"
-  ],
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juliangarnier/anime.git"
+  },
   "keywords": [
     "anime",
     "animation",
@@ -15,6 +15,10 @@
     "SVG",
     "canvas"
   ],
+  "authors": [
+    "Julian Garnier <hello@julian.gr>"
+  ],
+  "license": "MIT",
   "homepage": "http://anime-js.com/",
   "ignore": [
     "**/.*",

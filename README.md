@@ -173,16 +173,24 @@ Defines the end value of the animation.
 
 | Types | Examples | Infos
 | --- | --- | ---
-| Number | `100` | Will use default units if possible
-| String | `'100rem'` | Will force the animation to use a specific value
+| String | `'100rem'` | Recommended technique. Will force the animation to use a specific value, but doesn't convert units.
+| Number | `100` | Will use default units if possible. Doesn't work with properties that aren't specified in the CSS, or non-numerical values (e.g. margin: auto; left: auto; etc..).
+
+Notes : For properties that aren't
 
 Example:
 
+```CSS
+.div {
+  width: 20px;
+}
+```
 ```javascript
+
 anime({
   targets: 'div',
-  translateX: '3rem',
-  width: '100', // Will be converted to '100px'
+  translateX: '3rem', // Will translate the div from '0rem' to '3rem'
+  width: '100', // Will be converted to '100px' because the width is '20px' in the CSS
 });
 ```
 
