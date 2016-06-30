@@ -591,6 +591,7 @@
 
     anim.begin = function(callback) {
         if(callback == undefined) return this;
+        if(!is.func(callback)) return this;
         var s = this.settings;
         s.begin = callback;
         return this;
@@ -598,6 +599,7 @@
 
     anim.update = function(callback) {
         if(callback == undefined) return this;
+        if(!is.func(callback)) return this;
         var s = this.settings;
         s.update = callback;
         return this;
@@ -605,6 +607,7 @@
 
     anim.complete = function(callback) {
         if(callback == undefined) return this;
+        if(!is.func(callback)) return this;
         var s = this.settings;
         s.complete = callback;
         return this;
