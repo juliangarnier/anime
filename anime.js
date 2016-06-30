@@ -16,10 +16,11 @@
     // Browser globals (root is window)
     else root.anime = factory();
 }(this, () => {
-    const undef = undefined;
-    // Defaults
 
-    let defaultSettings = {
+    // Defaults
+    const undef = undefined,
+        validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'],
+        defaultSettings = {
             duration: 1000,
             delay: 0,
             loop: false,
@@ -31,8 +32,7 @@
             begin: undef,
             update: undef,
             complete: undef
-        },
-        validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
+        };
 
     // Utils
 
@@ -63,7 +63,6 @@
     // Easings functions adapted from http://jqueryui.com/
 
     const easings = (() => {
-        const names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'];
         let eases = {},
             functions = {
                 Sine: t => 1 - Math.cos(t * Math.PI / 2),
@@ -83,7 +82,7 @@
                     return 1 / Math.pow(4, 3 - bounce) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
                 }
             };
-        names.forEach((name, i) => {
+        ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'].forEach((name, i) => {
             functions[name] = t => Math.pow(t, i + 2);
         });
         Object.keys(functions).forEach(name => {
@@ -451,15 +450,19 @@
 
     // Public
 
-    let animations = [], raf;
-    
+    let animations = [],
+        raf;
+
     const engine = (() => {
         const play = () => (raf = requestAnimationFrame(step)),
-        pause = () => cancelAnimationFrame((raf = 0)),
-        step = time => {
-            for (let i = 0; i < animations.length; i++) animations[i].tick(time);
-            play();
-        }
+            pause = () => {
+                cancelAnimationFrame(raf);
+                raf = 0;
+            },
+            step = time => {
+                for (let i = 0; i < animations.length; i++) animations[i].tick(time);
+                play();
+            }
         return {
             play,
             pause
