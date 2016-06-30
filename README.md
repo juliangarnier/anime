@@ -265,6 +265,7 @@ Play, pause, restart, seek and rumtime callback in the animation.
 var myAnimation = anime({
   targets: 'div',
   translateX: 100,
+  loop: false,
   autoplay: false
 });
 
