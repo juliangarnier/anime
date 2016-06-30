@@ -479,34 +479,51 @@
       return anim;
     },
     animations = [],
+    raf = void 0,
+    engine = function() {
+      var play = function() {
+          return raf = requestAnimationFrame(step);
+        },
+        pause = function() {
+          return cancelAnimationFrame(raf = 0);
+        },
+        step = function(time) {
+          for (var i = 0; i < animations.length; i++) {
+            animations[i].tick(time);
+          }
+          play();
+        };
+      return {
+        play: play,
+        pause: pause
+      };
+    }(),
     animation = function(params) {
       var time = {},
         anim = createAnimation(params);
-      time.tick = function() {
+      anim.tick = function(now) {
         if (anim.running) {
           anim.ended = false;
-          time.now = +new Date();
-          time.current = time.last + time.now - time.start;
+          time.current = time.last + now - time.start;
           var s = anim.settings;
           if (!anim.began && s.begin && time.current >= s.delay) {
             s.begin(anim);
             anim.began = true;
           }
           setAnimationProgress(anim, time.current);
-          if (time.current >= anim.duration) {
-            time.last = 0;
+          if (time.current >= anim.duration) { //time.last = 0;
             if (s.loop) {
-              time.start = +new Date();
+              time.start = now;
               if (s.direction === 'alternate') reverseTweens(anim, true);
               if (is.number(s.loop)) s.loop--;
-              time.raf = requestAnimationFrame(time.tick);
             } else {
               anim.ended = true;
               anim.pause();
               anim.began = false;
               if (s.complete) s.complete(anim);
             }
-          } else time.raf = requestAnimationFrame(time.tick);
+          }
+          time.last = 0;
         }
       };
       anim.seek = function(progress) {
@@ -514,24 +531,24 @@
       };
       anim.pause = function() {
         anim.running = false;
-        cancelAnimationFrame(time.raf);
         removeWillChange(anim);
         var i = animations.indexOf(anim);
         if (i > -1) animations.splice(i, 1);
+        if (!animations.length) engine.pause();
         return anim;
       };
       anim.play = function(params) {
         if (params) anim = mergeObjs(createAnimation(mergeObjs(params, anim.settings)), anim);
         anim.pause();
         anim.running = true;
-        time.start = +new Date();
+        time.start = performance.now();
         time.last = anim.ended ? 0 : anim.time;
         var s = anim.settings;
         if (s.direction === 'reverse') reverseTweens(anim);
         if (s.direction === 'alternate' && !s.loop) s.loop = 1;
         setWillChange(anim);
         animations.push(anim);
-        time.raf = requestAnimationFrame(time.tick);
+        if (!raf) engine.play();
         return anim;
       };
       anim.restart = function() {
@@ -591,5 +608,7 @@
   animation.mergeObjs = mergeObjs;
   animation.flattenArr = flattenArr;
   animation.removeArrDupes = removeArrDupes;
+  animation.play = engine.play;
+  animation.pause = engine.pause;
   return animation;
 });
