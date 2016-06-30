@@ -451,17 +451,29 @@
 
     // Public
 
-    let animations = [];
+    let animations = [], raf;
+    
+    const engine = (() => {
+        const play = () => (raf = requestAnimationFrame(step)),
+        pause = () => cancelAnimationFrame((raf = 0)),
+        step = time => {
+            for (let i = 0; i < animations.length; i++) animations[i].tick(time);
+            play();
+        }
+        return {
+            play,
+            pause
+        }
+    })();
 
     const animation = params => {
             let time = {},
                 anim = createAnimation(params);
 
-            time.tick = () => {
+            anim.tick = now => {
                 if (anim.running) {
                     anim.ended = false;
-                    time.now = +new Date();
-                    time.current = time.last + time.now - time.start;
+                    time.current = time.last + now - time.start;
                     let s = anim.settings;
                     if (!anim.began && s.begin && time.current >= s.delay) {
                         s.begin(anim);
@@ -469,19 +481,19 @@
                     }
                     setAnimationProgress(anim, time.current);
                     if (time.current >= anim.duration) {
-                        time.last = 0;
+                        //time.last = 0;
                         if (s.loop) {
-                            time.start = +new Date();
+                            time.start = now;
                             if (s.direction === 'alternate') reverseTweens(anim, true);
                             if (is.number(s.loop)) s.loop--;
-                            time.raf = requestAnimationFrame(time.tick);
                         } else {
                             anim.ended = true;
                             anim.pause();
                             anim.began = false;
                             if (s.complete) s.complete(anim);
                         }
-                    } else time.raf = requestAnimationFrame(time.tick);
+                    }
+                    time.last = 0;
                 }
             };
 
@@ -489,10 +501,10 @@
 
             anim.pause = () => {
                 anim.running = false;
-                cancelAnimationFrame(time.raf);
                 removeWillChange(anim);
                 let i = animations.indexOf(anim);
                 if (i > -1) animations.splice(i, 1);
+                if (!animations.length) engine.pause();
                 return anim;
             };
 
@@ -500,14 +512,14 @@
                 if (params) anim = mergeObjs(createAnimation(mergeObjs(params, anim.settings)), anim);
                 anim.pause();
                 anim.running = true;
-                time.start = +new Date();
+                time.start = performance.now();
                 time.last = anim.ended ? 0 : anim.time;
                 let s = anim.settings;
                 if (s.direction === 'reverse') reverseTweens(anim);
                 if (s.direction === 'alternate' && !s.loop) s.loop = 1;
                 setWillChange(anim);
                 animations.push(anim);
-                time.raf = requestAnimationFrame(time.tick);
+                if (!raf) engine.play();
                 return anim;
             };
 
@@ -575,6 +587,9 @@
     animation.mergeObjs = mergeObjs;
     animation.flattenArr = flattenArr;
     animation.removeArrDupes = removeArrDupes;
+
+    animation.play = engine.play;
+    animation.pause = engine.pause;
 
     return animation;
 }));

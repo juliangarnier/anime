@@ -541,19 +541,19 @@
         return anim.play();
       };
       anim.begin = function(callback) {
-        if (is.undef(callback)) return anim;
+        if (!is.func(callback)) return anim;
         var s = anim.settings;
         s.begin = callback.bind(anim);
         return anim;
       };
       anim.update = function(callback) {
-        if (is.undef(callback)) return anim;
+        if (!is.func(callback)) return anim;
         var s = anim.settings;
         s.update = callback.bind(anim);
         return anim;
       };
       anim.complete = function(callback) {
-        if (is.undef(callback)) return anim;
+        if (!is.func(callback)) return anim;
         var s = anim.settings;
         s.complete = callback.bind(anim);
         return anim;
