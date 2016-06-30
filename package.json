@@ -22,5 +22,13 @@
     "url": "https://github.com/juliangarnier/anime/issues"
   },
   "homepage": "http://anime-js.com",
-  "files": ["anime.js"]
+  "files": [
+    "anime.js"
+  ],
+  "devDependencies": {
+    "uglify-js": "^2.6.4"
+  },
+  "scripts": {
+    "build:min": "uglifyjs anime.js -o anime.min.js"
+  }
 }
