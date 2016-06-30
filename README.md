@@ -251,12 +251,15 @@ anime({
 
 Play, pause, restart and seek the animation.
 
-| Names | Infos | Arguments
+| Names | Infos | Return | Parameters | Arguments
 | --- | --- | ---
-| `.play()` | Play the animation | animation parameters object
-| `.pause()` | Pause the animation | none
-| `.restart()` | Restart the animation | animation parameters object
-| `.seek()` | Advance in the animation | a percentage, or an object {time: 1250}
+| `.play()` | Play the animation | animation object | animation parameters object
+| `.pause()` | Pause the animation | animation object | none
+| `.restart()` | Restart the animation | animation object | animation parameters object
+| `.seek()` | Advance in the animation | animation object | a percentage, or an object {time: 1250}
+| `.begin()` | Callback at animation began | animation object | function(anim)
+| `.update()` | Callback at animation update | animation object | function(anim)
+| `.complete()` | Callback at animation ended | animation object | function(anim)
 
 ```javascript
 var myAnimation = anime({
