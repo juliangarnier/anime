@@ -589,21 +589,21 @@
 
     anim.begin = function(callback) {
         if(!is.func(callback)) return anim;
-        var s = this.settings;
+        var s = anim.settings;
         s.begin = callback;
         return anim;
     }
 
     anim.update = function(callback) {
         if(!is.func(callback)) return anim;
-        var s = this.settings;
+        var s = anim.settings;
         s.update = callback;
         return anim;
     }
 
     anim.complete = function(callback) {
         if(!is.func(callback)) return anim;
-        var s = this.settings;
+        var s = anim.settings;
         s.complete = callback;
         return anim;
     }
