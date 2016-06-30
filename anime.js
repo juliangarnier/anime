@@ -590,22 +590,33 @@
     }
 
     anim.begin = function(callback) {
-        if(is.undef(callback) || !is.func(callback)) return this;
+        var s = this.settings;
+        if(!is.func(callback)) {
+            s.begin = undefined;
+            return this;
+        }
         var s = this.settings;
         s.begin = callback;
         return this;
     }
 
     anim.update = function(callback) {
-        if(is.undef(callback) || !is.func(callback)) return this;
+        var s = this.settings;
+        if(!is.func(callback)) {
+            s.update = undefined;
+            return this;
+        }
         var s = this.settings;
         s.update = callback;
         return this;
     }
 
     anim.complete = function(callback) {
-        if(is.undef(callback) || !is.func(callback)) return this;
         var s = this.settings;
+        if(!is.func(callback)) {
+            s.complete = undefined;
+            return this;
+        }
         s.complete = callback;
         return this;
     }
