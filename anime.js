@@ -588,33 +588,18 @@
     }
 
     anim.begin = function(callback) {
-        var s = anim.settings;
-        if(!is.func(callback)) {
-          s.begin = undefined;
-          return anim;
-        }
-        s.begin = callback;
-        return anim;
+       anim.settings.begin = is.func(callback) ? callback : undefined;
+       return anim;
     }
 
     anim.update = function(callback) {
-        var s = anim.settings;
-        if(!is.func(callback)) {
-          s.update = undefined;
-          return anim;
-        }
-        s.update = callback;
-        return anim;
+       anim.settings.update = is.func(callback) ? callback : undefined;
+       return anim;
     }
 
     anim.complete = function(callback) {
-        var s = anim.settings;
-        if(!is.func(callback)) {
-          s.complete = undefined;
-          return anim;
-        }
-        s.complete = callback;
-        return anim;
+       anim.settings.complete = is.func(callback) ? callback : undefined;
+       return anim;
     }
 
     if (anim.settings.autoplay) anim.play();
