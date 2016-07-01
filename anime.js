@@ -598,11 +598,11 @@
     }
 
     anim.update = function(callback) {
+        var s = anim.settings;
         if(!is.func(callback)) {
           s.update = undefined;
           return anim;
         }
-        var s = anim.settings;
         s.update = callback;
         return anim;
     }
