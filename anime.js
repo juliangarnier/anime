@@ -479,12 +479,12 @@
                     time.current = time.last + now - time.start;
                     let s = anim.settings;
                     if (!anim.began && s.begin && time.current >= s.delay) {
-                        s.begin(anim);
-                        anim.began = true;
+                        if (is.func(s.begin)) s.begin(anim);
+                        if (is.func(anim.began_resolve)) anim.began_resolve(anim);
+                        anim.started = true;
                     }
                     setAnimationProgress(anim, time.current);
                     if (time.current >= anim.duration) {
-                        //time.last = 0;
                         if (s.loop) {
                             time.start = now;
                             if (s.direction === 'alternate') reverseTweens(anim, true);
@@ -492,8 +492,9 @@
                         } else {
                             anim.ended = true;
                             anim.pause();
-                            anim.began = false;
-                            if (s.complete) s.complete(anim);
+                            anim.started = false;
+                            if (is.func(s.complete)) s.complete(anim);
+                            if (is.func(anim.completed_resolve)) anim.completed_resolve(anim);
                         }
                     }
                     time.last = 0;
@@ -534,13 +535,26 @@
             };
 
             const callbacks = type => callback => {
-              anim.settings[type] = is.func(callback) ? callback : undefined;
-              return anim;
+                anim.settings[type] = is.func(callback) ? callback : undefined;
+                return anim;
             }
 
             anim.begin = callbacks('begin');
             anim.update = callbacks('update');
             anim.complete = callbacks('complete');
+
+            const promise = type => {
+                if (typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) {
+                    return () => new Promise(resolve => {
+                      anim[type + '_resolve'] = resolve;
+                    });
+                }
+                console.warn('Your browser doesn\'t support promises.');
+            };
+
+            anim.began = promise('began');
+            anim.updated = promise('updated');
+            anim.completed = promise('completed');
 
             if (anim.settings.autoplay) anim.play();
 
@@ -566,6 +580,7 @@
             }
         };
 
+
     animation.speed = 1;
     animation.list = animations;
     animation.remove = remove;
@@ -581,6 +596,7 @@
 
     animation.play = engine.play;
     animation.pause = engine.pause;
+
 
     return animation;
 }));
