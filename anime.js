@@ -544,13 +544,11 @@
             anim.complete = callbacks('complete');
 
             const promise = type => {
-                if (typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) {
-                    return () => new Promise(resolve => {
-                      anim[type + '_resolve'] = resolve;
-                    });
-                }
+                if (typeof Promise !== "undefined") return () => new Promise(resolve => {
+                  anim[type + '_resolve'] = resolve;
+                });
                 console.warn('Your browser doesn\'t support promises.');
-            };
+            }
 
             anim.began = promise('began');
             anim.updated = promise('updated');
