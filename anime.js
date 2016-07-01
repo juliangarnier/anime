@@ -486,6 +486,7 @@
     }
     if (transforms) for (var t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
     if (anim.settings.update) anim.settings.update(anim);
+    if (is.func(anim.updated_resolve)) anim.updated_resolve(anim);
   }
 
   // Animation
@@ -500,6 +501,7 @@
     anim.time = 0;
     anim.progress = 0;
     anim.running = false;
+    anim.started = false;
     anim.ended = false;
     return anim;
   }
@@ -533,7 +535,11 @@
         time.current = time.last + now - time.start;
         setAnimationProgress(anim, time.current);
         var s = anim.settings;
-        if (s.begin && time.current >= s.delay) { s.begin(anim); anim.began = true; };
+        if (s.started && time.current >= s.delay) {
+          if (is.func(s.begin)) s.begin(anim);
+          if (is.func(anim.began_resolve)) anim.began_resolve(anim);
+          anim.started = true;
+        }
         if (time.current >= anim.duration) {
           if (s.loop) {
             time.start = now;
@@ -542,8 +548,9 @@
           } else {
             anim.ended = true;
             anim.pause();
-            anim.began = false;
-            if (s.complete) s.complete(anim);
+            anim.started = false;
+            if (is.func(s.complete)) s.complete(anim);
+            if (is.func(anim.completed_resolve)) anim.completed_resolve(anim);
           }
           time.last = 0;
         }
@@ -597,6 +604,22 @@
     anim.begin = callbacks('begin');
     anim.update = callbacks('update');
     anim.complete = callbacks('complete');
+
+    function promise(type) {
+        if(typeof Promise !== "undefined") {
+          return function() {
+            return new Promise(function(resolve) {
+              anim[type+'_resolve'] = resolve;
+            });
+          };
+        }
+        console.warn('Your browser is not supported promise.')
+        return function() {};
+    }
+
+    anim.began = promise('began');
+    anim.updated = promise('updated');
+    anim.completed = promise('completed');
 
     if (anim.settings.autoplay) anim.play();
 
