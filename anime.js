@@ -614,7 +614,7 @@
           });
         };
       }
-      console.warn('Your browser is not supported promise.')
+      console.warn('Your browser doesn\'t support promises.')
       return function() {};
     };
 
