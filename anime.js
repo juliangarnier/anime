@@ -588,22 +588,31 @@
     }
 
     anim.begin = function(callback) {
-        if(!is.func(callback)) return anim;
         var s = anim.settings;
+        if(!is.func(callback)) {
+          s.begin = undefined;
+          return anim;
+        }
         s.begin = callback;
         return anim;
     }
 
     anim.update = function(callback) {
-        if(!is.func(callback)) return anim;
+        if(!is.func(callback)) {
+          s.update = undefined;
+          return anim;
+        }
         var s = anim.settings;
         s.update = callback;
         return anim;
     }
 
     anim.complete = function(callback) {
-        if(!is.func(callback)) return anim;
         var s = anim.settings;
+        if(!is.func(callback)) {
+          s.complete = undefined;
+          return anim;
+        }
         s.complete = callback;
         return anim;
     }
