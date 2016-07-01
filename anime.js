@@ -587,7 +587,7 @@
       return anim.play();
     }
 
-    var callbacks = function(type) {
+    function callbacks(type) {
       return function(callback) {
         anim.settings[type] = is.func(callback) ? callback : undefined;
         return anim;
@@ -595,8 +595,8 @@
     }
 
     anim.begin = callbacks('begin');
-    anim.update = callbacks('begin');
-    anim.complete = callbacks('begin');
+    anim.update = callbacks('update');
+    anim.complete = callbacks('complete');
 
     if (anim.settings.autoplay) anim.play();
 
