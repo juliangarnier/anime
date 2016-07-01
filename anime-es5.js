@@ -540,7 +540,7 @@
         if (params) anim = mergeObjs(createAnimation(mergeObjs(params, anim.settings)), anim);
         anim.pause();
         anim.running = true;
-        time.start = performance.now();
+        time.start = typeof performance != "undefined" ? performance.now() : +Date.now();
         time.last = anim.ended ? 0 : anim.time;
         var s = anim.settings;
         if (s.direction === 'reverse') reverseTweens(anim);
@@ -556,24 +556,15 @@
         anim.seek(0);
         return anim.play();
       };
-      anim.begin = function(callback) {
-        if (!is.func(callback)) return anim;
-        var s = anim.settings;
-        s.begin = callback.bind(anim);
-        return anim;
+      var callbacks = function(type) {
+        return function(callback) {
+          anim.settings[type] = is.func(callback) ? callback : undefined;
+          return anim;
+        };
       };
-      anim.update = function(callback) {
-        if (!is.func(callback)) return anim;
-        var s = anim.settings;
-        s.update = callback.bind(anim);
-        return anim;
-      };
-      anim.complete = function(callback) {
-        if (!is.func(callback)) return anim;
-        var s = anim.settings;
-        s.complete = callback.bind(anim);
-        return anim;
-      };
+      anim.begin = callbacks('begin');
+      anim.update = callbacks('update');
+      anim.complete = callbacks('complete');
       if (anim.settings.autoplay) anim.play();
       return anim;
     }, // Remove on one or multiple targets from all active animations.
