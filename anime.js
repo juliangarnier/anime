@@ -590,34 +590,17 @@
     }
 
     anim.begin = function(callback) {
-        var s = this.settings;
-        if(!is.func(callback)) {
-            s.begin = undefined;
-            return this;
-        }
-        var s = this.settings;
-        s.begin = callback;
+        this.settings.begin = is.func(callback) ? callback : undefined;
         return this;
     }
 
     anim.update = function(callback) {
-        var s = this.settings;
-        if(!is.func(callback)) {
-            s.update = undefined;
-            return this;
-        }
-        var s = this.settings;
-        s.update = callback;
+        this.settings.update = is.func(callback) ? callback : undefined;
         return this;
     }
 
     anim.complete = function(callback) {
-        var s = this.settings;
-        if(!is.func(callback)) {
-            s.complete = undefined;
-            return this;
-        }
-        s.complete = callback;
+        this.settings.complete = is.func(callback) ? callback : undefined;
         return this;
     }
 
