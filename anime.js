@@ -485,7 +485,8 @@
       }
     }
     if (transforms) for (var t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
-    if (anim.settings.update) anim.settings.update(anim);
+    if (is.func(anim.settings.update)) anim.settings.update(anim);
+    if (is.func(anim.updated_resolve)) anim.updated_resolve(anim);
   }
 
   // Animation
@@ -500,7 +501,7 @@
     anim.time = 0;
     anim.progress = 0;
     anim.running = false;
-    anim.began = false;
+    anim.started = false;
     anim.ended = false;
     return anim;
   }
@@ -533,7 +534,11 @@
         anim.ended = false;
         time.current = time.last + now - time.start;
         var s = anim.settings;
-        if (!anim.began && s.begin && time.current >= s.delay) { s.begin(anim); anim.began = true; };
+        if (!anim.started && time.current >= s.delay) {
+          if (is.func(s.begin)) s.begin(anim);
+          if (is.func(anim.began_resolve)) anim.began_resolve(anim);
+          anim.started = true;
+        }
         setAnimationProgress(anim, time.current);
         if (time.current >= anim.duration) {
           if (s.loop) {
@@ -543,8 +548,9 @@
           } else {
             anim.ended = true;
             anim.pause();
-            anim.began = false;
+            anim.started = false;
             if (s.complete) s.complete(anim);
+            if (is.func(anim.completed_resolve)) anim.completed_resolve(anim);
           }
           time.last = 0;
         }
@@ -599,6 +605,22 @@
     anim.begin = callbacks('begin');
     anim.update = callbacks('update');
     anim.complete = callbacks('complete');
+
+    var promise = function(type) {
+      if(typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) {
+        return function() {
+          return new Promise(function(resolve, reject) {
+            anim[type+'_resolve'] = resolve;
+          });
+        };
+      }
+      console.warn('Your browser is not supported promise.')
+      return function() {};
+    };
+
+    anim.began = promise('began');
+    anim.updated = promise('updated');
+    anim.completed = promise('completed');
 
     if (anim.settings.autoplay) anim.play();
 
