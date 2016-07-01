@@ -12,8 +12,9 @@
   // like Node.
   else if (typeof module === 'object' && module.exports) module.exports = factory(); // Browser globals (root is window)
   else root.anime = factory();
-})(this, function() {
+})(this, function() { // Defaults
   var undef = undefined,
+    validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'],
     defaultSettings = {
       duration: 1000,
       delay: 0,
@@ -26,9 +27,7 @@
       begin: undef,
       update: undef,
       complete: undef
-    },
-    validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY']; // Defaults
-  // Utils
+    }; // Utils
   function includes(arr, searchElement) {
     if (arr.includes) return arr.includes(searchElement);
     if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
@@ -84,8 +83,7 @@
       };
     }(),
     easings = function() {
-      var names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'],
-        eases = {},
+      var eases = {},
         functions = {
           Sine: function(t) {
             return 1 - Math.cos(t * Math.PI / 2);
@@ -111,7 +109,7 @@
             return 1 / Math.pow(4, 3 - bounce) - 7.5625 * Math.pow((pow2 * 3 - 2) / 22 - t, 2);
           }
         };
-      names.forEach(function(name, i) {
+      ['Quad', 'Cubic', 'Quart', 'Quint', 'Expo'].forEach(function(name, i) {
         functions[name] = function(t) {
           return Math.pow(t, i + 2);
         };
@@ -485,7 +483,8 @@
           return raf = requestAnimationFrame(step);
         },
         pause = function() {
-          return cancelAnimationFrame(raf = 0);
+          cancelAnimationFrame(raf);
+          raf = 0;
         },
         step = function(time) {
           for (var i = 0; i < animations.length; i++) {
