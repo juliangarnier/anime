@@ -589,20 +589,16 @@
       return this;
     }
 
-    anim.begin = function(callback) {
-        this.settings.begin = is.func(callback) ? callback : undefined;
-        return this;
-    }
+    var callbacks = function(type) {
+      return function(callback) {
+        anim.settings[type] = is.func(callback) ? callback : undefined;
+        return anim;
+      }
+    };
 
-    anim.update = function(callback) {
-        this.settings.update = is.func(callback) ? callback : undefined;
-        return this;
-    }
-
-    anim.complete = function(callback) {
-        this.settings.complete = is.func(callback) ? callback : undefined;
-        return this;
-    }
+    anim.begin = callbacks('begin');
+    anim.update = callbacks('update');
+    anim.complete = callbacks('complete');
 
     if (anim.settings.autoplay) anim.play();
 
