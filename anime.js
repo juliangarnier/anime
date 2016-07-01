@@ -587,20 +587,16 @@
       return anim.play();
     }
 
-    anim.begin = function(callback) {
-       anim.settings.begin = is.func(callback) ? callback : undefined;
-       return anim;
+    var callbacks = function(type) {
+      return function(callback) {
+        anim.settings[type] = is.func(callback) ? callback : undefined;
+        return anim;
+      }
     }
 
-    anim.update = function(callback) {
-       anim.settings.update = is.func(callback) ? callback : undefined;
-       return anim;
-    }
-
-    anim.complete = function(callback) {
-       anim.settings.complete = is.func(callback) ? callback : undefined;
-       return anim;
-    }
+    anim.begin = callbacks('begin');
+    anim.update = callbacks('begin');
+    anim.complete = callbacks('begin');
 
     if (anim.settings.autoplay) anim.play();
 
