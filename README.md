@@ -7,7 +7,7 @@ It works with CSS, Individual Transforms, SVG, DOM attributes and JS Objects.
 * [Specific animation parameters](#specific-animation-parameters)
 * [Specific target values](#specific-target-values)
 * [Multiple timing values](#multiple-timing-values)
-* [Playback controls](#playback-controls)
+* [Playback controls(Promise support)](#playback-controls)
 * [Motion path](#motion-path)
 
 
@@ -249,7 +249,7 @@ anime({
 
 ![Playback controls](http://anime-js.com/img/gifs/playback-controls.gif)
 
-Play, pause, restart, seek and rumtime callback in the animation.
+Play, pause, restart, seek, rumtime callback and Promise in the animation.
 
 | Names | Infos | Return | Parameters
 | --- | --- | --- | --- | ---
@@ -260,6 +260,9 @@ Play, pause, restart, seek and rumtime callback in the animation.
 | `.begin()` | Callback at animation began, replace begin in the anime's options | animation object | function(anim), or none(Callback is disabled.)
 | `.update()` | Callback at animation updated, replace update in the anime's options | animation object | function(anim), or none(Callback is disabled.)
 | `.complete()` | Callback at animation ended, replace complete in the anime's options | animation object | function(anim), or none(Callback is disabled.)
+| `.began()` | Promise at animation began | Promise object | none
+| `.update()` | Promise at animation updated | Promise object | none
+| `.complete()` | Promise at animation ended | Promise object | none
 
 ```javascript
 var myAnimation = anime({
@@ -269,6 +272,7 @@ var myAnimation = anime({
   autoplay: false
 });
 
+// Chainable Playback with runtime callback
 myAnimation
 .begin(function(anim) {
   console.log("Began!"); // Called the animation began.
@@ -283,6 +287,26 @@ myAnimation
     console.log("Fully completed!");
   })
   .play(); // Manually play one more time.
+});
+```
+
+Promise support
+```js
+
+
+// Promise support
+Promise.all([myAnimation.completed()]).then(function(anims) {
+  console.log("Resolved all promise!");
+});
+
+// And
+myAnimation.began().then(function(anim) {
+  console.log("Resolved began promise!");
+});
+
+// And
+myAnimation.updated().then(function(anim) {
+  console.log("Resolved updated promise!");
 });
 ```
 
