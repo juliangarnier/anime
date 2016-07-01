@@ -568,13 +568,11 @@
       anim.update = callbacks('update');
       anim.complete = callbacks('complete');
       var promise = function(type) {
-        if (typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) {
-          return function() {
-            return new Promise(function(resolve) {
-              anim[type + '_resolve'] = resolve;
-            });
-          };
-        }
+        if (typeof Promise !== "undefined") return function() {
+          return new Promise(function(resolve) {
+            anim[type + '_resolve'] = resolve;
+          });
+        };
         console.warn('Your browser doesn\'t support promises.');
       };
       anim.began = promise('began');
