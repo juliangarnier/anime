@@ -536,7 +536,7 @@
         time.current = time.last + now - time.start;
         setAnimationProgress(anim, time.current);
         var s = anim.settings;
-        if (s.started && time.current >= s.delay) {
+        if (!s.started && time.current >= s.delay) {
           if (is.func(s.begin)) s.begin(anim);
           if (is.func(anim.began_resolve)) anim.began_resolve(anim);
           anim.started = true;
@@ -577,7 +577,7 @@
       if (params) anim = mergeObjects(createAnimation(mergeObjects(params, anim.settings)), anim);
       anim.pause();
       anim.running = true;
-      time.start = typeof performance != "undefined" ? performance.now() : +Date.now();
+      time.start = performance.now();
       time.last = anim.ended ? 0 : anim.time;
       var s = anim.settings;
       if (s.direction === 'reverse') reverseTweens(anim);
