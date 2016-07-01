@@ -257,9 +257,9 @@ Play, pause, restart, seek and rumtime callback in the animation.
 | `.pause()` | Pause the animation | animation object | none
 | `.restart()` | Restart the animation | animation object | animation parameters object
 | `.seek()` | Advance in the animation | animation object | a percentage, or an object {time: 1250}
-| `.begin()` | Callback at animation began, replace begin in the anime's options | animation object | function(anim)
-| `.update()` | Callback at animation updated, replace update in the anime's options | animation object | function(anim)
-| `.complete()` | Callback at animation ended, replace complete in the anime's options | animation object | function(anim)
+| `.begin()` | Callback at animation began, replace begin in the anime's options | animation object | function(anim), or none(Callback is disabled.)
+| `.update()` | Callback at animation updated, replace update in the anime's options | animation object | function(anim), or none(Callback is disabled.)
+| `.complete()` | Callback at animation ended, replace complete in the anime's options | animation object | function(anim), or none(Callback is disabled.)
 
 ```javascript
 var myAnimation = anime({
