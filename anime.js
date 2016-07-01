@@ -50,6 +50,7 @@
       svg:    function(a) { return a instanceof SVGElement },
       number: function(a) { return !isNaN(parseInt(a)) },
       string: function(a) { return typeof a === 'string' },
+      bool:   function(a) { return typeof a === 'boolean' },
       func:   function(a) { return typeof a === 'function' },
       undef:  function(a) { return typeof a === 'undefined' },
       null:   function(a) { return typeof a === 'null' },
@@ -486,6 +487,7 @@
     }
     if (transforms) for (var t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
     if (anim.settings.update) anim.settings.update(anim);
+    if (is.func(anim.updated_resolve)) anim.updated_resolve(anim);
   }
 
   // Animation
@@ -500,6 +502,7 @@
     anim.time = 0;
     anim.progress = 0;
     anim.running = false;
+    anim.started = false;
     anim.ended = false;
     return anim;
   }
@@ -533,7 +536,11 @@
         time.current = time.last + now - time.start;
         setAnimationProgress(anim, time.current);
         var s = anim.settings;
-        if (s.begin && time.current >= s.delay) { s.begin(anim); s.begin = undefined; };
+        if (!s.started && time.current >= s.delay) {
+          if (is.func(s.begin)) s.begin(anim);
+          if (is.func(anim.began_resolve)) anim.began_resolve(anim);
+          anim.started = true;
+        }
         if (time.current >= anim.duration) {
           if (s.loop) {
             time.start = now;
@@ -541,8 +548,10 @@
             if (is.number(s.loop)) s.loop--;
           } else {
             anim.ended = true;
-            if (s.complete) s.complete(anim);
             anim.pause();
+            anim.started = false;
+            if (is.func(s.complete)) s.complete(anim);
+            if (is.func(anim.completed_resolve)) anim.completed_resolve(anim);
           }
           time.last = 0;
         }
@@ -552,6 +561,7 @@
     anim.seek = function(progress) {
       var time = (progress / 100) * anim.duration;
       setAnimationProgress(anim, time);
+      return anim;
     }
 
     anim.pause = function() {
@@ -560,6 +570,7 @@
       var i = animations.indexOf(anim);
       if (i > -1) animations.splice(i, 1);
       if (!animations.length) engine.pause();
+      return anim;
     }
 
     anim.play = function(params) {
@@ -574,19 +585,46 @@
       setWillChange(anim);
       animations.push(anim);
       if (!raf) engine.play();
+      return anim;
     }
 
     anim.restart = function() {
       if (anim.reversed) reverseTweens(anim);
       anim.pause();
       anim.seek(0);
-      anim.play();
+      return anim.play();
     }
+
+    function callbacks(type) {
+      return function(callback) {
+        anim.settings[type] = is.func(callback) ? callback : undefined;
+        return anim;
+      }
+    }
+
+    anim.begin = callbacks('begin');
+    anim.update = callbacks('update');
+    anim.complete = callbacks('complete');
+
+    function promise(type) {
+        if(typeof Promise !== "undefined") {
+          return function() {
+            return new Promise(function(resolve) {
+              anim[type+'_resolve'] = resolve;
+            });
+          };
+        }
+        console.warn('Your browser is not supported promise.')
+        return function() {};
+    }
+
+    anim.began = promise('began');
+    anim.updated = promise('updated');
+    anim.completed = promise('completed');
 
     if (anim.settings.autoplay) anim.play();
 
     return anim;
-
   }
 
   // Remove on one or multiple targets from all active animations.
