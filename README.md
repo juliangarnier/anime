@@ -260,9 +260,14 @@ Play, pause, restart, seek, rumtime callback and Promise in the animation.
 | `.begin()` | Callback at animation began, replace begin in the anime's options | animation object | function(anim), or none(Callback is disabled.)
 | `.update()` | Callback at animation updated, replace update in the anime's options | animation object | function(anim), or none(Callback is disabled.)
 | `.complete()` | Callback at animation ended, replace complete in the anime's options | animation object | function(anim), or none(Callback is disabled.)
-| `.began()` | Promise at animation began | Promise object | none
-| `.update()` | Promise at animation updated | Promise object | none
-| `.complete()` | Promise at animation ended | Promise object | none
+
+Promise properties
+
+| Names | Infos | Type
+| --- | --- | --- | ---
+| `.began` | Promise at animation began | Promise object
+| `.updated` | Promise at animation updated | Promise object
+| `.completed` | Promise at animation ended | Promise object
 
 ```javascript
 var myAnimation = anime({
@@ -295,18 +300,18 @@ Promise support
 
 
 // Promise support
-Promise.all([myAnimation.completed()]).then(function(anims) {
+Promise.all([myAnimation.completed]).then(function(anims) {
   console.log("Resolved all promise!");
 });
 
 // And
-myAnimation.began().then(function(anim) {
+myAnimation.began.then(function(anim) {
   console.log("Resolved began promise!");
 });
 
 // And
-myAnimation.updated().then(function(anim) {
-  console.log("Resolved updated promise!");
+myAnimation.updated.then(function(anim) {
+  console.log("Resolved updated promise!"); // Call only once at animation change status running.
 });
 ```
 
