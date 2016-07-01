@@ -50,6 +50,7 @@
       svg:    function(a) { return a instanceof SVGElement },
       number: function(a) { return !isNaN(parseInt(a)) },
       string: function(a) { return typeof a === 'string' },
+      bool:   function(a) { return typeof a === 'boolean' },
       func:   function(a) { return typeof a === 'function' },
       undef:  function(a) { return typeof a === 'undefined' },
       null:   function(a) { return typeof a === 'null' },
