@@ -607,20 +607,20 @@
     anim.complete = callbacks('complete');
 
     var promise = function(type) {
-      if(typeof Promise !== "undefined" && Promise.toString().indexOf("[native code]") !== -1) {
-        return function() {
-          return new Promise(function(resolve, reject) {
-            anim[type+'_resolve'] = resolve;
-          });
-        };
-      }
-      console.warn('Your browser doesn\'t support promises.')
-      return function() {};
+      if(typeof Promise !== "undefined") {
+        Object.defineProperty(anim, type, {
+          get: function() {
+            return new Promise(function(resolve) {
+              return (anim[type + '_resolve'] = resolve);
+            });
+          }
+        });
+      } else console.warn('Your browser doesn\'t support promises.');
     };
 
-    anim.began = promise('began');
-    anim.updated = promise('updated');
-    anim.completed = promise('completed');
+    promise('began');
+    promise('updated');
+    promise('completed');
 
     if (anim.settings.autoplay) anim.play();
 
