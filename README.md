@@ -271,18 +271,18 @@ var myAnimation = anime({
 
 myAnimation
 .begin(function(anim) {
-  console.log("Began!"); // Called the animation began
-}).play() // Manually play the animation
+  console.log("Began!"); // Called the animation began.
+}).play() // Manually play the animation.
 .update(function(anim) {
-  console.log("Updated!"); // Called the animation updated
+  console.log("Updated!"); // Called the animation updated.
 })
 .complete(function(anim) {
-  console.log("completed!"); // Called the animation ended
+  console.log("Completed!"); // Called the animation ended.
   anim
-  .complete(function(anim) { // Changed complete callback
+  .complete(function(anim) { // Changed complete callback.
     console.log("Fully completed!");
   })
-  .play(); // play one more time
+  .play(); // Manually play one more time.
 });
 ```
 
