@@ -485,7 +485,8 @@
       }
     }
     if (transforms) for (var t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
-    if (anim.settings.update) anim.settings.update(anim);
+    if (is.func(anim.settings.update)) anim.settings.update(anim);
+    if (is.func(anim.updated_resolve)) anim.updated_resolve(anim);
   }
 
   // Animation
@@ -500,6 +501,7 @@
     anim.time = 0;
     anim.progress = 0;
     anim.running = false;
+    anim.started = false;
     anim.ended = false;
     return anim;
   }
@@ -531,9 +533,13 @@
       if (anim.running) {
         anim.ended = false;
         time.current = time.last + now - time.start;
-        setAnimationProgress(anim, time.current);
         var s = anim.settings;
-        if (s.begin && time.current >= s.delay) { s.begin(anim); s.begin = undefined; };
+        if (!anim.started && time.current >= s.delay) {
+          if (is.func(s.begin)) s.begin(anim);
+          if (is.func(anim.began_resolve)) anim.began_resolve(anim);
+          anim.started = true;
+        }
+        setAnimationProgress(anim, time.current);
         if (time.current >= anim.duration) {
           if (s.loop) {
             time.start = now;
@@ -541,8 +547,10 @@
             if (is.number(s.loop)) s.loop--;
           } else {
             anim.ended = true;
-            if (s.complete) s.complete(anim);
             anim.pause();
+            anim.started = false;
+            if (s.complete) s.complete(anim);
+            if (is.func(anim.completed_resolve)) anim.completed_resolve(anim);
           }
           time.last = 0;
         }
@@ -552,6 +560,7 @@
     anim.seek = function(progress) {
       var time = (progress / 100) * anim.duration;
       setAnimationProgress(anim, time);
+      return this;
     }
 
     anim.pause = function() {
@@ -560,6 +569,7 @@
       var i = animations.indexOf(anim);
       if (i > -1) animations.splice(i, 1);
       if (!animations.length) engine.pause();
+      return this;
     }
 
     anim.play = function(params) {
@@ -574,6 +584,7 @@
       setWillChange(anim);
       animations.push(anim);
       if (!raf) engine.play();
+      return this;
     }
 
     anim.restart = function() {
@@ -581,7 +592,35 @@
       anim.pause();
       anim.seek(0);
       anim.play();
+      return this;
     }
+
+    var callbacks = function(type) {
+      return function(callback) {
+        anim.settings[type] = is.func(callback) ? callback : undefined;
+        return anim;
+      }
+    };
+
+    anim.begin = callbacks('begin');
+    anim.update = callbacks('update');
+    anim.complete = callbacks('complete');
+
+    var promise = function(type) {
+      if(typeof Promise !== "undefined") {
+        Object.defineProperty(anim, type, {
+          get: function() {
+            return new Promise(function(resolve) {
+              return (anim[type + '_resolve'] = resolve);
+            });
+          }
+        });
+      } else console.warn('Your browser doesn\'t support promises.');
+    };
+
+    promise('began');
+    promise('updated');
+    promise('completed');
 
     if (anim.settings.autoplay) anim.play();
 
