@@ -635,9 +635,9 @@
       anim.play();
     }
 
-    var callbacks = function(type,isupdate) {
+    var callbacks = function(type,on) {
       anim[type] = function(fn) {
-        if (is.func(fn)) anim[isupdate ? 'on' :'once'](type , fn);
+        if (is.func(fn)) anim[on ? 'on' :'once'](type , fn);
         else if(typeof Promise != "undefined") return new Promise(function(pass) {
             anim.once(type, pass);
         });
