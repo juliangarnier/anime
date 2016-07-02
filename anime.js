@@ -185,6 +185,9 @@
                       options.evtlisteners.add(func);
                       return func.ehandle;
                   },
+                  once:function() {
+                    return options.off(func).once(type,func);
+                  },
                   off:function() {
                     options.off(func);
                     return func.ehandle;
