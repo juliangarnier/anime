@@ -94,12 +94,12 @@
         return Math.pow( t, i + 2 );
       }
     });
-    Object.keys(functions).forEach(function(name) {
+    for (var name in functions) {
       var easeIn = functions[name];
       eases['easeIn' + name] = easeIn;
       eases['easeOut' + name] = function(t, m) { return 1 - easeIn(1 - t, m); };
       eases['easeInOut' + name] = function(t, m) { return t < 0.5 ? easeIn(t * 2, m) / 2 : 1 - easeIn(t * -2 + 2, m) / 2; };
-    });
+    }
     eases.linear = function(t) { return t; };
     return eases;
   })();
