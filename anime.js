@@ -183,27 +183,12 @@
                     func.apply(obj, arguments);
                     off(funcwrapper);
                 }
-                return on(type, funcwrapper);
+                on(type, funcwrapper);
             }
         }
         var on = function(type, func) {
             func.type = type;
-            func.handle = {
-                on:function() {
-                    func.type = type;
-                    listeners.add(func);
-                    return func.handle;
-                },
-                once:function() {
-                  return once(type,func);
-                },
-                off:function() {
-                  off(func);
-                  return func.handle;
-                }
-            };
             listeners.add(func);
-            return func.handle;
        }
 
       obj.listeners = listeners;
@@ -222,7 +207,7 @@
       if (anim.listeners.size > 0) {
           var args = [].slice.call(arguments,1);
           anim.listeners.forEach(function(ln) {
-              if (ln.type == type) ln.apply(anim, args.concat(ln.handle));
+              if (ln.type == type) ln.apply(anim, args);
           });
       }
   }
