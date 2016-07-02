@@ -65,7 +65,7 @@
 
   function includes(arr, searchElement) {
       if (arr.includes) return arr.includes(searchElement);
-      if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
+      if (!is.array(arr)) arr = [].slice.call(arr);
       return !arr.length ? false : arr.some(function(a){ return a === searchElement;});
   }
 
@@ -209,7 +209,7 @@
           },
           emit:function(type) {
               if (!options.stop && options.evtlisteners.size > 0) {
-                  var args = Array.prototype.slice.call(arguments, 1);
+                  var args = [].slice.call(arguments,1);
                   options.evtlisteners.forEach(function(ln) {
                       if (ln.etype == type && !options.__stop) ln.apply(obj, args.concat(ln.ehandle));
                   });
