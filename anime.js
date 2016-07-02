@@ -50,7 +50,7 @@
       node:   function(a) { return a.nodeType },
       svg:    function(a) { return a instanceof SVGElement },
       number: function(a) { return !isNaN(parseInt(a)) },
-      bool:   function(a) {typeof a === 'boolean'},
+      bool:   function(a) { return typeof a === 'boolean'},
       string: function(a) { return typeof a === 'string' },
       func:   function(a) { return typeof a === 'function' },
       undef:  function(a) { return typeof a === 'undefined' },
