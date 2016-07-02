@@ -37,18 +37,9 @@
 
   // Utils
 
-
-  // make , .some , .every, shorter
-  var iseq = function(a) {
-    return function(b) {
-      return a === b;
-    }
-  }
-
-  // an undefined variable saves some space in minification
-  var undef = undefined;
-
-  var getProp = Object.getOwnPropertyDescriptor,
+   // an undefined variable saves some space in minification
+   var undef = undefined,
+   getProp = Object.getOwnPropertyDescriptor,
    deffProp = Object.defineProperty;
 
   var is = (function() {
@@ -75,7 +66,7 @@
   function includes(arr, searchElement) {
       if (arr.includes) return arr.includes(searchElement);
       if (!is.array(arr)) arr = Array.prototype.slice.call(arr);
-      return !arr.length ? false : arr.some(iseq(searchElement));
+      return !arr.length ? false : arr.some(function(a){ return a === searchElement;});
   }
 
   // Easings functions adapted from http://jqueryui.com/
@@ -651,7 +642,7 @@
    }
    callbacks("complete");
    callbacks("begin");
-   callbacks("update");
+   callbacks("update",true);
 
 
     if (anim.settings.autoplay) anim.play();
