@@ -172,58 +172,59 @@
   }
 
   var eventsys = function(obj) {
-      if(!obj) obj = {};
-      var options = {
-          evtlisteners: new Set,
-          __stop: false,
-          on:function(type, func) {
-              if (!is.func(func)) throw new TypeError('.on() needs a function');
-              func.etype = type;
-              func.ehandle = {
-                  on:function() {
-                      func.etype = type;
-                      options.evtlisteners.add(func);
-                      return func.ehandle;
-                  },
-                  once:function() {
-                    return options.off(func).once(type,func);
-                  },
-                  off:function() {
-                    options.off(func);
-                    return func.ehandle;
-                  },
-              };
-              options.evtlisteners.add(func);
-              return func.ehandle;
-          },
-          once:function(type, func) {
-              if (is.func(func)) {
-                  var funcwrapper = function() {
-                      func.apply(obj, arguments);
-                      options.off(funcwrapper);
-                  }
-                  return options.on(type, funcwrapper);
-              }
-              throw new TypeError('.once needs a function');
-          },
-          off:function(func) {
-              if (options.evtlisteners.has(func)) options.evtlisteners.delete(func);
-              return options;
-          },
-          emit:function(type) {
-              if (!options.stop && options.evtlisteners.size > 0) {
-                  var args = [].slice.call(arguments,1);
-                  options.evtlisteners.forEach(function(ln) {
-                      if (ln.etype == type && !options.__stop) ln.apply(obj, args.concat(ln.ehandle));
-                  });
-              }
-              return options;
-          },
-          stopall:function(stop) {
-              options.__stop = is.bool(stop) ? stop : true;
-          },
-      };
-      return mergeObjects(obj,options);
+        var listeners = new Set;
+        var off = function(func) {
+            if (listeners.has(func)) listeners.delete(func);
+        }
+        var once = function(type, func) {
+            if (is.func(func)) {
+                off(func);
+                var funcwrapper = function() {
+                    func.apply(obj, arguments);
+                    off(funcwrapper);
+                }
+                return on(type, funcwrapper);
+            }
+        }
+        var on = function(type, func) {
+            func.type = type;
+            func.handle = {
+                on:function() {
+                    func.type = type;
+                    listeners.add(func);
+                    return func.handle;
+                },
+                once:function() {
+                  return once(type,func);
+                },
+                off:function() {
+                  off(func);
+                  return func.handle;
+                }
+            };
+            listeners.add(func);
+            return func.handle;
+       }
+
+      obj.listeners = listeners;
+      obj.on = on;
+      obj._once = once;
+
+      obj.once = function(event) {
+        return new Promise(function(pass) {
+          obj._once(event,pass);
+        });
+      }
+      return obj;
+  }
+
+  var emit = function(type,anim) {
+      if (anim.listeners.size > 0) {
+          var args = [].slice.call(arguments,1);
+          anim.listeners.forEach(function(ln) {
+              if (ln.type == type) ln.apply(anim, args.concat(ln.handle));
+          });
+      }
   }
 
   // Colors
@@ -531,11 +532,10 @@
       }
     }
     if (transforms) for (var t in transforms) anim.animatables[t].target.style.transform = transforms[t].join(' ');
-    anim.emit('update', anim);
+    emit('update', anim);
   }
 
   // Animation
-
   var createAnimation = function(params) {
     var anim = {
       time : 0,
@@ -571,7 +571,7 @@
     var time = {}, anim = createAnimation(params);
 
     ['complete', 'begin', 'update'].forEach(function(type) {
-        if (is.func(anim.settings[type])) anim[type == 'update' ? 'on':'once'](type, anim.settings[type]);
+        if (is.func(anim.settings[type])) anim[type == 'update' ? 'on':'_once'](type, anim.settings[type]);
     });
 
     anim.tick = function(now) {
@@ -581,7 +581,7 @@
         setAnimationProgress(anim, time.current);
         var s = anim.settings;
         if (time.current >= s.delay) {
-          if (!anim.started) anim.emit('begin', anim);
+          if (!anim.started) emit('begin', anim);
           anim.started = true;
         };
         if (time.current >= anim.duration) {
@@ -592,7 +592,7 @@
           } else {
             anim.ended = true;
             anim.started = false;
-            anim.emit('complete', anim);
+            emit('complete', anim);
             anim.pause();
           }
           time.last = 0;
@@ -606,7 +606,6 @@
 
     anim.pause = function() {
       anim.running = false;
-      anim.emit('pause', anim);
       removeWillChange(anim);
       var i = animations.indexOf(anim);
       if (i > -1) animations.splice(i, 1);
@@ -629,24 +628,10 @@
 
     anim.restart = function() {
       if (anim.reversed) reverseTweens(anim);
-      anim.emit('restart', anim);
       anim.pause();
       anim.seek(0);
       anim.play();
     }
-
-    var callbacks = function(type,on) {
-      anim[type] = function(fn) {
-        if (is.func(fn)) return anim[on ? 'on' :'once'](type , fn);
-        else if(typeof Promise != "undefined") return new Promise(function(pass) {
-            anim.once(type, pass);
-        });
-      }
-   }
-   callbacks("complete");
-   callbacks("begin");
-   callbacks("update",true);
-
 
     if (anim.settings.autoplay) anim.play();
 
