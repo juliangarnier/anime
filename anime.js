@@ -173,7 +173,7 @@
 
   var eventsys = function(obj) {
       if(!obj) obj = {};
-      let options = {
+      var options = {
           evtlisteners: new Set,
           __stop: false,
           on:function(type, func) {
