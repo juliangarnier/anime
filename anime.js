@@ -496,9 +496,12 @@
       }
     }
     if (transforms) {
-      if (!transform) transform = (getCSSValue(document.body, transformStr) ? '' : '-webkit-') + transformStr;
       for (var t in transforms) {
-        anim.animatables[t].target.style[transform] = transforms[t].join(' ');
+        var transformTarget = anim.animatables[t].target;
+        var transformValue = transforms[t].join(' ');
+        transformTarget.style.transform = transformValue;
+        transformTarget.style.webkitTransform = transformValue;
+        transformTarget.style.msTransform = transformValue;
       }
     }
     if (anim.settings.update) anim.settings.update(anim);
