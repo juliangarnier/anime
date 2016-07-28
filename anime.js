@@ -362,6 +362,7 @@
           tween.round = (is.color(values.from) || tween.round) ? 1 : 0;
           tween.delay = (is.func(tween.delay) ? tween.delay(target, i, animatables.length) : tween.delay) / animation.speed;
           tween.duration = (is.func(tween.duration) ? tween.duration(target, i, animatables.length) : tween.duration) / animation.speed;
+          tween.easing = is.func(tween.easing) ? tween.easing(target, i, animatables.length) : tween.easing;
           tweensProps.push(tween);
         }
       });
@@ -371,7 +372,7 @@
 
   var getTweens = function(animatables, props) {
     var tweensProps = getTweensProps(animatables, props);
-    var splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration']);
+    var splittedProps = groupArrayByProps(tweensProps, ['name', 'from', 'to', 'delay', 'duration', 'easing']);
     return splittedProps.map(function(tweenProps) {
       var tween = cloneObject(tweenProps[0]);
       tween.animatables = tweenProps.map(function(p) { return p.animatables });
