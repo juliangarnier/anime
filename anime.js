@@ -57,7 +57,7 @@
       string: function(a) { return typeof a === 'string' },
       func:   function(a) { return typeof a === 'function' },
       undef:  function(a) { return typeof a === 'undefined' },
-      null:   function(a) { return typeof a === 'null' },
+      "null":   function(a) { return typeof a === 'null' },
       hex:    function(a) { return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a) },
       rgb:    function(a) { return /^rgb/.test(a) },
       rgba:   function(a) { return /^rgba/.test(a) },
@@ -264,7 +264,7 @@
     if ( is.dom(el) && arrayContains(validTransforms, prop)) return 'transform';
     if ( is.dom(el) && (prop !== 'transform' && getCSSValue(el, prop))) return 'css';
     if ( is.dom(el) && (el.getAttribute(prop) || (is.svg(el) && el[prop]))) return 'attribute';
-    if (!is.null(el[prop]) && !is.undef(el[prop])) return 'object';
+    if (!is["null"](el[prop]) && !is.undef(el[prop])) return 'object';
   }
 
   var getInitialTargetValue = function(target, prop) {
@@ -520,6 +520,19 @@
   }
 
   // Public
+
+  window.requestAnimationFrame =
+      window.requestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      (function () {
+          var date = new Date(),
+              initialTime = date.getTime();
+          return function (callback) {
+              setTimeout(callback, 1000 / 60, new Date().getTime() - initialTime);
+          };
+      })();
 
   var animations = [];
   var raf = 0;
