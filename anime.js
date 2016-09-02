@@ -521,7 +521,9 @@
 
   // Public
 
-  window.requestAnimationFrame =
+  var animations = [];
+  var raf = 0;
+  var originalRaf =
       window.requestAnimationFrame ||
       window.mozRequestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
@@ -534,11 +536,8 @@
           };
       })();
 
-  var animations = [];
-  var raf = 0;
-
   var engine = (function() {
-    var play = function() { raf = requestAnimationFrame(step); };
+    var play = function() { raf = originalRaf(step); };
     var step = function(t) {
       if (animations.length) {
         for (var i = 0; i < animations.length; i++) animations[i].tick(t);
