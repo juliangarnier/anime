@@ -523,7 +523,7 @@
 
   var animations = [];
   var raf = 0;
-  var originalRaf =
+  var rafPolyfill =
       window.requestAnimationFrame ||
       window.mozRequestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
@@ -537,7 +537,7 @@
       })();
 
   var engine = (function() {
-    var play = function() { raf = originalRaf(step); };
+    var play = function() { raf = rafPolyfill(step); };
     var step = function(t) {
       if (animations.length) {
         for (var i = 0; i < animations.length; i++) animations[i].tick(t);
