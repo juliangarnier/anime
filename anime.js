@@ -41,14 +41,13 @@
   }
 
   // Fix for environments that have no requestAnimationFrame by default
-  window.requestAnimationFrame = function() {
-    return window.requestAnimationFrame ||
-	   window.webkitRequestAnimationFrame ||
-	   window.mozRequestAnimationFrame ||
-	   function (callback) {
-	     window.setTimeout(callback, 1000 / 60);
-	   };
-  }();
+  var animeRequestAnimationFrame = window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function (callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
+
 
   // Transforms
 
@@ -533,7 +532,7 @@
   var raf = 0;
 
   var engine = (function() {
-    var play = function() { raf = requestAnimationFrame(step); };
+    var play = function() { raf = animeRequestAnimationFrame(step); };
     var step = function(t) {
       if (animations.length) {
         for (var i = 0; i < animations.length; i++) animations[i].tick(t);
