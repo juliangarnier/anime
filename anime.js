@@ -40,6 +40,16 @@
     complete: undefined
   }
 
+  // Fix for environments that have no requestAnimationFrame by default
+  window.requestAnimationFrame = function() {
+    return window.requestAnimationFrame ||
+	   window.webkitRequestAnimationFrame ||
+	   window.mozRequestAnimationFrame ||
+	   function (callback) {
+	     window.setTimeout(callback, 1000 / 60);
+	   };
+  }();
+
   // Transforms
 
   var validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY'];
