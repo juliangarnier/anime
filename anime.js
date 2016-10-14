@@ -41,13 +41,23 @@
   }
 
   // Fix for environments that have no requestAnimationFrame by default
+  var fallbackLastAnimationTime = 0;
   var animeRequestAnimationFrame = window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
-    function (callback) {
-      window.setTimeout(callback, 1000 / 60);
+    function (callback) { 
+      var currTime = new Date().getTime();
+      var timeToCall = Math.max(0, 16 - (currTime - fallbackLastAnimationTime));
+			return window.setTimeout( 
+        callback.bind(this, currTime + fallbackLastAnimationTime), 
+        1000 / 60 );
     };
-
+  var animeCancelAnimationFrame = window.cancelAnimationFrame || 
+    window.webkitCancelAnimationFrame || 
+    window.mozCancelAnimationFrame ||
+    function(id) {
+       window.clearTimeout(id);
+    };
 
   // Transforms
 
@@ -538,7 +548,7 @@
         for (var i = 0; i < animations.length; i++) animations[i].tick(t);
         play();
       } else {
-        cancelAnimationFrame(raf);
+        animeCancelAnimationFrame(raf);
         raf = 0;
       }
     }
