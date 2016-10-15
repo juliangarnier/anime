@@ -540,6 +540,13 @@
 
     var anim = createAnimation(params);
     var time = {};
+    var delays = [];
+
+    anim.tweens.forEach(function(tween) {
+      delays.push(tween.delay);
+    });
+
+    var minDelay = Math.min.apply(null, delays);
 
     anim.tick = function(now) {
       anim.ended = false;
@@ -547,7 +554,7 @@
       time.current = Math.min(Math.max(time.last + now - time.start, 0), anim.duration);
       setAnimationProgress(anim, time.current);
       var s = anim.settings;
-      if (s.begin && time.current >= s.delay) { s.begin(anim); s.begin = undefined; };
+      if (s.begin && time.current >= minDelay) { s.begin(anim); s.begin = undefined; };
       if (time.current >= anim.duration) {
         if (s.loop) {
           time.start = now;
