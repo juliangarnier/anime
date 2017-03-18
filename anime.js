@@ -452,7 +452,10 @@
     }
   }
 
-  function recomposeValue(numbers, strings) {
+  function recomposeValue(numbers, strings, type) {
+    if (type === 'object' && numbers.length === 1) {
+      return numbers[0];
+    }
     return strings.reduce((a, b, i) => a + numbers[i - 1] + b);
   }
 
@@ -698,7 +701,7 @@
           if (isPath) value = getPathProgress(tween.value, value);
           if (round) value = Math.round(value * round) / round;
           return value;
-        }), tween.to.strings);
+        }), tween.to.strings, anim.type);
         setTweenProgress[anim.type](animatable.target, anim.property, progress, transforms, animatable.id);
         anim.currentValue = progress;
         i++;
