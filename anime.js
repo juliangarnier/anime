@@ -499,7 +499,7 @@
       // Default delay value should be applied only on the first tween
       const delay = !i ? tweenSettings.delay : 0;
       // Use path object as a tween value
-      let obj = is.obj(v) && !isPath(v) ? v : {value: v, type: typeof v};
+      let obj = is.obj(v) && !isPath(v) ? mergeObjects(v, { type: typeof v.value }) : {value: v, type: typeof v};
       // Set default delay value
       if (is.und(obj.delay)) obj.delay = delay;
       return obj;
