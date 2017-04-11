@@ -761,6 +761,7 @@
           if (!insReversed) countIteration();
         }
       }
+      let oldCompleted = instance.completed;
       if (engineTime >= insDuration) {
         if (instance.remaining) {
           startTime = now;
@@ -773,12 +774,14 @@
           }
           if (!instance.completed) {
             instance.completed = true;
-            setCallback('complete');
           }
         }
         lastTime = 0;
       }
       setCallback('update');
+      if (!oldCompleted && instance.completed){
+        setCallback('complete');
+      }
     }
 
     instance.tick = function(t) {
