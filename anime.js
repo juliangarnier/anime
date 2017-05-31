@@ -761,6 +761,7 @@
           if (!insReversed) countIteration();
         }
       }
+      setCallback('update');
       if (engineTime >= insDuration) {
         if (instance.remaining) {
           startTime = now;
@@ -778,7 +779,6 @@
         }
         lastTime = 0;
       }
-      setCallback('update');
     }
 
     instance.tick = function(t) {
