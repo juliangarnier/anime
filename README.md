@@ -1,4 +1,4 @@
-# [anime.js](http://animejs.com) ![](http://img.badgesize.io/juliangarnier/anime/v2.0/anime.min.js.svg?style=flat&color=18FF92)
+# [anime.js](http://animejs.com) ![](http://img.badgesize.io/juliangarnier/anime/v2.0/anime.min.js.svg?style=flat&color=18FF92) [![CDNJS](https://img.shields.io/cdnjs/v/animejs.svg)](https://cdnjs.com/libraries/animejs) [![npm](https://img.shields.io/npm/v/animejs.svg)](https://www.npmjs.com/package/animejs)
 
 <img src="http://animejs.com/documentation/assets/img/readme/animejs-logo.gif" width="100%" />
 
