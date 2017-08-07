@@ -319,7 +319,7 @@
   // Units
 
   function getUnit(val) {
-    const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg|rad|turn)?/.exec(val);
+    const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|vmin|vmax|deg|rad|turn)?/.exec(val);
     if (split) return split[2];
   }
 
