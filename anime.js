@@ -319,7 +319,7 @@
   // Units
 
   function getUnit(val) {
-    const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|deg|rad|turn)?/.exec(val);
+    const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|pc|vw|vh|vmin|vmax|deg|rad|turn)?/.exec(val);
     if (split) return split[2];
   }
 
@@ -667,7 +667,7 @@
       instance.remaining = direction === 'alternate' && loops === 1 ? 2 : loops;
       for (let i = arrayLength(instance.children); i--; ){
         const child = instance.children[i];
-        child.seek(child.offset); 
+        child.seek(child.offset);
         child.reset();
       }
     }
@@ -717,7 +717,8 @@
         let id; for (id in transforms) {
           if (!transformString) {
             const t = 'transform';
-            transformString = (getCSSValue(document.body, t) ? t : `-webkit-${t}`);
+            const msT = 'msTransform';
+            transformString = getCSSValue(document.body, msT) ? msT : (getCSSValue(document.body, t) ? t : `-webkit-${t}`);
           }
           instance.animatables[id].target.style[transformString] = transforms[id].join(' ');
         }
