@@ -23,6 +23,7 @@
 * [animejs.com](http://animejs.com)
 * [kenzo.com/en/thejunglebook](https://kenzo.com/en/thejunglebook)
 * [Stress test](http://codepen.io/juliangarnier/pen/9aea7f045d7db301eab41bc09dcfc04d?editors=0010)
+* [Fullscreen crossfading](http://www.gieson.com/Library/projects/space/)
 
 ### Browser support
 
