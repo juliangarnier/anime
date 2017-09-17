@@ -746,7 +746,7 @@
       if (instance.children) syncInstanceChildren(insTime);
       if (insTime > insOffset && insTime < insDuration) {
         setAnimationsProgress(insTime);
-        if (!instance.began && insTime >= insDelay) {
+        if (!instance.began && insTime >= insOffset + insDelay) {
           instance.began = true;
           setCallback('begin');
         }
