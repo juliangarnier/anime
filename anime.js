@@ -442,7 +442,14 @@
 
   // Decompose / recompose functions adapted from Animate Plus https://github.com/bendc/animateplus
 
-  function decomposeValue(val, unit) {
+  function decomposeValue(val, unit, type) {
+    if (type === 'number') {
+      return {
+        original: val,
+        numbers: [val],
+        strings: []
+      }
+    }
     const rgx = /-?\d*\.?\d+/g;
     const value = validateValue((isPath(val) ? val.totalLength : val), unit) + '';
     return {
@@ -452,7 +459,10 @@
     }
   }
 
-  function recomposeValue(numbers, strings) {
+  function recomposeValue(numbers, strings, type) {
+    if (type === 'number') {
+      return numbers[0];
+    }
     return strings.reduce((a, b, i) => a + numbers[i - 1] + b);
   }
 
@@ -482,14 +492,14 @@
         if (!is.fnc(tweenSettings.duration)) settings.duration = tweenSettings.duration / l;
       } else {
         // Transform [from, to] values shorthand to a valid tween value
-        prop = {value: prop};
+        prop = {value: prop, type: typeof prop};
       }
     }
     return toArray(prop).map((v, i) => {
       // Default delay value should be applied only on the first tween
       const delay = !i ? tweenSettings.delay : 0;
       // Use path object as a tween value
-      let obj = is.obj(v) && !isPath(v) ? v : {value: v};
+      let obj = is.obj(v) && !isPath(v) ? mergeObjects(v, { type: typeof v.value }) : {value: v, type: typeof v};
       // Set default delay value
       if (is.und(obj.delay)) obj.delay = delay;
       return obj;
@@ -532,7 +542,7 @@
     return is.arr(val) ? bezier.apply(this, val) : easings[val];
   }
 
-  function normalizeTweens(prop, animatable) {
+  function normalizeTweens(prop, animatable, animType) {
     let previousTween;
     return prop.tweens.map(t => {
       let tween = normalizeTweenValues(t, animatable);
@@ -543,8 +553,8 @@
       const to = getRelativeValue(is.arr(tweenValue) ? tweenValue[1] : tweenValue, from);
       const unit = getUnit(to) || getUnit(from) || getUnit(originalValue);
       tween.isPath = isPath(tweenValue);
-      tween.from = decomposeValue(from, unit);
-      tween.to = decomposeValue(to, unit);
+      tween.from = decomposeValue(from, unit, animType === 'object' && tween.type);
+      tween.to = decomposeValue(to, unit, animType === 'object' && tween.type);
       tween.start = previousTween ? previousTween.end : prop.offset;
       tween.end = tween.start + tween.delay + tween.duration;
       tween.easing = normalizeEasing(tween.easing);
@@ -572,7 +582,7 @@
   function createAnimation(animatable, prop) {
     const animType = getAnimationType(animatable.target, prop.name);
     if (animType) {
-      const tweens = normalizeTweens(prop, animatable);
+      const tweens = normalizeTweens(prop, animatable, animType);
       return {
         type: animType,
         property: prop.name,
@@ -708,7 +718,7 @@
           if (isPath) value = getPathProgress(tween.value, value);
           if (round) value = Math.round(value * round) / round;
           return value;
-        }), tween.to.strings);
+        }), tween.to.strings, anim.type === 'object' && tween.type);
         setTweenProgress[anim.type](animatable.target, anim.property, progress, transforms, animatable.id);
         anim.currentValue = progress;
         i++;
