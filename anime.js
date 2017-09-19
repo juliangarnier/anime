@@ -165,8 +165,10 @@
     // Approximated Penner equations http://matthewlein.com/ceaser/
 
     const equations = {
+      // Easing calculation adapted from Velocity.js https://github.com/julianshapiro/velocity
+
       Stepped: [ 
-        (progress, v, steps) => Math.round(progress * steps) * (1 / steps),
+        (progress, v, steps) => Math.round(progress * steps) * (1 / steps), /* Stepped */
       ], In: [
         [0.550, 0.085, 0.680, 0.530], /* InQuad */
         [0.550, 0.055, 0.675, 0.190], /* InCubic */

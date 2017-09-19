@@ -1810,6 +1810,22 @@ elasticity.add({
 </script>
 </div>
 
+<div id="steppedEasing" class="demo">
+    <h3 class="demo-title">Stepped Easing</h3>
+    <div class="demo-content">
+      <div class="square large shadow"></div>
+      <div class="square large el"></div>
+    </div>
+  <script>var steppedEasing = anime({
+    targets: '#steppedEasing .el',
+    translateX: 250,
+    duration: 2000,
+    easing: "easeStepped",
+    steps: 7,
+  });
+  </script>
+  </div>
+
 <div id="customBezier" class="demo">
   <h3 class="demo-title">Custom Bézier curves</h3>
   <div class="demo-content">
