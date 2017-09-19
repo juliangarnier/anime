@@ -780,6 +780,23 @@ anime({
 
 ➜ [Elasticity examples](http://animejs.com/documentation/#elasticity)
 
+### Stepped Easing
+
+CSS Steps-like easing can be activated by setting `easing` to `"easeStepped"`.
+
+The granularity of the easing can be configured with the addition of the `steps` parameter. 
+
+```javascript
+anime({
+  targets: 'div',
+  translateX: 100,
+  easing: 'easeStepped',
+  steps: 10 // Default 5 steps
+});
+```
+
+➜ [Stepped Easing example](http://animejs.com/documentation/#steppedEasing)
+
 ### Custom Bézier curves
 
 Define a Bézier curve with an `Array` of 4 coordinates:
