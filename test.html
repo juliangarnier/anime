@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .square {
+      position: absolute;
+      display: block;
+      width: 300px;
+      height: 300px;
+      background: red;
+    }
+  </style>
+</head>
+
+<body>
+  <b>test</b>
+  <div class="square"></div>
+</body>
+<script src="anime.js"></script>
+<script>
+  // function steppedEasing(steps) {
+  //   return anime.easings['steppedEasing'] = function(progress) {
+  //     return Math.round(progress * steps) * (1 / steps);
+  //   };
+  // }
+
+  // // Call it
+  // steppedEasing(12); // 12 steps are evenly interpolated across the animation  
+  // Example API Call:
+  // {
+  //   easing: 'easeStepped'
+  //   steps: 12
+  // }
+  // createAnimation
+  // normalizeTweens
+  anime({
+    targets: '.square',
+    translateX: [
+      { value: 100, duration: 1200 },
+      { value: 0, duration: 800 }
+    ],
+    easing: 'easeStepped',
+    steps: 5,
+    rotate: '1turn',
+    duration: 2000,
+    loop: true
+  });  
+</script>
+</html>

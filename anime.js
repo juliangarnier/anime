@@ -40,7 +40,8 @@
     delay: 0,
     easing: 'easeOutElastic',
     elasticity: 500,
-    round: 0
+    round: 0,
+    steps: 5
   }
 
   const validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY', 'perspective'];
@@ -164,7 +165,9 @@
     // Approximated Penner equations http://matthewlein.com/ceaser/
 
     const equations = {
-      In: [
+      Stepped: [ 
+        (progress, v, steps) => Math.round(progress * steps) * (1 / steps),
+      ], In: [
         [0.550, 0.085, 0.680, 0.530], /* InQuad */
         [0.550, 0.055, 0.675, 0.190], /* InCubic */
         [0.895, 0.030, 0.685, 0.220], /* InQuart */
@@ -202,8 +205,12 @@
     }
 
     for (let type in equations) {
-      equations[type].forEach((f, i) => {
-        functions['ease'+type+names[i]] = is.fnc(f) ? f : bezier.apply(this, f);
+      equations[type].forEach((f, i) => {  
+        if (type === 'Stepped') {
+          functions['easeStepped'] = f;
+        } else {
+          functions['ease'+type+names[i]] = is.fnc(f) ? f : bezier.apply(this, f);
+        }
       });
     }
 
@@ -593,6 +600,7 @@
       tween.start = previousTween ? previousTween.end : prop.offset;
       tween.end = tween.start + tween.delay + tween.duration;
       tween.easing = normalizeEasing(tween.easing);
+      tween.steps = tween.steps;
       tween.elasticity = (1000 - minMaxValue(tween.elasticity, 1, 999)) / 1000;
       if (is.col(tween.from.original)) tween.round = 1;
       previousTween = tween;
@@ -622,6 +630,7 @@
         type: animType,
         property: prop.name,
         animatable: animatable,
+        steps: tweens[0].steps,
         tweens: tweens,
         duration: tweens[tweens.length - 1].end,
         delay: tweens[0].delay
@@ -726,8 +735,9 @@
         const animatable = anim.animatable;
         const tweens = anim.tweens;
         const tween = tweens.filter(t => (insTime < t.end))[0] || tweens[tweens.length - 1];
+        const steps = tween.steps;
         const elapsed = minMaxValue(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
-        const eased = isNaN(elapsed) ? 1 : tween.easing(elapsed, tween.elasticity);
+        const eased = isNaN(elapsed) ? 1 : tween.easing(elapsed, tween.elasticity, steps);
         const round = tween.round;
         const progress = recomposeValue(tween.to.numbers.map((number, p) => {
           const start = tween.from.numbers[p];
@@ -818,6 +828,7 @@
       instance.paused = true;
       instance.began = false;
       instance.completed = false;
+      instance.steps = 5;
       instance.reversed = direction === 'reverse';
       instance.remaining = direction === 'alternate' && loops === 1 ? 2 : loops;
       setAnimationsProgress(0);
