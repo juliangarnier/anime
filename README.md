@@ -136,7 +136,7 @@ Any `Object` property containing a numerical value can be animated:
 var myObject = {
   prop1: 0,
   prop2: '0%'
-}
+};
 
 anime({
   targets: myObject,
@@ -160,7 +160,7 @@ Any DOM Attribute containing a numerical values can be animated:
 ```javascript
 anime({
   targets: input,
-  value: 1000 // Animate the input value to 1000
+  value: 1000, // Animate the input value to 1000
   round: 1 // Remove decimals by rounding the value
 });
 ```
