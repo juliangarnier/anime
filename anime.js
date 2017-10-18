@@ -33,7 +33,7 @@
     direction: 'normal',
     autoplay: true,
     offset: 0
-  }
+  };
 
   const defaultTweenSettings = {
     duration: 1000,
@@ -41,7 +41,7 @@
     easing: 'easeOutElastic',
     elasticity: 500,
     round: 0
-  }
+  };
 
   const validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skewX', 'skewY', 'perspective'];
   let transformString;
@@ -65,7 +65,7 @@
     rgb: a => /^rgb/.test(a),
     hsl: a => /^hsl/.test(a),
     col: a => (is.hex(a) || is.rgb(a) || is.hsl(a))
-  }
+  };
 
   // BezierEasing https://github.com/gre/bezier-easing
 
@@ -143,7 +143,7 @@
         if (x === 0) return 0;
         if (x === 1) return 1;
         return calcBezier(getTForX(x), mY1, mY2);
-      }
+      };
 
     }
 
@@ -196,11 +196,11 @@
         [0.680, -0.550, 0.265, 1.550], /* InOutBack */
         (t, f) => t < .5 ? elastic(t * 2, f) / 2 : 1 - elastic(t * -2 + 2, f) / 2 /* InOutElastic */
       ]
-    }
+    };
 
     let functions = {
       linear: bezier(0.250, 0.250, 0.750, 0.750)
-    }
+    };
 
     for (let type in equations) {
       equations[type].forEach((f, i) => {
@@ -289,7 +289,7 @@
 
   function hexToRgba(hexValue) {
     const rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const hex = hexValue.replace(rgx, (m, r, g, b) => r + r + g + g + b + b );
+    const hex = hexValue.replace(rgx, (m, r, g, b) => r + r + g + g + b + b);
     const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     const r = parseInt(rgb[1], 16);
     const g = parseInt(rgb[2], 16);
@@ -416,7 +416,7 @@
   // adapted from https://gist.github.com/SebLambla/3e0550c496c236709744
 
   function getDistance(p1, p2) {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)); 
+    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
   }
 
   function getCircleLength(el) {
@@ -438,7 +438,7 @@
     const points = el.points;
     let totalLength = 0;
     let previousPos;
-    for (let i = 0 ; i < points.numberOfItems; i++) {
+    for (let i = 0; i < points.numberOfItems; i++) {
       const currentPos = points.getItem(i);
       if (i > 0) totalLength += getDistance(previousPos, currentPos);
       previousPos = currentPos;
@@ -480,8 +480,8 @@
         el: el,
         property: prop,
         totalLength: getTotalLength(el) * (p / 100)
-      }
-    }
+      };
+    };
   }
 
   function getPathProgress(path, progress) {
@@ -508,7 +508,7 @@
       original: value,
       numbers: value.match(rgx) ? value.match(rgx).map(Number) : [0],
       strings: (is.str(val) || unit) ? value.split(rgx) : []
-    }
+    };
   }
 
   // Animatables
@@ -621,7 +621,7 @@
       if (!transforms[id]) transforms[id] = [];
       transforms[id].push(`${p}(${v})`);
     }
-  }
+  };
 
   // Animations
 
@@ -636,7 +636,7 @@
         tweens: tweens,
         duration: tweens[tweens.length - 1].end,
         delay: tweens[0].delay
-      }
+      };
     }
   }
 
@@ -776,7 +776,6 @@
         } else {
           progress = strings[0];
           for (let s = 0; s < stringsLength; s++) {
-            const a = strings[s];
             const b = strings[s + 1];
             const n = numbers[s];
             if (!isNaN(n)) {
@@ -874,27 +873,27 @@
       instance.reversed = direction === 'reverse';
       instance.remaining = direction === 'alternate' && loops === 1 ? 2 : loops;
       setAnimationsProgress(0);
-      for (let i = instance.children.length; i--; ){
+      for (let i = instance.children.length; i--;){
         instance.children[i].reset();
       }
-    }
+    };
 
     instance.tick = function(t) {
       now = t;
       if (!startTime) startTime = now;
       const engineTime = (lastTime + now - startTime) * anime.speed;
       setInstanceProgress(engineTime);
-    }
+    };
 
     instance.seek = function(time) {
       setInstanceProgress(adjustTime(time));
-    }
+    };
 
     instance.pause = function() {
       const i = activeInstances.indexOf(instance);
       if (i > -1) activeInstances.splice(i, 1);
       instance.paused = true;
-    }
+    };
 
     instance.play = function() {
       if (!instance.paused) return;
@@ -903,19 +902,19 @@
       lastTime = adjustTime(instance.currentTime);
       activeInstances.push(instance);
       if (!raf) engine();
-    }
+    };
 
     instance.reverse = function() {
       toggleInstanceDirection();
       startTime = 0;
       lastTime = adjustTime(instance.currentTime);
-    }
+    };
 
     instance.restart = function() {
       instance.pause();
       instance.reset();
       instance.play();
-    }
+    };
 
     instance.finished = promise;
 
@@ -972,7 +971,7 @@
       tl.reset();
       if (tl.autoplay) tl.restart();
       return tl;
-    }
+    };
     return tl;
   }
 
