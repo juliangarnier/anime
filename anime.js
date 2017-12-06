@@ -354,6 +354,9 @@
   }
 
   function getCSSValue(el, prop) {
+    if (!el) {
+      return null;
+    }
     if (prop in el.style) {
       return getComputedStyle(el).getPropertyValue(stringToHyphens(prop)) || '0';
     }
