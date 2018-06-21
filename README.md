@@ -496,7 +496,7 @@ myTimeline
   });
 ```
 
-➜ [Absolute offset example](http://animejs.com/documentation/absoluteOffset)
+➜ [Absolute offset example](http://animejs.com/documentation/#absoluteOffset)
 
 ## Playback controls
 
