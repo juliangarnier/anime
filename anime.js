@@ -32,7 +32,8 @@
     loop: 1,
     direction: 'normal',
     autoplay: true,
-    offset: 0
+    offset: 0,
+    offsetProgress: 0,
   }
 
   const defaultTweenSettings = {
@@ -746,7 +747,8 @@
         let tween = tweens[tweenLength];
         // Only check for keyframes if there is more than one tween
         if (tweenLength) tween = filterArray(tweens, t => (insTime < t.end))[0] || tween;
-        const elapsed = minMaxValue(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
+        let elapsed = minMaxValue(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
+        elapsed = (elapsed + instance.offsetProgress / 100) % 1;
         const eased = isNaN(elapsed) ? 1 : tween.easing(elapsed, tween.elasticity);
         const strings = tween.to.strings;
         const round = tween.round;
