@@ -27,6 +27,9 @@
   const defaultInstanceSettings = {
     update: undefined,
     begin: undefined,
+    loopBegin: undefined,
+    loopEnd: undefined,
+    loopBegan: false,
     run: undefined,
     complete: undefined,
     loop: 1,
@@ -829,16 +832,24 @@
           instance.began = true;
           setCallback('begin');
         }
+        if(!instance.loopBegan){
+          instance.loopBegan=true;
+          setCallback("loopBegin");
+        }
         setCallback('run');
       }
       if (insTime > insOffset && insTime < insDuration) {
         setAnimationsProgress(insTime);
       } else {
         if (insTime <= insOffset && insCurrentTime !== 0) {
+          setCallback("loopEnd");
+          instance.loopBegan = false;
           setAnimationsProgress(0);
           if (insReversed) countIteration();
         }
         if ((insTime >= insDuration && insCurrentTime !== insDuration) || !insDuration) {
+          setCallback("loopEnd");
+          instance.loopBegan = false;
           setAnimationsProgress(insDuration);
           if (!insReversed) countIteration();
         }
