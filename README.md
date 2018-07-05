@@ -151,7 +151,7 @@ anime({
 
 <img src="http://animejs.com/documentation/assets/img/readme/prop-dom-attr.gif" width="332" />
 
-Any DOM Attribute containing a numerical values can be animated:
+Any DOM Attribute containing a numerical value can be animated:
 
 ```html
 <input value="0">
@@ -171,7 +171,7 @@ anime({
 
 <img src="http://animejs.com/documentation/assets/img/readme/prop-svg-attr.gif" width="332" />
 
-Any SVG Attribute containing a numerical values can be animated:
+Any SVG Attribute containing numerical values can be animated:
 
 ```html
 <svg width="128" height="128" viewBox="0 0 128 128">
@@ -192,7 +192,7 @@ anime({
 
 <img src="http://animejs.com/documentation/assets/img/readme/prop-parameters.gif" width="332" />
 
-Defines duration, delay and easing for each property animations.<br>
+Defines duration, delay and easing for each property animation.<br>
 Can be set globally, or individually to each properties:
 
 | Names | Defaults | Types | Info
