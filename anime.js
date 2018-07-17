@@ -499,16 +499,21 @@
     }
   }
 
-  // Decompose value
-
+  // Decompose value 
   function decomposeValue(val, unit) {
     const rgx = /-?\d*\.?\d+/g;
-    const value = validateValue((is.pth(val) ? val.totalLength : val), unit) + '';
+    const value = validateValue(is.pth(val) ? val.totalLength : val, unit) + '';
+    let strings = is.str(val) || unit ? value.split(rgx) : [];
+    let numbers = value.match(rgx) ? value.match(rgx).map(Number) : [0];
+    // Fix the backgroundImage BUG
+    if (value.indexOf('url(') !== -1) {
+      strings = [val];
+    }
     return {
       original: value,
-      numbers: value.match(rgx) ? value.match(rgx).map(Number) : [0],
-      strings: (is.str(val) || unit) ? value.split(rgx) : []
-    }
+      numbers,
+      strings
+    };
   }
 
   // Animatables
@@ -775,15 +780,19 @@
           progress = numbers[0];
         } else {
           progress = strings[0];
-          for (let s = 0; s < stringsLength; s++) {
-            const a = strings[s];
-            const b = strings[s + 1];
-            const n = numbers[s];
-            if (!isNaN(n)) {
-              if (!b) {
-                progress += n + ' ';
-              } else {
-                progress += n + b;
+
+          // Fix the backgroundImage BUG
+          if(progress.indexOf('url(') === -1) {
+            for (let s = 0; s < stringsLength; s++) {
+              const a = strings[s];
+              const b = strings[s + 1];
+              const n = numbers[s];
+              if (!isNaN(n)) {
+                if (!b) {
+                  progress += n + ' ';
+                } else {
+                  progress += n + b;
+                }
               }
             }
           }
