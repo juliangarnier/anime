@@ -140,7 +140,7 @@ var myObject = {
 
 anime({
   targets: myObject,
-  prop1: 50, // Animate the 'prop1' property from myObject to 50
+  prop1: 500, // Animate the 'prop1' property from myObject to 500
   prop2: '100%' // Animate the 'prop2' property from myObject to 100%
 });
 ```
