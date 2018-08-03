@@ -908,6 +908,7 @@
     instance.reverse = function() {
       toggleInstanceDirection();
       startTime = 0;
+      instance.completed = false;
       lastTime = adjustTime(instance.currentTime);
     }
 
