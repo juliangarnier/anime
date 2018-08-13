@@ -28,5 +28,8 @@
   ],
   "devDependencies": {
     "google-closure-compiler-js": "^20170124.0.0"
+  },
+  "dependencies": {
+    "raf": "^3.4.0"
   }
 }
