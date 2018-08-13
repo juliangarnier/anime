@@ -7,6 +7,8 @@
  * Released under the MIT license
 **/
 
+const isBrowser=(new Function("try {return this===window;}catch(e){ return false;}"))();
+
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -15,12 +17,20 @@
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
-    module.exports = factory();
+	if(!isBrowser) {
+		let ctx = {
+			__proto__: root
+		}
+		require("raf").polyfill(ctx);
+		module.exports = factory(ctx);
+	} else {
+		module.exports = factory(root);
+	}
   } else {
     // Browser globals (root is window)
-    root.anime = factory();
+    root.anime = factory(root);
   }
-}(this, () => {
+}(this, (root) => {
 
   // Defaults
 
@@ -56,7 +66,7 @@
     arr: a => Array.isArray(a),
     obj: a => stringContains(Object.prototype.toString.call(a), 'Object'),
     pth: a => is.obj(a) && a.hasOwnProperty('totalLength'),
-    svg: a => a instanceof SVGElement,
+    svg: a => isBrowser && a instanceof root.SVGElement,
     dom: a => a.nodeType || is.svg(a),
     str: a => typeof a === 'string',
     fnc: a => typeof a === 'function',
@@ -252,7 +262,7 @@
   function toArray(o) {
     if (is.arr(o)) return o;
     if (is.str(o)) o = selectString(o) || o;
-    if (o instanceof NodeList || o instanceof HTMLCollection) return [].slice.call(o);
+    if ( isBrowser && (o instanceof NodeList || o instanceof HTMLCollection)) return [].slice.call(o);
     return [o];
   }
 
@@ -680,7 +690,7 @@
   let raf = 0;
 
   const engine = (() => {
-    function play() { raf = requestAnimationFrame(step); };
+    function play() { raf = root.requestAnimationFrame(step); };
     function step(t) {
       const activeLength = activeInstances.length;
       if (activeLength) {
@@ -691,7 +701,7 @@
         }
         play();
       } else {
-        cancelAnimationFrame(raf);
+        root.cancelAnimationFrame(raf);
         raf = 0;
       }
     }
@@ -708,7 +718,7 @@
     let resolve = null;
 
     function makePromise() {
-      return window.Promise && new Promise(_resolve => resolve = _resolve);
+      return Promise && new Promise(_resolve => resolve = _resolve);
     }
 
     let promise = makePromise();
@@ -853,7 +863,7 @@
           if (!instance.completed) {
             instance.completed = true;
             setCallback('complete');
-            if ('Promise' in window) {
+            if ('Promise' in root) {
               resolve();
               promise = makePromise();
             }
