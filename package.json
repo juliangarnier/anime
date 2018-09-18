@@ -28,5 +28,22 @@
   ],
   "devDependencies": {
     "google-closure-compiler-js": "^20170124.0.0"
+  },
+  "dependencies": {
+    "generator-code": "^1.1.37",
+    "generator-electrode": "^4.2.4",
+    "generator-feathers-plugin": "^1.0.1",
+    "generator-generator": "^4.0.2",
+    "generator-jasmine": "^2.0.1",
+    "generator-jest": "^1.6.0",
+    "generator-license": "^5.4.0",
+    "generator-mocha": "^2.0.1",
+    "generator-node": "^2.5.0",
+    "generator-npm-init": "^1.4.1",
+    "generator-primer-module": "^1.0.8",
+    "yeoman-environment": "^2.3.3",
+    "yeoman-generator-asmagin": "^3.2.0",
+    "yeoman-welcome": "^1.0.1",
+    "yo": "^2.0.5"
   }
 }
