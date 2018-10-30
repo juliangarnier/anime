@@ -894,7 +894,7 @@ function handleVisibilityChange() {
   }
 }
 
-document.addEventListener('visibilitychange', handleVisibilityChange);
+if (document) document.addEventListener('visibilitychange', handleVisibilityChange);
 
 // Public Instance
 
