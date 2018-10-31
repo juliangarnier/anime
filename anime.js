@@ -615,7 +615,12 @@
 
   const setTweenProgress = {
     css: (t, p, v) => t.style[p] = v,
-    attribute: (t, p, v) => t.setAttribute(p, v),
+    attribute: (t, p, v) => {
+      if (p === 'r' && v < 0) {
+        v = 0;
+      }
+      t.setAttribute(p, v);
+    },
     object: (t, p, v) => t[p] = v,
     transform: (t, p, v, transforms, id) => {
       if (!transforms[id]) transforms[id] = [];
