@@ -920,7 +920,6 @@ Generate a random number between two numbers.
 anime.random(10, 40); // Will return a random number between 10 and 40
 ```
 
-====
 
 [MIT License](LICENSE.md). © 2017 [Julian Garnier](http://juliangarnier.com).
 
