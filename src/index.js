@@ -894,7 +894,15 @@ function handleVisibilityChange() {
   }
 }
 
-if (document) document.addEventListener('visibilitychange', handleVisibilityChange);
+try {
+  document;
+} catch (e) {
+  console.warn('document is not defined.');
+}
+
+try {
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+} catch (e) {}
 
 // Public Instance
 
