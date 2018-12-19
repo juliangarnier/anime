@@ -29,6 +29,7 @@
     begin: undefined,
     run: undefined,
     complete: undefined,
+    cleanup: undefined,
     loop: 1,
     direction: 'normal',
     autoplay: true,
@@ -844,6 +845,7 @@
         }
       }
       setCallback('update');
+      setCallback('cleanup');
       if (engineTime >= insDuration) {
         if (instance.remaining) {
           startTime = now;
