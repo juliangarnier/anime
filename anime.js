@@ -865,7 +865,7 @@
     }
 
     instance.cleaner = function () {
-        setCallback('cleanup')
+        if(instance.cleanup != undefined) setCallback('cleanup')
     }
 
     instance.reset = function() {
