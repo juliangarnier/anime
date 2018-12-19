@@ -845,7 +845,6 @@
         }
       }
       setCallback('update');
-      setCallback('cleanup');
       if (engineTime >= insDuration) {
         if (instance.remaining) {
           startTime = now;
@@ -863,6 +862,10 @@
         }
         lastTime = 0;
       }
+    }
+
+    instance.cleaner = function () {
+        setCallback('cleanup')
     }
 
     instance.reset = function() {
@@ -989,7 +992,7 @@
   anime.easings = easings;
   anime.timeline = timeline;
   anime.random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
+  
   return anime;
 
 }));
