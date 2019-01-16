@@ -311,7 +311,7 @@ function selectString(str) {
 let auxArrayFilter = [];
 
 function filterArray(arr, callback) {
-  result = auxArrayFilter;
+  let result = auxArrayFilter;
 
   const len = arr.length;
   const thisArg = arguments.length >= 2 ? arguments[1] : void 0;
@@ -340,7 +340,9 @@ function flattenArray(arr) {
 
   do {
     if (node.constructor === Array) {
-      arr.push(node);
+      for (let i = 0; i < node.length; i++) {
+        arr.push(node[i]);
+      }
     } else {
       result.push(node);
     }
@@ -506,7 +508,7 @@ function getElementTransforms(el) {
   if (!is.dom(el)) return;
   const str = el.style.transform || '';
   const transforms = new Map();
-  let m; while (m = reg.exec(transformRegex)) transforms.set(m[1], m[2]);
+  let m; while (m = transformRegex.exec(str)) transforms.set(m[1], m[2]);
   return transforms;
 }
 
