@@ -308,13 +308,10 @@ function selectString(str) {
 
 // Arrays
 
-let auxArrayFilter = [];
-
 function filterArray(arr, callback) {
-  result = auxArrayFilter;
-
   const len = arr.length;
   const thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+  const result = [];
   for (let i = 0; i < len; i++) {
     if (i in arr) {
       const val = arr[i];
@@ -323,35 +320,11 @@ function filterArray(arr, callback) {
       }
     }
   }
-
-  // arr turns into the auxArray and we return the previously aux array.
-  auxArrayFilter = arr;
-  auxArrayFilter.length = 0;
   return result;
 }
 
-let auxArrayFlatten = [];
-
 function flattenArray(arr) {
-  if (!arr.length) { return arr; }
-
-  let result = auxArrayFlatten;
-  let node = arr.pop();
-
-  do {
-    if (node.constructor === Array) {
-      arr.push(node);
-    } else {
-      result.push(node);
-    }
-  } while (arr.length && (node = arr.pop()) !== undefined);
-
-  result.reverse();  // Reverse result to restore the original order.
-
-  // arr turns into the auxArray and we return the previously aux array.
-  auxArrayFlatten = arr;
-  auxArrayFilter.length = 0;
-  return result;
+  return arr.reduce((a, b) => a.concat(is.arr(b) ? flattenArray(b) : b), []);
 }
 
 function toArray(o) {
