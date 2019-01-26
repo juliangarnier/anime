@@ -405,8 +405,9 @@ function colorToRgb(val) {
 // Units
 
 function getUnit(val) {
-  const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(val);
-  if (split) return split[2];
+  var split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(val);
+  if (split) { return split[2]; }
+  return null;
 }
 
 function getTransformUnit(propName) {
@@ -500,10 +501,11 @@ function getRelativeValue(to, from) {
 }
 
 function validateValue(val, unit) {
-  if (is.col(val)) return colorToRgb(val);
-  const originalUnit = getUnit(val);
-  const unitLess = originalUnit ? val.substr(0, val.length - originalUnit.length) : val;
-  return unit && !/\s/g.test(val) ? unitLess + unit : unitLess;
+  if (is.col(val)) { return colorToRgb(val); }
+  var originalUnit = getUnit(val);
+  var unitless = originalUnit ? val.substr(0, val.length - originalUnit.length) : val;
+  if (val.search(/[^auto]/)) { return unitless + unit; }
+  return unit && !/\s/g.test(val) ? unitless + unit : unitless;
 }
 
 // getTotalLength() equivalent for circle, rect, polyline, polygon and line shapes
