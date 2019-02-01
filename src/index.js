@@ -1173,7 +1173,6 @@ function removeTargets(targets) {
 }
 
 // Stagger helpers
-
 function stagger(val, params = {}) {
   const direction = params.direction || 'normal';
   const easing = params.easing ? parseEasings(params.easing) : null;
@@ -1254,6 +1253,26 @@ function timeline(params = {}) {
   }
   return tl;
 }
+
+/**
+ * 
+ * @param {number[]|string[]} params 
+ * @example ```js
+ cubicBezier([.5, .05, .1, .3]) // 'cubicBezier(0.5,0.05,0.1,0.3)'
+ ```
+ */
+export const cubicBezier = (params) => `cubicBezier(${params.join(',')})`
+
+/**
+ * @param {number|string} mass 
+ * @param {number|string} stiffness 
+ * @param {number|string} damping 
+ * @param {number|string} velocity
+ * @example ```js 
+ spring(1,100,10, 0) // -> 'spring(1, 100, 10, 0)'
+ ```
+ */
+export const spring = (mass, stiffness, damping, velocity) => `spring(${mass},${stiffness},${damping},${velocity})`
 
 anime.version = '3.0.1';
 anime.speed = 1;
