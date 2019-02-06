@@ -14,7 +14,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "node build"
+    "build": "node build",
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/juliangarnier/anime/issues"
@@ -29,10 +30,26 @@
     "canvas"
   ],
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-jest": "^24.1.0",
     "gzip-size": "^4.1.0",
+    "jest": "^24.1.0",
     "pretty-bytes": "^4.0.2",
     "rollup": "^0.53.2",
     "rollup-plugin-buble": "^0.18.0",
     "uglify-js": "^3.3.4"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
   }
 }
