@@ -5,20 +5,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:title" content="anime.js">
-  <meta property="og:url" content="http://animejs.com">
+  <meta property="og:url" content="https://animejs.com">
   <meta property="og:description" content="Javascript Animation Engine">
-  <meta property="og:image" content="http://animejs.com/documentation/assets/img/icons/og.png">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="anime.js">
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
-  <meta name="twitter:image" content="http://animejs.com/documentation/assets/img/icons/twitter.png">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
   <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
-  <link href="../assets/css/anime.css" rel="stylesheet">
-  <script src="../../anime.js"></script>
-  <!-- <script src="../assets/js/anime.1.3.js"></script> -->
-  <!-- <script src="../assets/js/anime.2.0.1.js"></script> -->
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <!-- <script src="../../lib/anime.min.js"></script> -->
+  <!-- <script src="../assets/js/anime/anime.1.3.js"></script> -->
+  <!-- <script src="../assets/js/anime/anime.2.0.1.js"></script> -->
   <style>
     body {
       display: flex;
@@ -52,7 +52,19 @@
   <div class="zero-value item color-02"></div>
   <div class="round-value item color-04"></div>
   <div class="clip-path item color-06"></div>
-  <script>
+  <svg class="item" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <g id="Page-1" fill="none" fill-rule="evenodd">
+      <g id="svg" fill="#A7FF87">
+        <rect id="Rectangle" width="50" height="50" x="25" y="25"/>
+      </g>
+    </g>
+  </svg>
+  <input class="item" type="range" value="0" min="0" max="100">
+  <div class="basic-css color-01 item"></div>
+  <script type="module">
+    
+    import anime from "../../src/index.js";
+
     var boxShadow = anime({
       targets: '.box-shadow',
       boxShadow: [
@@ -121,7 +133,28 @@
       direction: 'alternate',
       easing: 'linear'
     });
-    console.log(clipPath.animations[0]);
+    var svgTransform = anime({
+      targets: 'rect',
+      transform: 'translate(10 10) scale(2)',
+      loop: true,
+      direction: 'alternate',
+      easing: 'linear'
+    });
+    var rangeValue = anime({
+      targets: 'input',
+      value: 100,
+      loop: true,
+      direction: 'alternate',
+      easing: 'linear'
+    });
+    var basicCSS = anime({
+      targets: '.basic-css',
+      width: 100,
+      height: 100,
+      loop: true,
+      direction: 'alternate',
+      easing: 'linear'
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Follow scroll | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <!-- <script src="../../lib/anime.min.js"></script> -->
+  <!-- <script src="../assets/js/anime/anime.2.2.0.js"></script> -->
+  <style>
+
+    .scroll-area {
+      width: 100%;
+      height: 700vh;
+    }
+
+    .animation-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .pane {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 100vh;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #000;
+      font-size: 40vw;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="scroll-area"></div>
+
+  <div class="animation-wrapper">
+    <div class="pane pane-01">01</div>
+    <div class="pane pane-02">02</div>
+    <div class="pane pane-03">03</div>
+    <div class="pane pane-04">04</div>
+    <div class="pane pane-05">05</div>
+    <div class="pane pane-06">06</div>
+    <div class="pane pane-07">07</div>
+    <div class="pane pane-08">08</div>
+    <div class="pane pane-09">09</div>
+    <div class="pane pane-10">10</div>
+    <div class="pane pane-11">11</div>
+    <div class="pane pane-12">12</div>
+    <div class="pane pane-13">13</div>
+    <div class="pane pane-14">14</div>
+  </div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+  import animePlayer from '../assets/js/anime.player.js'
+
+  // Scrolling helper
+
+  function onScroll(cb) {
+    var isTicking = false;
+    var scrollY = 0;
+    var body = document.body;
+    var html = document.documentElement;
+    var scrollHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+    function scroll() {
+      scrollY = window.scrollY;
+      if (cb) cb(scrollY, scrollHeight);
+      requestTick();
+    }
+    function requestTick() {
+      if (!isTicking) requestAnimationFrame(updateScroll);
+      isTicking = true;
+    }
+    function updateScroll() {
+      isTicking = false;
+      var currentScrollY = scrollY;
+    }
+    scroll();
+    window.onscroll = scroll;
+  }
+
+  var began = 0;
+  var completed = 0;
+
+  function logChangeBegan(instance) {
+    began++;
+    // console.log(instance.id, 'CHANGE BEGAN', instance.changeBegan);
+  }
+
+  function logChangeComplete(instance) {
+    completed++;
+    // console.log(instance.id, 'CHANGE COMPLETE', instance.changeCompleted);
+  }
+
+  window.tl = anime.timeline({
+    easing: 'easeInOutSine',
+    autoplay: false,
+    duration: 1000,
+    // delay: 500,
+    // endDelay: 500,
+    update: function(instane) {
+      console.log(instane.reversePlayback);
+    }
+  })
+  .add({
+    targets: '.pane-01',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete
+  })
+  .set('.pane-02', {'translateY': '-100vh'})
+  .add({
+    targets: '.pane-02',
+    translateX: ['100%', 0],
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete
+  }, '-=500')
+  .set('.pane-03', {'translateY': '-200vh'})
+  .add({
+    targets: '.pane-03',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete
+  }, '-=500')
+  .set('.pane-04', {'translateY': '-100vh'})
+  .add({
+    targets: '.pane-04',
+    scale: [0, 1],
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-05',
+    translateY: '-100vh',
+    rotate: [-180, 0],
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-06',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-07',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-08',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-09',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-10',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-11',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-12',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-13',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+  .add({
+    targets: '.pane-14',
+    translateY: '-100vh',
+    background: '#FF1461',
+    changeBegin: logChangeBegan,
+    changeComplete: logChangeComplete,
+  }, '-=500')
+
+  onScroll(function(top, scrollHeight) {
+
+    var currentTime = tl.duration * (top / (scrollHeight - window.innerHeight));
+    tl.seek(currentTime);
+
+  });
+
+  </script>
+  <!-- <script src="../assets/js/vendors/stats.min.js"></script> -->
+</html>

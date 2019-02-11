@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anime states system | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: no-wrap;
+      justify-content: space-around;
+      align-items: center;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .states-example {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      border: 2px solid currentColor;
+      text-align: center;
+    }
+
+    .states-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      border: 2px solid currentColor;
+      text-align: center;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="states-example color-01"></div>
+  <div class="states-box color-01"></div>
+  <nav>
+    <button value="default">Default</button>
+    <button value="circle">Circle</button>
+    <button value="rectangle">Rectangle</button>
+  </nav>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  var statesExampleEl = document.querySelector('.states-example');
+  var buttons = document.querySelectorAll('button');
+
+  window.statesExample = anime({
+    targets: statesExampleEl,
+    scaleX: 1,
+    scaleY: 1,
+    borderRadius: '0%',
+    duration: 500,
+    easing: 'easeInOutQuad',
+    complete: function(anim) {
+      statesExampleEl.innerHTML = anim.currentState;
+    },
+    states: {
+      circle: {
+        borderRadius: '50%',
+        duration: 1000,
+        easing: 'easeInOutCirc'
+      },
+      rectangle: {
+        scaleX: 1.2,
+        scaleY: .7,
+      }
+    },
+  });
+
+anime({
+  targets: '.states-box',
+  easing: 'easeOutQuad',
+  states: {
+    open: {
+      rotate: 360
+    }
+  }
+})
+
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function() {
+      statesExample.animateTo(this.value);
+    });
+  }
+
+  //statesExample.animateTo('rectangle');
+
+
+  </script>
+  <!-- <script src="../assets/js/vendors/stats.min.js"></script> -->
+</html>

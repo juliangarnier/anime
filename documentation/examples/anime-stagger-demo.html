@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>stagger | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      background-color: #F6F4F2;
+    }
+
+    .stagger-visualizer {
+      display: flex;
+      /*flex-wrap: wrap;*/
+      justify-content: center;
+      align-items: center;
+      width: 450px;
+      height: 450px;
+    }
+
+    .stagger-visualizer div {
+      /*position: absolute;*/
+      width: 64px;
+      height: 128px;
+      border: 1px solid #373535;
+      background-color: #F6F4F2;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="stagger-visualizer"></div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  const staggerVisualizerEl = document.querySelector('.stagger-visualizer');
+  const fragment = document.createDocumentFragment();
+  const numberOfElements = 81;
+
+  for (let i = 0; i < numberOfElements; i++) {
+    fragment.appendChild(document.createElement('div'));
+  }
+
+  staggerVisualizerEl.appendChild(fragment);
+
+  const staggersAnimation = anime.timeline({
+    targets: '.stagger-visualizer div',
+    easing: 'easeInOutSine',
+    delay: anime.stagger(50),
+    loop: true,
+    autoplay: false,
+    duration: 600,
+    loopComplete: (a) => console.log('end'),
+    //update: () => console.log(staggersAnimation.progress)
+  })
+  .add({
+    scale: anime.stagger([2.5, 1], {from: 'center', grid: [9, 9]}),
+    translateX: anime.stagger([-100, 100]),
+    rotate: anime.stagger([-45, 45]),
+    easing: 'easeInOutCirc',
+    delay: anime.stagger(10, {from: 'center'})
+  })
+  .add({
+    scale: anime.stagger([2.5, 1], {from: 'center', easing: 'easeInSine'}),
+    translateX: anime.stagger([-200, 200]),
+    translateY: anime.stagger([-200, 200]),
+    rotate: 0,
+    delay: anime.stagger(1, {from: 'last'})
+  })
+  .add({
+    rotate: anime.stagger(2, {from: 'center', direction: 'reverse', easing: 'easeInSine'}),
+    translateX: 0,
+    translateY: 0,
+    delay: anime.stagger(10, {from: 'center'})
+  })
+  .add({
+    scale: anime.stagger([2, 1], {grid: [9, 9], axis: 'y'}),
+    translateY: anime.stagger([-100, 200], {grid: [9, 9], axis: 'y'}),
+    rotate: 0,
+    delay: anime.stagger(1, {from: 'last'})
+  })
+  .add({
+    translateX: () => anime.random(-100, 100),
+    translateY: () => anime.random(-100, 100),
+    scale: anime.stagger([1.5, .5], {from: 'center'}),
+    rotate: anime.stagger([10, -10], {from: 'last'}),
+    delay: anime.stagger(50, {from: 'center', grid: [9, 9]}),
+  })
+  .add({
+    translateX: () => anime.random(-100, 100),
+    translateY: () => anime.random(-100, 100),
+    rotate: anime.stagger([-10, 10], {from: 'last'}),
+    scale: 1,
+    delay: anime.stagger(50, {from: 'center', grid: [9, 9]}),
+  })
+  .add({
+    translateX: 0,
+    translateY: anime.stagger(6, {from: 'center', direction: 'reverse'}),
+    rotate: 0,
+    delay: anime.stagger(50, {from: 'center', grid: [9, 9]}),
+  })
+  .add({
+    translateX: anime.stagger('1rem', {grid: [9, 9], from: 'center', axis: 'x'}),
+    //translateY: anime.stagger('1rem', {grid: [9, 9], from: 'center', axis: 'y'}),
+    delay: anime.stagger(200, {grid: [9, 9], from: 'center', direction: 'reverse'})
+  })
+  .add({
+    translateX: anime.stagger([25, -25], {from: 'first'}),
+    translateY: 0,
+    rotate: anime.stagger([40, -40], {from: 'first'}),
+    delay: anime.stagger(10, {from: 'first'}),
+  })
+  .add({
+    translateY: anime.stagger([-240, 240]),
+    rotate: () => anime.random(-100, 100),
+    scale: anime.stagger([1, 3], {from: 'center'}),
+    delay: anime.stagger(10, {from: 0}),
+  })
+  .add({
+    translateX: 0,
+    translateY: 0,
+    scale: 1,
+    rotate: 360,
+    duration: 2000,
+    delay: 0,
+  });
+
+  staggersAnimation.play();
+
+</script>
+</html>

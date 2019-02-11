@@ -1,11 +1,23 @@
 {
   "name": "animejs",
-  "version": "2.2.0",
+  "version": "3.0.1",
+  "homepage": "http://animejs.com",
+  "repository": "juliangarnier/anime",
   "description": "JavaScript animation engine",
-  "main": "anime.min.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/juliangarnier/anime.git"
+  "umd:main": "lib/anime.min.js",
+  "module": "lib/anime.es.js",
+  "main": "lib/anime.js",
+  "umd:name": "anime",
+  "license": "MIT",
+  "author": "Julian Garnier <hello@julian.gr>",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "node build"
+  },
+  "bugs": {
+    "url": "https://github.com/juliangarnier/anime/issues"
   },
   "keywords": [
     "anime",
@@ -16,17 +28,11 @@
     "SVG",
     "canvas"
   ],
-  "author": "Julian Garnier <hello@julian.gr>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/juliangarnier/anime/issues"
-  },
-  "homepage": "http://animejs.com",
-  "files": [
-    "anime.js",
-    "anime.min.js"
-  ],
   "devDependencies": {
-    "google-closure-compiler-js": "^20170124.0.0"
+    "gzip-size": "^4.1.0",
+    "pretty-bytes": "^4.0.2",
+    "rollup": "^0.53.2",
+    "rollup-plugin-buble": "^0.18.0",
+    "uglify-js": "^3.3.4"
   }
 }

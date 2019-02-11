@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <g id="icon-css" fill="none" fill-rule="evenodd" stroke-linecap="square">
+    <g id="Group" stroke="#F6F4F2" transform="translate(8 12)">
+      <path id="Oval-Copy-7" stroke-width="3" d="M8 0a4 4 0 0 0-4 4v4a4 4 0 0 1-4 4 4 4 0 0 1 4 4v4a4 4 0 0 0 4 4"/>
+      <path id="Oval-Copy-4" stroke-width="3" d="M25 0a4 4 0 0 1 4 4v4a4 4 0 0 0 4 4 4 4 0 0 0-4 4v4a4 4 0 0 1-4 4"/>
+      <rect id="Rectangle-41" width="6" height="6" x="9" y="5" stroke-width="1.5"/>
+      <circle id="Oval-18" cx="21.5" cy="16.5" r="3.5" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>stager | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .testarea {
+      position: fixed;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      width: calc( 14 * 3rem);
+      height: calc( 14 * 3rem);
+    }
+
+    .el {
+      width: 3rem;
+      height: 3rem;
+      background-color: currentColor;
+    }
+
+    /* Player animation */
+
+    .timeline {
+      position: absolute;
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      padding-top: 4px;
+    }
+
+    .timeline.player-animation {
+      width: 100%;
+      left: 0;
+    }
+
+    .tl-needle {
+      position: fixed;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      margin-left: -1px;
+      background-color: #FFF;
+    }
+
+    .tl-animation {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      height: 8px;
+      margin-bottom: 4px;
+      background-color: currentColor;
+      border-radius: .5rem;
+    }
+
+    .tl-delay,
+    .tl-end-delay {
+      width: auto;
+      height: 100%;
+      background-color: rgba(0,0,0,.5);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="testarea">
+
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+    <div class="el color-06"></div>
+    <div class="el color-07"></div>
+    <div class="el color-08"></div>
+    <div class="el color-09"></div>
+    <div class="el color-10"></div>
+    <div class="el color-11"></div>
+    <div class="el color-01"></div>
+    <div class="el color-02"></div>
+    <div class="el color-03"></div>
+    <div class="el color-04"></div>
+    <div class="el color-05"></div>
+
+  </div>
+
+  <div class="log log-animation"></div>
+  <div class="time time-animation"></div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  var animationTimeLogEl = document.querySelector('.time-animation');
+  var timelineTimeLogEl = document.querySelector('.time-timeline');
+
+  var stager = {
+    leftToRight: (spacing, min, max) => {
+      return (el, i, t) => {
+        let delay = i * spacing;
+        if (min) delay += min;
+        if (max) delay = i * ((max - min) / t);
+        return delay;
+      }
+    },
+    rightToLeft: spacing => {
+      return (el, i, t) => {
+        return ((t - 1) - i) * spacing;
+      }
+    },
+    centerOut: spacing => {
+      return (el, i, t) => {
+        return Math.abs(Math.round((t / 2) - i - 1)) * spacing
+      }
+    },
+    centerIn: spacing => {
+      return (el, i, t) => {
+        return (i >= t / 2 ? ((t - 1) - i) : i) * spacing
+      }
+    },
+    splash: (x, y, spacing) => {
+      return (el, i) => {
+        const rect = el.getBoundingClientRect();
+        const dx = x - (rect.left + (rect.width / 2));
+        const dy = y - (rect.top + (rect.height / 2));
+        const distance = Math.sqrt( dx * dx + dy * dy );
+        return (distance / 100) * spacing;
+      }
+    }
+  }
+
+  var animation = anime({
+    targets: '.el',
+    rotate: stager.splash(window.innerWidth / 2, window.innerHeight / 2, 90),
+    scaleX: .05,
+    delay: stager.splash(window.innerWidth / 2, window.innerHeight / 2, 100),
+    easing: 'easeInOutQuart',
+    direction: 'alternate',
+    loop: true
+  });
+
+  function animePlayer(instance, playerClass) {
+
+    function createEl(type, className, parentEl) {
+      var el = document.createElement(type);
+      if (className) el.classList.add(className);
+      if (parentEl) parentEl.appendChild(el);
+      return el;
+    }
+
+    var timelineEl = createEl('div', 'timeline', document.body);
+    if (playerClass) timelineEl.classList.add(playerClass);
+    var needleEl = createEl('div', 'tl-needle', timelineEl);
+    var animations = [];
+    var colors = ['#FF1461','#FF7C72','#FBF38C','#A6FF8F','#18FF92','#1CE2B2','#5EF3FB','#61C3FF','#5A87FF','#8453E3','#C26EFF','#FB89FB'];
+    var colorIndex = 0;
+
+    function convertMStoEM(ms) { return ms / 100; }
+    function convertEMtoMS(em) { return parseFloat(em) * 250; }
+
+    function createAnimationLog(animObj, timelineOffset) {
+      var anim = animObj;
+      anim.player = {};
+      anim.player.animationEl = createEl('div', 'tl-animation', timelineEl);
+      anim.player.delayEl = createEl('div', 'tl-delay', anim.player.animationEl);
+      anim.player.endDelayEl = createEl('div', 'tl-end-delay', anim.player.animationEl);
+      anim.update = function() {
+        anime.setValue(anim.player.animationEl, {
+          left: convertMStoEM(timelineOffset) + 'em',
+          width: convertMStoEM(anim.duration) + 'em'
+        });
+        anime.setValue(anim.player.delayEl, {width: (anim.delay / anim.duration) * 100 + '%'});
+        anime.setValue(anim.player.endDelayEl, {width: (anim.endDelay / anim.duration) * 100 + '%'});
+      }
+      anime.setValue(anim.player.animationEl, {color: colors[colorIndex]});
+      colorIndex++;
+      if (!colors[colorIndex]) colorIndex = 0;
+      anim.update();
+      animations.push(anim);
+      return anim;
+    }
+
+    instance.pause();
+
+    var playerAnimation = anime({
+      targets: needleEl,
+      translateX: convertMStoEM(instance.duration) + 'em',
+      duration: instance.duration,
+      direction: instance.direction,
+      loop: instance.loop,
+      easing: 'linear',
+      update: function(a) {
+        instance.seek(a.currentTime);
+      }
+    });
+
+    if (instance.children.length) {
+      instance.children.forEach(function(child) {
+        console.log(child.timelineOffset);
+        child.animations.forEach(function(anim) {
+          createAnimationLog(anim, child.timelineOffset);
+        });
+      })
+    } else {
+      instance.animations.forEach(function(anim) {
+        createAnimationLog(anim);
+      });
+    }
+
+  }
+
+  animePlayer(animation, 'player-animation');
+
+</script>
+</html>

@@ -19,7 +19,7 @@
     "Julian Garnier <hello@julian.gr>"
   ],
   "license": "MIT",
-  "homepage": "http://animejs.com/",
+  "homepage": "https://animejs.com/",
   "ignore": [
     "**/.*",
     "node_modules",

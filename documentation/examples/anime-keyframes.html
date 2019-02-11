@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>stagger | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    :root {
+      font-size: 20px;
+    }
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      background-color: #F6F4F2;
+    }
+
+    .keyframes-visualizer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      width: 16rem;
+      height: 16rem;
+    }
+
+    .keyframes-visualizer div {
+      position: relative;
+      width: .8rem;
+      height: .8rem;
+      margin: .1rem;
+      border: 2px solid currentColor;
+      background-color: #F6F4F2;
+      color: #373535;
+      border-radius: 50%;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="keyframes-visualizer"></div>
+
+</body>
+<script src="../../lib/anime.min.js"></script>
+<script>
+
+  //import anime from '../../src/index.js';
+
+  const keyframesVisualizerEl = document.querySelector('.keyframes-visualizer');
+  const fragment = document.createDocumentFragment();
+  const numberOfElements = 256;
+
+  for (let i = 0; i < numberOfElements; i++) {
+    fragment.appendChild(document.createElement('div'));
+  }
+
+  keyframesVisualizerEl.appendChild(fragment);
+
+  const animation = anime({
+    targets: '.keyframes-visualizer div',
+    keyframes: [
+      {
+        color: '#FF4B4B',
+        translateX: anime.stagger('-.15rem', {grid: [16, 16], from: 'center', axis: 'x'}),
+        translateY: anime.stagger('-.15rem', {grid: [16, 16], from: 'center', axis: 'y'}),
+        duration: 300
+      },
+      {
+        translateX: anime.stagger('.125rem', {grid: [16, 16], from: 'center', axis: 'x'}),
+        translateY: anime.stagger('.125rem', {grid: [16, 16], from: 'center', axis: 'y'}),
+        duration: 500
+      }, {
+        color: '#373535',
+        translateX: 0,
+        translateY: 0,
+        duration: 600,
+      }
+    ],
+    delay: anime.stagger(2),
+    easing: 'easeInOutQuad',
+    loop: true
+  });
+
+  console.log(animation);
+
+</script>
+</html>

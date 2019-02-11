@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <g id="icon-staggering-grid" fill="none" fill-rule="evenodd">
+    <rect id="Mask" width="33" height="33" x="7.5" y="7.5" stroke="#242423" opacity=".3"/>
+    <circle id="Oval" cx="24" cy="24" r="1" fill="#242423"/>
+    <circle id="Oval-Copy" cx="24" cy="24" r="4" stroke="#242423" stroke-width="2"/>
+    <circle id="Oval-Copy-2" cx="24" cy="24" r="8" stroke="#242423" stroke-width="2"/>
+  </g>
+</svg>

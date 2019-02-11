@@ -5,18 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:title" content="anime.js">
-  <meta property="og:url" content="http://animejs.com">
+  <meta property="og:url" content="https://animejs.com">
   <meta property="og:description" content="Javascript Animation Engine">
-  <meta property="og:image" content="http://animejs.com/documentation/assets/img/icons/og.png">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="anime.js">
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
-  <meta name="twitter:image" content="http://animejs.com/documentation/assets/img/icons/twitter.png">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
   <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
-  <link href="../assets/css/anime.css" rel="stylesheet">
-  <script src="../../anime.js"></script>
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <script src="../../lib/anime.min.js"></script>
   <style>
     .easings {
       display: flex;
@@ -96,7 +96,6 @@
       }
     }
     .axis {
-      opacity: 0;
       position: absolute;
       background: #5A87FF;
     }
@@ -111,7 +110,7 @@
       height: 1px;
       transform-origin: 100% 0;
     }
-    .ball {
+    .cursor {
       position: absolute;
       z-index: 2;
       top: 0;
@@ -121,6 +120,7 @@
       margin: -5px 0 0 10px;
       background: #FF1461;
       border-radius: 50%;
+      transform: translateY(100px);
     }
     svg {
       overflow: visible;
@@ -177,7 +177,26 @@
         <div class="axis x"></div>
         <div class="axis y"></div>
         <div class="visualizer">
-          <div class="ball" style="transform: translateY(100px) scale(0)"></div>
+          <div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+            <div class="cursor"></div>
+          </div>
           <svg viewBox="0 0 100 100">
             <path class="curve"/>
           </svg>
@@ -220,48 +239,47 @@
   var pathEl = document.querySelector('.curve');
   var presetsEls = document.querySelectorAll('.options button');
   var ratio = window.innerWidth >= 980 ? 2 : 1;
-
-  var timeline = anime.timeline({
-    loop: true
-  });
+  var duration = 1000;
 
   function animateProgress(easingName) {
 
-    timeline.pause();
+    anime.remove(['.axis.x', '.axis.y', '.cursor']);
 
-    timeline = anime.timeline({
-      loop: true
-    });
-
-    timeline.add([
-      {
-        targets: '.axis.x',
-        opacity: [
-          { value: [0, 1], delay: 0, duration: 500 },
-          { value: 0, delay: 1500, duration: 500 }
-        ],
-        translateX: { value: [0, (200 * ratio)], delay: 500, duration: 1500 },
-        easing: 'linear',
-        offset: 0
-      }, {
-        targets: '.axis.y',
-        opacity: [
-          { value: [0, 1], delay: 0, duration: 500 },
-          { value: 0, delay: 1500, duration: 500 }
-        ],
-        translateY: { value: [0, -(200 * ratio)], delay: 500, duration: 1500, easing: easingName },
-        easing: 'linear',
-        offset: 0
-      }, {
-        targets: '.ball',
-        translateY: { value: [100, 0], delay: 500, duration: 1500, easing: easingName },
-        scale: [
-          { value: [0, 1], delay: 0, duration: 500, easing: 'easeOutBack' },
-          { value: 0, delay: 1500, duration: 500, easing: 'easeInBack' }
-        ],
-        offset: 0
+    var tl = anime.timeline({
+      duration: duration,
+      easing: 'linear',
+      complete: function() {
+        animateProgress(easingName);
       }
-    ]);
+    })
+    .add({
+      targets: '.axis.x',
+      translateX: [0, (200 * ratio)],
+      translateZ: [0, 0]
+     }, 0)
+    .add({
+      targets: '.axis.y',
+      translateY: [0, -(200 * ratio)],
+      translateZ: [0, 0],
+      easing: easingName,
+      endDelay: 1000
+    }, 0)
+    .add({
+      targets: '.cursor',
+      translateY: [100, 0],
+      translateZ: [0, 0],
+      easing: easingName,
+      update: function(anim) {
+        var timeSegment = (100 / (anim.animatables.length - 2));
+        var index = Math.round((anim.progress +.5) / timeSegment);
+        var animatable = anim.animatables[index];
+        if (animatable) {
+          var target = animatable.target;
+          anime.remove(target);
+          target.style.opacity = .20;
+        }
+      }
+    }, 0);
 
   }
 

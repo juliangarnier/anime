@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anime logo animation | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
+  <link href="documentation/assets/css/animejs.css" rel="stylesheet">
+  <script src="../../lib/anime.min.js"></script>
+  <style>
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .logo-animation {
+      position: relative;
+      width: 940px;
+      height: 120px;
+    }
+
+    .logo-letters-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .letter-wrapper {
+      height: 120px;
+    }
+
+    .logo-letter {
+      transform: scaleY(.5);
+      transform-origin: 50% 0%;
+    }
+
+    .logo-letter path {
+      fill: none;
+      fill-rule: evenodd;
+      stroke-linecap: square;
+      stroke-width: 40;
+      stroke: #3E3E3E;
+    }
+
+    .logo-dot {
+      position: absolute;
+      bottom: 0;
+      width: 40px;
+      height: 40px;
+      margin: -20px 0 0 -20px;
+      background-color: #3E3E3E;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="logo-section">
+
+    <div class="logo-animation">
+
+      <div class="logo-dot"></div>
+
+      <div class="logo-letters-wrapper">
+
+        <div class="letter-wrapper">
+          <svg class="bounced" viewBox="0 0 180 240" width="180" height="240">
+            <path class="line" d="M20 20h130c5.523 0 10 8.954 10 40v160H30c-5.523 0-10-8.954-10-40v-60c0-31.046 4.477-40 10-40h110"/>
+          </svg>
+        </div>
+        <div class="letter-wrapper">
+          <svg class="bounced" viewBox="0 0 180 240" width="180" height="240">
+            <path class="line" d="M160 220V60c0-31.046-8.656-40-19.333-40H39.333C28.656 20 20 28.954 20 60v160"/>
+          </svg>
+        </div>
+        <div class="letter-wrapper">
+          <svg class="bounced" viewBox="0 0 40 240" width="40" height="240">
+            <path stroke-width="40" d="M20 20v200"/>
+          </svg>
+        </div>
+        <div class="letter-wrapper">
+          <svg class="bounced" viewBox="0 0 320 240" width="320" height="240">
+            <path class="line" d="M300 220V60c0-31.046-8.656-40-19.333-40H39.333C28.656 20 20 28.954 20 60v160"/>
+          </svg>
+        </div>
+        <div class="letter-wrapper">
+          <svg class="bounced" viewBox="0 0 180 240" width="180" height="240">
+            <path class="line" d="M40 160h110c5.523 0 10-8.954 10-40V60c0-31.046-4.477-40-10-40H30c-5.523 0-10 8.95-10 40v120c0 31.046 4.477 40 10 40h130"/>
+          </svg>
+        </div>
+
+      </div>
+
+
+  </div>
+
+  <script>
+
+    var logoAnimation = (function() {
+
+      var logoAnimationEl = document.querySelector('.logo-animation');
+      var bouncePath = anime.path('.bounce path');
+      var versionNumerEls = document.querySelectorAll('.version-number');
+      var dateEl = document.querySelector('.date');
+      var date = new Date();
+
+      // for (var i = 0; i < versionNumerEls.length; i++) {
+      //   versionNumerEls[i].innerHTML = anime.version;
+      // }
+      // dateEl.innerHTML = date.getFullYear();
+
+      // anime.setValue(['.letter-a', '.letter-n', '.letter-i'], {translateX: 56});
+      // anime.setValue('.letter-e', {translateX: -56});
+      // anime.setValue('.dot', { translateX: 448, translateY: -100 });
+
+      anime.setValue(['.logo-dot'], {
+        translateX: 90,
+        translateY: -400
+      });
+
+      var logoAnimationTL = anime.timeline({
+        easing: 'easeOutSine'
+      })
+      .add({
+        targets: '.logo-dot',
+        keyframes: [
+          {translateY: 0, duration: 300},
+          {scaleY: .5},
+          {translateX: '+=190'},
+          {translateY: '+=190'}
+        ],
+      })
+
+      // anime.speed = .2;
+      // logoAnimationTL.pause();
+      // logoAnimationTL.seek(1400);
+      // logoAnimationTL.play();
+
+      return logoAnimationTL;
+
+    })();
+
+  </script>
+</body>
+</html>

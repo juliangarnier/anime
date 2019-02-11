@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>stagger | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .testarea {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .demo {
+      flex-wrap: wrap;
+      position: relative;
+      align-items: center;
+      width: 14rem;
+      height: 4rem;
+      padding: 2rem;
+    }
+
+    .demo-title {
+      position: absolute;
+      top: 0;
+      left: 2rem;
+    }
+
+    .demo div {
+      width: 1rem;
+      height: 1rem;
+      /*background-color: currentColor;*/
+      border: 2px solid currentColor;
+    }
+
+    .from-coords, .from-coords-reversed {
+      padding: 3rem 3rem;
+    }
+
+    /* Player animation */
+
+    .timeline {
+      opacity: .2;
+      position: fixed;
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      padding-top: 4px;
+    }
+
+    .timeline.player-animation {
+      width: 100%;
+      left: 0;
+    }
+
+    .tl-needle {
+      position: fixed;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      margin-left: -1px;
+      background-color: #FFF;
+    }
+
+    .tl-animation {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      width: auto;
+      height: 8px;
+      margin-bottom: 4px;
+      background-color: currentColor;
+      border-radius: .5rem;
+    }
+
+    .tl-delay,
+    .tl-end-delay {
+      width: auto;
+      height: 100%;
+      background-color: rgba(0,0,0,.5);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="player-animation"></div>
+
+  <div class="testarea">
+
+    <section class="demo normal">
+      <h1 class="demo-title">Normal</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo normal-reversed">
+      <h1 class="demo-title">Normal reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-last">
+      <h1 class="demo-title">From last</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-last-reversed">
+      <h1 class="demo-title">From last reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-middle">
+      <h1 class="demo-title">From middle</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-middle-reversed">
+      <h1 class="demo-title">From middle reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-index">
+      <h1 class="demo-title">From index</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-index-reversed">
+      <h1 class="demo-title">From index reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo range">
+      <h1 class="demo-title">Range</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo range-reversed">
+      <h1 class="demo-title">Range reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo range-from-last">
+      <h1 class="demo-title">Range from last</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo range-from-last-reversed">
+      <h1 class="demo-title">Range from last reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo range-from-middle">
+      <h1 class="demo-title">Range from middle</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo range-from-middle-reversed">
+      <h1 class="demo-title">Range from middle reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo easing">
+      <h1 class="demo-title">Easing</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo easing-reversed">
+      <h1 class="demo-title">Easing reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-coords">
+      <h1 class="demo-title">Coordinates</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+    <section class="demo from-coords-reversed">
+      <h1 class="demo-title">Coordinates reversed</h1>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </section>
+
+  </div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  // var animationTimeLogEl = document.querySelector('.time-animation');
+  // var timelineTimeLogEl = document.querySelector('.time-timeline');
+
+  // var testAreaEl = document.querySelector('.testarea');
+  // var fragment = document.createDocumentFragment();
+  // var colorIndex = 1;
+
+  // for (var i = 0; i < 10; i++) {
+  //   var el = document.createElement('div');
+  //   el.classList.add('el');
+  //   el.classList.add('color-'+('0' + colorIndex).slice(-2));
+  //   colorIndex++;
+  //   if (colorIndex > 12) colorIndex = 1;
+  //   fragment.appendChild(el);
+  // }
+
+  // testAreaEl.appendChild(fragment);
+
+  //   splash: (x, y, spacing) => {
+  //     return (el, i) => {
+  //       const rect = el.getBoundingClientRect();
+  //       const dx = x - (rect.left + (rect.width / 2));
+  //       const dy = y - (rect.top + (rect.height / 2));
+  //       const distance = Math.sqrt( dx * dx + dy * dy );
+  //       return (distance / 100) * spacing;
+  //     }
+
+  const is = {
+    arr: a => Array.isArray(a),
+    obj: a => stringContains(Object.prototype.toString.call(a), 'Object'),
+    pth: a => is.obj(a) && a.hasOwnProperty('totalLength'),
+    svg: a => a instanceof SVGElement,
+    dom: a => a.nodeType || is.svg(a),
+    str: a => typeof a === 'string',
+    fnc: a => typeof a === 'function',
+    und: a => typeof a === 'undefined',
+    hex: a => /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a),
+    rgb: a => /^rgb/.test(a),
+    hsl: a => /^hsl/.test(a),
+    col: a => (is.hex(a) || is.rgb(a) || is.hsl(a))
+  }
+
+  function getUnit(val) {
+    const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(val);
+    if (split) return split[2];
+  }
+
+  function stagger(val, params = {}) {
+    const direction = params.direction || 'normal';
+    const grid = params.grid;
+    const isRange = is.arr(val);
+    const val1 = isRange ? parseFloat(val[0]) : parseFloat(val);
+    const val2 = isRange ? parseFloat(val[1]) : 0;
+    const start = params.start || 0 + (isRange ? val1 : 0);
+    const easing = params.easing ? anime.easing(params.easing) : null;
+    const unit = getUnit(isRange ? val[1] : val) || 0;
+    const getCoords el => {
+      const rect = el.getBoundingClientRect();
+      return {x: rect.left + (rect.width / 2), y: rect.top + (rect.height / 2)}
+    }
+    const values = [];
+    let maxValue = 0;
+    let from = params.from || 0;
+    let intialValue = from;
+    return (el, i, t) => {
+      if (from === 'middle') intialValue = (t - 1) / 2;
+      if (from === 'last') intialValue = t - 1;
+      if (!values.length) {
+        for (let index = 0; index < t; index++) {
+          if (grid) {
+            const x = intialValue%grid[0];
+            const y = Math.ceil(intialValue/grid[1]);
+            // const x = 3.5;
+            // const y = 4.5;
+            const dx = x - index%grid[0];
+            const dy = y - Math.ceil(index/grid[1]);
+            console.log(x, y, index%grid[0]);
+            values.push(Math.sqrt(dx * dx + dy * dy));
+          } else {
+            values.push(Math.abs(intialValue - index));
+          }
+          maxValue = Math.max(...values);
+        }
+      }
+      let progress = values[i];
+      if (easing) progress = easing(progress / maxValue) * maxValue;
+      if (direction === 'reverse') progress = Math.abs(maxValue - progress);
+      const spacing = isRange ? (val2 - val1) / maxValue : val1;
+      return start + (spacing * progress) + unit;
+    }
+  }
+
+  var animations = anime.timeline({
+    easing: 'easeInOutQuad',
+    //direction: 'alternate',
+    //loop: true
+  })
+  // .add({
+  //   targets: '.normal div',
+  //   translateY: stagger('-.5em'),
+  //   delay: stagger(200)
+  // }, 0)
+  // .add({
+  //   targets: '.normal-reversed div',
+  //   translateY: stagger('-.5em', { direction: 'reverse' }),
+  //   delay: stagger(200, { direction: 'reverse' }),
+  // }, 0)
+  // .add({
+  //   targets: '.from-last div',
+  //   translateY: stagger('-.5em', {from: 'last'}),
+  //   delay: stagger(200, {from: 'last'})
+  // }, 0)
+  // .add({
+  //   targets: '.from-last-reversed div',
+  //   translateY: stagger('-.5em', { from: 'last', direction: 'reverse' }),
+  //   delay: stagger(200, { from: 'last', direction: 'reverse' }),
+  // }, 0)
+  // .add({
+  //   targets: '.from-middle div',
+  //   translateY: stagger('-.5em', {from: 'middle'}),
+  //   delay: stagger(200, {from: 'middle'})
+  // }, 0)
+  // .add({
+  //   targets: '.from-middle-reversed div',
+  //   translateY: stagger('-.5em', { from: 'middle', direction: 'reverse' }),
+  //   delay: stagger(200, { from: 'middle', direction: 'reverse' }),
+  // }, 0)
+  // .add({
+  //   targets: '.from-index div',
+  //   translateY: stagger('-.5em', {from: 3}),
+  //   delay: stagger(200, {from: 3})
+  // }, 0)
+  // .add({
+  //   targets: '.from-index-reversed div',
+  //   translateY: stagger('-.5em', { from: 3, direction: 'reverse' }),
+  //   delay: stagger(200, { from: 3, direction: 'reverse' }),
+  // }, 0)
+  // .add({
+  //   targets: '.range div',
+  //   translateY: stagger(['-2em', '2em']),
+  //   delay: stagger([0, 1000])
+  // }, 0)
+  // .add({
+  //   targets: '.range-reversed div',
+  //   translateY: stagger(['-2em', '2em'], { direction: 'reverse'}),
+  //   delay: stagger([0, 1000], { direction: 'reverse'}),
+  // }, 0)
+  // .add({
+  //   targets: '.range-from-last div',
+  //   translateY: stagger(['-2em', '2em'], {from: 'last'}),
+  //   delay: stagger([0, 1000], {from: 'last'})
+  // }, 0)
+  // .add({
+  //   targets: '.range-from-last-reversed div',
+  //   translateY: stagger(['-2em', '2em'], { from: 'last', direction: 'reverse'}),
+  //   delay: stagger([0, 1000], { from: 'last', direction: 'reverse'}),
+  // }, 0)
+  // .add({
+  //   targets: '.range-from-middle div',
+  //   translateY: stagger(['-2em', '2em'], {from: 'middle'}),
+  //   delay: stagger([0, 1000], {from: 'middle'})
+  // }, 0)
+  // .add({
+  //   targets: '.range-from-middle-reversed div',
+  //   translateY: stagger(['-2em', '2em'], { from: 'middle', direction: 'reverse'}),
+  //   delay: stagger([0, 1000], { from: 'middle', direction: 'reverse'}),
+  // }, 0)
+  // .add({
+  //   targets: '.easing div',
+  //   translateY: stagger(['2em', '-2em'], {easing: 'easeInOutQuart'}),
+  //   delay: stagger(200, {easing: 'easeInOutQuart'})
+  // }, 0)
+  // .add({
+  //   targets: '.easing-reversed div',
+  //   translateY: stagger(['2em', '-2em'], { direction: 'reverse', easing: 'easeInOutQuart'}),
+  //   delay: stagger(200, { direction: 'reverse', easing: 'easeInOutQuart'}),
+  // }, 0)
+  .add({
+    targets: '.from-coords div',
+    scale: stagger([0, 1], {grid: [8, 6], from: 19.5}),
+    delay: stagger(200, {grid: [8, 6], from: 19.5})
+  }, 0)
+  .add({
+    targets: '.from-coords-reversed div',
+    scale: stagger([0, 1], {grid: [8, 6], direction: 'reverse'}),
+    delay: stagger(200, {grid: [8, 6], direction: 'reverse'})
+  }, 0)
+  // .add({
+  //   targets: '.from-coords-reversed div',
+  //   scale: stagger([.1, 1], { direction: 'reverse', from: 'middle'}),
+  //   delay: stagger(200, { direction: 'reverse', from: 'middle'}),
+  // }, 0)
+
+  // var animation = anime({
+  //   targets: '.el',
+  //   //scaleY: stagger(.2, {from: 2, direction: 'reverse', start: 1}),
+  //   scale: .5,
+  //   //translateY: stagger(['-10rem', '10rem'], {from: 'middle', direction: 'reverse'}),
+  //   //translateY: stagger(1, {from: 'middle'}),
+  //   //delay: stagger([-100, 200], {direction: 'reverse', start: 1000}),
+  //   delay: stagger(80, {from: 2, direction: 'reverse'}),
+  //   easing: 'easeInOutQuad',
+  //   direction: 'alternate',
+  //   loop: true
+  // });
+
+  function animePlayer(instance, playerClass) {
+
+    function createEl(type, className, parentEl) {
+      var el = document.createElement(type);
+      if (className) el.classList.add(className);
+      if (parentEl) parentEl.appendChild(el);
+      return el;
+    }
+
+    var timelineEl = createEl('div', 'timeline', document.body);
+    if (playerClass) timelineEl.classList.add(playerClass);
+    var needleEl = createEl('div', 'tl-needle', timelineEl);
+    var animations = [];
+    var colors = ['#FF1461','#FF7C72','#FBF38C','#A6FF8F','#18FF92','#1CE2B2','#5EF3FB','#61C3FF','#5A87FF','#8453E3','#C26EFF','#FB89FB'];
+    var colorIndex = 0;
+
+    function convertMStoEM(ms) { return ms / 100; }
+    function convertEMtoMS(em) { return parseFloat(em) * 250; }
+
+    function createAnimationLog(animObj, timelineOffset) {
+      var anim = animObj;
+      anim.player = {};
+      anim.player.animationEl = createEl('div', 'tl-animation', timelineEl);
+      anim.player.delayEl = createEl('div', 'tl-delay', anim.player.animationEl);
+      anim.player.endDelayEl = createEl('div', 'tl-end-delay', anim.player.animationEl);
+      anim.update = function() {
+        anime.setValue(anim.player.animationEl, {
+          left: convertMStoEM(timelineOffset) + 'em',
+          width: convertMStoEM(anim.duration) + 'em'
+        });
+        anime.setValue(anim.player.delayEl, {width: (anim.delay / anim.duration) * 100 + '%'});
+        anime.setValue(anim.player.endDelayEl, {width: (anim.endDelay / anim.duration) * 100 + '%'});
+      }
+      anime.setValue(anim.player.animationEl, {color: colors[colorIndex]});
+      colorIndex++;
+      if (!colors[colorIndex]) colorIndex = 0;
+      anim.update();
+      animations.push(anim);
+      return anim;
+    }
+
+    instance.pause();
+
+    var playerAnimation = anime({
+      targets: needleEl,
+      translateX: convertMStoEM(instance.duration) + 'em',
+      duration: instance.duration,
+      direction: instance.direction,
+      loop: instance.loop,
+      easing: 'linear',
+      update: function(a) {
+        instance.seek(a.currentTime);
+      }
+    });
+
+    if (instance.children.length) {
+      instance.children.forEach(function(child) {
+        child.animations.forEach(function(anim) {
+          createAnimationLog(anim, child.timelineOffset);
+        });
+      })
+    } else {
+      instance.animations.forEach(function(anim) {
+        createAnimationLog(anim);
+      });
+    }
+
+  }
+
+  animePlayer(animations, 'player-animation');
+
+</script>
+</html>

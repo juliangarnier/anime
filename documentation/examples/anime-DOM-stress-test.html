@@ -5,26 +5,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:title" content="anime.js">
-  <meta property="og:url" content="http://animejs.com">
+  <meta property="og:url" content="https://animejs.com">
   <meta property="og:description" content="Javascript Animation Engine">
-  <meta property="og:image" content="http://animejs.com/documentation/assets/img/icons/og.png">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="anime.js">
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
-  <meta name="twitter:image" content="http://animejs.com/documentation/assets/img/icons/twitter.png">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
   <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
-  <link href="../assets/css/anime.css" rel="stylesheet">
-  <script src="../../anime.js"></script>
-  <!-- <script src="../../anime-dev.js"></script> -->
-  <!-- <script src="../assets/js/anime.2.0.2.js"></script> -->
-  <!-- <script src="../assets/js/anime.1.0.js"></script> -->
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <script src="../../lib/anime.min.js"></script>
+  <!-- <script src="../assets/js/anime/anime.2.0.2.js"></script> -->
+  <!-- <script src="../assets/js/anime/anime.1.0.js"></script> -->
   <style>
-
-    body {
-      overflow: hidden;
-    }
 
     .el {
       position: absolute;
@@ -33,11 +28,7 @@
       width: 1em;
       height: 1em;
       margin: -.5em 0 0 -.5em;
-      border: 1px solid currentColor;
-      background-color: currentColor;
-      font-size: 30px;
-      border-radius: 50%;
-      transform: scale(0);
+      font-size: 20px;
     }
 
   </style>
@@ -45,48 +36,37 @@
 <body></body>
 <script>
 
-    const wrapperEl = document.body;
-    const numberOfEls = 500;
-    const duration = 2000;
-    const delay = duration / numberOfEls;
-    const radius = window.innerWidth < window.innerHeight ? window.innerWidth : window.innerHeight;
-    const distance = (radius / 4 <= 150 ? 150 : radius) + 100;
+  var wrapperEl = document.body;
+  var numberOfEls = 500;
+  var duration = numberOfEls * 10;
+  var radius = window.innerWidth < window.innerHeight ? window.innerWidth : window.innerHeight;
+  var distance = (radius / 4 <= 150 ? 150 : radius / 2.5) / 16; 
 
-    let tl = anime.timeline({
-      duration: delay,
-      complete: function() { tl.restart(); }
+  function createEl(i) {
+    var el = document.createElement('div');
+    var hue = Math.round(360 / numberOfEls * i);
+    var angle = i;
+    el.classList.add('el');
+    //el.style.border = '5px solid hsl(' + hue + ', 50%, 50%)';
+    el.style.backgroundColor = 'hsl(' + hue + ', 50%, 50%)';
+    wrapperEl.appendChild(el);
+    anime({
+      targets: el,
+      translateX: Math.sin(angle) * distance + 'rem',
+      translateY: Math.cos(angle) * distance + 'rem',
+      scale: [
+        {value: [0, 1]},
+        {value: 0}
+      ],
+      easing: 'easeInOutSine',
+      loop: true,
+      duration: duration,
+      startTime: i * (duration / numberOfEls)
     });
+  };
 
-    function createEl(i) {
-      let el = document.createElement('div');
-      const hue = Math.round(360 / numberOfEls * i);
-      // const angle = Math.round(360 / numberOfEls * i * 5);
-      var angle = Math.random() * Math.PI * 2;
-      el.classList.add('el');
-      el.style.color = 'hsl(' + hue + ', 40%, 60%)';
-      // el.style.transform = 'scale(0)';
-      el.style.zIndex = numberOfEls - i;
-      tl.add({
-        begin: function() {
-          anime({
-            targets: el,
-            translateX: ['0px', Math.sin(angle) * distance + 'px'],
-            translateY: ['0px', Math.cos(angle) * distance + 'px'],
-            // scale: [0, 32],
-            // scale: [
-            //   {value: [0, 1], duration: duration / 2, easing: 'easeOutBack'},
-            //   {value: 0, duration: duration / 2, easing: 'easeInBack'}
-            // ],
-            easing: 'easeInOutSine',
-            duration: duration
-          });
-        }
-      });
-      wrapperEl.appendChild(el);
-    };
-
-    for (let i = 0; i < numberOfEls; i++) createEl(i);
+  for (var i = 0; i < numberOfEls; i++) createEl(i);
 
   </script>
-  <script src="../assets/js/stats.js"></script>
+  <script src="../assets/js/vendors/stats.min.js"></script>
 </html>

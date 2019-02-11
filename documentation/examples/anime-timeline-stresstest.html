@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anime timeline | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <script src="../../lib/anime.min.js"></script>
+  <!-- <script src="../assets/js/anime/anime.2.2.0.js"></script> -->
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      height: calc(100vh - 100px);
+    }
+
+    .el {
+      width: 10px;
+      height: 10px;
+      background: #FFF;
+      margin: 10px;
+      border-radius: 50%;
+    }
+
+    .controls {
+      display: flex;
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 100px;
+      background: white;
+    }
+
+    .buttons {
+      display: flex;
+    }
+
+    .buttons button {
+      width: 100px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-grow: 1;
+      padding: 20px;
+    }
+
+    .progress {
+      flex-grow: 1;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrapper"></div>
+  <div class="controls">
+    <div class="buttons">
+      <button class="play">Play</button>
+      <button class="pause">Pause</button>
+      <button class="restart">Restart</button>
+    </div>
+    <div class="timeline">
+      <input class="progress" type="range" min="0" max="100" step=".1" value="0">
+    </div>
+  </div>
+</body>
+<script>
+
+  var controlsProgressEl = document.querySelector('.controls .progress');
+
+  var tl = anime.timeline({
+    autoplay: false,
+    direction: 'alternate',
+    update: function(anim) {
+      controlsProgressEl.value = anim.progress;
+    },
+    begin: function(anim) {
+      console.log('tl begin');
+    },
+    complete: function(anim) {
+      console.log('tl complete');
+    }
+  });
+
+  document.querySelector('.controls .play').onclick = tl.play;
+  document.querySelector('.controls .pause').onclick = tl.pause;
+  document.querySelector('.controls .restart').onclick = tl.restart;
+
+  var wrapperEl = document.querySelector('.wrapper');
+  var numberOfEls = 1000;
+  var fragment = document.createDocumentFragment();
+
+  function createEl(i) {
+    var el = document.createElement('div');
+    el.classList.add('el');
+    var hue = Math.round(180 / numberOfEls * i);
+    el.style.backgroundColor = 'hsl(' + hue + ', 60%, 60%)';
+    tl.add({
+      targets: el,
+      scale: [0, 2],
+      duration: 5000,
+      easing: 'easeOutElastic(1, .1)',
+    }, !i ? 0 : '-=4999');
+    fragment.appendChild(el);
+  };
+
+  for (let i = 0; i < numberOfEls; i++) createEl(i);
+
+  wrapperEl.appendChild(fragment);
+
+  controlsProgressEl.addEventListener('input', function() {
+    tl.seek(tl.duration * (controlsProgressEl.value / 100));
+  });
+
+  </script>
+  <script src="../assets/js/vendors/stats.min.js"></script>
+</html>

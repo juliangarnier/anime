@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <g id="icon-staggering-reverse" fill="none" fill-rule="evenodd">
+    <rect id="Rectangle-40-Copy-8" width="33" height="33" x="7.5" y="7.5" stroke="#242423" opacity=".3"/>
+    <path id="Path-13-Copy-35" stroke="#242423" stroke-width="2" d="M16 25v-2"/>
+    <path id="Path-13-Copy-34" stroke="#242423" stroke-width="2" d="M20 27v-6"/>
+    <path id="Path-13-Copy-33" stroke="#242423" stroke-width="2" d="M24 29V19"/>
+    <path id="Path-13-Copy-32" stroke="#242423" stroke-width="2" d="M28 31V17"/>
+    <path id="Path-13-Copy-31" stroke="#242423" stroke-width="2" d="M32 33V15"/>
+    <path id="Path-13-Copy-35" stroke="#242423" stroke-width="2"/>
+  </g>
+</svg>

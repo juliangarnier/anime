@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anime states system | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: no-wrap;
+      justify-content: space-around;
+      align-items: center;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .el {
+      width: 50px;
+      height: 50px;
+      background-color: currentColor;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="el color-04"></div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  anime({
+    targets: '.el',
+    translateX: 400,
+    direction: 'reverse'
+  });
+
+
+</script>
+</html>

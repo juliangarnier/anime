@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>stagger | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <style>
+
+    body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .easing-visualizer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 400px;
+      height: 400px;
+    }
+
+    .easing-visualizer div {
+      width: 4px;
+      height: 4px;
+      margin: 0 0 0 0;
+      background-color: #FFF;
+      transform-origin: 50% 100%;
+      border-radius: 50%;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="easing-visualizer"></div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  const is = {
+    arr: a => Array.isArray(a),
+    obj: a => stringContains(Object.prototype.toString.call(a), 'Object'),
+    pth: a => is.obj(a) && a.hasOwnProperty('totalLength'),
+    svg: a => a instanceof SVGElement,
+    dom: a => a.nodeType || is.svg(a),
+    str: a => typeof a === 'string',
+    fnc: a => typeof a === 'function',
+    und: a => typeof a === 'undefined',
+    hex: a => /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a),
+    rgb: a => /^rgb/.test(a),
+    hsl: a => /^hsl/.test(a),
+    col: a => (is.hex(a) || is.rgb(a) || is.hsl(a))
+  }
+
+  function getUnit(val) {
+    const split = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(val);
+    if (split) return split[2];
+  }
+
+  function stagger(val, params = {}) {
+    const direction = params.direction || 'normal';
+    const grid = params.grid;
+    const isRange = is.arr(val);
+    const val1 = isRange ? parseFloat(val[0]) : parseFloat(val);
+    const val2 = isRange ? parseFloat(val[1]) : 0;
+    const start = params.start || 0 + (isRange ? val1 : 0);
+    const easing = params.easing ? anime.easing(params.easing) : null;
+    const unit = getUnit(isRange ? val[1] : val) || 0;
+    const values = [];
+    let maxValue = 0;
+    let from = params.from || 0;
+    let intialValue = from;
+    return (el, i, t) => {
+      if (from === 'middle') intialValue = (t - 1) / 2;
+      if (from === 'last') intialValue = t - 1;
+      if (!values.length) {
+        for (let index = 0; index < t; index++) {
+          if (grid) {
+            // const x = from !== 'middle' ? intialValue%grid[0] : (grid[0]/2)%grid[0];
+            // const y = from !== 'middle' ? Math.ceil(intialValue/grid[1]) : Math.ceil((grid[1]/2)/grid[1]);
+            const x = 19.5%grid[0];
+            const y = 4.5;
+            const dx = x - index%grid[0];
+            const dy = y - Math.ceil(index/grid[1]);
+            //console.log(dx, dy);
+            values.push(Math.sqrt(dx * dx + dy * dy));
+          } else {
+            values.push(Math.abs(intialValue - index));
+          }
+          maxValue = Math.max(...values);
+        }
+      }
+      let progress = values[i];
+      if (easing) progress = easing(progress / maxValue) * maxValue;
+      if (direction === 'reverse') progress = Math.abs(maxValue - progress);
+      const spacing = isRange ? (val2 - val1) / maxValue : val1;
+      return start + (spacing * progress) + unit;
+    }
+  }
+
+  const easingVisualizerEl = document.querySelector('.easing-visualizer');
+  const fragment = document.createDocumentFragment();
+  const numberOfElements = 101;
+
+  for (let i = 0; i < numberOfElements; i++) {
+    fragment.appendChild(document.createElement('div'));
+  }
+
+  easingVisualizerEl.appendChild(fragment);
+
+  anime({
+    targets: '.easing-visualizer div',
+    translateY: (() => {
+      const keyframes = [];
+      for (let ease in anime.penner) {
+        keyframes.push({
+          value: stagger([0, -400], {easing: ease}),
+          delay: stagger(.125)
+        });
+      };
+      keyframes.push({ value: stagger([0, -400], {easing: 'steps(10)'}), delay: stagger(.125) });
+      keyframes.push({ value: 0, delay: stagger(.125) });
+      return keyframes;
+    })(),
+    easing: 'easeInOutSine',
+    duration: 16000,
+    loop: true
+  });
+
+</script>
+</html>

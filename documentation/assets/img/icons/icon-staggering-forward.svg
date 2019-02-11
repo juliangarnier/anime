@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <g id="icon-staggering-forward" fill="none" fill-rule="evenodd">
+    <rect id="Rectangle-40-Copy-7" width="33" height="33" x="7.5" y="7.5" stroke="#242423" opacity=".3"/>
+    <path id="Path-13-Copy-41" stroke="#242423" stroke-width="2" d="M32 25v-2"/>
+    <path id="Path-13-Copy-40" stroke="#242423" stroke-width="2" d="M28 27v-6"/>
+    <path id="Path-13-Copy-39" stroke="#242423" stroke-width="2" d="M24 29V19"/>
+    <path id="Path-13-Copy-38" stroke="#242423" stroke-width="2" d="M20 31V17"/>
+    <path id="Path-13-Copy-37" stroke="#242423" stroke-width="2" d="M16 33V15"/>
+  </g>
+</svg>

@@ -1,11 +1,11 @@
 .hljs {
   display: block;
-  color: #C5C2CB;
+  color: #F6F4F2;
 }
 
 .hljs-comment,
 .hljs-quote {
-  color: #5c6370;
+  color: #A2A09F;
   font-style: italic;
 }
 
@@ -31,6 +31,7 @@
 .hljs-regexp,
 .hljs-addition,
 .hljs-attribute,
+.hljs-attr,
 .hljs-meta-string {
   color: #A6FF8F;
 }

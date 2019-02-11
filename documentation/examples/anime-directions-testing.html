@@ -5,18 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:title" content="anime.js">
-  <meta property="og:url" content="http://animejs.com">
+  <meta property="og:url" content="https://animejs.com">
   <meta property="og:description" content="Javascript Animation Engine">
-  <meta property="og:image" content="http://animejs.com/documentation/assets/img/icons/og.png">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="anime.js">
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
-  <meta name="twitter:image" content="http://animejs.com/documentation/assets/img/icons/twitter.png">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
   <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
-  <link href="../assets/css/anime.css" rel="stylesheet">
-  <script src="../../anime.js"></script>
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <script src="../../lib/anime.min.js"></script>
   <style>
     body {
       display: flex;
@@ -91,10 +91,12 @@
       params.targets = testZoneEl.querySelectorAll('div');
       params.translateX = '29vw';
       params.delay = 1000;
+      params.endDelay = 1000;
+      params.easing = 'easeInOutQuad';
       params.begin = function() { testEl.classList.add('color-03') };
       params.update = function(a) { 
         testEl.classList.add('color-01');
-        progressEl.value = a.progress + '%';
+        progressEl.value = 'Progress ' + Math.round(a.progress) + '%';
       };
       params.complete = function() { testEl.classList.add('color-05') };
       var animation = anime(params);

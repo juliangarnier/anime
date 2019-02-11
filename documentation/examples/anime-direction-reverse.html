@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Direction reverse | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <!-- <script src="../../lib/anime.min.js"></script> -->
+  <!-- <script src="../assets/js/anime/anime.2.2.0.js"></script> -->
+  <style>
+
+    .scroll-area {
+      width: 100%;
+      height: 700vh;
+    }
+
+    .animation-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .pane {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 100vh;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #000;
+      font-size: 40vw;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="scroll-area"></div>
+
+  <div class="animation-wrapper">
+    <div class="pane pane-01">01</div>
+    <div class="pane pane-02">02</div>
+    <div class="pane pane-03">03</div>
+    <div class="pane pane-04">04</div>
+    <div class="pane pane-05">05</div>
+    <div class="pane pane-06">06</div>
+    <div class="pane pane-07">07</div>
+    <div class="pane pane-08">08</div>
+    <div class="pane pane-09">09</div>
+    <div class="pane pane-10">10</div>
+    <div class="pane pane-11">11</div>
+    <div class="pane pane-12">12</div>
+    <div class="pane pane-13">13</div>
+    <div class="pane pane-14">14</div>
+  </div>
+
+</body>
+<script type="module">
+
+  import anime from '../../src/index.js';
+
+  var began = 0;
+  var completed = 0;
+
+  window.tl = anime({
+    targets: '.pane-01',
+    translateY: '-100vh',
+    easing: 'easeInOutSine',
+    duration: 200,
+    direction: 'reverse',
+    update: function(instance) {
+      console.log(instance);
+    }
+  })
+
+  </script>
+  <!-- <script src="../assets/js/vendors/stats.min.js"></script> -->
+</html>
