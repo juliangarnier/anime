@@ -1138,11 +1138,12 @@ function anime(params = {}) {
     instance.play();
   }
 
-  instance.reset();
-
   instance.cleaner = function () {
     if(instance.cleanup != null) setCallback('cleanup')
   }
+
+
+  instance.reset();
 
   if (instance.autoplay) instance.play();
 
