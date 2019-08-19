@@ -13,13 +13,13 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
   <link href="../assets/css/animejs.css" rel="stylesheet">
   <style>
 
     :root {
-      font-size: 24px;
+      font-size: 16px;
     }
 
     body {
@@ -40,7 +40,7 @@
       position: absolute;
       width: 1rem;
       height: 1rem;
-      border-radius: 50%;
+      /*border-radius: 50%;*/
       background-color: currentColor;
     }
 
@@ -68,7 +68,7 @@
 
   easingVisualizerEl.appendChild(fragment);
 
-  anime.setValue('.transform-demo .dot', {rotate: function() { return anime.random(0, 360); } });
+  // anime.set('.transform-demo .dot', {rotate: function() { return anime.random(0, 360); } });
 
   anime({
     targets: '.transform-demo .dot',
@@ -76,7 +76,7 @@
       var keyframes = [];
       for (var i = 0; i < 40; i++) {
         keyframes.push({
-          value: function() { return anime.random(50, 150) / 100; },
+          value: function() { return anime.random(25, 125) / 100; },
           duration: anime.random(500, 1000),
         });
       }
@@ -86,7 +86,7 @@
       var keyframes = [];
       for (var i = 0; i < 40; i++) {
         keyframes.push({
-          value: function() { return anime.random(0, 50) + 'vh'; },
+          value: function() { return anime.random(-25, 25) + 'vh'; },
           duration: anime.random(1000, 2000),
         });
       }
@@ -96,13 +96,14 @@
       var keyframes = [];
       for (var i = 0; i < 40; i++) {
         keyframes.push({
-          value: function() { return anime.random(0, 50) + 'vh'; },
+          value: function() { return anime.random(-25, 25) + 'vh'; },
           duration: anime.random(2000, 4000),
         });
       }
       return keyframes;
     })(),
-    easing: 'easeOutQuad'
+    easing: 'easeOutQuad',
+    delay: anime.stagger(2)
   })
 
 </script>

@@ -13,8 +13,9 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <script src="../../lib/anime.min.js"></script>
   <!-- <script src="../assets/js/anime/anime.2.0.2.js"></script> -->
@@ -45,23 +46,22 @@
   function createEl(i) {
     var el = document.createElement('div');
     var hue = Math.round(360 / numberOfEls * i);
-    var angle = i;
     el.classList.add('el');
     //el.style.border = '5px solid hsl(' + hue + ', 50%, 50%)';
     el.style.backgroundColor = 'hsl(' + hue + ', 50%, 50%)';
     wrapperEl.appendChild(el);
     anime({
       targets: el,
-      translateX: Math.sin(angle) * distance + 'rem',
-      translateY: Math.cos(angle) * distance + 'rem',
+      translateX: Math.sin(i) * distance + 'rem',
+      translateY: Math.cos(i) * distance + 'rem',
       scale: [
-        {value: [0, 1]},
-        {value: 0}
+        {value: [.1, 2]},
+        {value: .1}
       ],
       easing: 'easeInOutSine',
       loop: true,
       duration: duration,
-      startTime: i * (duration / numberOfEls)
+      delay: i * (duration / numberOfEls)
     });
   };
 

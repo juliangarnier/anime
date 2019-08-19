@@ -293,7 +293,7 @@ anime({
   <h3 class="demo-title">CSS Transforms</h3>
   <div class="demo-description">
     <p>
-      Animate CSS transforms properties indivudaly.
+      Animate CSS transforms properties individually.
     </p>
     <p class="bubble info">
       It's possible to specify different timing for each transforms properties, more details in the <a class="color-prop-params" href="#specificPropParameters">specific property parameters</a> section.
@@ -1204,7 +1204,7 @@ anime({
     easing: 'easeInOutSine'
   },
   rotate: {
-    value: '+=2turn', // 0 * 2 = '2turn'
+    value: '+=2turn', // 0 + 2 = '2turn'
     duration: 1800,
     easing: 'easeInOutSine'
   },
@@ -1220,7 +1220,7 @@ anime({
   <h3 class="demo-title">Colors</h3>
   <div class="demo-description">
     <p>
-      <i>anime.js</i> accepts and converts Haxadecimal, RGB, RGBA, HSL, and HSLA color values.
+      <i>anime.js</i> accepts and converts Hexadecimal, RGB, RGBA, HSL, and HSLA color values.
     </p>
     <p class="bubble warning">
       CSS color codes ( e.g. : <code>'red', 'yellow', 'aqua'</code> ) are not supported.
@@ -1231,7 +1231,7 @@ anime({
         <td>Example</td>
       </thead>
       <tr>
-        <td>Haxadecimal</td>
+        <td>Hexadecimal</td>
         <td><code>'#FFF'</code> or <code>'#FFFFFF'</code></td>
       </tr>
       <tr>
@@ -1419,7 +1419,7 @@ anime({
       Animation keyframes are defined using an Array, within the <code>keyframes</code> property.
     </p>
     <p class="bubble info">
-      If there is no duration specified inside the keyframes, each keyframe duration will be equal to the animation total duration divided by the number of keyframes.
+      If there is no duration specified inside the keyframes, each keyframe duration will be equal to the animation's total duration divided by the number of keyframes.
     </p>
     <table>
       <thead>
@@ -1467,7 +1467,7 @@ anime({
       Similar to <a class="color-keyframes" href="#animationKeyframes">animation keyframes</a>, property keyframes are defined using an Array of property Object. Property keyframes allow overlapping animations since each property have its own keyframes array.
     </p>
     <p class="bubble info">
-      If their is no duration specified inside the keyframes, each keyframe duration will be equal to the animation total duration divided by the number of keyframes.
+      If there is no duration specified inside the keyframes, each keyframe duration will be equal to the animation's total duration divided by the number of keyframes.
     </p>
     <table>
       <thead>
@@ -2460,7 +2460,7 @@ tl
 .add({
   targets: '.offsets-demo .el.triangle',
   translateX: 250,
-}, 0); // absolute offset
+}, 400); // absolute offset
 
 /*DEMO*/
 }
@@ -3215,7 +3215,7 @@ animation.finished.then(logFinished);
       <tr>
         <td><code>'angle'</code></td>
         <td><code>myPath('angle')</code></td>
-        <td>Return the current angle value in <code>'degres'</code> of the SVG path</td>
+        <td>Return the current angle value in <code>'degrees'</code> of the SVG path</td>
       </tr>
     </table>
   </div>
@@ -3436,6 +3436,11 @@ anime({
         <td><code>'easeOutBack'</code></td>
         <td><code>'easeInOutBack'</code></td>
       <tr>
+      <tr>
+        <td><code>'easeInBounce'</code></td>
+        <td><code>'easeOutBounce'</code></td>
+        <td><code>'easeInOutBounce'</code></td>
+      <tr>
     </table>
   </div>
   <div class="demo-content penner-equations-demo">
@@ -3445,10 +3450,39 @@ anime({
 /*DEMO*/
 var demoContentEl = document.querySelector('.penner-equations-demo');
 var fragment = document.createDocumentFragment();
+var easingNames = [
+  'easeInQuad',
+  'easeInCubic',
+  'easeInQuart',
+  'easeInQuint',
+  'easeInSine',
+  'easeInExpo',
+  'easeInCirc',
+  'easeInBack',
+  'easeInBounce',
+  'easeInOutQuad',
+  'easeInOutCubic',
+  'easeInOutQuart',
+  'easeInOutQuint',
+  'easeInOutSine',
+  'easeInOutExpo',
+  'easeInOutCirc',
+  'easeInOutBack',
+  'easeInOutBounce',
+  'easeOutQuad',
+  'easeOutCubic',
+  'easeOutQuart',
+  'easeOutQuint',
+  'easeOutSine',
+  'easeOutExpo',
+  'easeOutCirc',
+  'easeOutBack',
+  'easeOutBounce'
+]
 
 function createEasingDemo(easing) {
   var demoEl = document.createElement('div');
-  demoEl.classList.add('stretched','square','el');
+  demoEl.classList.add('stretched','square','el', 'easing-'+easing);
   anime({
     targets: demoEl,
     translateX: 250,
@@ -3456,16 +3490,15 @@ function createEasingDemo(easing) {
     loop: true,
     delay: 200,
     endDelay: 200,
-    easing: easing,
+    duration: 2000,
+    easing: easing
   });
   fragment.appendChild(demoEl);
 }
 
-for (var easeName in anime.penner) {
-  if (Array.isArray(anime.penner[easeName])) {
-    createEasingDemo(easeName);
-  }
-}
+easingNames.forEach(function(easeName) {
+  createEasingDemo(easeName);
+});
 
 demoContentEl.innerHTML = '';
 demoContentEl.appendChild(fragment);

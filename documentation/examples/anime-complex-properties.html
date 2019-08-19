@@ -13,8 +13,8 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <!-- <script src="../../lib/anime.min.js"></script> -->
   <!-- <script src="../assets/js/anime/anime.1.3.js"></script> -->
@@ -22,6 +22,7 @@
   <style>
     body {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -40,18 +41,27 @@
     .clip-path {
       border-radius: 0;
     }
+    .auto-property {
+      background-image: radial-gradient(50% 100%, #FFF7A0 50%, #FF7A6D 100%);
+      background-size: auto 100px;
+    }
+    .exponent-values {
+      width: 300px;
+      background-color: transparent;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="box-shadow item color-01"></div>
-  <div class="unit-less item color-03"></div>
-  <div class="specified-unit item color-05"></div>
-  <div class="filter item color-07"></div>
-  <div class="rgba item color-09"></div>
-  <div class="calc item color-11"></div>
-  <div class="zero-value item color-02"></div>
-  <div class="round-value item color-04"></div>
-  <div class="clip-path item color-06"></div>
+  <div class="box-shadow item color-red"></div>
+  <div class="unit-less item color-orange"></div>
+  <div class="specified-unit item color-lightorange"></div>
+  <div class="filter item color-yellow"></div>
+  <div class="rgba item color-citrus"></div>
+  <div class="calc item color-green"></div>
+  <div class="zero-value item color-darkgreen"></div>
+  <div class="round-value item color-turquoise"></div>
+  <div class="clip-path item color-skyblue"></div>
   <svg class="item" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <g id="Page-1" fill="none" fill-rule="evenodd">
       <g id="svg" fill="#A7FF87">
@@ -60,7 +70,9 @@
     </g>
   </svg>
   <input class="item" type="range" value="0" min="0" max="100">
-  <div class="basic-css color-01 item"></div>
+  <div class="basic-css color-lavender item"></div>
+  <div class="auto-property color-purple item"></div>
+  <input class="exponent-values color-pink item" value="-1.1234567890123456789e+30px"></input>
   <script type="module">
     
     import anime from "../../src/index.js";
@@ -78,14 +90,14 @@
     });
     var unitLess = anime({
       targets: '.unit-less',
-      borderRadius: 10,
+      borderRadius: 16,
       loop: true,
       direction: 'alternate',
       easing: 'linear'
     });
     var specifiedUnit = anime({
       targets: '.specified-unit',
-      borderRadius: ['0px', '50px'],
+      borderRadius: '1em',
       loop: true,
       direction: 'alternate',
       easing: 'linear'
@@ -121,8 +133,8 @@
     var roundValue = anime({
       targets: '.round-value',
       translateY: 100,
+      round: .1,
       loop: true,
-      round: 1,
       direction: 'alternate',
       easing: 'linear'
     });
@@ -141,7 +153,7 @@
       easing: 'linear'
     });
     var rangeValue = anime({
-      targets: 'input',
+      targets: 'input[type="range"]',
       value: 100,
       loop: true,
       direction: 'alternate',
@@ -149,8 +161,23 @@
     });
     var basicCSS = anime({
       targets: '.basic-css',
-      width: 100,
-      height: 100,
+      width: 50,
+      height: 50,
+      loop: true,
+      direction: 'alternate',
+      easing: 'linear'
+    });
+    var autoProperty = anime({
+      targets: '.auto-property',
+      backgroundSize: ['auto 10px', 'auto 400px'],
+      margin: '20% 40px 10px 30px',
+      loop: true,
+      direction: 'alternate',
+      easing: 'linear'
+    });
+    var exponentValues = anime({
+      targets: '.exponent-values',
+      value: '+1.0123456789012346e+21px',
       loop: true,
       direction: 'alternate',
       easing: 'linear'

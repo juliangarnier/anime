@@ -13,8 +13,9 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <style>
 
@@ -82,7 +83,7 @@
     delay: anime.stagger(10, {from: 'center'})
   })
   .add({
-    scale: anime.stagger([2.5, 1], {from: 'center', easing: 'easeInSine'}),
+    scale: anime.stagger([2.5, 1], {from: 'center', easing: 'easeInOutCirc'}),
     translateX: anime.stagger([-200, 200]),
     translateY: anime.stagger([-200, 200]),
     rotate: 0,

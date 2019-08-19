@@ -13,9 +13,10 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
   <link href="../assets/css/animejs.css" rel="stylesheet">
+  <link href="../assets/css/documentation.css" rel="stylesheet">
   <style>
 
     :root {
@@ -34,26 +35,34 @@
       position: relative;
       display: flex;
       align-items: center;
-      width: 16rem;
-      height: 16rem;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 908px;
+      padding-bottom: 50%;
+    }
+
+    .easing-visualizer .wrapper {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
     }
 
     .easing-visualizer .bar {
       width: 2px;
       height: 4px;
+      margin: 0 3px;
       background-color: currentColor;
       transform-origin: 50% 50%;
     }
 
-    .easing-visualizer .bar:not(:last-child) {
-      margin-right: 4px;
-    }
-
     .easing-visualizer .dot {
-      position: absolute;
+      position: relative;
       width: 8px;
       height: 8px;
-      margin-left: -3px;
       background-color: currentColor;
       border-radius: 50%;
     }
@@ -62,7 +71,10 @@
 </head>
 <body>
 
-  <div class="easing-visualizer"></div>
+  <div class="easing-visualizer">
+    <div class="wrapper bars-wrapper"></div>
+    <div class="wrapper dots-wrapper"></div>
+  </div>
 
 </body>
 <script type="module">
@@ -70,8 +82,11 @@
   import anime from '../../src/index.js';
 
   const easingVisualizerEl = document.querySelector('.easing-visualizer');
-  const fragment = document.createDocumentFragment();
-  const numberOfBars = 63;
+  const barsWrapperEl = easingVisualizerEl.querySelector('.bars-wrapper');
+  const dotsWrapperEl = easingVisualizerEl.querySelector('.dots-wrapper');
+  const barsFragment = document.createDocumentFragment();
+  const dotsFragment = document.createDocumentFragment();
+  const numberOfBars = 101;
 
   for (let i = 0; i < numberOfBars; i++) {
     const barEl = document.createElement('div');
@@ -79,13 +94,14 @@
     barEl.classList.add('bar');
     dotEl.classList.add('dot');
     dotEl.classList.add('color-red');
-    fragment.appendChild(barEl);
-    fragment.appendChild(dotEl);
+    barsFragment.appendChild(barEl);
+    dotsFragment.appendChild(dotEl);
   }
 
-  easingVisualizerEl.appendChild(fragment);
+  barsWrapperEl.appendChild(barsFragment);
+  dotsWrapperEl.appendChild(dotsFragment);
 
-  anime.setValue('.easing-visualizer .dot', { translateX: anime.stagger(6) });
+  // anime.setValue('.easing-visualizer .dot', { translateX: anime.stagger(6) });
 
   function animateEasing() {
 
@@ -103,7 +119,7 @@
     })
     .add({
       targets: '.easing-visualizer .bar',
-      scaleY: anime.stagger([1, 88], {easing: ease, from: 'center', direction: 'reverse'}),
+      scaleY: anime.stagger([1, 100], {easing: ease, from: 'center', direction: 'reverse'}),
       delay: anime.stagger(14, {from: 'center'})
     })
     .add({

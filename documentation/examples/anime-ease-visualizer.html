@@ -13,8 +13,9 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <script src="../../lib/anime.min.js"></script>
   <style>
@@ -55,19 +56,17 @@
     }
     .visualizer-wrapper {
       position: relative;
-      width: 200px;
-      height: 200px;
+      width: 100%;
+      height: 100%;
     }
     .visualizer {
       position: relative;
-      width: 100px;
-      height: 100px;
-      transform: scale(2);
-      transform-origin: 0 0;
+      width: 100%;
     }
     .value {
+      position: relative;
       width: 20px;
-      height: 200px;
+      height: 100%;
       margin-left: 20px;
     }
     @media screen and (min-width: 980px) {
@@ -85,9 +84,6 @@
       .visualizer-wrapper {
         width: 400px;
         height: 400px;
-      }
-      .visualizer {
-        transform: scale(4);
       }
       .value {
         width: 40px;
@@ -110,35 +106,55 @@
       height: 1px;
       transform-origin: 100% 0;
     }
+    .graph {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
     .cursor {
       position: absolute;
       z-index: 2;
-      top: 0;
-      left: 100%;
-      width: 10px;
-      height: 10px;
-      margin: -5px 0 0 10px;
+      width: 40px;
+      height: 40px;
+      margin-top: -20px;
       background: #FF1461;
       border-radius: 50%;
       transform: translateY(100px);
     }
-    svg {
+    .curve {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
       overflow: visible;
       position: relative;
       z-index: 1;
       width: 100%;
       height: 100%;
     }
-    path {
-      fill: none;
-      stroke: #18FF92;
+    .curve-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      margin-bottom: -3px;
+      margin-left: -3px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background-color: #18FF92;
+    }
+    .curve-dot:first-child {
+      margin-left: -3px;
+    }
+    .curve-dot:last-child {
+      margin-right: -4px;
     }
     button {
       opacity: 1;
       position: relative;
       color: currentColor;
       font-size: 16px;
-      width: calc(25% + 1px);
+      width: calc(50% + 1px);
       border: 1px solid #09090B;
       background: transparent;
       margin: -1px 0 0 -1px;
@@ -177,68 +193,154 @@
         <div class="axis x"></div>
         <div class="axis y"></div>
         <div class="visualizer">
-          <div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
-            <div class="cursor"></div>
+          <div class="curve">
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
+            <div class="curve-dot"></div>
           </div>
-          <svg viewBox="0 0 100 100">
-            <path class="curve"/>
-          </svg>
         </div>
       </div>
-      <div class="value grid"></div>
+      <div class="value grid">
+        <div class="graph">
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+          <div class="cursor"></div>
+        </div>
+      </div>
     </div>
     <div class="options">
       <label>Ease In</label>
-      <button class="active" value="0.550, 0.085, 0.680, 0.530" name="easeInQuad" >Quad</button>
-      <button value="0.550, 0.055, 0.675, 0.190" name="easeInCubic" >Cubic</button>
-      <button value="0.895, 0.030, 0.685, 0.220" name="easeInQuart" >Quart</button>
-      <button value="0.755, 0.050, 0.855, 0.060" name="easeInQuint" >Quint</button>
-      <button value="0.470, 0.000, 0.745, 0.715" name="easeInSine" >Sine</button>
-      <button value="0.950, 0.050, 0.795, 0.035" name="easeInExpo" >Expo</button>
-      <button value="0.600, 0.040, 0.980, 0.335" name="easeInCirc" >Circ</button>
-      <button value="0.600, -0.280, 0.735, 0.045" name="easeInBack" >Back</button>
+      <button class="active" value="easeInQuad" >Quad</button>
+      <button value="easeInCubic" >Cubic</button>
+      <button value="easeInQuart" >Quart</button>
+      <button value="easeInQuint" >Quint</button>
+      <button value="easeInSine" >Sine</button>
+      <button value="easeInExpo" >Expo</button>
+      <button value="easeInCirc" >Circ</button>
+      <button value="easeInBack" >Back</button>
+      <button value="easeInBounce" >Bounce</button>
+      <button value="easeInElastic" >Elastic</button>
       <label>Ease Out</label>
-      <button value="0.250, 0.460, 0.450, 0.940" name="easeOutQuad" >Quad</button>
-      <button value="0.215, 0.610, 0.355, 1.000" name="easeOutCubic" >Cubic</button>
-      <button value="0.165, 0.840, 0.440, 1.000" name="easeOutQuart" >Quart</button>
-      <button value="0.230, 1.000, 0.320, 1.000" name="easeOutQuint" >Quint</button>
-      <button value="0.390, 0.575, 0.565, 1.000" name="easeOutSine" >Sine</button>
-      <button value="0.190, 1.000, 0.220, 1.000" name="easeOutExpo" >Expo</button>
-      <button value="0.075, 0.820, 0.165, 1.000" name="easeOutCirc" >Circ</button>
-      <button value="0.175, 0.885, 0.320, 1.275" name="easeOutBack" >Back</button>
+      <button value="easeOutQuad" >Quad</button>
+      <button value="easeOutCubic" >Cubic</button>
+      <button value="easeOutQuart" >Quart</button>
+      <button value="easeOutQuint" >Quint</button>
+      <button value="easeOutSine" >Sine</button>
+      <button value="easeOutExpo" >Expo</button>
+      <button value="easeOutCirc" >Circ</button>
+      <button value="easeOutBack" >Back</button>
+      <button value="easeOutBounce" >Bounce</button>
+      <button value="easeOutElastic" >Elastic</button>
       <label>Ease In Out</label>
-      <button value="0.455, 0.030, 0.515, 0.955" name="easeInOutQuad" >Quad</button>
-      <button value="0.645, 0.045, 0.355, 1.000" name="easeInOutCubic" >Cubic</button>
-      <button value="0.770, 0.000, 0.175, 1.000" name="easeInOutQuart" >Quart</button>
-      <button value="0.860, 0.000, 0.070, 1.000" name="easeInOutQuint" >Quint</button>
-      <button value="0.445, 0.050, 0.550, 0.950" name="easeInOutSine" >Sine</button>
-      <button value="1.000, 0.000, 0.000, 1.000" name="easeInOutExpo" >Expo</button>
-      <button value="0.785, 0.135, 0.150, 0.860" name="easeInOutCirc" >Circ</button>
-      <button value="0.680, -0.550, 0.265, 1.550" name="easeInOutBack" >Back</button>
+      <button value="easeInOutQuad" >Quad</button>
+      <button value="easeInOutCubic" >Cubic</button>
+      <button value="easeInOutQuart" >Quart</button>
+      <button value="easeInOutQuint" >Quint</button>
+      <button value="easeInOutSine" >Sine</button>
+      <button value="easeInOutExpo" >Expo</button>
+      <button value="easeInOutCirc" >Circ</button>
+      <button value="easeInOutBack" >Back</button>
+      <button value="easeInOutBounce" >Bounce</button>
+      <button value="easeInOutElastic" >Elastic</button>
     </div>
   </div>
   <script>
 
   var pathEl = document.querySelector('.curve');
   var presetsEls = document.querySelectorAll('.options button');
-  var ratio = window.innerWidth >= 980 ? 2 : 1;
   var duration = 1000;
 
   function animateProgress(easingName) {
@@ -254,19 +356,19 @@
     })
     .add({
       targets: '.axis.x',
-      translateX: [0, (200 * ratio)],
+      translateX: [0, 399],
       translateZ: [0, 0]
      }, 0)
     .add({
       targets: '.axis.y',
-      translateY: [0, -(200 * ratio)],
+      translateY: [0, -399],
       translateZ: [0, 0],
       easing: easingName,
       endDelay: 1000
     }, 0)
     .add({
       targets: '.cursor',
-      translateY: [100, 0],
+      translateY: [400, 0],
       translateZ: [0, 0],
       easing: easingName,
       update: function(anim) {
@@ -283,32 +385,19 @@
 
   }
 
-  function convertCoordinates(coords) {
-    var x1 = coords[0] * 100;
-    var y1 = 100 - (coords[1] * 100);
-    var x2 = coords[2] * 100;
-    var y2 = 100 - (coords[3] * 100);
-    return 'M0 100C' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2 + ' 100 0';
-  }
-
-  function getCoordinates(value) {
-    return convertCoordinates(value.split(','));
-  }
-
   function changeEase(event) {
     for (var i = 0; i < presetsEls.length; i++) {
       presetsEls[i].classList.remove('active');
     }
     var buttonEl = event.target;
-    var value = buttonEl.value;
-    var name = buttonEl.name;
+    var easingName = buttonEl.value;
     buttonEl.classList.add('active');
-    var coordinates = getCoordinates(value);
-    animateProgress(name);
-    anime.remove(pathEl);
+    animateProgress(easingName);
     anime({
-      targets: pathEl,
-      d: coordinates
+      targets: '.curve-dot',
+      translateY: anime.stagger([0, -400], {easing: easingName}),
+      easing: 'easeInOutQuad',
+      duration: 400
     });
   }
 

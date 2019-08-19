@@ -37,13 +37,13 @@ or manual [download](https://github.com/juliangarnier/anime/archive/master.zip).
 #### ES6 modules
 
 ```javascript
-import anime from 'lib/anime.es.js';
+import anime from 'animejs/lib/anime.es.js';
 ```
 
 #### CommonJS
 
 ```javascript
-const anime = require('lib/anime.js');
+const anime = require('anime');
 ```
 
 #### File include

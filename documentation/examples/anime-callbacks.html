@@ -13,8 +13,9 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <style>
 
@@ -25,7 +26,8 @@
       align-items: center;
       position: absolute;
       width: 100%;
-      height: 100%;
+      height: 100vh;
+      padding-bottom: 128px;
     }
 
     .el {
@@ -90,9 +92,9 @@
     /* Player animation */
 
     .timeline {
-      position: absolute;
+      position: fixed;
       bottom: 0;
-      height: 100px;
+      height: 128px;
       padding-top: 4px;
       background-color: #000;
     }
@@ -168,27 +170,28 @@
     rotate: {
       value: 720,
       easing: 'easeInOutCirc',
-      duration: 1000,
+      duration: 500,
       delay: 500
     },
     opacity: {
       value: .5,
       easing: 'linear',
-      duration: 2000,
-      delay: 1500,
+      duration: 1000,
+      delay: 1000,
       endDelay: 0
     },
     delay: 1000,
-    endDelay: 1500,
-    duration: 2000,
+    endDelay: 500,
+    duration: 1000,
     easing: 'easeOutQuad',
-    direction: 'alternate',
-    loop: 3,
+    direction: 'reverse',
+    loop: 2,
     autoplay: false,
     update: function(a) {
       animationTimeLogEl.innerHTML = 'progress : ' + a.progress + '<br>currentTime : ' + a.currentTime;
     },
   });
+
 
   var tl = anime.timeline({
     targets: '.el.color-08',
@@ -198,7 +201,6 @@
     loop: 3,
     update: function(a) {
       timelineTimeLogEl.innerHTML = 'progress : ' + a.progress + '<br>currentTime : ' + a.currentTime;
-      // console.log(a.progress);
     }
   })
   .add({
@@ -212,9 +214,6 @@
     rotate: 360,
     endDelay: 1000
   }, '-=500');
-
-
-  console.log(tl);
 
 
   function animePlayer(instance, playerClass) {
@@ -243,14 +242,14 @@
       anim.player.delayEl = createEl('div', 'tl-delay', anim.player.animationEl);
       anim.player.endDelayEl = createEl('div', 'tl-end-delay', anim.player.animationEl);
       anim.update = function() {
-        anime.setValue(anim.player.animationEl, {
+        anime.set(anim.player.animationEl, {
           left: convertMStoEM(timelineOffset) + 'em',
           width: convertMStoEM(anim.duration) + 'em'
         });
-        anime.setValue(anim.player.delayEl, {width: (anim.delay / anim.duration) * 100 + '%'});
-        anime.setValue(anim.player.endDelayEl, {width: (anim.endDelay / anim.duration) * 100 + '%'});
+        anime.set(anim.player.delayEl, {width: (anim.delay / anim.duration) * 100 + '%'});
+        anime.set(anim.player.endDelayEl, {width: (anim.endDelay / anim.duration) * 100 + '%'});
       }
-      anime.setValue(anim.player.animationEl, {color: colors[colorIndex]});
+      anime.set(anim.player.animationEl, {color: colors[colorIndex]});
       colorIndex++;
       if (!colors[colorIndex]) colorIndex = 0;
       anim.update();
@@ -269,12 +268,14 @@
       easing: 'linear',
       update: function(a) {
         instance.seek(a.currentTime);
+      },
+      complete: function(a) {
+        instance.seek(a.currentTime);
       }
     });
 
     if (instance.children.length) {
       instance.children.forEach(function(child) {
-        console.log(child.timelineOffset);
         child.animations.forEach(function(anim) {
           createAnimationLog(anim, child.timelineOffset);
         });
@@ -328,9 +329,25 @@
 
   }
 
-  logCallbacks(animation, document.querySelector('.log-animation'), ['begin', 'loopBegin', 'changeBegin', 'change', 'changeComplete', 'loopComplete', 'complete']);
+  logCallbacks(animation, document.querySelector('.log-animation'), [
+    'begin',
+    'loopBegin',
+    'changeBegin',
+    'change',
+    'changeComplete',
+    'loopComplete',
+    'complete'
+  ]);
 
-  logCallbacks(tl, document.querySelector('.log-timeline'), ['begin', 'loopBegin', 'changeBegin', 'change', 'changeComplete', 'loopComplete', 'complete']);
+
+  logCallbacks(tl, document.querySelector('.log-timeline'), ['begin',
+    'loopBegin',
+    'changeBegin',
+    'change',
+    'changeComplete',
+    'loopComplete',
+    'complete'
+  ]);
 
 
 </script>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG line drawing | anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript Animation Engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/icons/og.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:description" content="Javascript Animation Engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="../assets/css/documentation.css" rel="stylesheet">
+  <!-- <script src="../../lib/anime.min.js"></script> -->
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+    .container {
+      position: relative;
+      width: 512px;
+      height: 224px;
+    }
+
+    .container > svg {
+      width: 100%;
+    }
+
+    .color-green {
+      position: absolute;
+      top: .5rem;
+      left: .5rem;
+      width: 1rem;
+      height: 1rem;
+      background-color: currentColor;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <svg viewBox="0 0 256 112">
+    <path fill="none" stroke="#FFF" d="M8,56 C8,33.90861 25.90861,16 48,16 C70.09139,16 88,33.90861 88,56 C88,78.09139 105.90861,92 128,92 C150.09139,92 160,72 160,56 C160,40 148,24 128,24 C108,24 96,40 96,56 C96,72 105.90861,92 128,92 C154,93 168,78 168,56 C168,33.90861 185.90861,16 208,16 C230.09139,16 248,33.90861 248,56 C248,78.09139 230.09139,96 208,96 L48,96 C25.90861,96 8,78.09139 8,56 Z"/>
+  </svg>
+  <div class="color-green"></div>
+  </div>
+</div>
+  <script type="module">
+  import anime from '../../src/index.js';
+  var path = anime.path('path');
+
+  anime({
+    targets: '.color-green',
+    translateX: path('x'),
+    translateY: path('y'),
+    rotate: path('angle'),
+    duration: 3000,
+    loop: true,
+    easing: 'linear'
+  });
+  </script>
+</body>
+</html>
