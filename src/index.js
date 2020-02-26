@@ -594,8 +594,8 @@ function getPathProgress(path, progress) {
   const p0 = point(-1);
   const p1 = point(+1);
   switch (path.property) {
-    case 'x': return (p.x - svg.x) * svg.w;
-    case 'y': return (p.y - svg.y) * svg.h;
+    case 'x': return (p.x - svg.x);
+    case 'y': return (p.y - svg.y);
     case 'angle': return Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
   }
 }
