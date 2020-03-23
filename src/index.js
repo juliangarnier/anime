@@ -715,11 +715,11 @@ function normalizeTweens(prop, animatable) {
   return prop.tweens.map(t => {
     const tween = normalizeTweenValues(t, animatable);
     const tweenValue = tween.value;
-    let to = is.arr(tweenValue) ? tweenValue[1] : tweenValue;
+    let to = calcTweenValue(animatable.target, prop.name, is.arr(tweenValue) ? tweenValue[1] : tweenValue);
     const toUnit = getUnit(to);
     const originalValue = getOriginalTargetValue(animatable.target, prop.name, toUnit, animatable);
     const previousValue = previousTween ? previousTween.to.original : originalValue;
-    const from = is.arr(tweenValue) ? tweenValue[0] : previousValue;
+    const from = calcTweenValue(animatable.target, prop.name, is.arr(tweenValue) ? tweenValue[0] : previousValue);
     const fromUnit = getUnit(from) || getUnit(originalValue);
     const unit = toUnit || fromUnit;
     if (is.und(to)) to = previousValue;
@@ -734,6 +734,24 @@ function normalizeTweens(prop, animatable) {
     previousTween = tween;
     return tween;
   });
+}
+
+function calcTweenValue(el, propName, value) {
+  switch (getAnimationType(el, propName)) {
+    case 'css': return calcCssTweenValue(el, propName, value);
+    default: return value;
+  }
+}
+
+// calculate css value from obscure values like 'auto'
+function calcCssTweenValue(el, propName, value) {
+  if(getUnit(value) !== undefined){ return value } // no calculation required
+  let uppercasePropName = propName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  let currentValue = el.style[propName];
+  el.style[propName] = value; // temporarily change value
+  let tweenValue = getComputedStyle(el).getPropertyValue(uppercasePropName) || value;
+  el.style[propName] = currentValue; // reset original value
+  return tweenValue;
 }
 
 // Tween progress
