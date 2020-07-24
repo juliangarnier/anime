@@ -13,8 +13,9 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <style>
 
@@ -390,14 +391,14 @@
       anim.player.delayEl = createEl('div', 'tl-delay', anim.player.animationEl);
       anim.player.endDelayEl = createEl('div', 'tl-end-delay', anim.player.animationEl);
       anim.update = function() {
-        anime.setValue(anim.player.animationEl, {
+        anime.set(anim.player.animationEl, {
           left: convertMStoEM(timelineOffset) + 'em',
           width: convertMStoEM(anim.duration * 3) + 'em'
         });
-        anime.setValue(anim.player.delayEl, {width: (anim.delay / anim.duration) * 100 + '%'});
-        anime.setValue(anim.player.endDelayEl, {width: (anim.endDelay / anim.duration) * 100 + '%'});
+        anime.set(anim.player.delayEl, {width: (anim.delay / anim.duration) * 100 + '%'});
+        anime.set(anim.player.endDelayEl, {width: (anim.endDelay / anim.duration) * 100 + '%'});
       }
-      anime.setValue(anim.player.animationEl, {color: colors[colorIndex]});
+      anime.set(anim.player.animationEl, {color: colors[colorIndex]});
       colorIndex++;
       if (!colors[colorIndex]) colorIndex = 0;
       anim.update();

@@ -13,8 +13,9 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="../assets/css/animejs.css" rel="stylesheet">
   <link href="../assets/css/documentation.css" rel="stylesheet">
   <script src="../../lib/anime.min.js"></script>
   <style>
@@ -93,21 +94,21 @@
       params.delay = 1000;
       params.endDelay = 1000;
       params.easing = 'easeInOutQuad';
-      params.begin = function() { testEl.classList.add('color-03') };
+      params.begin = function() { testEl.classList.add('color-lightorange') };
       params.update = function(a) { 
-        testEl.classList.add('color-01');
+        testEl.classList.add('color-red');
         progressEl.value = 'Progress ' + Math.round(a.progress) + '%';
       };
-      params.complete = function() { testEl.classList.add('color-05') };
+      params.complete = function() { testEl.classList.add('color-darkgreen') };
       var animation = anime(params);
       animation.finished.then(function() {
         promiseEl.value = 'Promise resolved'
         console.log('Promise resolved');
       });
       testEl.onclick = function() {
-        testEl.classList.add('color-01');
-        testEl.classList.remove('color-03');
-        testEl.classList.remove('color-05');
+        testEl.classList.add('color-red');
+        testEl.classList.remove('color-lightorange');
+        testEl.classList.remove('color-darkgreen');
         animation.restart();
       }
     }

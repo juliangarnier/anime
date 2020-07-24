@@ -37,13 +37,13 @@ or manual [download](https://github.com/juliangarnier/anime/archive/master.zip).
 #### ES6 modules
 
 ```javascript
-import anime from 'lib/anime.es.js';
+import anime from 'animejs/lib/anime.es.js';
 ```
 
 #### CommonJS
 
 ```javascript
-const anime = require('lib/anime.js');
+const anime = require('animejs');
 ```
 
 #### File include
@@ -74,7 +74,7 @@ anime({
 * [Animation parameters](https://animejs.com/documentation/#direction)
 * [Values](https://animejs.com/documentation/#unitlessValue)
 * [Keyframes](https://animejs.com/documentation/#animationKeyframes)
-* [Stagering](https://animejs.com/documentation/#staggeringBasics)
+* [Staggering](https://animejs.com/documentation/#staggeringBasics)
 * [Timeline](https://animejs.com/documentation/#timelineBasics)
 * [Controls](https://animejs.com/documentation/#playPause)
 * [Callbacks and promises](https://animejs.com/documentation/#update)

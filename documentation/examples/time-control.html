@@ -13,8 +13,8 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
   <link href="../assets/css/animejs.css" rel="stylesheet">
   <style>
 
@@ -367,7 +367,7 @@
 
   for (var i = 0; i < infoEls.length; i++) {
     var infoEl = infoEls[i];
-    var delay = parseFloat(anime.getValue(infoEl, 'data-delay'));
+    var delay = parseFloat(anime.get(infoEl, 'data-delay'));
     var direction = infoEl.classList.contains('info-bottom') ? -1 : 1;
     timeControlAnimation
     .add({

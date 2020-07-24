@@ -114,7 +114,6 @@ a:hover .arrow:before,
 .nav-bar-content {
   display: flex;
   flex-shrink: 0;
-  flex-direction: row;
   grid-column: 1/13;
   justify-content: space-between;
   flex-direction: row;

@@ -13,9 +13,10 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
   <link href="../assets/css/animejs.css" rel="stylesheet">
+  <link href="../assets/css/documentation.css" rel="stylesheet">
   <style>
 
     :root {
@@ -76,6 +77,7 @@
   const staggerVisualizerEl = document.querySelector('.stagger-visualizer');
   const fragment = document.createDocumentFragment();
   const numberOfElements = 16*16;
+  var animation;
 
   for (let i = 0; i < numberOfElements; i++) {
     const dotEl = document.createElement('div');
@@ -90,13 +92,16 @@
 
   function animateGrid() {
 
+    if (animation) animation.pause();
+
     nextIndex = anime.random(0, numberOfElements);
 
-    anime.setValue('.cursor', {
+    anime.set('.cursor', {
       translateX: anime.stagger('-1rem', {grid: [16, 16], from: index, axis: 'x'}),
       translateY: anime.stagger('-1rem', {grid: [16, 16], from: index, axis: 'y'})
     });
-    anime.timeline({
+
+    animation = anime.timeline({
       easing: 'easeInOutQuad',
       complete: animateGrid
     })

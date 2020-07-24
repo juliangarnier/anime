@@ -13,13 +13,14 @@
   <meta name="twitter:site" content="@juliangarnier">
   <meta name="twitter:description" content="Javascript Animation Engine">
   <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/icons/twitter.png">
-  <link rel="apple-touch-icon-precomposed" href="../assets/img/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/icons/favicon.png" >
+  <link rel="apple-touch-icon-precomposed" href="../assets/img/social-media-image.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" >
   <link href="../assets/css/animejs.css" rel="stylesheet">
+  <link href="../assets/css/documentation.css" rel="stylesheet">
   <style>
 
     :root {
-      font-size: 24px;
+      font-size: 20px;
     }
 
     body {
@@ -28,37 +29,36 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      background-color: #000;
     }
 
     .stagger-visualizer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
       position: relative;
+      width: 32rem;
+      height: 16rem;
+    }
+
+    .dots-wrapper {
+      position: absolute;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       width: 100%;
-      max-width: 912px;
-      transform: translate3d(0,0,0);
+      height: 100%;
     }
 
     .stagger-visualizer .dot {
       position: relative;
-      width: 2px;
-      height: 2px;
-      margin: 18px;
-      background-color: currentColor;
-    }
-
-    .stagger-visualizer .cursor {
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      width: 24px;
-      height: 24px;
-      margin: 7px;
-      background-color: currentColor;
+      width: calc(1rem - 8px);
+      height: calc(1rem - 8px);
+      margin: 4px;
       border-radius: 50%;
+      background-color: currentColor;
     }
 
   </style>
@@ -66,7 +66,7 @@
 <body>
 
   <div class="stagger-visualizer">
-    <div class="cursor color-red"></div>
+    <div class="dots-wrapper"></div>
   </div>
 
 </body>
@@ -74,75 +74,85 @@
 
   import anime from '../../src/index.js';
 
-  const staggerVisualizerEl = document.querySelector('.stagger-visualizer');
-  const fragment = document.createDocumentFragment();
-  const numberOfElements = 24*11;
+  var advancedStaggeringAnimation = (function() {
 
-  for (let i = 0; i < numberOfElements; i++) {
-    const dotEl = document.createElement('div');
-    dotEl.classList.add('dot');
-    fragment.appendChild(dotEl);
-  }
+    var staggerVisualizerEl = document.querySelector('.stagger-visualizer');
+    var dotsWrapperEl = staggerVisualizerEl.querySelector('.dots-wrapper');
+    var dotsFragment = document.createDocumentFragment();
+    var grid = [32, 16];
+    var cellSize = 1;
+    var numberOfElements = grid[0] * grid[1];
+    var animation;
+    var paused = true;
 
-  staggerVisualizerEl.appendChild(fragment);
+    for (var i = 0; i < numberOfElements; i++) {
+      var dotEl = document.createElement('div');
+      dotEl.classList.add('dot');
+      dotsFragment.appendChild(dotEl);
+    }
 
-  let index = anime.random(0, numberOfElements);
-  let nextIndex = 0;
+    dotsWrapperEl.appendChild(dotsFragment);
 
-  function animateGrid() {
+    var index = anime.random(0, numberOfElements-1);
+    var nextIndex = 0;
 
-    nextIndex = anime.random(0, numberOfElements);
+    function play() {
 
-    anime.setValue('.cursor', {
-      translateX: anime.stagger('-38px', {grid: [24, 11], from: index, axis: 'x'}),
-      translateY: anime.stagger('-38px', {grid: [24, 11], from: index, axis: 'y'})
-    });
-    anime.timeline({
-      easing: 'easeInOutQuad',
-      complete: animateGrid
-    })
-    .add({
-      targets: '.cursor',
-      keyframes: [
-        { scale: .625 }, 
-        { scale: 1.125 },
-        { scale: 1 }
-      ],
-      duration: 600
-    })
-    .add({
-      targets: '.dot',
-      keyframes: [
-        {
-          translateX: anime.stagger('-4px', {grid: [24, 11], from: index, axis: 'x'}),
-          translateY: anime.stagger('-4px', {grid: [24, 11], from: index, axis: 'y'}),
-          duration: 200
-        }, {
-          translateX: anime.stagger('4px', {grid: [24, 11], from: index, axis: 'x'}),
-          translateY: anime.stagger('4px', {grid: [24, 11], from: index, axis: 'y'}),
-          scale: anime.stagger([9, 2], {grid: [24, 11], from: index}),
-          duration: 400
-        }, {
-          translateX: 0,
-          translateY: 0,
-          scale: 1,
-          duration: 600,
-        }
-      ],
-      delay: anime.stagger(30, {grid: [24, 11], from: index})
-    }, '-=600')
-    .add({
-      targets: '.cursor',
-      translateX: { value: anime.stagger('-38px', {grid: [24, 11], from: nextIndex, axis: 'x'}), duration: anime.random(400, 1200) },
-      translateY: { value: anime.stagger('-38px', {grid: [24, 11], from: nextIndex, axis: 'y'}), duration: anime.random(400, 1200) },
-      easing: 'easeOutSine'
-    }, '-=1100')
+      paused = false;
+      if (animation) animation.pause();
 
-    index = nextIndex;
+      nextIndex = anime.random(0, numberOfElements-1);
 
-  }
+      var saturation = 75;
 
-  animateGrid();
+      var colorStart = anime.random(0, 256);
+      var colorEnd = anime.random(0, 256);
+      var colorRangeValue = [colorStart, colorEnd];
+      var luminosityStart = anime.random(60, 80);
+      var luminosityEnd = anime.random(20, 40);
+      var luminosityRangeValue = [luminosityStart, luminosityEnd];
+
+      function staggeredGridColors(el, i, total) {
+        var hue = Math.round(anime.stagger(colorRangeValue, {grid: grid, from: index})(el, i, total));
+        var luminosity = Math.round(anime.stagger(luminosityRangeValue, {grid: grid, from: index})(el, i, total));
+        return 'hsl(' + hue + ', ' + saturation + '%, ' + luminosity + '%)';
+      }
+
+      animation = anime({
+        targets: '.stagger-visualizer .dot',
+        keyframes: [
+          {
+            zIndex: function(el, i, total) {
+              return Math.round(anime.stagger([numberOfElements, 0], {grid: grid, from: index})(el, i, total));
+            },
+            translateX: anime.stagger('-.001rem', {grid: grid, from: index, axis: 'x'}),
+            translateY: anime.stagger('-.001rem', {grid: grid, from: index, axis: 'y'}),
+            duration: 200
+          }, {
+            translateX: anime.stagger('.075rem', {grid: grid, from: index, axis: 'x'}),
+            translateY: anime.stagger('.075rem', {grid: grid, from: index, axis: 'y'}),
+            scale: anime.stagger([2, .2], {grid: grid, from: index}),
+            backgroundColor: staggeredGridColors,
+            duration: 450
+          }, {
+            translateX: 0,
+            translateY: 0,
+            scale: 1,
+            duration: 500,
+          }
+        ],
+        delay: anime.stagger(60, {grid: grid, from: index}),
+        easing: 'easeInOutQuad',
+        complete: play
+      }, 30)
+
+      index = nextIndex;
+
+    }
+
+    play();
+
+  })();
 
 </script>
 </html>
