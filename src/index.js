@@ -76,10 +76,10 @@ function parseEasingParameters(string) {
 function spring(string, duration) {
 
   const params = parseEasingParameters(string);
-  const mass = minMax(is.und(params[0]) ? 1 : params[0], .1, 100);
-  const stiffness = minMax(is.und(params[1]) ? 100 : params[1], .1, 100);
-  const damping = minMax(is.und(params[2]) ? 10 : params[2], .1, 100);
-  const velocity =  minMax(is.und(params[3]) ? 0 : params[3], .1, 100);
+  const mass = is.und(params[0]) ? 1 : minMax(params[0], .1, 100);
+  const stiffness = is.und(params[1]) ? 100 : minMax(params[1], .1, 100);
+  const damping = is.und(params[2]) ? 10 : minMax(params[2], .1, 100);
+  const velocity = is.und(params[3]) ? .1 : minMax(params[3], .1, 100);
   const w0 = Math.sqrt(stiffness / mass);
   const zeta = damping / (2 * Math.sqrt(stiffness * mass));
   const wd = zeta < 1 ? w0 * Math.sqrt(1 - zeta * zeta) : 0;
