@@ -93,8 +93,7 @@ function spring(string, duration) {
     } else {
       progress = (a + b * progress) * Math.exp(-progress * w0);
     }
-    if (t === 0 || t === 1) return t;
-    return 1 - progress;
+    return (t === 0 || t === 1) ? t : 1 - progress;
   }
 
   function getDuration() {
