@@ -1061,7 +1061,7 @@ function anime(params = {}) {
           setCallback('loopComplete');
           setCallback('complete');
           if (!instance.passThrough && 'Promise' in window) {
-            resolve();
+            resolve(instance);
             promise = makePromise(instance);
           }
         }
