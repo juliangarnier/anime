@@ -150,7 +150,7 @@ const bezier = (() => {
 })();
 
 const penner = (() => {
-  // Based on jQuery UI's implemenation of easing equations from Robert Penner (http://www.robertpenner.com/easing)
+  // Based on jQuery UI's implementation of easing equations from Robert Penner (http://www.robertpenner.com/easing)
   const eases = { linear: () => t => t };
 
   const functionEasings = {
