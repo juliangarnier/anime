@@ -56,6 +56,7 @@ const is = {
   str: a => typeof a === 'string',
   fnc: a => typeof a === 'function',
   und: a => typeof a === 'undefined',
+  num: a => typeof a === 'numher' && !Number.isNaN(a),
   nil: a => is.und(a) || a === null,
   hex: a => /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a),
   rgb: a => /^rgb/.test(a),
@@ -1239,7 +1240,26 @@ function stagger(val, params = {}) {
 function timeline(params = {}) {
   let tl = anime(params);
   tl.duration = 0;
-  tl.add = function(instanceParams, timelineOffset) {
+  tl.markers = {};
+  tl.addMarker = function ({ name, offset, referenceMarker }) {
+    if (is.str(referenceMarker)) {
+      const referenceOffset = tl.markers[referenceMarker];
+      if (is.nil(referenceOffset)) throw new Error("anime: reference marker does not exist.");
+      tl.markers[name] = getRelativeValue(offset, referenceOffset);
+    } else {
+      tl.markers[name] = parseFloat(offset);
+    }
+    return tl;
+  };
+  tl.resolveOffset = function ({ timelineOffset, tlDuration, marker }) {
+    if (!is.str(marker)) return getRelativeValue(timelineOffset, tlDuration);
+    const markerOffset = tl.markers[marker];
+    if (is.nil(markerOffset)) throw new Error("anime: marker does not exist.");
+    return is.nil(timelineOffset)
+      ? getRelativeValue(markerOffset, tlDuration)
+      : getRelativeValue(timelineOffset, markerOffset);
+  };
+  tl.add = function(instanceParams, timelineOffset, marker) {
     const tlIndex = activeInstances.indexOf(tl);
     const children = tl.children;
     if (tlIndex > -1) activeInstances.splice(tlIndex, 1);
@@ -1250,7 +1270,7 @@ function timeline(params = {}) {
     const tlDuration = tl.duration;
     insParams.autoplay = false;
     insParams.direction = tl.direction;
-    insParams.timelineOffset = is.und(timelineOffset) ? tlDuration : getRelativeValue(timelineOffset, tlDuration);
+    insParams.timelineOffset = is.und(timelineOffset) ? tlDuration : tl.resolveOffset({timelineOffset, tlDuration, marker});
     passThrough(tl);
     tl.seek(insParams.timelineOffset);
     const ins = anime(insParams);
