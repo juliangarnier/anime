@@ -1,8 +1,8 @@
 {
   "name": "animejs",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "homepage": "http://animejs.com",
-  "repository": "juliangarnier/anime",
+  "repository": "diegolealco/anime",
   "description": "JavaScript animation engine",
   "umd:main": "lib/anime.min.js",
   "module": "lib/anime.es.js",
@@ -17,7 +17,7 @@
     "build": "node build"
   },
   "bugs": {
-    "url": "https://github.com/juliangarnier/anime/issues"
+    "url": "https://github.com/diegolealco/anime/issues"
   },
   "keywords": [
     "anime",
