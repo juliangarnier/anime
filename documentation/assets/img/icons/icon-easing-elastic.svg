@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <g id="icon-easing-elastic" fill="none" fill-rule="evenodd">
-    <g id="Group-13" stroke="#F6F4F2" transform="translate(8 1)">
-      <polyline id="Rectangle-41-Copy-2" points="32 7 32 39 0 39" opacity=".4"/>
-      <path id="Shape-Copy-3" fill="#FFFFFF" fill-opacity="0" fill-rule="nonzero" stroke-width="3" d="M1 39C2.825 15.474 4.169 2.62 5.03.44c1.292-3.27 3.554 12.707 4.96 14.15 1.406 1.443 2.028-7.163 4.03-7.92 2.002-.756 3.392 1.64 4.65 1.64 1.258 0 2.422-.422 3.637-.422H32"/>
-    </g>
-  </g>
-</svg>

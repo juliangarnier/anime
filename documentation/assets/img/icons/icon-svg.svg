@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <g id="icon-svg" fill="none" fill-rule="evenodd" stroke-linecap="square">
-    <g id="Group" stroke="#F6F4F2" transform="translate(12 12)">
-      <polyline id="Oval-16" stroke-width="3" points="0 20 0 0 14 0"/>
-      <polyline id="Oval-16-Copy" stroke-width="3" points="10 24 10 4 24 4" transform="rotate(-180 17 14)"/>
-      <path id="Path-11" stroke-width="1.5" d="M0 24C12.072 24 12.072 0 24 0"/>
-    </g>
-  </g>
-</svg>
