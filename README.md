@@ -1,8 +1,8 @@
-<h1 style="text-align:center;">Foku</h1>
-<blockquote style="text-align:center;">
+<h1 align="center">Foku</h1>
+<blockquote align="center">
 a fork of <strong>animejs@3.2.1</strong> - a lightweight JavaScript library with a simple API, with a few small improvements like animation markers, and some minor bug fixes.
 </blockquote>
-<p style="text-align:center;">
+<p align="center">
   <a href="https://animejs.com/">Website</a>&nbsp;|&nbsp;
   <a href="https://animejs.com/documentation/">Documentation</a>&nbsp;|&nbsp;
   <a href="http://codepen.io/collection/b392d3a52d6abf5b8d9fda4e4cab61ab/">Demos and examples</a>&nbsp;|&nbsp;
