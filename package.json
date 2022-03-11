@@ -1,15 +1,13 @@
 {
-  "name": "animejs",
+  "name": "foku",
   "version": "3.2.2",
-  "homepage": "http://animejs.com",
-  "repository": "diegolealco/anime",
+  "repository": "diegolealco/foku",
   "description": "JavaScript animation engine",
-  "umd:main": "lib/anime.min.js",
-  "module": "lib/anime.es.js",
-  "main": "lib/anime.js",
-  "umd:name": "anime",
+  "umd:main": "lib/foku.min.js",
+  "module": "lib/foku.es.js",
+  "main": "lib/foku.js",
+  "umd:name": "foku",
   "license": "MIT",
-  "author": "Julian Garnier <hello@julian.gr>",
   "files": [
     "lib"
   ],
@@ -17,9 +15,10 @@
     "build": "node build"
   },
   "bugs": {
-    "url": "https://github.com/diegolealco/anime/issues"
+    "url": "https://github.com/diegolealco/foku/issues"
   },
   "keywords": [
+    "foku",
     "anime",
     "animation",
     "javascript",
