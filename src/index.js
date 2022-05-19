@@ -12,7 +12,8 @@ const defaultInstanceSettings = {
   loop: 1,
   direction: 'normal',
   autoplay: true,
-  timelineOffset: 0
+  timelineOffset: 0,
+  playbackRate: 1
 }
 
 const defaultTweenSettings = {
@@ -927,7 +928,7 @@ function anime(params = {}) {
 
   function resetTime() {
     startTime = 0;
-    lastTime = adjustTime(instance.currentTime) * (1 / anime.speed);
+    lastTime = adjustTime(instance.currentTime) * (1 / anime.speed) * (1 / instance.playbackRate);
   }
 
   function seekChild(time, child) {
@@ -1110,7 +1111,7 @@ function anime(params = {}) {
   instance.tick = function(t) {
     now = t;
     if (!startTime) startTime = now;
-    setInstanceProgress((now + (lastTime - startTime)) * anime.speed);
+    setInstanceProgress((now + (lastTime - startTime)) * anime.speed * instance.playbackRate);
   }
 
   instance.seek = function(time) {
