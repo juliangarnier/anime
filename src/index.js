@@ -847,8 +847,14 @@ const engine = (() => {
   let raf;
 
   function play() {
-    if (!raf && (!isDocumentHidden() || !anime.suspendWhenDocumentHidden) && activeInstances.length > 0) {
-      raf = requestAnimationFrame(step);
+    if (!raf && activeInstances.length > 0) {
+      if ((isDocumentHidden() && !anime.suspendWhenDocumentHidden)) {
+        activeInstances.forEach(
+            instance => instance._onHiddenDocumentPlay()
+        )
+      } else {
+        raf = requestAnimationFrame(step);
+      }
     }
   }
   function step(t) {
@@ -871,16 +877,16 @@ const engine = (() => {
   }
 
   function handleVisibilityChange() {
-    if (!anime.suspendWhenDocumentHidden) return;
-
-    if (isDocumentHidden()) {
+    if (isDocumentHidden() && anime.suspendWhenDocumentHidden) {
       // suspend ticks
       raf = cancelAnimationFrame(raf);
     } else { // is back to active tab
-      // first adjust animations to consider the time that ticks were suspended
-      activeInstances.forEach(
-        instance => instance ._onDocumentVisibility()
-      );
+      if (anime.suspendWhenDocumentHidden) {
+        // first adjust animations to consider the time that ticks were suspended
+        activeInstances.forEach(
+            instance => instance ._onDocumentVisibility()
+        );
+      }
       engine();
     }
   }
@@ -1099,6 +1105,11 @@ function anime(params = {}) {
 
   // internal method (for engine) to adjust animation timings before restoring engine ticks (rAF)
   instance._onDocumentVisibility = resetTime;
+
+  // internal method to set startTime to current time
+  instance._onHiddenDocumentPlay = function () {
+    startTime = performance.now()
+  };
 
   // Set Value helper
 
