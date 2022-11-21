@@ -613,7 +613,7 @@ function decomposeValue(val, unit) {
   // const rgx = /-?\d*\.?\d+/g; // handles basic numbers
   // const rgx = /[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
   const rgx = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
-  const value = validateValue((is.pth(val) ? val.totalLength : val), unit) + '';
+  const value = is.obj(val) ? val.get() + '' : validateValue((is.pth(val) ? val.totalLength : val), unit) + '';
   return {
     original: value,
     numbers: value.match(rgx) ? value.match(rgx).map(Number) : [0],
@@ -749,7 +749,7 @@ function normalizeTweens(prop, animatable) {
 const setProgressValue = {
   css: (t, p, v) => t.style[p] = v,
   attribute: (t, p, v) => t.setAttribute(p, v),
-  object: (t, p, v) => t[p] = v,
+  object: (t, p, v) => is.obj(t[p]) ? t[p].set(v) : t[p] = v,
   transform: (t, p, v, transforms, manual) => {
     transforms.list.set(p, v);
     if (p === transforms.last || manual) {
