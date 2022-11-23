@@ -614,10 +614,12 @@ function decomposeValue(val, unit) {
   // const rgx = /[+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
   const rgx = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation
   const value = is.obj(val) ? val.get() + '' : validateValue((is.pth(val) ? val.totalLength : val), unit) + '';
+  const object = is.obj(val) ? val : undefined
   return {
     original: value,
     numbers: value.match(rgx) ? value.match(rgx).map(Number) : [0],
-    strings: (is.str(val) || unit) ? value.split(rgx) : []
+    strings: (is.str(val) || unit) ? value.split(rgx) : [],
+    object: object
   }
 }
 
@@ -654,7 +656,7 @@ function normalizePropertyTweens(prop, tweenSettings) {
   }
   const propArray = is.arr(prop) ? prop : [prop];
   return propArray.map((v, i) => {
-    const obj = (is.obj(v) && !is.pth(v)) ? v : {value: v};
+    const obj = (is.obj(v) && !is.pth(v) && v.get === undefined) ? v : {value: v};
     // Default delay value should only be applied to the first tween
     if (is.und(obj.delay)) obj.delay = !i ? tweenSettings.delay : 0;
     // Default endDelay value should only be applied to the last tween
@@ -963,8 +965,8 @@ function anime(params = {}) {
       let progress;
       for (let n = 0; n < toNumbersLength; n++) {
         let value;
-        const toNumber = tween.to.numbers[n];
-        const fromNumber = tween.from.numbers[n] || 0;
+        const toNumber = tween.to.object ? tween.to.object.get() : tween.to.numbers[n];
+        const fromNumber = tween.from.object ? tween.from.object.get() : tween.from.numbers[n] || 0;
         if (!tween.isPath) {
           value = fromNumber + (eased * (toNumber - fromNumber));
         } else {
