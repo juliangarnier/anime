@@ -64,6 +64,14 @@ const is = {
   key: a => !defaultInstanceSettings.hasOwnProperty(a) && !defaultTweenSettings.hasOwnProperty(a) && a !== 'targets' && a !== 'keyframes',
 }
 
+function getMaybeObjectDuration(o) {
+  return is.obj(o.duration) && !is.fnc(o.duration) ? o.duration.get() : o.duration
+}
+
+function setMaybeObjectDuration(o, duration) {
+  is.obj(o.duration) && !is.fnc(o.duration) ? o.duration.set(duration) : o.duration = duration
+}
+
 // Easings
 
 function parseEasingParameters(string) {
@@ -642,13 +650,13 @@ function getAnimatables(targets) {
 function normalizePropertyTweens(prop, tweenSettings) {
   let settings = cloneObject(tweenSettings);
   // Override duration if easing is a spring
-  if (/^spring/.test(settings.easing)) settings.duration = spring(settings.easing);
+  if (/^spring/.test(settings.easing)) setMaybeObjectDuration(settings, spring(settings.easing));
   if (is.arr(prop)) {
     const l = prop.length;
     const isFromTo = (l === 2 && !is.obj(prop[0]));
     if (!isFromTo) {
       // Duration divided by the number of tweens
-      if (!is.fnc(tweenSettings.duration)) settings.duration = tweenSettings.duration / l;
+      if (!is.fnc(getMaybeObjectDuration(tweenSettings))) setMaybeObjectDuration(settings, tweenSettings.duration / l);
     } else {
       // Transform [from, to] values shorthand to a valid tween value
       prop = {value: prop};
@@ -714,7 +722,7 @@ function normalizeTweenValues(tween, animatable) {
     }
     t[p] = value;
   }
-  t.duration = parseFloat(t.duration);
+  setMaybeObjectDuration(t, parseFloat(getMaybeObjectDuration(t)));
   t.delay = parseFloat(t.delay);
   return t;
 }
@@ -735,8 +743,8 @@ function normalizeTweens(prop, animatable) {
     tween.from = decomposeValue(from, unit);
     tween.to = decomposeValue(getRelativeValue(to, from), unit);
     tween.start = previousTween ? previousTween.end : 0;
-    tween.end = tween.start + tween.delay + tween.duration + tween.endDelay;
-    tween.easing = parseEasings(tween.easing, tween.duration);
+    tween.end = tween.start + tween.delay + getMaybeObjectDuration(tween) + tween.endDelay;
+    tween.easing = parseEasings(tween.easing, getMaybeObjectDuration(tween));
     tween.isPath = is.pth(tweenValue);
     tween.isPathTargetInsideSVG = tween.isPath && is.svg(animatable.target);
     tween.isColor = is.col(tween.from.original);
@@ -813,9 +821,9 @@ function getInstanceTimings(animations, tweenSettings) {
   const animLength = animations.length;
   const getTlOffset = anim => anim.timelineOffset ? anim.timelineOffset : 0;
   const timings = {};
-  timings.duration = animLength ? Math.max.apply(Math, animations.map(anim => getTlOffset(anim) + anim.duration)) : tweenSettings.duration;
+  timings.duration = animLength ? Math.max.apply(Math, animations.map(anim => getTlOffset(anim) + getMaybeObjectDuration(anim))) : tweenSettings.duration;
   timings.delay = animLength ? Math.min.apply(Math, animations.map(anim => getTlOffset(anim) + anim.delay)) : tweenSettings.delay;
-  timings.endDelay = animLength ? timings.duration - Math.max.apply(Math, animations.map(anim => getTlOffset(anim) + anim.duration - anim.endDelay)) : tweenSettings.endDelay;
+  timings.endDelay = animLength ? getMaybeObjectDuration(timings) - Math.max.apply(Math, animations.map(anim => getTlOffset(anim) + getMaybeObjectDuration(anim) - anim.endDelay)) : tweenSettings.endDelay;
   return timings;
 }
 
@@ -924,7 +932,7 @@ function anime(params = {}) {
   }
 
   function adjustTime(time) {
-    return instance.reversed ? instance.duration - time : time;
+    return instance.reversed ? getMaybeObjectDuration(instance) - time : time;
   }
 
   function resetTime() {
@@ -956,7 +964,7 @@ function anime(params = {}) {
       let tween = tweens[tweenLength];
       // Only check for keyframes if there is more than one tween
       if (tweenLength) tween = filterArray(tweens, t => (insTime < t.end))[0] || tween;
-      const elapsed = minMax(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
+      const elapsed = minMax(insTime - tween.start - tween.delay, 0, getMaybeObjectDuration(tween)) / getMaybeObjectDuration(tween);
       const eased = isNaN(elapsed) ? 1 : tween.easing(elapsed);
       const strings = tween.to.strings;
       const round = tween.round;
@@ -1015,7 +1023,7 @@ function anime(params = {}) {
   }
 
   function setInstanceProgress(engineTime) {
-    const insDuration = instance.duration;
+    const insDuration = getMaybeObjectDuration(instance);
     const insDelay = instance.delay;
     const insEndDelay = insDuration - instance.endDelay;
     const insTime = adjustTime(engineTime);
@@ -1096,7 +1104,7 @@ function anime(params = {}) {
     childrenLength = children.length;
     for (let i = childrenLength; i--;) instance.children[i].reset();
     if (instance.reversed && instance.loop !== true || (direction === 'alternate' && instance.loop === 1)) instance.remaining++;
-    setAnimationsProgress(instance.reversed ? instance.duration : 0);
+    setAnimationsProgress(instance.reversed ? getMaybeObjectDuration(instance) : 0);
   }
 
   // internal method (for engine) to adjust animation timings before restoring engine ticks (rAF)
@@ -1240,7 +1248,7 @@ function stagger(val, params = {}) {
 
 function timeline(params = {}) {
   let tl = anime(params);
-  tl.duration = 0;
+  setMaybeObjectDuration(tl, 0);
   tl.add = function(instanceParams, timelineOffset) {
     const tlIndex = activeInstances.indexOf(tl);
     const children = tl.children;
@@ -1249,7 +1257,7 @@ function timeline(params = {}) {
     for (let i = 0; i < children.length; i++) passThrough(children[i]);
     let insParams = mergeObjects(instanceParams, replaceObjectProps(defaultTweenSettings, params));
     insParams.targets = insParams.targets || params.targets;
-    const tlDuration = tl.duration;
+    const tlDuration = getMaybeObjectDuration(tl);
     insParams.autoplay = false;
     insParams.direction = tl.direction;
     insParams.timelineOffset = is.und(timelineOffset) ? tlDuration : getRelativeValue(timelineOffset, tlDuration);
@@ -1257,12 +1265,12 @@ function timeline(params = {}) {
     tl.seek(insParams.timelineOffset);
     const ins = anime(insParams);
     passThrough(ins);
-    const totalDuration = ins.duration + insParams.timelineOffset;
+    const totalDuration = getMaybeObjectDuration(tl) + insParams.timelineOffset;
     children.push(ins);
     const timings = getInstanceTimings(children, params);
     tl.delay = timings.delay;
     tl.endDelay = timings.endDelay;
-    tl.duration = timings.duration;
+    setMaybeObjectDuration(tl, getMaybeObjectDuration(timings));
     tl.seek(0);
     tl.reset();
     if (tl.autoplay) tl.play();
