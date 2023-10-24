@@ -86,6 +86,15 @@ h2 {
   font-weight: 200;
 }
 
+.description-header a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.description-header a:hover {
+  text-decoration: underline;
+}
+
 /* Panes */
 
 .pane {
@@ -218,7 +227,7 @@ h2 {
 }
 
 .demo-info code {
-  font-family: "Input Mono Reg", monospace;
+  font-family: "InputMono", "Courier New", Courier, monospace;
   font-size: 14px;
   line-height: 22px;
   white-space: pre-wrap;

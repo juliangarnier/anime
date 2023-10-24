@@ -25,20 +25,27 @@
   <link href="assets/css/animejs.css" rel="stylesheet">
   <link href="assets/css/anime-theme.css" rel="stylesheet">
   <link href="assets/css/documentation.css" rel="stylesheet">
+  <link href="assets/css/v4.css" rel="stylesheet">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-16LTPBS8QC');
   </script>
   <script src="../lib/anime.min.js"></script>
 </head>
 <body>
+  <div id="top-banner">
+    <button id="close-banner">✕</button>
+    <p>
+      Anime.js V4 is now in early access for GitHub Sponsors!
+    </p>
+    <a id="banner-cta" href="https://github.com/sponsors/juliangarnier" target="_blank">Try <span>Anime.js</span> V4</a>
+  </div>
   <div class="content">
-    <header class="header">
+    <header id="docs-header" class="header">
     <a class="logo" href="https://github.com/juliangarnier/anime/">
       <img class="anime-mini-logo" src="assets/img/anime-mini-logo.svg" />
       <span class="version-number"></span>
@@ -4176,10 +4183,50 @@ anime({
       </header>
       <div class="info-output"></div>
     </section>
+    <section class="pane sponsors-pane">
+      <header class="description-header">
+        <a target="_blank" href="https://github.com/sponsors/juliangarnier"><h2>Sponsors</h2></a>
+      </header>
+      <div id="docs-sponsors-list">
+        <a class="sponsor-logo" target="_blank" href="https://github.com/sponsors/juliangarnier">
+          <img src="assets/img/sponsor-logo.png" />
+          <span class="sponsor-name">Your logo here</span>
+        </a>
+        <a class="sponsor-logo" target="_blank" href="https://github.com/sponsors/juliangarnier">
+          <img src="assets/img/sponsor-logo.png" />
+          <span class="sponsor-name">Your logo here</span>
+        </a>
+        <a class="sponsor-logo" target="_blank" href="https://github.com/sponsors/juliangarnier">
+          <img src="assets/img/sponsor-logo.png" />
+          <span class="sponsor-name">Your logo here</span>
+        </a>
+        <a class="sponsor-logo" target="_blank" href="https://github.com/sponsors/juliangarnier">
+          <img src="assets/img/sponsor-logo.png" />
+          <span class="sponsor-name">Your logo here</span>
+        </a>
+        <a class="sponsor-logo" target="_blank" href="https://github.com/sponsors/juliangarnier">
+          <img src="assets/img/sponsor-logo.png" />
+          <span class="sponsor-name">Your logo here</span>
+        </a>
+        <a class="sponsor-logo" target="_blank" href="https://github.com/sponsors/juliangarnier">
+          <img src="assets/img/sponsor-logo.png" />
+          <span class="sponsor-name">Your logo here</span>
+        </a>
+      </div>
+    </section>
   </div>
   <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-79927007-1', 'auto');
+    ga('send', 'pageview');
+  </script>
   <script src="assets/js/vendors/highlight.pack.js"></script>
   <script src="assets/js/vendors/beautify-html.js"></script>
   <script src="assets/js/documentation.js"></script>
+  <script src="assets/js/v4.js"></script>
 </body>
 </html>

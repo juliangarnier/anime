@@ -150,6 +150,8 @@ a.main-cta {
   padding-left: 12px;
   padding-right: 12px;
   border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
   line-height: 2;
   background-color: #F64E4D;
   transition: transform .25s ease;

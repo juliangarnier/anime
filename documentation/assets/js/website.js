@@ -289,7 +289,7 @@ var headerIntroAnimation = anime.timeline({
   autoplay: false
 })
 .add({
-  targets: ['.header a', '.secondary-menu a', '.section-intro .feature-description-text'],
+  targets: ['.header a', '.secondary-menu a', '.section-intro .feature-description-text', '.sponsors-grid'],
   opacity: {value: [0.001, 1], easing: 'linear', duration: 300},
   translateY: [40, 0],
   translateZ: 0,
@@ -574,7 +574,7 @@ var advancedStaggeringAnimation = (function() {
     .add({
       targets: '.stagger-visualizer .cursor',
       keyframes: [
-        { scale: .75, duration: 120}, 
+        { scale: .75, duration: 120},
         { scale: 2.5, duration: 220},
         { scale: 1.5, duration: 450},
       ],
@@ -699,7 +699,7 @@ var timeControlAnimation = (function() {
         end: time.start,
         easing: 'spring(.3, 200, 5, 1)',
         update: function() { timelineAnimation.seek(time.end); },
-        complete: function() { 
+        complete: function() {
           controlAnimationCanMove = true;
           moveControlAnimation();
         }
@@ -822,10 +822,10 @@ var layeredAnimation = (function() {
       complete: function(anim) { animateShape(anim.animatables[0].target); },
     })
     .add({
-      translateX: createKeyframes(function(el) { 
+      translateX: createKeyframes(function(el) {
         return el.classList.contains('large') ? anime.random(-300, 300) : anime.random(-520, 520);
       }),
-      translateY: createKeyframes(function(el) { 
+      translateY: createKeyframes(function(el) {
         return el.classList.contains('large') ? anime.random(-110, 110) : anime.random(-280, 280);
       }),
       rotate: createKeyframes(function() { return anime.random(-180, 180); }),
@@ -846,7 +846,7 @@ var layeredAnimation = (function() {
     if (polyEl) {
       animation.add({
         targets: polyEl,
-        points: createKeyframes(function() { 
+        points: createKeyframes(function() {
           var scale = anime.random(72, 180) / 100;
           return trianglePoints.map(function(p) { return p * scale; }).join(' ');
         }),
@@ -869,12 +869,12 @@ var layeredAnimation = (function() {
       complete: function(anim) { animateProgress(anim.animatables[0].target); },
     })
     .add({
-      transformOrigin: createKeyframes(function(el) { 
+      transformOrigin: createKeyframes(function(el) {
         return anime.random(0, 100) + '%';
       })
     }, 0)
     .add({
-      scaleX: createKeyframes(function(el) { 
+      scaleX: createKeyframes(function(el) {
         return anime.random(10, 100) / 100;
       })
     }, 0);
