@@ -20,6 +20,10 @@
   <a href="#getting-started">Getting started</a>&nbsp;|&nbsp;<a href="#documentation">Documentation</a>&nbsp;|&nbsp;<a href="#demos-and-examples">Demos and examples</a>&nbsp;|&nbsp;<a href="#browser-support">Browser support</a>
 </p>
 
+## 🎉 Anime.js V4 is now available in early access 🎉
+
+After years in the making, Anime.js V4 is finally available in early access for my **[GitHub Sponsors](https://github.com/sponsors/juliangarnier)**!
+
 ## Getting started
 
 ### Download
