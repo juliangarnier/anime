@@ -71,8 +71,12 @@ function parseEasingParameters(string) {
   return match ? match[1].split(',').map(p => parseFloat(p)) : [];
 }
 
-// Spring solver inspired by Webkit Copyright © 2016 Apple Inc. All rights reserved. https://webkit.org/demos/spring/spring.js
+/**
+ * The number of iterations before a loop can be counted as an infinite loop
+ */
+ const INFINITE_LOOP_LIMIT = 10000;
 
+// Spring solver inspired by Webkit Copyright © 2016 Apple Inc. All rights reserved. https://webkit.org/demos/spring/spring.js
 function spring(string, duration) {
 
   const params = parseEasingParameters(string);
@@ -96,14 +100,17 @@ function spring(string, duration) {
     if (t === 0 || t === 1) return t;
     return 1 - progress;
   }
-
+  
   function getDuration() {
     const cached = cache.springs[string];
     if (cached) return cached;
     const frame = 1/6;
     let elapsed = 0;
     let rest = 0;
-    while(true) {
+    let count = 0;
+    
+    // To avoid infinite loops, stop loop when count reaches `INFINITE_LOOP_LIMIT`
+    while(++count < INFINITE_LOOP_LIMIT) {
       elapsed += frame;
       if (solver(elapsed) === 1) {
         rest++;
