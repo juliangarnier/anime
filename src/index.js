@@ -9,6 +9,7 @@ const defaultInstanceSettings = {
   changeComplete: null,
   loopComplete: null,
   complete: null,
+  pauseBegin : null,
   loop: 1,
   direction: 'normal',
   autoplay: true,
@@ -904,8 +905,14 @@ function anime(params = {}) {
   let children, childrenLength = 0;
   let resolve = null;
 
+  function doResolve( value ){
+    instance.finishedState = 'fulfilled';
+    resolve(value );
+  }
+
   function makePromise(instance) {
-    const promise = window.Promise && new Promise(_resolve => resolve = _resolve);
+    instance.finishedState = 'pending';
+    const promise = window.Promise && new Promise( _resolve => resolve );
     instance.finished = promise;
     return promise;
   }
@@ -1062,7 +1069,7 @@ function anime(params = {}) {
           setCallback('loopComplete');
           setCallback('complete');
           if (!instance.passThrough && 'Promise' in window) {
-            resolve();
+            doResolve(instance);
             promise = makePromise(instance);
           }
         }
@@ -1121,6 +1128,7 @@ function anime(params = {}) {
   instance.pause = function() {
     instance.paused = true;
     resetTime();
+    setCallback('pauseBegin');
   }
 
   instance.play = function() {
