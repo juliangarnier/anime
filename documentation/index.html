@@ -2868,8 +2868,8 @@ anime({
   easing: 'easeInOutCirc',
   update: function(anim) {
     updates++;
-    progressLogEl.value = 'progress : '+Math.round(anim.progress)+'%';
-    updateLogEl.value = 'updates : '+updates;
+    progressLogEl.value = 'progress : ' + Math.round(anim.progress)+'%';
+    updateLogEl.value = 'updates : ' + updates;
   }
 });
 /*DEMO*/
@@ -3040,7 +3040,7 @@ anime({
   loop: true,
   easing: 'easeInOutCirc',
   update: function(anim) {
-    progressLogEl.value = 'progress : '+Math.round(anim.progress)+'%';
+    progressLogEl.value = 'progress : ' + Math.round(anim.progress)+'%';
   },
   change: function() {
     changes++;
@@ -3102,7 +3102,7 @@ anime({
   direction: 'alternate',
   easing: 'easeInOutCirc',
   update: function(anim) {
-    progressLogEl.value = 'progress : '+Math.round(anim.progress)+'%';
+    progressLogEl.value = 'progress : ' + Math.round(anim.progress) + '%';
   },
   changeBegin: function(anim) {
     changeBegan++;
@@ -3160,7 +3160,7 @@ var animation = anime.timeline({
   endDelay: 400,
   easing: 'easeInOutSine',
   update: function(anim) {
-    progressLogEl.value = 'progress : '+Math.round(anim.progress)+'%';
+    progressLogEl.value = 'progress : ' + Math.round(anim.progress)+'%';
   }
 }).add({
   translateX: 250
@@ -3505,7 +3505,7 @@ var easingNames = [
 
 function createEasingDemo(easing) {
   var demoEl = document.createElement('div');
-  demoEl.classList.add('el', 'square', 'stretched', 'easing-'+easing);
+  demoEl.classList.add('el', 'square', 'stretched', 'easing-' + easing);
   anime({
     targets: demoEl,
     translateY: [50, -50],
