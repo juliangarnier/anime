@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <g id="placeholder" fill="none" fill-rule="evenodd" opacity=".75">
+    <rect id="Rectangle" width="160" height="160" x="16" y="16" stroke="#FFFFFF" stroke-width="2" rx="28"/>
+    <rect id="Rectangle" width="144" height="144" x="24" y="24" stroke="#FFFFFF" stroke-width="2" rx="2"/>
+    <circle id="Oval-Copy-2" cx="96" cy="96" r="72" stroke="#FFFFFF" stroke-width="2"/>
+    <circle id="Oval-Copy-3" cx="96" cy="96" r="45" stroke="#FFFFFF" stroke-width="2"/>
+    <circle id="Oval-Copy-4" cx="96" cy="96" r="32" stroke="#FFFFFF" stroke-width="2"/>
+    <line id="Path-21" x1="96" x2="96" y1="16" y2="176" stroke="#FFFFFF" stroke-width="2"/>
+    <line id="Path-22" x1="168" x2="24" y1="24" y2="168" stroke="#FFFFFF" stroke-width="2"/>
+    <line id="Path-23" x1="176" x2="16" y1="96" y2="96" stroke="#FFFFFF" stroke-width="2"/>
+    <line id="Path-24" x1="168" x2="24" y1="168" y2="24" stroke="#FFFFFF" stroke-width="2"/>
+  </g>
+</svg>

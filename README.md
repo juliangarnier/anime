@@ -26,6 +26,37 @@
   <a href="#getting-started">Getting started</a>&nbsp;|&nbsp;<a href="#documentation">Documentation</a>&nbsp;|&nbsp;<a href="#demos-and-examples">Demos and examples</a>&nbsp;|&nbsp;<a href="#browser-support">Browser support</a>
 </p>
 
+## Powered by
+
+<table>
+  <tr>
+    <td>
+      <a target="_blank" href="https://huly.io">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./documentation/assets/sponsors/huly-logomark.svg">
+          <img align="center" src="./documentation/assets/assets/sponsors/huly-logomark-dark.svg" width="128">
+        </picture>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" href="https://github.com/sponsors/juliangarnier">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./documentation/assets/sponsors/placeholder.svg">
+          <img align="center" src="./documentation/assets/assets/sponsors/placeholder-dark.svg" width="128">
+        </picture>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a target="_blank" href="https://huly.io">Huly</a>
+    </td>
+    <td align="center">
+      <a target="_blank" href="https://github.com/sponsors/juliangarnier">Your logo here</a>
+    </td>
+  </tr>
+</table>
+
 ## Getting started
 
 ### Download
