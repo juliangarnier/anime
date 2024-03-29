@@ -103,13 +103,22 @@ body.has-banner #top-banner {
 /* Sponsors */
 
 .sponsor-logo {
-  opacity: .5;
+  opacity: .75;
   text-decoration: none;
   transition: opacity .25s ease;
   margin-bottom: 20px;
 }
 
-.sponsor-logo:hover  {
+a.sponsor-logo:hover {
+  text-decoration: none;
+}
+
+.sponsor-placeholder {
+  opacity: .25;
+}
+
+.sponsor-logo:hover,
+.sponsor-placeholder img {
   opacity: 1;
 }
 
@@ -125,7 +134,7 @@ body.has-banner #top-banner {
   color: #FFF;
   font-family: "InputMono", "Courier New", Courier, monospace;
   font-weight: bold;
-  font-size: 10px;
+  font-size: 11px;
   text-align: center;
   letter-spacing: -.075em;
 }
@@ -166,7 +175,12 @@ body.has-banner #top-banner {
   margin-bottom: 20px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+}
+
+#home-sponsors-list .sponsor-logo {
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 @media (max-width: 739px) {
