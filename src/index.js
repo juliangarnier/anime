@@ -893,6 +893,9 @@ const engine = (() => {
 })();
 
 function isDocumentHidden() {
+  if (typeof document === 'undefined') {
+    return true;
+  }
   return !!document && document.hidden;
 }
 
@@ -905,7 +908,7 @@ function anime(params = {}) {
   let resolve = null;
 
   function makePromise(instance) {
-    const promise = window.Promise && new Promise(_resolve => resolve = _resolve);
+    const promise = (typeof window !== 'undefined' && window.Promise) && new Promise(_resolve => resolve = _resolve);
     instance.finished = promise;
     return promise;
   }
