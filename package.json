@@ -31,7 +31,7 @@
   "devDependencies": {
     "gzip-size": "^4.1.0",
     "pretty-bytes": "^4.0.2",
-    "rollup": "^0.53.2",
+    "rollup": "^2.79.2",
     "rollup-plugin-buble": "^0.18.0",
     "uglify-js": "^3.3.4"
   }
