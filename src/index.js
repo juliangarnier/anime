@@ -87,30 +87,21 @@ function spring(string, duration) {
   const b = zeta < 1 ? (zeta * w0 + -velocity) / wd : -velocity + w0;
 
   function solver(t) {
-    let progress = duration ? (duration * t) / 1000 : t;
-    if (zeta < 1) {
-      progress = Math.exp(-progress * zeta * w0) * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
-    } else {
-      progress = (a + b * progress) * Math.exp(-progress * w0);
-    }
     if (t === 0 || t === 1) return t;
-    return 1 - progress;
+    const progress = (duration ? (duration * t) / 1000 : t) * w0;
+    const expTerm = Math.exp(-progress);
+    return zeta < 1
+      ? 1 - expTerm * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress))
+      : 1 - expTerm * (a + b * progress);
   }
 
   function getDuration() {
-    const cached = cache.springs[string];
-    if (cached) return cached;
-    const frame = 1/6;
-    let elapsed = 0;
-    let rest = 0;
-    while(true) {
+    if (cache.springs[string]) return cache.springs[string];
+    const frame = 1 / 6;
+    let elapsed = 0, rest = 0;
+    while (rest < 16) {
       elapsed += frame;
-      if (solver(elapsed) === 1) {
-        rest++;
-        if (rest >= 16) break;
-      } else {
-        rest = 0;
-      }
+      rest = solver(elapsed) === 1 ? rest + 1 : 0;
     }
     const duration = elapsed * frame * 1000;
     cache.springs[string] = duration;
@@ -152,14 +143,13 @@ const bezier = (() => {
   }
 
   function newtonRaphsonIterate(aX, aGuessT, mX1, mX2) {
-    for (let i = 0; i < 4; ++i) {
-      const currentSlope = getSlope(aGuessT, mX1, mX2);
-      if (currentSlope === 0.0) return aGuessT;
-      const currentX = calcBezier(aGuessT, mX1, mX2) - aX;
-      aGuessT -= currentX / currentSlope;
+    for (let i = 0; i < 4; i++) {
+      const slope = getSlope(aGuessT, mX1, mX2);
+      if (slope === 0) return aGuessT;
+      aGuessT -= (calcBezier(aGuessT, mX1, mX2) - aX) / slope;
     }
     return aGuessT;
-  }
+  }  
 
   function bezier(mX1, mY1, mX2, mY2) {
 
@@ -258,15 +248,12 @@ const penner = (() => {
 
 function parseEasings(easing, duration) {
   if (is.fnc(easing)) return easing;
-  const name = easing.split('(')[0];
-  const ease = penner[name];
-  const args = parseEasingParameters(easing);
-  switch (name) {
-    case 'spring' : return spring(easing, duration);
-    case 'cubicBezier' : return applyArguments(bezier, args);
-    case 'steps' : return applyArguments(steps, args);
-    default : return applyArguments(ease, args);
-  }
+  const [name, args] = [easing.split('(')[0], parseEasingParameters(easing)];
+  const ease = penner[name] || applyArguments;
+  return name === 'spring' ? spring(easing, duration) 
+         : name === 'cubicBezier' ? bezier(...args) 
+         : name === 'steps' ? steps(...args) 
+         : ease(ease, args);
 }
 
 // Strings
@@ -282,16 +269,11 @@ function selectString(str) {
 
 // Arrays
 
-function filterArray(arr, callback) {
-  const len = arr.length;
-  const thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+function filterArray(arr, callback, thisArg) {
   const result = [];
-  for (let i = 0; i < len; i++) {
-    if (i in arr) {
-      const val = arr[i];
-      if (callback.call(thisArg, val, i, arr)) {
-        result.push(val);
-      }
+  for (let i = 0; i < arr.length; i++) {
+    if (i in arr && callback.call(thisArg, arr[i], i, arr)) {
+      result.push(arr[i]);
     }
   }
   return result;
@@ -315,15 +297,12 @@ function arrayContains(arr, val) {
 // Objects
 
 function cloneObject(o) {
-  const clone = {};
-  for (let p in o) clone[p] = o[p];
-  return clone;
+  return Object.assign({}, o);
 }
 
+
 function replaceObjectProps(o1, o2) {
-  const o = cloneObject(o1);
-  for (let p in o1) o[p] = o2.hasOwnProperty(p) ? o2[p] : o1[p];
-  return o;
+  return Object.assign({}, o1, o2);
 }
 
 function mergeObjects(o1, o2) {
@@ -340,13 +319,9 @@ function rgbToRgba(rgbValue) {
 }
 
 function hexToRgba(hexValue) {
-  const rgx = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  const hex = hexValue.replace(rgx, (m, r, g, b) => r + r + g + g + b + b );
+  const hex = hexValue.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => r + r + g + g + b + b);
   const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  const r = parseInt(rgb[1], 16);
-  const g = parseInt(rgb[2], 16);
-  const b = parseInt(rgb[3], 16);
-  return `rgba(${r},${g},${b},1)`;
+  return `rgba(${parseInt(rgb[1], 16)},${parseInt(rgb[2], 16)},${parseInt(rgb[3], 16)},1)`;
 }
 
 function hslToRgba(hslValue) {
@@ -409,19 +384,19 @@ function convertPxToUnit(el, value, unit) {
   const valueUnit = getUnit(value);
   if (arrayContains([unit, 'deg', 'rad', 'turn'], valueUnit)) return value;
   const cached = cache.CSS[value + unit];
-  if (!is.und(cached)) return cached;
-  const baseline = 100;
+  if (cached !== undefined) return cached;
   const tempEl = document.createElement(el.tagName);
-  const parentEl = (el.parentNode && (el.parentNode !== document)) ? el.parentNode : document.body;
+  const parentEl = el.parentNode !== document ? el.parentNode : document.body;
   parentEl.appendChild(tempEl);
   tempEl.style.position = 'absolute';
-  tempEl.style.width = baseline + unit;
-  const factor = baseline / tempEl.offsetWidth;
+  tempEl.style.width = `100${unit}`;
+  const factor = 100 / tempEl.offsetWidth;
   parentEl.removeChild(tempEl);
   const convertedUnit = factor * parseFloat(value);
   cache.CSS[value + unit] = convertedUnit;
   return convertedUnit;
 }
+
 
 function getCSSValue(el, prop, unit) {
   if (prop in el.style) {
@@ -432,10 +407,12 @@ function getCSSValue(el, prop, unit) {
 }
 
 function getAnimationType(el, prop) {
-  if (is.dom(el) && !is.inp(el) && (!is.nil(getAttribute(el, prop)) || (is.svg(el) && el[prop]))) return 'attribute';
-  if (is.dom(el) && arrayContains(validTransforms, prop)) return 'transform';
-  if (is.dom(el) && (prop !== 'transform' && getCSSValue(el, prop))) return 'css';
-  if (el[prop] != null) return 'object';
+  if (is.dom(el)) {
+    if (!is.inp(el) && (!is.nil(getAttribute(el, prop)) || (is.svg(el) && el[prop]))) return 'attribute';
+    if (arrayContains(validTransforms, prop)) return 'transform';
+    if (prop !== 'transform' && getCSSValue(el, prop)) return 'css';
+    if (el[prop] != null) return 'object';
+  }
 }
 
 function getElementTransforms(el) {
@@ -481,11 +458,9 @@ function getRelativeValue(to, from) {
 
 function validateValue(val, unit) {
   if (is.col(val)) return colorToRgb(val);
-  if (/\s/g.test(val)) return val;
-  const originalUnit = getUnit(val);
-  const unitLess = originalUnit ? val.substr(0, val.length - originalUnit.length) : val;
-  if (unit) return unitLess + unit;
-  return unitLess;
+  if (/\s/.test(val)) return val;
+  const unitlessValue = val.replace(getUnit(val), '');
+  return unit ? unitlessValue + unit : unitlessValue;
 }
 
 // getTotalLength() equivalent for circle, rect, polyline, polygon and line shapes
@@ -513,14 +488,12 @@ function getLineLength(el) {
 function getPolylineLength(el) {
   const points = el.points;
   let totalLength = 0;
-  let previousPos;
-  for (let i = 0 ; i < points.numberOfItems; i++) {
-    const currentPos = points.getItem(i);
-    if (i > 0) totalLength += getDistance(previousPos, currentPos);
-    previousPos = currentPos;
+  for (let i = 1; i < points.numberOfItems; i++) {
+    totalLength += getDistance(points.getItem(i - 1), points.getItem(i));
   }
   return totalLength;
 }
+
 
 function getPolygonLength(el) {
   const points = el.points;
@@ -550,44 +523,39 @@ function setDashoffset(el) {
 
 function getParentSvgEl(el) {
   let parentEl = el.parentNode;
-  while (is.svg(parentEl)) {
-    if (!is.svg(parentEl.parentNode)) break;
+  while (parentEl && is.svg(parentEl)) {
     parentEl = parentEl.parentNode;
   }
   return parentEl;
 }
 
-function getParentSvg(pathEl, svgData) {
-  const svg = svgData || {};
-  const parentSvgEl = svg.el || getParentSvgEl(pathEl);
+function getParentSvg(pathEl, svgData = {}) {
+  const parentSvgEl = svgData.el || getParentSvgEl(pathEl);
   const rect = parentSvgEl.getBoundingClientRect();
   const viewBoxAttr = getAttribute(parentSvgEl, 'viewBox');
-  const width = rect.width;
-  const height = rect.height;
-  const viewBox = svg.viewBox || (viewBoxAttr ? viewBoxAttr.split(' ') : [0, 0, width, height]);
+  const viewBox = svgData.viewBox || (viewBoxAttr ? viewBoxAttr.split(' ') : [0, 0, rect.width, rect.height]);
   return {
     el: parentSvgEl,
     viewBox: viewBox,
-    x: viewBox[0] / 1,
-    y: viewBox[1] / 1,
-    w: width,
-    h: height,
-    vW: viewBox[2],
-    vH: viewBox[3]
-  }
+    x: +viewBox[0],
+    y: +viewBox[1],
+    w: rect.width,
+    h: rect.height,
+    vW: +viewBox[2],
+    vH: +viewBox[3]
+  };
 }
 
-function getPath(path, percent) {
+function getPath(path, percent = 100) {
   const pathEl = is.str(path) ? selectString(path)[0] : path;
-  const p = percent || 100;
   return function(property) {
     return {
       property,
       el: pathEl,
       svg: getParentSvg(pathEl),
-      totalLength: getTotalLength(pathEl) * (p / 100)
-    }
-  }
+      totalLength: getTotalLength(pathEl) * (percent / 100)
+    };
+  };
 }
 
 function getPathProgress(path, progress, isPathTargetInsideSVG) {
@@ -625,7 +593,7 @@ function decomposeValue(val, unit) {
 // Animatables
 
 function parseTargets(targets) {
-  const targetsArray = targets ? (flattenArray(is.arr(targets) ? targets.map(toArray) : toArray(targets))) : [];
+  const targetsArray = targets ? flattenArray(toArray(targets)) : [];
   return filterArray(targetsArray, (item, pos, self) => self.indexOf(item) === pos);
 }
 
@@ -666,39 +634,25 @@ function normalizePropertyTweens(prop, tweenSettings) {
 
 
 function flattenKeyframes(keyframes) {
-  const propertyNames = filterArray(flattenArray(keyframes.map(key => Object.keys(key))), p => is.key(p))
-  .reduce((a,b) => { if (a.indexOf(b) < 0) a.push(b); return a; }, []);
-  const properties = {};
-  for (let i = 0; i < propertyNames.length; i++) {
-    const propName = propertyNames[i];
+  const propertyNames = Array.from(new Set(flattenArray(keyframes.map(Object.keys)).filter(is.key)));
+  return propertyNames.reduce((properties, propName) => {
     properties[propName] = keyframes.map(key => {
-      const newKey = {};
-      for (let p in key) {
-        if (is.key(p)) {
-          if (p == propName) newKey.value = key[p];
-        } else {
-          newKey[p] = key[p];
-        }
-      }
+      const newKey = Object.assign({}, key, { value: key[propName] });
+      delete newKey[propName];
       return newKey;
     });
-  }
-  return properties;
+    return properties;
+  }, {});
 }
 
 function getProperties(tweenSettings, params) {
-  const properties = [];
-  const keyframes = params.keyframes;
-  if (keyframes) params = mergeObjects(flattenKeyframes(keyframes), params);;
-  for (let p in params) {
-    if (is.key(p)) {
-      properties.push({
-        name: p,
-        tweens: normalizePropertyTweens(params[p], tweenSettings)
-      });
-    }
+  if (params.keyframes) {
+    params = mergeObjects(flattenKeyframes(params.keyframes), params);
   }
-  return properties;
+  return Object.keys(params).map(p => ({
+    name: p,
+    tweens: normalizePropertyTweens(params[p], tweenSettings),
+  }));
 }
 
 // Tweens
@@ -799,12 +753,14 @@ function createAnimation(animatable, prop) {
 }
 
 function getAnimations(animatables, properties) {
-  return filterArray(flattenArray(animatables.map(animatable => {
-    return properties.map(prop => {
-      return createAnimation(animatable, prop);
-    });
-  })), a => !is.und(a));
+  return filterArray(
+    flattenArray(animatables.map(animatable =>
+      properties.map(prop => createAnimation(animatable, prop))
+    )),
+    a => a !== undefined
+  );
 }
+
 
 // Create Instance
 
@@ -914,9 +870,8 @@ function anime(params = {}) {
   let promise = makePromise(instance);
 
   function toggleInstanceDirection() {
-    const direction = instance.direction;
-    if (direction !== 'alternate') {
-      instance.direction = direction !== 'normal' ? 'normal' : 'reverse';
+    if (instance.direction !== 'alternate') {
+        instance.direction = instance.direction === 'normal' ? 'reverse' : 'normal';
     }
     instance.reversed = !instance.reversed;
     children.forEach(child => child.reversed = instance.reversed);
@@ -944,62 +899,33 @@ function anime(params = {}) {
   }
 
   function setAnimationsProgress(insTime) {
-    let i = 0;
     const animations = instance.animations;
     const animationsLength = animations.length;
-    while (i < animationsLength) {
-      const anim = animations[i];
-      const animatable = anim.animatable;
-      const tweens = anim.tweens;
-      const tweenLength = tweens.length - 1;
-      let tween = tweens[tweenLength];
-      // Only check for keyframes if there is more than one tween
-      if (tweenLength) tween = filterArray(tweens, t => (insTime < t.end))[0] || tween;
-      const elapsed = minMax(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
-      const eased = isNaN(elapsed) ? 1 : tween.easing(elapsed);
-      const strings = tween.to.strings;
-      const round = tween.round;
-      const numbers = [];
-      const toNumbersLength = tween.to.numbers.length;
-      let progress;
-      for (let n = 0; n < toNumbersLength; n++) {
-        let value;
-        const toNumber = tween.to.numbers[n];
-        const fromNumber = tween.from.numbers[n] || 0;
-        if (!tween.isPath) {
-          value = fromNumber + (eased * (toNumber - fromNumber));
-        } else {
-          value = getPathProgress(tween.value, eased * toNumber, tween.isPathTargetInsideSVG);
+
+    for (let i = 0; i < animationsLength; i++) {
+        const anim = animations[i];
+        const { animatable, tweens } = anim;
+        let tween = tweens[tweens.length - 1];
+
+        if (tweens.length > 1) {
+            tween = filterArray(tweens, t => (insTime < t.end))[0] || tween;
         }
-        if (round) {
-          if (!(tween.isColor && n > 2)) {
-            value = Math.round(value * round) / round;
-          }
-        }
-        numbers.push(value);
-      }
-      // Manual Array.reduce for better performances
-      const stringsLength = strings.length;
-      if (!stringsLength) {
-        progress = numbers[0];
-      } else {
-        progress = strings[0];
-        for (let s = 0; s < stringsLength; s++) {
-          const a = strings[s];
-          const b = strings[s + 1];
-          const n = numbers[s];
-          if (!isNaN(n)) {
-            if (!b) {
-              progress += n + ' ';
-            } else {
-              progress += n + b;
-            }
-          }
-        }
-      }
-      setProgressValue[anim.type](animatable.target, anim.property, progress, animatable.transforms);
-      anim.currentValue = progress;
-      i++;
+
+        const elapsed = minMax(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
+        const eased = isNaN(elapsed) ? 1 : tween.easing(elapsed);
+        const { strings, round, to: { numbers: toNumbers } } = tween;
+        const numbers = toNumbers.map((toNumber, n) => {
+            const fromNumber = tween.from.numbers[n] || 0;
+            let value = tween.isPath ? getPathProgress(tween.value, eased * toNumber, tween.isPathTargetInsideSVG) : fromNumber + (eased * (toNumber - fromNumber));
+            return round && !(tween.isColor && n > 2) ? Math.round(value * round) / round : value;
+        });
+
+        const progress = strings.length ? strings.reduce((acc, s, idx) => {
+            return acc + (numbers[idx] || '') + (strings[idx + 1] || '');
+        }, strings[0]) : numbers[0];
+
+        setProgressValue[anim.type](animatable.target, anim.property, progress, animatable.transforms);
+        anim.currentValue = progress;
     }
   }
 
@@ -1008,9 +934,8 @@ function anime(params = {}) {
   }
 
   function countIteration() {
-    if (instance.remaining && instance.remaining !== true) {
-      instance.remaining--;
-    }
+    if (instance.remaining === true || !instance.remaining) return;
+    instance.remaining--;
   }
 
   function setInstanceProgress(engineTime) {
@@ -1181,9 +1106,8 @@ function removeTargetsFromInstance(targetsArray, instance) {
 
 function removeTargetsFromActiveInstances(targets) {
   const targetsArray = parseTargets(targets);
-  for (let i = activeInstances.length; i--;) {
-    const instance = activeInstances[i];
-    removeTargetsFromInstance(targetsArray, instance);
+  for (let i = activeInstances.length - 1; i >= 0; i--) {
+    removeTargetsFromInstance(targetsArray, activeInstances[i]);
   }
 }
 
