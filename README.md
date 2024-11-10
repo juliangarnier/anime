@@ -31,10 +31,18 @@
 <table>
   <tr>
     <td>
-      <a target="_blank" href="https://huly.io">
+      <a target="_blank" href="https://huly.io?ref=animejs">
         <picture>
           <source media="(prefers-color-scheme: dark)" srcset="./documentation/assets/sponsors/huly-logomark.svg">
-          <img align="center" src="./documentation/assets/assets/sponsors/huly-logomark-dark.svg" width="128">
+          <img align="center" src="./documentation/assets/sponsors/huly-logomark-dark.svg" width="128">
+        </picture>
+      </a>
+    </td>
+    <td>
+      <a target="_blank" href="https://clutch.io?ref=animejs">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./documentation/assets/sponsors/clutch-logomark.svg">
+          <img align="center" src="./documentation/assets/sponsors/clutch-logomark-dark.svg" width="128">
         </picture>
       </a>
     </td>
@@ -42,14 +50,17 @@
       <a target="_blank" href="https://github.com/sponsors/juliangarnier">
         <picture>
           <source media="(prefers-color-scheme: dark)" srcset="./documentation/assets/sponsors/placeholder.svg">
-          <img align="center" src="./documentation/assets/assets/sponsors/placeholder-dark.svg" width="128">
+          <img align="center" src="./documentation/assets/sponsors/placeholder-dark.svg" width="128">
         </picture>
       </a>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <a target="_blank" href="https://huly.io">Huly</a>
+      <a target="_blank" href="https://huly.io?ref=animejs">Huly</a>
+    </td>
+    <td align="center">
+      <a target="_blank" href="https://clutch.io?ref=animejs">Clutch</a>
     </td>
     <td align="center">
       <a target="_blank" href="https://github.com/sponsors/juliangarnier">Your logo here</a>
