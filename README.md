@@ -75,7 +75,7 @@
 Via npm
 
 ```bash
-$ npm install animejs --save
+npm install animejs --save
 ```
 
 or manual [download](https://github.com/juliangarnier/anime/archive/master.zip).
