@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="codepen" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <path id="Shape" stroke="#FFFFFF" stroke-width="1.75" d="M5 14.355L12 19l7-4.645v-4.71L12 5 5 9.645v4.71zm14 0l-7-4.71-7 4.71m0-4.71l7 4.646 7-4.646M12 5v4.645m0 4.71V19"/>
+  </g>
+</svg>

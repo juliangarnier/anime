@@ -1,0 +1,27 @@
+/* Font sizes */
+
+:root {
+  /* Makes input font size more readable, notably markdown textarea */
+  --input-font-size: var(--text-md);
+  /* Reduces the paddings between columns */
+  --main-padding-inline: clamp(var(--spacing-6), 5cqw, var(--spacing-12));
+  --columns-inline-gap: clamp(.75rem, 6cqw, 3rem);
+}
+
+/* Set a max width to the panel */
+
+.k-panel-main {
+  max-width: 112rem;
+  margin-inline: auto;
+  padding-inline-start: calc(var(--main-start) + var(--main-padding-inline));
+}
+
+/* Code editor */
+
+.k-code-editor-input {
+  border-radius: var(--rounded);
+}
+
+.k-code-editor-input[data-size=small] {
+  min-height: 2.5rem;
+}

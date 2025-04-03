@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>404</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <script>
+      const urlLocation = window.location;
+      const urlPathName =  urlLocation.pathname;
+      let fallbackRedirect = '/';
+      // if (urlPathName.includes('/documentation') && !urlPathName.includes('/en/')) {
+      //   fallbackRedirect = urlPathName.replace('/documentation', '/en/documentation');
+      // }
+      urlLocation.href = fallbackRedirect;
+    </script>
+  </body>
+</html>

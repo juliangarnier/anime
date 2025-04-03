@@ -1,699 +1,766 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>anime.js • JavaScript animation engine</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <meta property="og:title" content="anime.js">
-  <meta property="og:url" content="https://animejs.com">
-  <meta property="og:description" content="Javascript animation engine">
-  <meta property="og:image" content="https://animejs.com/documentation/assets/img/social-media-image.png">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="darkreader-lock">
+  <link rel="icon" href="/assets/images/favicon.png">
+  <title>Anime.js | JavaScript Animation Engine</title>
+  <meta name="description" content="An fast and versatile JavaScript animation library">
+  <meta property="og:title" content="Anime.js | JavaScript Animation Engine">
+  <meta property="og:url" content="/">
+  <meta property="og:description" content="An fast and versatile JavaScript animation library">
+  <meta property="og:image" content="/media/site/5e9b48763d-1743602181/anime-js-sharing-image.png">
+  <meta name="twitter:title" content="Anime.js | JavaScript Animation Engine">
+  <meta name="twitter:description" content="An fast and versatile JavaScript animation library">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@juliangarnier">
-  <meta name="twitter:creator" content="@juliangarnier">
-  <meta name="twitter:title" content="anime.js">
-  <meta name="twitter:description" content="Javascript animation engine">
-  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/social-media-image.png">
+  <meta name="twitter:image" content="/media/site/5e9b48763d-1743602181/anime-js-sharing-image.png">
+  <link href="/assets/css/styles.css?v=1" rel="stylesheet"></head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
+<script>
+  window.paths = {
+    demos: '/documentation-demos',
+    'github-sponsors': '/github-sponsors',
+    'company-sponsors': '/company-sponsors'
+  };
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  <link rel="apple-touch-icon-precomposed" href="documentation/assets/img/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="documentation/assets/img/favicon.png" >
-
-  <link href="//cloud.typenetwork.com/projects/2160/fontface.css/" rel="stylesheet" type="text/css">
-
-  <link href="documentation/assets/css/animejs.css" rel="stylesheet">
-  <link href="documentation/assets/css/website.css" rel="stylesheet">
-  <link href="documentation/assets/css/v4.css" rel="stylesheet">
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-16LTPBS8QC');
-  </script>
-</head>
-<body>
-  <div id="top-banner">
-    <button id="close-banner">✕</button>
-    <p>
-      Anime.js V4 is now in early access for GitHub Sponsors!
-    </p>
-    <a id="banner-cta" href="https://github.com/sponsors/juliangarnier" target="_blank">Try <span>Anime.js</span> V4</a>
+  gtag('config', 'G-16LTPBS8QC');
+</script>
+<body data-template="home">
+  <div class="page">
+    <header id="site-header" class="layout-container text-ui ui-overlay">
+  <div id="site-header-content">
+    <h1 class="heading-logo header-logo">
+      <a href="/">
+        <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
+        <span>Anime.js | JavaScript Animation Engine</span>
+      </a>
+      <label id="docs-versions" class="ui-select ui-input docs-info-version">
+        <select class="ui-input" name="docs-versions" aria-label="Anime.js versions">
+          <option value="/documentation">4.0.0</option>
+          <option value="/v3/documentation">3.2.1</option>
+          <option value="/v2/documentation">2.1.0</option>
+        </select>
+      </label>
+    </h1>
+    <nav id="site-menu">
+      <ul>
+                <li><a class="main-nav-link docs-link" data-id="docs" href="/documentation" title="Docs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="sidebar" fill="none" fill-rule="evenodd">
+    <path id="rectangle" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125H7.833A3.375 3.375 0 0 0 4.458 9.5v5a3.375 3.375 0 0 0 3.375 3.375h8.334a3.375 3.375 0 0 0 3.375-3.375v-5a3.375 3.375 0 0 0-3.375-3.375zm-8.334 1.75h8.334c.897 0 1.625.728 1.625 1.625v5c0 .897-.728 1.625-1.625 1.625H7.833A1.625 1.625 0 0 1 6.208 14.5v-5c0-.897.728-1.625 1.625-1.625z"/>
+    <polyline id="Path-42" stroke="#FFFFFF" stroke-width="1.75" points="9.5 7.75 9.5 12 9.5 16.25" data-points="13.5 8.75 10.5 12 13.5 15.25"/>
+  </g>
+</svg>
+Documentation</a></li>
+        <li><a class="main-nav-link" href="https://codepen.io/collection/Poerqa?cursor=eyJwYWdlIjoxfQ==/" target="_blank" title="CodePen"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="codepen" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <path id="Shape" stroke="#FFFFFF" stroke-width="1.75" d="M5 14.355L12 19l7-4.645v-4.71L12 5 5 9.645v4.71zm14 0l-7-4.71-7 4.71m0-4.71l7 4.646 7-4.646M12 5v4.645m0 4.71V19"/>
+  </g>
+</svg>
+<span>Examples</span></a></li>
+        <li><a class="main-nav-link" href="https://github.com/juliangarnier/anime" target="_blank" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" d="M12.007 4C7.579 4 4 7.606 4 12.066a8.06 8.06 0 0 0 5.475 7.652c.397.08.543-.173.543-.387 0-.187-.013-.828-.013-1.496-2.227.481-2.691-.961-2.691-.961-.358-.935-.888-1.175-.888-1.175-.73-.495.053-.495.053-.495.808.054 1.233.828 1.233.828.715 1.229 1.869.882 2.333.668.066-.52.278-.881.504-1.082-1.777-.187-3.646-.881-3.646-3.98 0-.88.318-1.602.822-2.163-.08-.2-.358-1.028.08-2.136 0 0 .676-.214 2.2.828a7.698 7.698 0 0 1 2.002-.268 7.7 7.7 0 0 1 2.001.268c1.525-1.042 2.2-.828 2.2-.828.438 1.108.16 1.936.08 2.136.517.561.822 1.282.822 2.164 0 3.098-1.869 3.779-3.659 3.98.292.253.544.734.544 1.495 0 1.082-.013 1.95-.013 2.217 0 .214.146.467.543.387A8.06 8.06 0 0 0 20 12.066C20.013 7.606 16.42 4 12.007 4z"/>
+  </g>
+</svg>
+<span>GitHub</span></a></li>
+        <li>
+          <sponsor-button>
+          <a href="https://github.com/sponsors/juliangarnier" class="main-nav-link sponsor-button" target="_blank" title="Sponsor Julian Garnier on GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 18.445a.778.778 0 0 1-.34-.078C11.39 18.235 5 15.077 5 9.889a3.889 3.889 0 0 1 6.638-2.75L12 7.5l.362-.361A3.889 3.889 0 0 1 19 9.889c0 5.17-6.387 8.344-6.66 8.478a.778.778 0 0 1-.34.078z"/>
+  </g>
+</svg>
+            <span>Sponsor</span>
+          </a>
+          </sponsor-button>
+        </li>
+      </ul>
+    </nav>
+    <button id="toggle-site-menu" class="ui-input trigger-pane" title="Toggle site menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="menu" fill="none" fill-rule="evenodd">
+    <rect id="Rectangle" width="16" height="1.75" x="4" y="8" fill="#FFFFFF"/>
+    <rect id="Rectangle-Copy" width="16" height="1.75" x="4" y="14" fill="#FFFFFF"/>
+  </g>
+</svg>
+</button>
   </div>
-  <header class="header nav-bar grid-container">
-    <div class="nav-bar-content">
-      <a href="https://animejs.com/" class="top-header-logo">
-        <div class="main-logo">
-          <div class="logo-animation-wrapper">
-            <div class="logo-animation">
-              <div class="anime-logo">
-                <div class="anime-logo-signs">
-                  <div class="logo-letter letter-a">
-                    <svg class="bounced" viewBox="0 0 200 240" width="200" height="240">
-                      <path class="line" d="M30 20h130c9.996 0 10 40 10 60v140H41c-11.004 0-11-40-11-60s-.004-60 10-60h110"/>
-                    </svg>
-                  </div>
-                  <div class="logo-letter letter-n">
-                    <svg class="bounced" viewBox="0 0 200 240" width="200" height="240">
-                      <path class="line" d="M170 220V60c0-31.046-8.656-40-19.333-40H49.333C38.656 20 30 28.954 30 60v160"/>
-                    </svg>
-                  </div>
-                  <div class="logo-letter letter-i">
-                    <svg class="bounced" viewBox="0 0 60 240" width="60" height="240">
-                      <path class="line"
-                              d="M30 20v200"
-                        data-d2="M30 100v120"
-                      />
-                    </svg>
-                  </div>
-                  <div class="logo-letter letter-m">
-                    <svg class="bounced" viewBox="0 0 340 240" width="340" height="240" fill="none" fill-rule="evenodd">
-                      <path class="line"
-                              d="M240,220 L240,60 C240,28.954305 231.344172,20 220.666667,20 C171.555556,20 254.832031,20 170,20 C85.1679688,20 168.444444,20 119.333333,20 C108.655828,20 100,28.954305 100,60 L100,220"
-                        data-d2="M310,220 L310,60 C310,28.954305 301.344172,20 290.666667,20 C241.555556,20 254.832031,110 170,110 C85.1679688,110 98.4444444,20 49.3333333,20 C38.6558282,20 30,28.954305 30,60 L30,220"
-                        data-d3="M310,220 L310,60 C310,28.954305 301.344172,20 290.666667,20 C241.555556,20 254.832031,20 170,20 C85.1679688,20 98.4444444,20 49.3333333,20 C38.6558282,20 30,28.954305 30,60 L30,220"
-                      />
-                    </svg>
-                  </div>
-                  <div class="logo-letter letter-e">
-                    <svg class="bounced" viewBox="0 0 200 240" width="200" height="240">
-                      <path class="line" d="M50 140h110c10 0 10-40 10-60s0-60-10-60H40c-10 0-10 40-10 60v80c0 20 0 60 10 60h130"/>
-                    </svg>
-                  </div>
-                  <div class="bounce">
-                    <svg viewBox="0 0 1000 260" width="1000" height="260" fill="none">
-                      <path d="M630,240 C630,111.154418 608.971354,40 530.160048,40 C451.348741,40 430,127.460266 430,210"/>
-                    </svg>
-                    <div class="dot"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </a>
-      <nav class="nav-menu">
-        <a class="nav-link" href="documentation">Documentation</a>
-        <a class="nav-link" href="https://codepen.io/collection/XLebem/" target="_blank">Examples</a>
-        <a class="nav-link" href="https://github.com/sponsors/juliangarnier" target="_blank">Sponsor</a>
-        <a href="https://github.com/juliangarnier/anime/" class="main-cta">Download v<span class="version-number">3.0.0</span></a>
-      </nav>
-    </div>
   </header>
-
-  <section id="intro" class="feature-section section-intro">
-
-    <div class="grid-container">
-
-      <div class="feature-animation">
-        <div class="easing-visualizer">
-          <div class="wrapper bars-wrapper"></div>
-          <div class="wrapper dots-wrapper"></div>
+<main id="home" class="layout-container">
+  <section id="intro" data-chapter="intro" data-label="HEADING">
+    <div class="home-section text-layout">
+      <div class="home-section-content">
+        <div class="home-section-text home-section-text-short">
+          <!-- <span class="intro-name">Anime.js</span> -->
+          <h2>All-in-one <br>animation <br>engine<span class="animation-engine red-dot">.</span></h2>
+          <p>A fast and versatile JavaScript <br>library to animate <span  class="animate-anything-wrapper"><span class="animate-anything">the web</span><span class="animate-anything-dot">.</span></span></p>
+          <p></p>
         </div>
-      </div>
-
-      <div class="feature-description feature-description-grid">
-        <div class="feature-description-icons">
-          <nav class="feature-icons-container horizontal-icons secondary-menu">
-            <a href="https://github.com/juliangarnier/anime/" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-github.svg" />
-              <figcaption class="feature-caption">GitHub</figcaption>
-            </a>
-            <a href="https://codepen.io/collection/XLebem/" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-codepen.svg" />
-              <figcaption class="feature-caption">CodePen</figcaption>
-            </a>
-            <a href="documentation" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-docs.svg" />
-              <figcaption class="feature-caption">Docs</figcaption>
-            </a>
-            <a href="https://twitter.com/JulianGarnier" class="feature-icon" target="_blank">
-              <img src="documentation/assets/img/icons/icon-twitter.svg" />
-              <figcaption class="feature-caption">Twitter</figcaption>
-            </a>
-          </nav>
-        </div>
-        <div class="feature-description-text">
-          <p class="feature-paragraph">
-            <em>Anime.js</em> (<code>/ˈæn.ə.meɪ/</code>) is a lightweight JavaScript animation library with a simple, yet powerful API.<br>It works with CSS properties, SVG, DOM attributes and JavaScript Objects.
-          </p>
-          <p class="feature-paragraph">
-            <a href="#getting-started" class="primary arrow scroll-to-getting-started">Getting started</a>
-          </p>
-        </div>
-      </div>
-
-      <div class="feature-description sponsors-grid">
-        <p class="feature-paragraph">
-          Powered by
-        </p>
-        <div id="home-sponsors-list">
-          <a class="sponsor-logo" target="_blank" href="https://huly.io?ref=animejs">
-            <img src="documentation/assets/sponsors/huly-logomark.svg" />
-            <span class="sponsor-name">Huly</span>
-          </a>
-          <a class="sponsor-logo" target="_blank" href="https://clutch.io?ref=animejs">
-            <img src="documentation/assets/sponsors/clutch-logomark.svg" />
-            <span class="sponsor-name">Clutch</span>
-          </a>
-          <a class="sponsor-logo sponsor-placeholder" target="_blank" href="https://github.com/sponsors/juliangarnier">
-            <img src="documentation/assets/img/sponsor-logo.png" />
-            <span class="sponsor-name">Your logo here</span>
-          </a>
-        </div>
-        <p class="feature-paragraph">
-          <a class="main-cta" href="https://github.com/sponsors/juliangarnier" target="_blank">Become a sponsor</a>
-        </p>
-      </div>
-
-    </div>
-
-  </section>
-
-  <section id="staggering" class="feature-section section-feature-staggering inverted-section">
-
-    <div class="grid-container">
-
-      <div class="feature-description">
-        <h1 class="feature-title">
-          Staggering
-        </h1>
-        <h2 class="feature-subtitle">
-          Follow through animations made easy.
-        </h2>
-      </div>
-
-      <div class="feature-animation">
-        <div class="stagger-visualizer">
-          <div class="cursor color-red"></div>
-          <div class="dots-wrapper"></div>
-        </div>
-      </div>
-
-      <div class="feature-description feature-description-grid">
-        <div class="feature-description-icons">
-          <div class="feature-icons-container vertical-icons">
-            <figure class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-staggering-forward.svg" />
-              <figcaption class="feature-caption">forward</figcaption>
-            </figure>
-            <figure class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-staggering-index.svg" />
-              <figcaption class="feature-caption">from index</figcaption>
-            </figure>
-            <figure class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-staggering-center.svg" />
-              <figcaption class="feature-caption">from center</figcaption>
-            </figure>
-            <figure class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-staggering-easing.svg" />
-              <figcaption class="feature-caption">easing</figcaption>
-            </figure>
-            <figure class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-staggering-reverse.svg" />
-              <figcaption class="feature-caption">reversed</figcaption>
-            </figure>
-            <figure class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-staggering-grid.svg" />
-              <figcaption class="feature-caption">ripple</figcaption>
-            </figure>
-          </div>
-        </div>
-        <div class="feature-description-text">
-          <p class="feature-paragraph">
-            Anime's built-in staggering system makes complex follow through and overlapping animations simple. It can be used on both timings and properties.
-          </p>
-          <p class="feature-paragraph">
-            <a href="documentation/#staggeringBasics" class="primary arrow">Learn more about staggering</a>
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-  </section>
-
-  <section id="layered-animations" class="feature-section section-feature-layered-animation">
-
-    <div class="grid-container">
-
-      <div class="feature-description">
-        <h1 class="feature-title">
-          Layered CSS transforms
-        </h1>
-        <h2 class="feature-subtitle">
-          One element is all you need.
-        </h2>
-      </div>
-
-      <div class="feature-animation">
-        <div class="layered-animations">
-          <svg class="large shape" viewBox="0 0 96 96">
-            <defs>
-              <linearGradient id="circleGradient" x1="0%" x2="100%" y1="20%" y2="80%">
-                <stop stop-color="#373734" offset="0%"/>
-                <stop stop-color="#242423" offset="50%"/>
-                <stop stop-color="#0D0D0C" offset="100%"/>
-              </linearGradient>
-            </defs>
-            <circle cx="48" cy="48" r="28" fill-rule="evenodd" stroke-linecap="square" fill="url(#circleGradient)"/>
-          </svg>
-          <svg class="small shape color-red" viewBox="0 0 96 96">
-            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"/>
-          </svg>
-          <svg class="large shape" viewBox="0 0 96 96">
-            <defs>
-              <linearGradient id="triangleGradient" x1="0%" x2="100%" y1="20%" y2="80%">
-                <stop stop-color="#373734" offset="0%"/>
-                <stop stop-color="#242423" offset="50%"/>
-                <stop stop-color="#0D0D0C" offset="100%"/>
-              </linearGradient>
-            </defs>
-            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square" fill="url(#triangleGradient)"/>
-          </svg>
-          <svg class="x-small shape" viewBox="0 0 96 96">
-            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"/>
-          </svg>
-          <svg class="x-small shape" viewBox="0 0 96 96">
-            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"/>
-          </svg>
-          <svg class="small shape color-red" viewBox="0 0 96 96">
-            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"/>
-          </svg>
-          <svg class="large shape" viewBox="0 0 96 96">
-            <defs>
-              <linearGradient id="rectGradient" x1="0%" x2="100%" y1="20%" y2="80%">
-                <stop stop-color="#373734" offset="0%"/>
-                <stop stop-color="#242423" offset="50%"/>
-                <stop stop-color="#0D0D0C" offset="100%"/>
-              </linearGradient>
-            </defs>
-            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square" fill="url(#rectGradient)"/>
-          </svg>
-          <svg class="small shape color-red" viewBox="0 0 96 96">
-            <circle cx="48" cy="48" r="32" fill-rule="evenodd" stroke-linecap="square"/>
-          </svg>
-          <svg class="x-small shape" viewBox="0 0 96 96">
-            <circle cx="48" cy="48" r="32" fill-rule="evenodd" stroke-linecap="square"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="feature-description feature-description-grid">
-        <div class="feature-description-icons">
-          <figure class="transform-anim">
-            <figcaption class="feature-caption">translateX</figcaption>
-            <div class="transform-timeline"><div class="transform-progress"></div></div>
-          </figure>
-          <figure class="transform-anim">
-            <figcaption class="feature-caption">translateY</figcaption>
-            <div class="transform-timeline"><div class="transform-progress"></div></div>
-          </figure>
-          <figure class="transform-anim">
-            <figcaption class="feature-caption">rotate</figcaption>
-            <div class="transform-timeline"><div class="transform-progress"></div></div>
-          </figure>
-          <figure class="transform-anim">
-            <figcaption class="feature-caption">scale</figcaption>
-            <div class="transform-timeline"><div class="transform-progress"></div></div>
-          </figure>
-        </div>
-        <div class="feature-description-text">
-          <p class="feature-paragraph">
-            Animate multiple CSS transforms properties with different timings simultaneously on a single HTML element.
-          </p>
-          <p class="feature-paragraph">
-            <a href="documentation/#animationKeyframes" class="primary arrow">Learn more about keyframes</a>
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-  </section>
-
-  <section id="controls-and-callbacks" class="feature-section section-feature-control inverted-section">
-
-    <div class="grid-container large-grid">
-
-      <div class="feature-description">
-        <h1 class="feature-title">Controls and callbacks</h1>
-        <h2 class="feature-subtitle">
-          Timing is everything.
-        </h2>
-      </div>
-
-      <div class="feature-animation">
-
-        <div class="time-control">
-          <div class="ruller">
-            <div class="time-cursor color-red">
-              <input value="999" />
+        <div class="fixed-container heading-links">
+          <div class="layout-container">
+            <div class="ui-group">
+              <pre class="npm-install"><code>npm i animejs</code></pre>
+              <button class="learn-more ui-input ui-button">Learn more <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="12 18 17.237 12.763 16 11.525 12.875 14.651 12.875 6.763 11.125 6.763 11.125 14.651 8 11.525 6.763 12.763"/>
+  </g>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="12 18 17.237 12.763 16 11.525 12.875 14.651 12.875 6.763 11.125 6.763 11.125 14.651 8 11.525 6.763 12.763"/>
+  </g>
+</svg>
+</button>
+            </div>
+            <div class="heading-sponsors text-layout">
+              <span class="text-xxs">Sponsored by</span>
+              <sponsors-list path="company-sponsors" size="large"></sponsors-list>
             </div>
           </div>
-          <div class="timeline">
-            <div class="info-loop-begin info info-large info-left info-bottom" data-delay="0">
-              <div class="info-bar"></div>
-              <figcaption class="feature-caption">animation begin</figcaption>
-              <figcaption class="feature-caption">loop 1 begin</figcaption>
-            </div>
-            <div class="animation">
-              <div class="animation-band animation-delay"></div>
-              <div class="info-change-begin info info-left info-bottom" data-delay="100">
-                <div class="info-bar"></div>
-                <figcaption class="feature-caption">change begin</figcaption>
-              </div>
-              <div class="animation-band animation-change"></div>
-              <div class="info-change-complete info info-right info-top" data-delay="400">
-                <div class="info-bar"></div>
-                <figcaption class="feature-caption">change complete</figcaption>
-              </div>
-              <div class="animation-band animation-end-delay"></div>
-            </div>
-            <div class="info-loop-complete info info-large info-right info-top" data-delay="500">
-              <div class="info-bar"></div>
-              <figcaption class="feature-caption">loop 1 complete</figcaption>
-            </div>
-            <div class="info info-large info-left info-bottom" data-delay="500">
-              <div class="info-bar"></div>
-              <figcaption class="feature-caption">reverse</figcaption>
-              <figcaption class="feature-caption">loop 2 begin</figcaption>
-            </div>
-            <div class="animation">
-              <div class="animation-band animation-end-delay"></div>
-              <div class="info-change-begin info info-left info-bottom" data-delay="600">
-                <div class="info-bar"></div>
-                <figcaption class="feature-caption">change begin</figcaption>
-              </div>
-              <div class="animation-band animation-change"></div>
-              <div class="info-change-complete info info-right info-top" data-delay="900">
-                <div class="info-bar"></div>
-                <figcaption class="feature-caption">change complete</figcaption>
-              </div>
-              <div class="animation-band animation-delay"></div>
-            </div>
-            <div class="info-loop-complete info info-large info-right info-top" data-delay="1000">
-              <div class="info-bar"></div>
-              <figcaption class="feature-caption">loop 2 complete</figcaption>
-            </div>
-            <div class="info info-large info-left info-bottom" data-delay="1000">
-              <div class="info-bar"></div>
-              <figcaption class="feature-caption">reverse</figcaption>
-              <figcaption class="feature-caption">loop 3 begin</figcaption>
-            </div>
-            <div class="animation">
-              <div class="animation-band animation-delay"></div>
-              <div class="info-change-begin info info-left info-bottom" data-delay="1100">
-                <div class="info-bar"></div>
-                <figcaption class="feature-caption">change begin</figcaption>
-              </div>
-              <div class="animation-band animation-change"></div>
-              <div class="info-change-complete info info-right info-top" data-delay="1400">
-                <div class="info-bar"></div>
-                <figcaption class="feature-caption">change complete</figcaption>
-              </div>
-              <div class="animation-band animation-end-delay"></div>
-            </div>
-            <div class="info-loop-complete info info-large info-right info-top" data-delay="1500">
-              <div class="info-bar"></div>
-              <figcaption class="feature-caption">loop 3 complete</figcaption>
-              <figcaption class="feature-caption">animation complete</figcaption>
-            </div>
-          </div>
-
         </div>
-
       </div>
+    </div>
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
+  </section>
 
-      <div class="feature-description feature-description-grid">
-        <div class="feature-description-icons">
-          <div class="feature-icons-container vertical-icons">
-            <figure class="feature-icon timeline-icon">
-              <div class="animation-band animation-delay"></div>
-              <figcaption class="feature-caption">delay</figcaption>
-            </figure>
-            <figure class="feature-icon timeline-icon">
-              <div class="animation-band animation-end-delay"></div>
-              <figcaption class="feature-caption">end-delay</figcaption>
-            </figure>
-            <figure class="feature-icon timeline-icon">
-              <div class="animation-band animation-change"></div>
-              <figcaption class="feature-caption">change</figcaption>
-            </figure>
+  <section id="toolbox" class="home-section-container home-section-light" data-chapter="toolbox" data-label="TOOLBOX" data-enter-offset="-=100lvh" data-leave-offset="-=10lvh">
+    <div class="home-section fixed-section">
+      <div class="home-section-content">
+        <div class="home-section-text text-layout home-section-text-short">
+          <h2 class="section-heading text-xxl">The complete <br>animator's toolbox</h2>
+          <p class="section-sub-heading">Break free from browser limitations and animate anything on the web with a single API.</p>
+        </div>
+        <div class="toolbox-labels-container layout-container">
+          <div class="toolbox-labels">
+            <ul class="toolbox-labels-left"></ul>
+            <ul class="toolbox-labels-right"></ul>
           </div>
         </div>
-        <div class="feature-description-text">
-          <p class="feature-paragraph">
-            Play, pause, control, reverse and trigger events in sync using the complete built-in callbacks and controls functions.
-          </p>
-          <p class="feature-paragraph">
-            <a href="documentation/#update" class="primary arrow">Learn more about callbacks</a>
-          </p>
-        </div>
       </div>
-
     </div>
-
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
   </section>
 
-  <section id="animate-anything" class="feature-section section-feature-animate">
-
-    <div class="grid-container">
-
-      <div class="feature-description">
-        <h1 class="feature-title">
-          Animate anything
-        </h1>
-        <h2 class="feature-subtitle">
-          HTML, JS, CSS, SVG.
-        </h2>
+  <section id="features-gallery" data-label="FEATURES">
+    <section id="intuitive" class="home-section feature-section text-layout theme-color-0" data-chapter="intuitive" data-demo="intuitive">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Intuitive API</h2>
+              <p>Animate faster with an easy-to-use, yet powerful animation API.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/animation/tween-parameters/composition"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Per property parameters</a></li>
+              <li><a class="text-ui" href="documentation/animation/tween-parameters/composition"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Flexible keyframes system</a></li>
+              <li><a class="text-ui" href="documentation/animation/tween-parameters/composition"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Built-in easings</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
       </div>
+    </section>
 
-      <div class="feature-animation square-animation">
-        <div class="sphere-animation">
-          <svg class="sphere" viewBox="0 0 440 440">
-            <defs>
-              <linearGradient id="sphereGradient" x1="0%" x2="0%" y1="0%" y2="0%">
-                <stop stop-color="#373734" offset="0%"/>
-                <stop stop-color="#242423" offset="50%"/>
-                <stop stop-color="#0D0D0C" offset="100%"/>
-              </linearGradient>
-            </defs>
-            <path d="M361.604 361.238c-24.407 24.408-51.119 37.27-59.662 28.727-8.542-8.543 4.319-35.255 28.726-59.663 24.408-24.407 51.12-37.269 59.663-28.726 8.542 8.543-4.319 35.255-28.727 59.662z"/>
-            <path d="M360.72 360.354c-35.879 35.88-75.254 54.677-87.946 41.985-12.692-12.692 6.105-52.067 41.985-87.947 35.879-35.879 75.254-54.676 87.946-41.984 12.692 12.692-6.105 52.067-41.984 87.946z"/>
-            <path d="M357.185 356.819c-44.91 44.91-94.376 68.258-110.485 52.149-16.11-16.11 7.238-65.575 52.149-110.485 44.91-44.91 94.376-68.259 110.485-52.15 16.11 16.11-7.239 65.576-52.149 110.486z"/>
-            <path d="M350.998 350.632c-53.21 53.209-111.579 81.107-130.373 62.313-18.794-18.793 9.105-77.163 62.314-130.372 53.209-53.21 111.579-81.108 130.373-62.314 18.794 18.794-9.105 77.164-62.314 130.373z"/>
-            <path d="M343.043 342.677c-59.8 59.799-125.292 91.26-146.283 70.268-20.99-20.99 10.47-86.483 70.269-146.282 59.799-59.8 125.292-91.26 146.283-70.269 20.99 20.99-10.47 86.484-70.27 146.283z"/>
-            <path d="M334.646 334.28c-65.169 65.169-136.697 99.3-159.762 76.235-23.065-23.066 11.066-94.593 76.235-159.762s136.697-99.3 159.762-76.235c23.065 23.065-11.066 94.593-76.235 159.762z"/>
-            <path d="M324.923 324.557c-69.806 69.806-146.38 106.411-171.031 81.76-24.652-24.652 11.953-101.226 81.759-171.032 69.806-69.806 146.38-106.411 171.031-81.76 24.652 24.653-11.953 101.226-81.759 171.032z"/>
-            <path d="M312.99 312.625c-73.222 73.223-153.555 111.609-179.428 85.736-25.872-25.872 12.514-106.205 85.737-179.428s153.556-111.609 179.429-85.737c25.872 25.873-12.514 106.205-85.737 179.429z"/>
-            <path d="M300.175 299.808c-75.909 75.909-159.11 115.778-185.837 89.052-26.726-26.727 13.143-109.929 89.051-185.837 75.908-75.908 159.11-115.778 185.837-89.051 26.726 26.726-13.143 109.928-89.051 185.836z"/>
-            <path d="M284.707 284.34c-77.617 77.617-162.303 118.773-189.152 91.924-26.848-26.848 14.308-111.534 91.924-189.15C265.096 109.496 349.782 68.34 376.63 95.188c26.849 26.849-14.307 111.535-91.923 189.151z"/>
-            <path d="M269.239 267.989c-78.105 78.104-163.187 119.656-190.035 92.807-26.849-26.848 14.703-111.93 92.807-190.035 78.105-78.104 163.187-119.656 190.035-92.807 26.849 26.848-14.703 111.93-92.807 190.035z"/>
-            <path d="M252.887 252.52C175.27 330.138 90.584 371.294 63.736 344.446 36.887 317.596 78.043 232.91 155.66 155.293 233.276 77.677 317.962 36.521 344.81 63.37c26.85 26.848-14.307 111.534-91.923 189.15z"/>
-            <path d="M236.977 236.61C161.069 312.52 77.867 352.389 51.14 325.663c-26.726-26.727 13.143-109.928 89.052-185.837 75.908-75.908 159.11-115.777 185.836-89.05 26.727 26.726-13.143 109.928-89.051 185.836z"/>
-            <path d="M221.067 220.7C147.844 293.925 67.51 332.31 41.639 306.439c-25.873-25.873 12.513-106.206 85.736-179.429C200.6 53.786 280.931 15.4 306.804 41.272c25.872 25.873-12.514 106.206-85.737 179.429z"/>
-            <path d="M205.157 204.79c-69.806 69.807-146.38 106.412-171.031 81.76-24.652-24.652 11.953-101.225 81.759-171.031 69.806-69.807 146.38-106.411 171.031-81.76 24.652 24.652-11.953 101.226-81.759 171.032z"/>
-            <path d="M189.247 188.881c-65.169 65.169-136.696 99.3-159.762 76.235-23.065-23.065 11.066-94.593 76.235-159.762s136.697-99.3 159.762-76.235c23.065 23.065-11.066 94.593-76.235 159.762z"/>
-            <path d="M173.337 172.971c-59.799 59.8-125.292 91.26-146.282 70.269-20.991-20.99 10.47-86.484 70.268-146.283 59.8-59.799 125.292-91.26 146.283-70.269 20.99 20.991-10.47 86.484-70.269 146.283z"/>
-            <path d="M157.427 157.061c-53.209 53.21-111.578 81.108-130.372 62.314-18.794-18.794 9.104-77.164 62.313-130.373 53.21-53.209 111.58-81.108 130.373-62.314 18.794 18.794-9.105 77.164-62.314 130.373z"/>
-            <path d="M141.517 141.151c-44.91 44.91-94.376 68.259-110.485 52.15-16.11-16.11 7.239-65.576 52.15-110.486 44.91-44.91 94.375-68.258 110.485-52.15 16.109 16.11-7.24 65.576-52.15 110.486z"/>
-            <path d="M125.608 125.241c-35.88 35.88-75.255 54.677-87.947 41.985-12.692-12.692 6.105-52.067 41.985-87.947C115.525 43.4 154.9 24.603 167.592 37.295c12.692 12.692-6.105 52.067-41.984 87.946z"/>
-            <path d="M109.698 109.332c-24.408 24.407-51.12 37.268-59.663 28.726-8.542-8.543 4.319-35.255 28.727-59.662 24.407-24.408 51.12-37.27 59.662-28.727 8.543 8.543-4.319 35.255-28.726 59.663z"/>
-          </svg>
+    <section id="composition" class="home-section feature-section text-layout theme-color-2" data-chapter="composition" data-demo="composition">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Enhanced transforms</h2>
+              <p>Smoothly blend individual CSS transform properties with a versatile composition API.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/animation/animatable-properties/css-transforms"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Individual CSS Transforms</a></li>
+              <li><a class="text-ui" href="documentation/animation/tween-value-types/function-based"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Function based values</a></li>
+              <li><a class="text-ui" href="documentation/animation/tween-parameters/composition"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Blend composition</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+
+    <section id="svgUtils" class="home-section feature-section text-layout theme-color-9" data-chapter="svgUtils" data-demo="svgUtils">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>SVG toolset</h2>
+              <p>Morph shapes, follow motion paths, and draw lines easily with the built-in SVG utilities.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/svg/morphto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Shape morphing</a></li>
+              <li><a class="text-ui" href="documentation/svg/createdrawable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Line drawing</a></li>
+              <li><a class="text-ui" href="documentation/svg/createmotionpath"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Motion path</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+
+    <section id="scroll" class="home-section feature-section text-layout theme-color-6" data-chapter="scroll" data-demo="scroll">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Scroll Observer</h2>
+              <p>Synchronise and trigger animations on scroll with the Scroll Observer API.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/scroll/scrollobserver-synchronisation-modes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Multiple synchronisation modes</a></li>
+              <li><a class="text-ui" href="documentation/scroll/scrollobserver-thresholds"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Advanced thresholds</a></li>
+              <li><a class="text-ui" href="documentation/scroll/scrollobserver-callbacks"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Complete set of callbacks</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+
+    <section id="staggering" class="home-section feature-section text-layout theme-color-8" data-chapter="staggering" data-demo="staggering">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Advanced staggering</h2>
+              <p>Create stunning effects in seconds with the built-in Stagger utility function.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/stagger/time-staggering"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Time staggering</a></li>
+              <li><a class="text-ui" href="documentation/stagger/values-staggering"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Values staggering</a></li>
+              <li><a class="text-ui" href="documentation/stagger/timeline-positions-staggering"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Timeline positions staggering</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+
+    <section id="draggable" class="home-section feature-section text-layout theme-color-5" data-chapter="draggable" data-demo="draggable">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Springs and draggable</h2>
+              <p>Drag, snap, flick and throw HTML elements with the fully-featured Draggable API.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/draggable/draggable-settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Versatile settings</a></li>
+              <li><a class="text-ui" href="documentation/draggable/draggable-callbacks"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Comprehensive callbacks</a></li>
+              <li><a class="text-ui" href="documentation/draggable/draggable-methods"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Useful methods</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div id="draggable-demo" class="feature-section-demo">
+              <div class="draggable-container">
+                <div class="draggable"></div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
+    <section id="clockwork" class="home-section feature-section text-layout theme-color-3" data-chapter="clockwork" data-demo="clockwork">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Runs like <br>clockwork</h2>
+              <p>Orchestrate animation sequences and keep callbacks in sync with the powerfull Timeline API.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/timeline/add-animations"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Synchronise animations</a></li>
+              <li><a class="text-ui" href="documentation/timeline/time-position"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Advanced time positions</a></li>
+              <li><a class="text-ui" href="documentation/timeline/timeline-playback-settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Playback settings</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+
+    <section id="responsive" class="home-section feature-section text-layout theme-color-7" data-chapter="responsive" data-demo="responsive">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>Responsive animations</h2>
+              <p>Make animations respond to media queries easily with the Scope API.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/scope/scope-parameters/mediaqueries"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Media queries</a></li>
+              <li><a class="text-ui" href="documentation/scope/scope-parameters/root"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Custom root element</a></li>
+              <li><a class="text-ui" href="documentation/scope/register-method-function"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Scopped methods</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+  </section>
+  <div class="section-spacer"></div>
+  <section id="modules" class="home-section-container home-section-light" data-chapter="modules" data-label="MODULES" data-enter-offset="+=10lvh" data-leave-offset="-=75lvh">
+    <section class="home-section fixed-section">
+      <div class="home-section-content">
+        <div class="home-section-text text-layout home-section-text-short">
+          <h2 class="section-heading text-xxl">A lightweight <br>and modular API</h2>
+          <p class="section-sub-heading">Keep your bundle size small by only importing the parts you need.</p>
         </div>
       </div>
-
-      <div class="feature-description feature-description-grid">
-        <div class="feature-description-icons">
-          <nav class="feature-icons-container horizontal-icons">
-            <a href="documentation/#domAttr" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-html.svg" />
-              <figcaption class="feature-caption">html</figcaption>
-            </a>
-            <a href="documentation/#JSobjProp" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-js.svg" />
-              <figcaption class="feature-caption">js</figcaption>
-            </a>
-            <a href="documentation/#cssProperties" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-css.svg" />
-              <figcaption class="feature-caption">css</figcaption>
-            </a>
-            <a href="documentation/#svgAttr" class="feature-icon">
-              <img src="documentation/assets/img/icons/icon-svg.svg" />
-              <figcaption class="feature-caption">svg</figcaption>
-            </a>
-          </nav>
-        </div>
-        <div class="feature-description-text">
-          <p class="feature-paragraph">
-            Anime.js works with anything web. CSS, SVG, DOM attributes and JavaScript Objects: animate everything with a single unified API.
-          </p>
-          <p class="feature-paragraph">
-            <a href="documentation/#cssProperties" class="primary arrow">Learn more about animatable properties</a>
-          </p>
-        </div>
-      </div>
-
-    </div>
-
+    </section>
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
   </section>
 
-  <section id="getting-started" class="feature-section getting-started-section inverted-section">
-
-    <div class="grid-container">
-
-      <div class="feature-description">
-        <h1 class="feature-title">
-          Getting started
-        </h1>
-        <h2 class="feature-subtitle">
-          Resources and documentation.
-        </h2>
+  <section id="sponsors" class="home-section text-layout" data-chapter="sponsors" data-label="SPONSORS">
+    <div class="home-section-content">
+      <div class="home-section-text">
+        <h2>Our sponsors</h2>
+        <p>Anime.js is 100% free and is only made possible with the help of our sponsors.</p>
+        <div class="company-sponsors-list">
+          <sponsors-list size="large" path="company-sponsors"></sponsors-list>
+        </div>
       </div>
-
-      <div class="getting-started-blocks">
-
-        <div class="getting-started-block">
-          <a href="https://github.com/juliangarnier/anime" class="getting-statred-main-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 136" class="getting-started-image">
-              <g id="icon-download" fill="none" fill-rule="evenodd">
-                <polygon stroke="currentColor" stroke-width="2" points="1 1 239 1 239 135 1 135"/>
-                <polygon stroke="currentColor" points="48 32 192 32 192 40 48 40"/>
-                <polygon stroke="currentColor" points="48 56 192 56 192 64 48 64"/>
-                <path stroke="currentColor" d="M0 16h240"/>
-                <polygon stroke="currentColor" points="48 40 192 40 192 48 48 48"/>
-                <polygon stroke="currentColor" points="48 64 192 64 192 72 48 72"/>
-                <polygon stroke="currentColor" points="48 48 192 48 192 56 48 56"/>
-                <polygon stroke="currentColor" points="48 72 192 72 192 80 48 80"/>
-                <polygon stroke="currentColor" points="48 96 192 96 192 135 48 135"/>
-              </g>
-            </svg>
-            <span class="primary arrow">Download</span>
-          </a>
-          <ul class="getting-statred-links">
-            <li><a class="arrow" href="https://github.com/juliangarnier/anime">GitHub project page</a></li>
-            <li><a class="arrow" href="https://github.com/juliangarnier/anime/blob/master/src/index.js">Source</a></li>
-            <li><a class="arrow" href="https://github.com/juliangarnier/anime/blob/master/lib/anime.es.js">ES6 Module</a></li>
-            <li><a class="arrow" href="https://github.com/juliangarnier/anime/blob/master/lib/anime.min.js">Minified ES5</a></li>
-            <li><a class="arrow" href="https://github.com/juliangarnier/anime/issues">Issues</a></li>
-            <li><a class="arrow" href="https://github.com/juliangarnier/anime/releases">Releases</a></li>
-          </ul>
-        </div>
-
-        <div class="getting-started-block">
-          <a href="documentation" class="getting-statred-main-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 136" class="getting-started-image">
-              <g id="icon-documentation" fill="none" fill-rule="evenodd">
-                <polygon stroke="currentColor" stroke-width="2" points="1 1 239 1 239 135 1 135"/>
-                <polygon stroke="currentColor" points="56 16 128 16 128 40 56 40"/>
-                <polygon stroke="currentColor" points="56 1 128 1 128 16 56 16"/>
-                <path stroke="currentColor" d="M0 16h240"/>
-                <polygon stroke="currentColor" points="56 40 128 40 128 64 56 64"/>
-                <polygon stroke="currentColor" points="56 64 128 64 128 88 56 88"/>
-                <polygon stroke="currentColor" points="56 88 128 88 128 112 56 112"/>
-                <polygon stroke="currentColor" points="56 112 128 112 128 136 56 136"/>
-              </g>
-            </svg>
-            <span class="primary arrow">Documentation</span>
-          </a>
-          <ul class="getting-statred-links">
-            <li><a class="arrow" href="documentation/#cssSelector">Targets</a></li>
-            <li><a class="arrow" href="documentation/#cssProperties">Properties</a></li>
-            <li><a class="arrow" href="documentation/#duration">Property parameters</a></li>
-            <li><a class="arrow" href="documentation/#direction">Animation parameters</a></li>
-            <li><a class="arrow" href="documentation/#unitlessValue">Values</a></li>
-            <li><a class="arrow" href="documentation/#animationKeyframes">Keyframes</a></li>
-            <li><a class="arrow" href="documentation/#staggeringBasics">Stagering</a></li>
-            <li><a class="arrow" href="documentation/#timelineBasics">Timeline</a></li>
-            <li><a class="arrow" href="documentation/#playPause">Controls</a></li>
-            <li><a class="arrow" href="documentation/#update">Callbacks and promises</a></li>
-            <li><a class="arrow" href="documentation/#motionPath">SVG Animations</a></li>
-            <li><a class="arrow" href="documentation/#linearEasing">Easing functions</a></li>
-            <li><a class="arrow" href="documentation/#remove">Helpers</a></li>
-          </ul>
-        </div>
-
-        <div class="getting-started-block">
-          <a href="http://codepen.io/collection/b392d3a52d6abf5b8d9fda4e4cab61ab/" class="getting-statred-main-link">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 136" class="getting-started-image">
-                <g id="icon-examples" fill="none" fill-rule="evenodd">
-                  <polygon stroke="currentColor" stroke-width="2" points="1 1 239 1 239 135 1 135"/>
-                  <polygon stroke="currentColor" points="0 16 80 16 80 56 0 56"/>
-                  <polygon stroke="currentColor" points="80 16 160 16 160 56 80 56"/>
-                  <polygon stroke="currentColor" points="160 16 240 16 240 56 160 56"/>
-                  <polygon stroke="currentColor" points="0 56 80 56 80 96 0 96"/>
-                  <polygon stroke="currentColor" points="80 56 160 56 160 96 80 96"/>
-                  <polygon stroke="currentColor" points="160 56 240 56 240 96 160 96"/>
-                  <polygon stroke="currentColor" points="0 96 80 96 80 136 0 136"/>
-                  <polygon stroke="currentColor" points="80 96 160 96 160 136 80 136"/>
-                  <polygon stroke="currentColor" points="160 96 240 96 240 136 160 136"/>
-                  <path stroke="currentColor" d="M0 16h240"/>
-                </g>
-              </svg>
-            <span class="primary arrow">Examples</span>
-          </a>
-          <ul class="getting-statred-links">
-            <li><a class="arrow" href="http://codepen.io/collection/b392d3a52d6abf5b8d9fda4e4cab61ab/">CodePen collection</a>
-            <li><a class="arrow" href="http://juliangarnier.com">juliangarnier.com</a>
-            <li><a class="arrow" href="https://animejs.com">animejs.com</a>
-            <li><a class="arrow" href="http://tobiasahlin.com/moving-letters/">Moving letters</a>
-            <li><a class="arrow" href="https://tympanus.net/Development/GradientTopographyAnimation/">Gradient topography</a>
-            <li><a class="arrow" href="https://tympanus.net/Development/OrganicShapeAnimations/">Organic shape</a>
-            <li><a class="arrow" href="https://tympanus.net/Tutorials/PiecesSlider/">Pieces slider</a>
-            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/4fe31bbe8579a256e828cd4d48c86182?editors=0100">Staggering animations</a>
-            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/444ed909fd5de38e3a77cc6e95fc1884">Easings animations</a>
-            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/b3bb8ca599ad0f9d00dd044e56cbdea5?editors=0010">Sphere animation</a>
-            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/6ca836535cbea42157d1b8d56d00be84?editors=0010">Layered animations</a>
-            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/d43e8ec355c30871cbe775193255d6f6?editors=0010">anime.js logo animation</a>
-          </ul>
-        </div>
-
-      </div>
-
     </div>
-
+    <div class="section-spacer"></div>
+    <div class="section-spacer"></div>
   </section>
 
-  <footer class="footer nav-bar grid-container">
-    <div class="nav-bar-content">
-      <a href="https://animejs.com/">
-        <img class="anime-mini-logo" src="documentation/assets/img/anime-mini-logo.svg"/>
-      </a>
-      <nav class="nav-menu">
-        <a class="nav-link" href="documentation">Documentation</a>
-        <a class="nav-link" href="https://codepen.io/collection/XLebem/">Examples</a>
-        <a href="https://github.com/juliangarnier/anime/" class="main-cta">Download v<span class="version-number">3.0.0</span></a>
-      </nav>
+  <section id="get-started" data-chapter="get-started" data-label="GET_STARTED">
+    <div class="section-spacer"></div>
+    <section class="home-section text-layout">
+      <div class="home-section-content home-section-centered">
+        <div class="home-section-text home-section-centered">
+          <h2 class="text-xxxl">Start animating</h2>
+          <p>Get started quickly with our in-depth documentation.</p>
+        </div>
+        <ul class="docs-chapters-list">
+          <li><a class="text-ui docs-info-link" href="documentation/getting-started"><span class="label-dot"></span><span class="label-text">Getting started<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/timer"><span class="label-dot"></span><span class="label-text">Timer<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/animation"><span class="label-dot"></span><span class="label-text">Animation<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/timeline"><span class="label-dot"></span><span class="label-text">Timeline<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/animatable"><span class="label-dot"></span><span class="label-text">Animatable<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/draggable"><span class="label-dot"></span><span class="label-text">Draggable<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/scroll"><span class="label-dot"></span><span class="label-text">Scroll<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/scope"><span class="label-dot"></span><span class="label-text">Scope<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/stagger"><span class="label-dot"></span><span class="label-text">Stagger<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/svg"><span class="label-dot"></span><span class="label-text">SVG<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/utilities"><span class="label-dot"></span><span class="label-text">Utils<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/web-animation-api"><span class="label-dot"></span><span class="label-text">WAAPI<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <!-- <li><a class="text-ui docs-info-link" href="documentation/engine"><span class="label-dot"></span><span class="label-text">Engine<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li> -->
+        </ul>
+      </div>
+    </section>
+  </section>
+
+  <div class="sub-nav">
+    <div class="home-progress-card">
+      <div class="scroll-bar">
+        <div class="scroll-cursor"></div>
+        <div class="scroll-cursor-ghost scroll-cursor"></div>
+      </div>
     </div>
-    <div class="nav-bar-content">
+<pre data-card="intuitive" data-><code>animate('.square', {
+  rotate: 90,
+  loop: true,
+  ease: 'inOutExpo',
+});
+</code></pre>
+<pre data-card="composition"><code>animate('.shape', {
+  x: random(-100, 100),
+  y: random(-100, 100),
+  rotate: random(-180, 180),
+  duration: random(500, 1000),
+  composition: 'blend',
+});
+</code></pre>
+<pre data-card="svgUtils"><code>animate('.car', {
+  ...createMotionPath('.circuit'),
+});
+
+animate(createDrawable('.circuit'), {
+  draw: '0 1',
+});
+
+animate('.circuit-a', {
+  d: morphTo('.circuit-b'),
+});
+</code></pre>
+<pre data-card="scroll"><code>animate(createDrawable('path'), {
+  draw: ['0 0', '0 1', '1 1'],
+  delay: stagger(40),
+  ease: 'inOut(3)',
+  autoplay: onScroll({ sync: true }),
+});
+</code></pre>
+<pre data-card="staggering"><code>const options = {
+  grid: [13, 13],
+  from: 'center',
+};
+
+createTimeline()
+  .add('.dot', {
+    scale: stagger([1.1, .75], options),
+    ease: 'inOutQuad',
+  }, stagger(200, options));
+</code></pre>
+<pre data-card="draggable"><code>createDraggable('.circle', {
+  releaseEase: createSpring({
+    stiffness: 120,
+    damping: 6,
+  })
+});
+</code></pre>
+<pre data-card="clockwork"><code>createTimeline()
+  .add('.tick', {
+    y: '-=6',
+    duration: 50,
+  }, stagger(10))
+  .add('.ticker', {
+    rotate: 360,
+    duration: 1920,
+  }, '<');
+</code></pre>
+<pre data-card="responsive"><code>createScope({
+  mediaQueries: {
+    portrait: '(orientation: portrait)',
+  }
+})
+.add(({ matches }) => {
+  const isPortrait = matches.portrait;
+  createTimeline().add('.circle', {
+    y: isPortrait ? 0 : [-50, 50, -50],
+    x: isPortrait ? [-50, 50, -50] : 0,
+  }, stagger(100));
+});
+</code></pre>
+    <div class="modules-sizes home-section-card text-layout" data-card="modules" data-enter-offset="-=50lvh" data-leave-offset="-=150lvh">
+      <div class="box-heading">
+        <h3>Bundle size</h3>
+        <div class="modules-bundle-size"><span class="size">24.50</span> KB</div>
+      </div>
+      <div class="modules-sizes-chart chart">
+        <div data-size="3.50" class="chart-bar module-waapi theme-color-11"></div>
+        <div data-size="0.55" class="chart-bar module-timeline theme-color-3"></div>
+        <div data-size="0.48" class="chart-bar module-stagger theme-color-8"></div>
+        <div data-size="0.35" class="chart-bar module-svg theme-color-9"></div>
+        <div data-size="0.52" class="chart-bar module-spring theme-color-10"></div>
+        <div data-size="5.60" class="chart-bar module-timer theme-color-1"></div>
+        <div data-size="4.30" class="chart-bar module-scroll theme-color-6"></div>
+        <div data-size="5.20" class="chart-bar module-animation theme-color-2"></div>
+        <div data-size="6.41" class="chart-bar module-draggable theme-color-5"></div>
+        <div data-size="0.22" class="chart-bar module-scope theme-color-7"></div>
+      </div>
+      <ul class="modules-list">
+        <li><span class="label-dot theme-color-1"></span>Timer <span class="size">5.60 KB</span></li>
+        <li><span class="label-dot theme-color-2"></span>Animation <span class="size">+5.20 KB</span></li>
+        <li><span class="label-dot theme-color-3"></span>Timeline <span class="size">+0.55 KB</span></li>
+        <li><span class="label-dot theme-color-4"></span>Animatable <span class="size">+0.40 KB</span></li>
+        <li><span class="label-dot theme-color-5"></span>Draggable <span class="size">+6.41 KB</span></li>
+        <li><span class="label-dot theme-color-6"></span>Scroll <span class="size">+4.30 KB</span></li>
+        <li><span class="label-dot theme-color-7"></span>Scope <span class="size">+0.22 KB</span></li>
+        <li><span class="label-dot theme-color-8"></span>Stagger <span class="size">+0.48 KB</span></li>
+        <li><span class="label-dot theme-color-9"></span>SVG <span class="size">0.35 KB</span></li>
+        <li><span class="label-dot theme-color-10"></span>Spring <span class="size">0.52 KB</span></li>
+        <li><span class="label-dot theme-color-11"></span>WAAPI <span class="size">3.50 KB</span></li>
+      </ul>
+    </div>
+    <div class="funding-level-box home-section-card text-layout" data-card="sponsors" data-enter-offset="-=50lvh" data-leave-offset="-=50lvh">
+      <funding-level path="github-sponsors"></funding-level>
+    </div>
+  </div>
+  <footer id="site-footer" class="layout-container text-layout">
+    <div id="site-footer-content">
+      <div class="footer-block email-signup-block">
+        <h3 class="footer-heading text-xs">Stay in the loop</h3>
+        <!-- <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+<form action="https://app.kit.com/forms/7783538/subscriptions" class="seva-form formkit-form" method="post" data-sv-form="7783538" data-uid="eb0b6b346d" data-format="inline" data-version="5" data-options="{&quot;settings&quot;:{&quot;after_subscribe&quot;:{&quot;action&quot;:&quot;message&quot;,&quot;success_message&quot;:&quot;Success! Now check your email to confirm your subscription.&quot;,&quot;redirect_url&quot;:&quot;&quot;},&quot;analytics&quot;:{&quot;google&quot;:null,&quot;fathom&quot;:null,&quot;facebook&quot;:null,&quot;segment&quot;:null,&quot;pinterest&quot;:null,&quot;sparkloop&quot;:null,&quot;googletagmanager&quot;:null},&quot;modal&quot;:{&quot;trigger&quot;:&quot;timer&quot;,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:5,&quot;devices&quot;:&quot;all&quot;,&quot;show_once_every&quot;:15},&quot;powered_by&quot;:{&quot;show&quot;:false,&quot;url&quot;:&quot;https://kit.com/features/forms?utm_campaign=poweredby&amp;utm_content=form&amp;utm_medium=referral&amp;utm_source=dynamic&quot;},&quot;recaptcha&quot;:{&quot;enabled&quot;:false},&quot;return_visitor&quot;:{&quot;action&quot;:&quot;show&quot;,&quot;custom_content&quot;:&quot;&quot;},&quot;slide_in&quot;:{&quot;display_in&quot;:&quot;bottom_right&quot;,&quot;trigger&quot;:&quot;timer&quot;,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:5,&quot;devices&quot;:&quot;all&quot;,&quot;show_once_every&quot;:15},&quot;sticky_bar&quot;:{&quot;display_in&quot;:&quot;top&quot;,&quot;trigger&quot;:&quot;timer&quot;,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:5,&quot;devices&quot;:&quot;all&quot;,&quot;show_once_every&quot;:15}},&quot;version&quot;:&quot;5&quot;}" min-width="400 500 600 700 800"><div data-style="clean"><ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul><div data-element="fields" data-stacked="false" class="seva-fields formkit-fields"><div class="formkit-field"><input class="formkit-input" name="email_address" aria-label="Email Address" placeholder="Email Address" required="" type="email" style="color: rgb(0, 0, 0); border-color: rgb(227, 227, 227); border-radius: 4px; font-weight: 400;"></div><button data-element="submit" class="formkit-submit formkit-submit" style="color: rgb(255, 255, 255); background-color: rgb(22, 119, 190); border-radius: 4px; font-weight: 400;"><div class="formkit-spinner"><div></div><div></div><div></div></div><span class="">Subscribe</span></button></div></div>
+</form>
+ -->
+<form
+  id="subscription-form"
+  class="email-signup-form"
+>
+  <div id="form-fields" class="email-signup-fields is-active">
+    <input class="email-signup-field email-signup-input" type="email" name="email" id="bd-email" placeholder="Enter your email" required />
+    <input class="email-signup-field email-signup-submit" type="submit" value="Subscribe" />
+  </div>
+
+  <div id="success-message" class="email-signup-alert email-signup-success">
+    <p>Thanks for subscribing! <br>Now check your email to confirm your subscription.</p>
+  </div>
+
+  <div id="error-message" class="email-signup-alert email-signup-error">
+    <p>Something went wrong. Please try again later.</p>
+  </div>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('subscription-form');
+    const formFields = document.getElementById('form-fields');
+    const successMessage = document.getElementById('success-message');
+    const errorMessage = document.getElementById('error-message');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      form.classList.add('is-pending');
+
+      const email = document.getElementById('bd-email').value;
+      const formData = new FormData();
+      formData.append('email', email);
+
+      fetch('https://buttondown.com/api/emails/embed-subscribe/juliangarnier', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          successMessage.classList.add('is-active');
+          form.classList.remove('is-pending');
+          formFields.classList.remove('is-active');
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .catch(error => {
+        errorMessage.classList.add('is-active');
+        form.classList.remove('is-pending');
+        formFields.classList.remove('is-active');
+        console.error('Error:', error);
+      });
+    });
+  });
+</script>
+      </div>
       <div class="footer-block">
-        <p class="footer-text">v<em class="version-number">3.0.0</em></p>
-        <p class="footer-text footer-separator">&nbsp;|&nbsp;</p>
-        <p class="footer-text"><a href="https://github.com/juliangarnier/anime/blob/website/LICENSE.md">MIT License</a></p>
-        <p class="footer-text footer-separator">&nbsp;|&nbsp;</p>
-        <p class="footer-text">2016 - <em class="date">2019</em></p>
-        <p class="footer-text footer-separator">&nbsp;|&nbsp;</p>
-        <p class="footer-text">© <a href="http://juliangarnier.com">Julian Garnier</a></p>
+        <h3 class="footer-heading text-xs">Follow us</h3>
+        <ul class="links-list">
+          <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
+          <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
+        </ul>
+      </div>
+      <div class="footer-block">
+        <h3 class="footer-heading text-xs">Explore</h3>
+        <ul class="links-list">
+          <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
+          <li><a target="_blank" href="https://codepen.io/collection/XLebem">CodePen</a></li>
+        </ul>
+      </div>
+      <div class="footer-block footer-logo-block">
+        <div class="heading-logo footer-logo">
+          <a href="/">
+            <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
+            <span>Anime.js | JavaScript Animation Engine</span>
+          </a>
+        </div>
+        <div class="footer-copyright">
+          &copy; 2025 <a href="https://juliangarnier.com" target="_blank">Julian Garnier</a>
+        </div>
       </div>
     </div>
   </footer>
-
-</body>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-79927007-1', 'auto');
-  ga('send', 'pageview');
-</script>
-<script src="lib/anime.min.js"></script>
-<script src="documentation/assets/js/website.js"></script>
-<script src="documentation/assets/js/v4.js"></script>
-<!-- <script type="module" src="documentation/assets/js/website.js"></script> -->
+</main>
+<div id="engine"></div>
+  </div>
+<script src="/assets/js/scripts.js?v=1"></script></body>
 </html>

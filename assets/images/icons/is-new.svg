@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="12px" viewBox="0 0 16 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>is-new</title>
+    <g id="is-new" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#000000" x="0.5" y="0.5" width="15" height="11" rx="3"></rect>
+        <polygon id="Path" fill="#000000" fill-rule="nonzero" points="3.09166992 3.232 4.25279492 3.232 5.81016992 7.60025 7.36754492 3.232 8.48866992 3.232 6.33066992 9 5.24966992 9"></polygon>
+        <path d="M10.9904863,7.77975 L8.07273633,7.77975 L8.07273633,6.83475 L10.8939863,3.232 L12.0574863,3.232 L12.0574863,6.83975 L12.8012363,6.83975 L12.8012363,7.77975 L12.0574863,7.77975 L12.0574863,9 L10.9904863,9 L10.9904863,7.77975 Z M8.71211133,6.83975 L10.9904863,6.83975 L10.9904863,4.03975 L11.2856113,4.142 L8.90861133,7.224125 L8.71211133,6.83975 Z" id="Shape" fill="#000000" fill-rule="nonzero"></path>
+    </g>
+</svg>

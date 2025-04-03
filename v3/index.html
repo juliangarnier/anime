@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>anime.js • JavaScript animation engine</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="anime.js">
+  <meta property="og:url" content="https://animejs.com">
+  <meta property="og:description" content="Javascript animation engine">
+  <meta property="og:image" content="https://animejs.com/documentation/assets/img/social-media-image.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@juliangarnier">
+  <meta name="twitter:creator" content="@juliangarnier">
+  <meta name="twitter:title" content="anime.js">
+  <meta name="twitter:description" content="Javascript animation engine">
+  <meta name="twitter:image" content="https://animejs.com/documentation/assets/img/social-media-image.png">
+
+  <link rel="apple-touch-icon-precomposed" href="documentation/assets/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="documentation/assets/img/favicon.png" >
+
+  <link href="//cloud.typenetwork.com/projects/2160/fontface.css/" rel="stylesheet" type="text/css">
+
+  <link href="documentation/assets/css/animejs.css" rel="stylesheet">
+  <link href="documentation/assets/css/website.css" rel="stylesheet">
+  <link href="documentation/assets/css/v4.css" rel="stylesheet">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-16LTPBS8QC');
+  </script>
+</head>
+<body>
+  <div id="top-banner">
+    <button id="close-banner">✕</button>
+    <p>
+      Anime.js V4 is now in early access for GitHub Sponsors!
+    </p>
+    <a id="banner-cta" href="https://github.com/sponsors/juliangarnier" target="_blank">Try <span>Anime.js</span> V4</a>
+  </div>
+  <header class="header nav-bar grid-container">
+    <div class="nav-bar-content">
+      <a href="https://animejs.com/" class="top-header-logo">
+        <div class="main-logo">
+          <div class="logo-animation-wrapper">
+            <div class="logo-animation">
+              <div class="anime-logo">
+                <div class="anime-logo-signs">
+                  <div class="logo-letter letter-a">
+                    <svg class="bounced" viewBox="0 0 200 240" width="200" height="240">
+                      <path class="line" d="M30 20h130c9.996 0 10 40 10 60v140H41c-11.004 0-11-40-11-60s-.004-60 10-60h110"/>
+                    </svg>
+                  </div>
+                  <div class="logo-letter letter-n">
+                    <svg class="bounced" viewBox="0 0 200 240" width="200" height="240">
+                      <path class="line" d="M170 220V60c0-31.046-8.656-40-19.333-40H49.333C38.656 20 30 28.954 30 60v160"/>
+                    </svg>
+                  </div>
+                  <div class="logo-letter letter-i">
+                    <svg class="bounced" viewBox="0 0 60 240" width="60" height="240">
+                      <path class="line"
+                              d="M30 20v200"
+                        data-d2="M30 100v120"
+                      />
+                    </svg>
+                  </div>
+                  <div class="logo-letter letter-m">
+                    <svg class="bounced" viewBox="0 0 340 240" width="340" height="240" fill="none" fill-rule="evenodd">
+                      <path class="line"
+                              d="M240,220 L240,60 C240,28.954305 231.344172,20 220.666667,20 C171.555556,20 254.832031,20 170,20 C85.1679688,20 168.444444,20 119.333333,20 C108.655828,20 100,28.954305 100,60 L100,220"
+                        data-d2="M310,220 L310,60 C310,28.954305 301.344172,20 290.666667,20 C241.555556,20 254.832031,110 170,110 C85.1679688,110 98.4444444,20 49.3333333,20 C38.6558282,20 30,28.954305 30,60 L30,220"
+                        data-d3="M310,220 L310,60 C310,28.954305 301.344172,20 290.666667,20 C241.555556,20 254.832031,20 170,20 C85.1679688,20 98.4444444,20 49.3333333,20 C38.6558282,20 30,28.954305 30,60 L30,220"
+                      />
+                    </svg>
+                  </div>
+                  <div class="logo-letter letter-e">
+                    <svg class="bounced" viewBox="0 0 200 240" width="200" height="240">
+                      <path class="line" d="M50 140h110c10 0 10-40 10-60s0-60-10-60H40c-10 0-10 40-10 60v80c0 20 0 60 10 60h130"/>
+                    </svg>
+                  </div>
+                  <div class="bounce">
+                    <svg viewBox="0 0 1000 260" width="1000" height="260" fill="none">
+                      <path d="M630,240 C630,111.154418 608.971354,40 530.160048,40 C451.348741,40 430,127.460266 430,210"/>
+                    </svg>
+                    <div class="dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <nav class="nav-menu">
+        <a class="nav-link" href="documentation">Documentation</a>
+        <a class="nav-link" href="https://codepen.io/collection/XLebem/" target="_blank">Examples</a>
+        <a class="nav-link" href="https://github.com/sponsors/juliangarnier" target="_blank">Sponsor</a>
+        <a href="https://github.com/juliangarnier/anime/" class="main-cta">Download v<span class="version-number">3.0.0</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="intro" class="feature-section section-intro">
+
+    <div class="grid-container">
+
+      <div class="feature-animation">
+        <div class="easing-visualizer">
+          <div class="wrapper bars-wrapper"></div>
+          <div class="wrapper dots-wrapper"></div>
+        </div>
+      </div>
+
+      <div class="feature-description feature-description-grid">
+        <div class="feature-description-icons">
+          <nav class="feature-icons-container horizontal-icons secondary-menu">
+            <a href="https://github.com/juliangarnier/anime/" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-github.svg" />
+              <figcaption class="feature-caption">GitHub</figcaption>
+            </a>
+            <a href="https://codepen.io/collection/XLebem/" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-codepen.svg" />
+              <figcaption class="feature-caption">CodePen</figcaption>
+            </a>
+            <a href="documentation" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-docs.svg" />
+              <figcaption class="feature-caption">Docs</figcaption>
+            </a>
+            <a href="https://twitter.com/JulianGarnier" class="feature-icon" target="_blank">
+              <img src="documentation/assets/img/icons/icon-twitter.svg" />
+              <figcaption class="feature-caption">Twitter</figcaption>
+            </a>
+          </nav>
+        </div>
+        <div class="feature-description-text">
+          <p class="feature-paragraph">
+            <em>Anime.js</em> (<code>/ˈæn.ə.meɪ/</code>) is a lightweight JavaScript animation library with a simple, yet powerful API.<br>It works with CSS properties, SVG, DOM attributes and JavaScript Objects.
+          </p>
+          <p class="feature-paragraph">
+            <a href="#getting-started" class="primary arrow scroll-to-getting-started">Getting started</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="feature-description sponsors-grid">
+        <p class="feature-paragraph">
+          Powered by
+        </p>
+        <div id="home-sponsors-list">
+          <a class="sponsor-logo" target="_blank" href="https://huly.io?ref=animejs">
+            <img src="documentation/assets/sponsors/huly-logomark.svg" />
+            <span class="sponsor-name">Huly</span>
+          </a>
+          <a class="sponsor-logo" target="_blank" href="https://clutch.io?ref=animejs">
+            <img src="documentation/assets/sponsors/clutch-logomark.svg" />
+            <span class="sponsor-name">Clutch</span>
+          </a>
+          <a class="sponsor-logo sponsor-placeholder" target="_blank" href="https://github.com/sponsors/juliangarnier">
+            <img src="documentation/assets/img/sponsor-logo.png" />
+            <span class="sponsor-name">Your logo here</span>
+          </a>
+        </div>
+        <p class="feature-paragraph">
+          <a class="main-cta" href="https://github.com/sponsors/juliangarnier" target="_blank">Become a sponsor</a>
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="staggering" class="feature-section section-feature-staggering inverted-section">
+
+    <div class="grid-container">
+
+      <div class="feature-description">
+        <h1 class="feature-title">
+          Staggering
+        </h1>
+        <h2 class="feature-subtitle">
+          Follow through animations made easy.
+        </h2>
+      </div>
+
+      <div class="feature-animation">
+        <div class="stagger-visualizer">
+          <div class="cursor color-red"></div>
+          <div class="dots-wrapper"></div>
+        </div>
+      </div>
+
+      <div class="feature-description feature-description-grid">
+        <div class="feature-description-icons">
+          <div class="feature-icons-container vertical-icons">
+            <figure class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-staggering-forward.svg" />
+              <figcaption class="feature-caption">forward</figcaption>
+            </figure>
+            <figure class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-staggering-index.svg" />
+              <figcaption class="feature-caption">from index</figcaption>
+            </figure>
+            <figure class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-staggering-center.svg" />
+              <figcaption class="feature-caption">from center</figcaption>
+            </figure>
+            <figure class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-staggering-easing.svg" />
+              <figcaption class="feature-caption">easing</figcaption>
+            </figure>
+            <figure class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-staggering-reverse.svg" />
+              <figcaption class="feature-caption">reversed</figcaption>
+            </figure>
+            <figure class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-staggering-grid.svg" />
+              <figcaption class="feature-caption">ripple</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="feature-description-text">
+          <p class="feature-paragraph">
+            Anime's built-in staggering system makes complex follow through and overlapping animations simple. It can be used on both timings and properties.
+          </p>
+          <p class="feature-paragraph">
+            <a href="documentation/#staggeringBasics" class="primary arrow">Learn more about staggering</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="layered-animations" class="feature-section section-feature-layered-animation">
+
+    <div class="grid-container">
+
+      <div class="feature-description">
+        <h1 class="feature-title">
+          Layered CSS transforms
+        </h1>
+        <h2 class="feature-subtitle">
+          One element is all you need.
+        </h2>
+      </div>
+
+      <div class="feature-animation">
+        <div class="layered-animations">
+          <svg class="large shape" viewBox="0 0 96 96">
+            <defs>
+              <linearGradient id="circleGradient" x1="0%" x2="100%" y1="20%" y2="80%">
+                <stop stop-color="#373734" offset="0%"/>
+                <stop stop-color="#242423" offset="50%"/>
+                <stop stop-color="#0D0D0C" offset="100%"/>
+              </linearGradient>
+            </defs>
+            <circle cx="48" cy="48" r="28" fill-rule="evenodd" stroke-linecap="square" fill="url(#circleGradient)"/>
+          </svg>
+          <svg class="small shape color-red" viewBox="0 0 96 96">
+            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"/>
+          </svg>
+          <svg class="large shape" viewBox="0 0 96 96">
+            <defs>
+              <linearGradient id="triangleGradient" x1="0%" x2="100%" y1="20%" y2="80%">
+                <stop stop-color="#373734" offset="0%"/>
+                <stop stop-color="#242423" offset="50%"/>
+                <stop stop-color="#0D0D0C" offset="100%"/>
+              </linearGradient>
+            </defs>
+            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square" fill="url(#triangleGradient)"/>
+          </svg>
+          <svg class="x-small shape" viewBox="0 0 96 96">
+            <polygon fill-rule="evenodd" points="48 17.28 86.4 80.11584 9.6 80.11584" stroke-linecap="square"/>
+          </svg>
+          <svg class="x-small shape" viewBox="0 0 96 96">
+            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"/>
+          </svg>
+          <svg class="small shape color-red" viewBox="0 0 96 96">
+            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square"/>
+          </svg>
+          <svg class="large shape" viewBox="0 0 96 96">
+            <defs>
+              <linearGradient id="rectGradient" x1="0%" x2="100%" y1="20%" y2="80%">
+                <stop stop-color="#373734" offset="0%"/>
+                <stop stop-color="#242423" offset="50%"/>
+                <stop stop-color="#0D0D0C" offset="100%"/>
+              </linearGradient>
+            </defs>
+            <rect width="48" height="48" x="24" y="24" fill-rule="evenodd" stroke-linecap="square" fill="url(#rectGradient)"/>
+          </svg>
+          <svg class="small shape color-red" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="32" fill-rule="evenodd" stroke-linecap="square"/>
+          </svg>
+          <svg class="x-small shape" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="32" fill-rule="evenodd" stroke-linecap="square"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="feature-description feature-description-grid">
+        <div class="feature-description-icons">
+          <figure class="transform-anim">
+            <figcaption class="feature-caption">translateX</figcaption>
+            <div class="transform-timeline"><div class="transform-progress"></div></div>
+          </figure>
+          <figure class="transform-anim">
+            <figcaption class="feature-caption">translateY</figcaption>
+            <div class="transform-timeline"><div class="transform-progress"></div></div>
+          </figure>
+          <figure class="transform-anim">
+            <figcaption class="feature-caption">rotate</figcaption>
+            <div class="transform-timeline"><div class="transform-progress"></div></div>
+          </figure>
+          <figure class="transform-anim">
+            <figcaption class="feature-caption">scale</figcaption>
+            <div class="transform-timeline"><div class="transform-progress"></div></div>
+          </figure>
+        </div>
+        <div class="feature-description-text">
+          <p class="feature-paragraph">
+            Animate multiple CSS transforms properties with different timings simultaneously on a single HTML element.
+          </p>
+          <p class="feature-paragraph">
+            <a href="documentation/#animationKeyframes" class="primary arrow">Learn more about keyframes</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="controls-and-callbacks" class="feature-section section-feature-control inverted-section">
+
+    <div class="grid-container large-grid">
+
+      <div class="feature-description">
+        <h1 class="feature-title">Controls and callbacks</h1>
+        <h2 class="feature-subtitle">
+          Timing is everything.
+        </h2>
+      </div>
+
+      <div class="feature-animation">
+
+        <div class="time-control">
+          <div class="ruller">
+            <div class="time-cursor color-red">
+              <input value="999" />
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="info-loop-begin info info-large info-left info-bottom" data-delay="0">
+              <div class="info-bar"></div>
+              <figcaption class="feature-caption">animation begin</figcaption>
+              <figcaption class="feature-caption">loop 1 begin</figcaption>
+            </div>
+            <div class="animation">
+              <div class="animation-band animation-delay"></div>
+              <div class="info-change-begin info info-left info-bottom" data-delay="100">
+                <div class="info-bar"></div>
+                <figcaption class="feature-caption">change begin</figcaption>
+              </div>
+              <div class="animation-band animation-change"></div>
+              <div class="info-change-complete info info-right info-top" data-delay="400">
+                <div class="info-bar"></div>
+                <figcaption class="feature-caption">change complete</figcaption>
+              </div>
+              <div class="animation-band animation-end-delay"></div>
+            </div>
+            <div class="info-loop-complete info info-large info-right info-top" data-delay="500">
+              <div class="info-bar"></div>
+              <figcaption class="feature-caption">loop 1 complete</figcaption>
+            </div>
+            <div class="info info-large info-left info-bottom" data-delay="500">
+              <div class="info-bar"></div>
+              <figcaption class="feature-caption">reverse</figcaption>
+              <figcaption class="feature-caption">loop 2 begin</figcaption>
+            </div>
+            <div class="animation">
+              <div class="animation-band animation-end-delay"></div>
+              <div class="info-change-begin info info-left info-bottom" data-delay="600">
+                <div class="info-bar"></div>
+                <figcaption class="feature-caption">change begin</figcaption>
+              </div>
+              <div class="animation-band animation-change"></div>
+              <div class="info-change-complete info info-right info-top" data-delay="900">
+                <div class="info-bar"></div>
+                <figcaption class="feature-caption">change complete</figcaption>
+              </div>
+              <div class="animation-band animation-delay"></div>
+            </div>
+            <div class="info-loop-complete info info-large info-right info-top" data-delay="1000">
+              <div class="info-bar"></div>
+              <figcaption class="feature-caption">loop 2 complete</figcaption>
+            </div>
+            <div class="info info-large info-left info-bottom" data-delay="1000">
+              <div class="info-bar"></div>
+              <figcaption class="feature-caption">reverse</figcaption>
+              <figcaption class="feature-caption">loop 3 begin</figcaption>
+            </div>
+            <div class="animation">
+              <div class="animation-band animation-delay"></div>
+              <div class="info-change-begin info info-left info-bottom" data-delay="1100">
+                <div class="info-bar"></div>
+                <figcaption class="feature-caption">change begin</figcaption>
+              </div>
+              <div class="animation-band animation-change"></div>
+              <div class="info-change-complete info info-right info-top" data-delay="1400">
+                <div class="info-bar"></div>
+                <figcaption class="feature-caption">change complete</figcaption>
+              </div>
+              <div class="animation-band animation-end-delay"></div>
+            </div>
+            <div class="info-loop-complete info info-large info-right info-top" data-delay="1500">
+              <div class="info-bar"></div>
+              <figcaption class="feature-caption">loop 3 complete</figcaption>
+              <figcaption class="feature-caption">animation complete</figcaption>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="feature-description feature-description-grid">
+        <div class="feature-description-icons">
+          <div class="feature-icons-container vertical-icons">
+            <figure class="feature-icon timeline-icon">
+              <div class="animation-band animation-delay"></div>
+              <figcaption class="feature-caption">delay</figcaption>
+            </figure>
+            <figure class="feature-icon timeline-icon">
+              <div class="animation-band animation-end-delay"></div>
+              <figcaption class="feature-caption">end-delay</figcaption>
+            </figure>
+            <figure class="feature-icon timeline-icon">
+              <div class="animation-band animation-change"></div>
+              <figcaption class="feature-caption">change</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="feature-description-text">
+          <p class="feature-paragraph">
+            Play, pause, control, reverse and trigger events in sync using the complete built-in callbacks and controls functions.
+          </p>
+          <p class="feature-paragraph">
+            <a href="documentation/#update" class="primary arrow">Learn more about callbacks</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="animate-anything" class="feature-section section-feature-animate">
+
+    <div class="grid-container">
+
+      <div class="feature-description">
+        <h1 class="feature-title">
+          Animate anything
+        </h1>
+        <h2 class="feature-subtitle">
+          HTML, JS, CSS, SVG.
+        </h2>
+      </div>
+
+      <div class="feature-animation square-animation">
+        <div class="sphere-animation">
+          <svg class="sphere" viewBox="0 0 440 440">
+            <defs>
+              <linearGradient id="sphereGradient" x1="0%" x2="0%" y1="0%" y2="0%">
+                <stop stop-color="#373734" offset="0%"/>
+                <stop stop-color="#242423" offset="50%"/>
+                <stop stop-color="#0D0D0C" offset="100%"/>
+              </linearGradient>
+            </defs>
+            <path d="M361.604 361.238c-24.407 24.408-51.119 37.27-59.662 28.727-8.542-8.543 4.319-35.255 28.726-59.663 24.408-24.407 51.12-37.269 59.663-28.726 8.542 8.543-4.319 35.255-28.727 59.662z"/>
+            <path d="M360.72 360.354c-35.879 35.88-75.254 54.677-87.946 41.985-12.692-12.692 6.105-52.067 41.985-87.947 35.879-35.879 75.254-54.676 87.946-41.984 12.692 12.692-6.105 52.067-41.984 87.946z"/>
+            <path d="M357.185 356.819c-44.91 44.91-94.376 68.258-110.485 52.149-16.11-16.11 7.238-65.575 52.149-110.485 44.91-44.91 94.376-68.259 110.485-52.15 16.11 16.11-7.239 65.576-52.149 110.486z"/>
+            <path d="M350.998 350.632c-53.21 53.209-111.579 81.107-130.373 62.313-18.794-18.793 9.105-77.163 62.314-130.372 53.209-53.21 111.579-81.108 130.373-62.314 18.794 18.794-9.105 77.164-62.314 130.373z"/>
+            <path d="M343.043 342.677c-59.8 59.799-125.292 91.26-146.283 70.268-20.99-20.99 10.47-86.483 70.269-146.282 59.799-59.8 125.292-91.26 146.283-70.269 20.99 20.99-10.47 86.484-70.27 146.283z"/>
+            <path d="M334.646 334.28c-65.169 65.169-136.697 99.3-159.762 76.235-23.065-23.066 11.066-94.593 76.235-159.762s136.697-99.3 159.762-76.235c23.065 23.065-11.066 94.593-76.235 159.762z"/>
+            <path d="M324.923 324.557c-69.806 69.806-146.38 106.411-171.031 81.76-24.652-24.652 11.953-101.226 81.759-171.032 69.806-69.806 146.38-106.411 171.031-81.76 24.652 24.653-11.953 101.226-81.759 171.032z"/>
+            <path d="M312.99 312.625c-73.222 73.223-153.555 111.609-179.428 85.736-25.872-25.872 12.514-106.205 85.737-179.428s153.556-111.609 179.429-85.737c25.872 25.873-12.514 106.205-85.737 179.429z"/>
+            <path d="M300.175 299.808c-75.909 75.909-159.11 115.778-185.837 89.052-26.726-26.727 13.143-109.929 89.051-185.837 75.908-75.908 159.11-115.778 185.837-89.051 26.726 26.726-13.143 109.928-89.051 185.836z"/>
+            <path d="M284.707 284.34c-77.617 77.617-162.303 118.773-189.152 91.924-26.848-26.848 14.308-111.534 91.924-189.15C265.096 109.496 349.782 68.34 376.63 95.188c26.849 26.849-14.307 111.535-91.923 189.151z"/>
+            <path d="M269.239 267.989c-78.105 78.104-163.187 119.656-190.035 92.807-26.849-26.848 14.703-111.93 92.807-190.035 78.105-78.104 163.187-119.656 190.035-92.807 26.849 26.848-14.703 111.93-92.807 190.035z"/>
+            <path d="M252.887 252.52C175.27 330.138 90.584 371.294 63.736 344.446 36.887 317.596 78.043 232.91 155.66 155.293 233.276 77.677 317.962 36.521 344.81 63.37c26.85 26.848-14.307 111.534-91.923 189.15z"/>
+            <path d="M236.977 236.61C161.069 312.52 77.867 352.389 51.14 325.663c-26.726-26.727 13.143-109.928 89.052-185.837 75.908-75.908 159.11-115.777 185.836-89.05 26.727 26.726-13.143 109.928-89.051 185.836z"/>
+            <path d="M221.067 220.7C147.844 293.925 67.51 332.31 41.639 306.439c-25.873-25.873 12.513-106.206 85.736-179.429C200.6 53.786 280.931 15.4 306.804 41.272c25.872 25.873-12.514 106.206-85.737 179.429z"/>
+            <path d="M205.157 204.79c-69.806 69.807-146.38 106.412-171.031 81.76-24.652-24.652 11.953-101.225 81.759-171.031 69.806-69.807 146.38-106.411 171.031-81.76 24.652 24.652-11.953 101.226-81.759 171.032z"/>
+            <path d="M189.247 188.881c-65.169 65.169-136.696 99.3-159.762 76.235-23.065-23.065 11.066-94.593 76.235-159.762s136.697-99.3 159.762-76.235c23.065 23.065-11.066 94.593-76.235 159.762z"/>
+            <path d="M173.337 172.971c-59.799 59.8-125.292 91.26-146.282 70.269-20.991-20.99 10.47-86.484 70.268-146.283 59.8-59.799 125.292-91.26 146.283-70.269 20.99 20.991-10.47 86.484-70.269 146.283z"/>
+            <path d="M157.427 157.061c-53.209 53.21-111.578 81.108-130.372 62.314-18.794-18.794 9.104-77.164 62.313-130.373 53.21-53.209 111.58-81.108 130.373-62.314 18.794 18.794-9.105 77.164-62.314 130.373z"/>
+            <path d="M141.517 141.151c-44.91 44.91-94.376 68.259-110.485 52.15-16.11-16.11 7.239-65.576 52.15-110.486 44.91-44.91 94.375-68.258 110.485-52.15 16.109 16.11-7.24 65.576-52.15 110.486z"/>
+            <path d="M125.608 125.241c-35.88 35.88-75.255 54.677-87.947 41.985-12.692-12.692 6.105-52.067 41.985-87.947C115.525 43.4 154.9 24.603 167.592 37.295c12.692 12.692-6.105 52.067-41.984 87.946z"/>
+            <path d="M109.698 109.332c-24.408 24.407-51.12 37.268-59.663 28.726-8.542-8.543 4.319-35.255 28.727-59.662 24.407-24.408 51.12-37.27 59.662-28.727 8.543 8.543-4.319 35.255-28.726 59.663z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="feature-description feature-description-grid">
+        <div class="feature-description-icons">
+          <nav class="feature-icons-container horizontal-icons">
+            <a href="documentation/#domAttr" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-html.svg" />
+              <figcaption class="feature-caption">html</figcaption>
+            </a>
+            <a href="documentation/#JSobjProp" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-js.svg" />
+              <figcaption class="feature-caption">js</figcaption>
+            </a>
+            <a href="documentation/#cssProperties" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-css.svg" />
+              <figcaption class="feature-caption">css</figcaption>
+            </a>
+            <a href="documentation/#svgAttr" class="feature-icon">
+              <img src="documentation/assets/img/icons/icon-svg.svg" />
+              <figcaption class="feature-caption">svg</figcaption>
+            </a>
+          </nav>
+        </div>
+        <div class="feature-description-text">
+          <p class="feature-paragraph">
+            Anime.js works with anything web. CSS, SVG, DOM attributes and JavaScript Objects: animate everything with a single unified API.
+          </p>
+          <p class="feature-paragraph">
+            <a href="documentation/#cssProperties" class="primary arrow">Learn more about animatable properties</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="getting-started" class="feature-section getting-started-section inverted-section">
+
+    <div class="grid-container">
+
+      <div class="feature-description">
+        <h1 class="feature-title">
+          Getting started
+        </h1>
+        <h2 class="feature-subtitle">
+          Resources and documentation.
+        </h2>
+      </div>
+
+      <div class="getting-started-blocks">
+
+        <div class="getting-started-block">
+          <a href="https://github.com/juliangarnier/anime" class="getting-statred-main-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 136" class="getting-started-image">
+              <g id="icon-download" fill="none" fill-rule="evenodd">
+                <polygon stroke="currentColor" stroke-width="2" points="1 1 239 1 239 135 1 135"/>
+                <polygon stroke="currentColor" points="48 32 192 32 192 40 48 40"/>
+                <polygon stroke="currentColor" points="48 56 192 56 192 64 48 64"/>
+                <path stroke="currentColor" d="M0 16h240"/>
+                <polygon stroke="currentColor" points="48 40 192 40 192 48 48 48"/>
+                <polygon stroke="currentColor" points="48 64 192 64 192 72 48 72"/>
+                <polygon stroke="currentColor" points="48 48 192 48 192 56 48 56"/>
+                <polygon stroke="currentColor" points="48 72 192 72 192 80 48 80"/>
+                <polygon stroke="currentColor" points="48 96 192 96 192 135 48 135"/>
+              </g>
+            </svg>
+            <span class="primary arrow">Download</span>
+          </a>
+          <ul class="getting-statred-links">
+            <li><a class="arrow" href="https://github.com/juliangarnier/anime">GitHub project page</a></li>
+            <li><a class="arrow" href="https://github.com/juliangarnier/anime/blob/master/src/index.js">Source</a></li>
+            <li><a class="arrow" href="https://github.com/juliangarnier/anime/blob/master/lib/anime.es.js">ES6 Module</a></li>
+            <li><a class="arrow" href="https://github.com/juliangarnier/anime/blob/master/lib/anime.min.js">Minified ES5</a></li>
+            <li><a class="arrow" href="https://github.com/juliangarnier/anime/issues">Issues</a></li>
+            <li><a class="arrow" href="https://github.com/juliangarnier/anime/releases">Releases</a></li>
+          </ul>
+        </div>
+
+        <div class="getting-started-block">
+          <a href="documentation" class="getting-statred-main-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 136" class="getting-started-image">
+              <g id="icon-documentation" fill="none" fill-rule="evenodd">
+                <polygon stroke="currentColor" stroke-width="2" points="1 1 239 1 239 135 1 135"/>
+                <polygon stroke="currentColor" points="56 16 128 16 128 40 56 40"/>
+                <polygon stroke="currentColor" points="56 1 128 1 128 16 56 16"/>
+                <path stroke="currentColor" d="M0 16h240"/>
+                <polygon stroke="currentColor" points="56 40 128 40 128 64 56 64"/>
+                <polygon stroke="currentColor" points="56 64 128 64 128 88 56 88"/>
+                <polygon stroke="currentColor" points="56 88 128 88 128 112 56 112"/>
+                <polygon stroke="currentColor" points="56 112 128 112 128 136 56 136"/>
+              </g>
+            </svg>
+            <span class="primary arrow">Documentation</span>
+          </a>
+          <ul class="getting-statred-links">
+            <li><a class="arrow" href="documentation/#cssSelector">Targets</a></li>
+            <li><a class="arrow" href="documentation/#cssProperties">Properties</a></li>
+            <li><a class="arrow" href="documentation/#duration">Property parameters</a></li>
+            <li><a class="arrow" href="documentation/#direction">Animation parameters</a></li>
+            <li><a class="arrow" href="documentation/#unitlessValue">Values</a></li>
+            <li><a class="arrow" href="documentation/#animationKeyframes">Keyframes</a></li>
+            <li><a class="arrow" href="documentation/#staggeringBasics">Stagering</a></li>
+            <li><a class="arrow" href="documentation/#timelineBasics">Timeline</a></li>
+            <li><a class="arrow" href="documentation/#playPause">Controls</a></li>
+            <li><a class="arrow" href="documentation/#update">Callbacks and promises</a></li>
+            <li><a class="arrow" href="documentation/#motionPath">SVG Animations</a></li>
+            <li><a class="arrow" href="documentation/#linearEasing">Easing functions</a></li>
+            <li><a class="arrow" href="documentation/#remove">Helpers</a></li>
+          </ul>
+        </div>
+
+        <div class="getting-started-block">
+          <a href="http://codepen.io/collection/b392d3a52d6abf5b8d9fda4e4cab61ab/" class="getting-statred-main-link">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 136" class="getting-started-image">
+                <g id="icon-examples" fill="none" fill-rule="evenodd">
+                  <polygon stroke="currentColor" stroke-width="2" points="1 1 239 1 239 135 1 135"/>
+                  <polygon stroke="currentColor" points="0 16 80 16 80 56 0 56"/>
+                  <polygon stroke="currentColor" points="80 16 160 16 160 56 80 56"/>
+                  <polygon stroke="currentColor" points="160 16 240 16 240 56 160 56"/>
+                  <polygon stroke="currentColor" points="0 56 80 56 80 96 0 96"/>
+                  <polygon stroke="currentColor" points="80 56 160 56 160 96 80 96"/>
+                  <polygon stroke="currentColor" points="160 56 240 56 240 96 160 96"/>
+                  <polygon stroke="currentColor" points="0 96 80 96 80 136 0 136"/>
+                  <polygon stroke="currentColor" points="80 96 160 96 160 136 80 136"/>
+                  <polygon stroke="currentColor" points="160 96 240 96 240 136 160 136"/>
+                  <path stroke="currentColor" d="M0 16h240"/>
+                </g>
+              </svg>
+            <span class="primary arrow">Examples</span>
+          </a>
+          <ul class="getting-statred-links">
+            <li><a class="arrow" href="http://codepen.io/collection/b392d3a52d6abf5b8d9fda4e4cab61ab/">CodePen collection</a>
+            <li><a class="arrow" href="http://juliangarnier.com">juliangarnier.com</a>
+            <li><a class="arrow" href="https://animejs.com">animejs.com</a>
+            <li><a class="arrow" href="http://tobiasahlin.com/moving-letters/">Moving letters</a>
+            <li><a class="arrow" href="https://tympanus.net/Development/GradientTopographyAnimation/">Gradient topography</a>
+            <li><a class="arrow" href="https://tympanus.net/Development/OrganicShapeAnimations/">Organic shape</a>
+            <li><a class="arrow" href="https://tympanus.net/Tutorials/PiecesSlider/">Pieces slider</a>
+            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/4fe31bbe8579a256e828cd4d48c86182?editors=0100">Staggering animations</a>
+            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/444ed909fd5de38e3a77cc6e95fc1884">Easings animations</a>
+            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/b3bb8ca599ad0f9d00dd044e56cbdea5?editors=0010">Sphere animation</a>
+            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/6ca836535cbea42157d1b8d56d00be84?editors=0010">Layered animations</a>
+            <li><a class="arrow" href="https://codepen.io/juliangarnier/pen/d43e8ec355c30871cbe775193255d6f6?editors=0010">anime.js logo animation</a>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <footer class="footer nav-bar grid-container">
+    <div class="nav-bar-content">
+      <a href="https://animejs.com/">
+        <img class="anime-mini-logo" src="documentation/assets/img/anime-mini-logo.svg"/>
+      </a>
+      <nav class="nav-menu">
+        <a class="nav-link" href="documentation">Documentation</a>
+        <a class="nav-link" href="https://codepen.io/collection/XLebem/">Examples</a>
+        <a href="https://github.com/juliangarnier/anime/" class="main-cta">Download v<span class="version-number">3.0.0</span></a>
+      </nav>
+    </div>
+    <div class="nav-bar-content">
+      <div class="footer-block">
+        <p class="footer-text">v<em class="version-number">3.0.0</em></p>
+        <p class="footer-text footer-separator">&nbsp;|&nbsp;</p>
+        <p class="footer-text"><a href="https://github.com/juliangarnier/anime/blob/website/LICENSE.md">MIT License</a></p>
+        <p class="footer-text footer-separator">&nbsp;|&nbsp;</p>
+        <p class="footer-text">2016 - <em class="date">2019</em></p>
+        <p class="footer-text footer-separator">&nbsp;|&nbsp;</p>
+        <p class="footer-text">© <a href="http://juliangarnier.com">Julian Garnier</a></p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-79927007-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<script src="lib/anime.min.js"></script>
+<script src="documentation/assets/js/website.js"></script>
+<script src="documentation/assets/js/v4.js"></script>
+<!-- <script type="module" src="documentation/assets/js/website.js"></script> -->
+</html>
