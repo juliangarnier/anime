@@ -771,7 +771,7 @@ declare class Scope {
 }
 declare function createScope(params?: ScopeParams): Scope;
 type ReactRef = {
-    current?: HTMLElement | SVGElement;
+    current?: HTMLElement | SVGElement | null;
 };
 type AngularRef = {
     nativeElement?: HTMLElement | SVGElement;
