@@ -1,12 +1,14 @@
-import terser from '@rollup/plugin-terser';
-import filesize from 'rollup-plugin-filesize';
-import ts from 'rollup-plugin-ts';
-import pkg from './package.json' assert { type: 'json' };
-import fs from 'fs';
-import path from 'path';
+const terser = require('@rollup/plugin-terser');
+const filesize = require('rollup-plugin-filesize');
+const ts = require('rollup-plugin-ts');
+const fs = require('fs');
+const path = require('path');
 
+const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const inputPath = 'src/anime.js';
-const inputPathGUI = 'src/gui/gui.js';
+// The GUI file doesn't exist, so removing this reference
+// const inputPathGUI = 'src/gui/gui.js';
+ 
 const outputName = 'anime';
 const jsDocTypes = fs.readFileSync('./src/types.js', 'utf-8').split('/* Exports */')[1];
 
@@ -119,15 +121,16 @@ tasks.push( // ESM
   },
 );
 
-if (!process.env.release) {
-  tasks.push( // GUI ESM
-    {
-      input: inputPathGUI,
-      output: { file: 'lib/gui/index.js', format: 'esm', banner: GUIBanner('ESM', true) },
-      plugins: [prependTypes, cleanup]
-    },
-  );
-}
+// Commenting out the GUI build since src/gui/gui.js doesn't exist
+// if (!process.env.release) {
+//   tasks.push( // GUI ESM
+//     {
+//       input: inputPathGUI,
+//       output: { file: 'lib/gui/index.js', format: 'esm', banner: GUIBanner('ESM', true) },
+//       plugins: [prependTypes, cleanup]
+//     },
+//   );
+// }
 
 if (process.env.types) {
   tasks.push( // TYPES
@@ -185,38 +188,6 @@ if (process.env.build) {
       plugins: [cleanup, terser(terserScriptOptions)]
     }
   );
-
-  // tasks.push( // ES5
-  //   {
-  //     input: inputPath,
-  //     output: { file: pkg.files[0] + '/anime.es5.iife.js', format: 'iife', name: outputName, banner: banner('ES5 IIFE') },
-  //     plugins: [prependTypes, cleanup, babel({
-  //       presets: ['@babel/preset-env'],
-  //       babelHelpers: 'bundled',
-  //       comments: false,
-  //       parserOpts: {
-  //         // @ts-ignore
-  //         plugins: ['v8intrinsic', '@babel/plugin-transform-arrow-functions']
-  //       }
-  //     })]
-  //   }
-  // );
-
-  // tasks.push( // ES5 Minified
-  //   {
-  //     input: inputPath,
-  //     output: { file: pkg.files[0] + '/anime.es5.iife.min.js', format: 'iife', name: outputName, banner: banner('ES5 IIFE') },
-  //     plugins: [cleanup, babel({
-  //       presets: ['@babel/preset-env'],
-  //       babelHelpers: 'bundled',
-  //       comments: false,
-  //       parserOpts: {
-  //         // @ts-ignore
-  //         plugins: ['v8intrinsic', '@babel/plugin-transform-arrow-functions']
-  //       }
-  //     })]
-  //   }
-  // );
 }
 
-export default tasks;
+module.exports = tasks; 

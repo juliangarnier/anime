@@ -10,7 +10,6 @@
   "main": "lib/anime.umd.js",
   "module": "lib/anime.esm.js",
   "types": "types/index.d.ts",
-  "type": "module",
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -40,23 +39,30 @@
     "canvas"
   ],
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
     "@rollup/plugin-terser": "^0.4.4",
-    "browser-sync": "^2.29.3",
+    "browser-sync": "^3.0.4",
     "chai": "^4.3.10",
+    "cross-env": "^7.0.3",
     "mocha": "^10.2.0",
-    "rollup": "^4.9.1",
+    "rollup": "^4.39.0",
     "rollup-plugin-filesize": "^10.0.0",
     "rollup-plugin-ts": "^3.4.5",
+    "systemjs": "^6.15.1",
     "three": "^0.160.0",
     "typescript": "5.1.6"
   },
   "scripts": {
-    "dev": "rollup -c -w",
-    "dev-types": "types=true rollup -c -w",
-    "build": "build=true types=true rollup -c",
-    "release": "build=true release=true types=true rollup -c",
+    "dev": "rollup -c rollup.config.cjs -w",
+    "dev-types": "cross-env types=true rollup -c rollup.config.cjs -w",
+    "build": "cross-env build=true types=true rollup -c rollup.config.cjs",
+    "release": "cross-env build=true release=true types=true rollup -c rollup.config.cjs",
     "open-examples": "browser-sync start --startPath examples --server --no-notify --directory --files '**/*.js'",
     "test-browser": "browser-sync start --startPath tests/index.html --server --files '**/*.js' --no-notify --directory",
     "test-node": "node --allow-natives-syntax \"node_modules/.bin/mocha\" -u tdd --timeout 20000 \"./tests/suites/node.test.js\""
+  },
+  "dependencies": {
+    "rollup-plugin-import-assert": "^3.0.1"
   }
 }
