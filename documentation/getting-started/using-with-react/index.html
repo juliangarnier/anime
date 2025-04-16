@@ -1895,7 +1895,7 @@ function App() {
 
   useEffect(() =&gt; {
   
-    scope.current = createScope({ root }).add( scope =&gt; {
+    scope.current = createScope({ root }).add( animationScope =&gt; {
     
       // Every anime.js instances declared here are now scopped to &lt;div ref={root}&gt;
 
@@ -1916,7 +1916,7 @@ function App() {
       });
 
       // Register function methods to be used outside the useEffect
-      scope.add(&#039;rotateLogo&#039;, (i) =&gt; {
+      animationScope.add(&#039;rotateLogo&#039;, (i) =&gt; {
         animate(&#039;.logo&#039;, {
           rotate: i * 360,
           ease: &#039;out(4)&#039;,
