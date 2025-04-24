@@ -3118,7 +3118,7 @@ const timer = createTimer({
 
 const stretchTimer = () => {
   timer.stretch(+$range.value);
-  $duration.innerHTML = utils.round(timer.duration, 0);
+  $duration.innerHTML = timer.duration;
   timer.restart();
 }
 
@@ -16423,7 +16423,6 @@ $resetButton.removeEventListener('click', resetDraggable);}
 <div class="large row">
   <fieldset class="controls">
     <button class="button revert">Revert</button>
-    <button class="button enable">Enable</button>
   </fieldset>
 </div>        </div>
     <div class="docs-demo-html docs-demo-template">
@@ -16433,7 +16432,6 @@ $resetButton.removeEventListener('click', resetDraggable);}
 <div class="large row">
   <fieldset class="controls">
     <button class="button revert">Revert</button>
-    <button class="button enable">Enable</button>
   </fieldset>
 </div>        </div>
     <script class="docs-demo-js">
@@ -16456,17 +16454,16 @@ window.demos['draggable-draggable-methods-revert'] = function(
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
-const [ $enableButton ] = utils.$('.enable');
 
 const draggable = createDraggable('.square');
 
-const revertDraggable = () => draggable.revert();
-const enableDraggable = () => draggable.enable();
+function revertDraggable() {
+  draggable.revert();
+  $revertButton.disabled = true;
+}
 
-$revertButton.addEventListener('click', revertDraggable);
-$enableButton.addEventListener('click', enableDraggable);return function() {
-$revertButton.removeEventListener('click', revertDraggable);
-$enableButton.removeEventListener('click', enableDraggable);}
+$revertButton.addEventListener('click', revertDraggable);return function() {
+$revertButton.removeEventListener('click', revertDraggable);}
 
 }
 </script>
@@ -21201,7 +21198,7 @@ window.demos['stagger-stagger-parameters-stagger-start'] = function(
   createViewer,
 ) {
 animate('.square', {
-  x: stagger('1rem', { start: 14 }), // adds 11 to the staggered value
+  x: stagger('1rem', { start: 14 }), // adds 14 to the staggered value
   delay: stagger(100, { start: 500 }), // adds 500 to the staggered value
 });
 }
