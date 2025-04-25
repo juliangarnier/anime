@@ -1,1 +1,1 @@
-The website and docs and generate from a private repo, if you found a typo, want to suggest a change or addition to the docs, please open an issue.
+The website and docs are generated from a private repo, if you found a typo, want to suggest a change or addition to the docs, please open an issue.
