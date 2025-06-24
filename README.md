@@ -116,7 +116,7 @@ Help the project become sustainable by sponsoring us on <a target="_blank" href=
       <a target="_blank" href="https://ice.io/?ref=animejs">Ice Open Network</a>
     </td>
     <td align="center">
-      <a target="_blank" href="https://github.com/sponsors/juliangarnier">Your logo here</a>
+      <a target="_blank" href="https://github.com/sponsors/juliangarnier">Sponsors</a>
     </td>
   </tr>
 </table>
