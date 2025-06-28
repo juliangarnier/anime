@@ -1,8 +1,8 @@
 import terser from '@rollup/plugin-terser';
 import filesize from 'rollup-plugin-filesize';
 import ts from 'rollup-plugin-ts';
-import pkg from './package.json' assert { type: 'json' };
 import fs from 'fs';
+const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 import path from 'path';
 
 const inputPath = 'src/anime.js';

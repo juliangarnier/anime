@@ -48,9 +48,9 @@ export class Spring {
     this.maxRestSteps = this.restDuration / this.timeStep / K; // How many steps allowed after reaching restThreshold before stopping the duration calculation
     this.maxIterations = this.maxDuration / this.timeStep / K; // Calculate the maximum iterations allowed based on maxDuration
     this.m = clamp(setValue(parameters.mass, 1), 0, K);
-    this.s = clamp(setValue(parameters.stiffness, 100), 1, K);
+    this.s = clamp(setValue(parameters.stiffness, 100), 1, K * 10);
     this.d = clamp(setValue(parameters.damping, 10), .1, K);
-    this.v = clamp(setValue(parameters.velocity, 0), -K, K);
+    this.v = clamp(setValue(parameters.velocity, 0), -K * 10, K * 10);
     this.w0 = 0;
     this.zeta = 0;
     this.wd = 0;
@@ -110,7 +110,7 @@ export class Spring {
   }
 
   set stiffness(v) {
-    this.s = clamp(setValue(v, 100), 1, K);
+    this.s = clamp(setValue(v, 100), 1, K * 10);
     this.compute();
   }
 
@@ -128,7 +128,7 @@ export class Spring {
   }
 
   set velocity(v) {
-    this.v = clamp(setValue(v, 0), -K, K);
+    this.v = clamp(setValue(v, 0), -K * 10, K * 10);
     this.compute();
   }
 }

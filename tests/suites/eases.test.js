@@ -214,6 +214,91 @@ suite('Eases', () => {
     expect(spring.duration).to.equal(1680);
   });
 
+  test('Spring stiffness accepts increased limits up to 10,000', () => {
+    const spring1 = createSpring({ stiffness: 5000 });
+    expect(spring1.stiffness).to.equal(5000);
+    expect(spring1.duration).to.be.above(0);
+
+    const spring2 = createSpring({ stiffness: 10000 });
+    expect(spring2.stiffness).to.equal(10000);
+    expect(spring2.duration).to.be.above(0);
+
+    // Test that values above 10,000 are clamped
+    const spring3 = createSpring({ stiffness: 15000 });
+    expect(spring3.stiffness).to.equal(10000);
+
+    // Test setting stiffness after creation
+    const spring4 = createSpring();
+    spring4.stiffness = 7500;
+    expect(spring4.stiffness).to.equal(7500);
+    spring4.stiffness = 12000;
+    expect(spring4.stiffness).to.equal(10000);
+  });
+
+  test('Spring velocity accepts increased limits up to ±10,000', () => {
+    const spring1 = createSpring({ velocity: 5000 });
+    expect(spring1.velocity).to.equal(5000);
+    expect(spring1.duration).to.be.above(0);
+
+    const spring2 = createSpring({ velocity: -5000 });
+    expect(spring2.velocity).to.equal(-5000);
+    expect(spring2.duration).to.be.above(0);
+
+    const spring3 = createSpring({ velocity: 10000 });
+    expect(spring3.velocity).to.equal(10000);
+    expect(spring3.duration).to.be.above(0);
+
+    const spring4 = createSpring({ velocity: -10000 });
+    expect(spring4.velocity).to.equal(-10000);
+    expect(spring4.duration).to.be.above(0);
+
+    // Test that values above ±10,000 are clamped
+    const spring5 = createSpring({ velocity: 15000 });
+    expect(spring5.velocity).to.equal(10000);
+
+    const spring6 = createSpring({ velocity: -15000 });
+    expect(spring6.velocity).to.equal(-10000);
+
+    // Test setting velocity after creation
+    const spring7 = createSpring();
+    spring7.velocity = 7500;
+    expect(spring7.velocity).to.equal(7500);
+    spring7.velocity = -7500;
+    expect(spring7.velocity).to.equal(-7500);
+    spring7.velocity = 12000;
+    expect(spring7.velocity).to.equal(10000);
+    spring7.velocity = -12000;
+    expect(spring7.velocity).to.equal(-10000);
+  });
+
+  test('Spring with high stiffness and velocity values produces valid animations', () => {
+    const target = '#target-id';
+    
+    // Test high stiffness animation
+    const highStiffnessAnim = animate(target, {
+      opacity: [0, 1],
+      ease: createSpring({ stiffness: 8000 }),
+      autoplay: false
+    });
+    expect(highStiffnessAnim.duration).to.be.above(0);
+    
+    // Test high velocity animation  
+    const highVelocityAnim = animate(target, {
+      opacity: [0, 1],
+      ease: createSpring({ velocity: 8000 }),
+      autoplay: false
+    });
+    expect(highVelocityAnim.duration).to.be.above(0);
+    
+    // Test combined high values
+    const combinedHighAnim = animate(target, {
+      opacity: [0, 1],
+      ease: createSpring({ stiffness: 5000, velocity: 5000 }),
+      autoplay: false
+    });
+    expect(combinedHighAnim.duration).to.be.above(0);
+  });
+
   test('Cubic bézier in: "cubicBezier(1,0,1,0)" / eases.cubicBezier(1,0,1,0)', () => {
     const cubicBezierIn = animate('#target-id', createEasingParam(eases.cubicBezier(1,0,1,0)));
     cubicBezierIn.seek(50);
