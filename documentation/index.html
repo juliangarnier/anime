@@ -21,7 +21,9 @@
   window.paths = {
     demos: '/documentation-demos',
     'github-sponsors': '/github-sponsors',
-    'company-sponsors': '/company-sponsors'
+    'platinum-sponsors': '/platinum-sponsors',
+    'gold-sponsors': '/gold-sponsors',
+    'silver-sponsors': '/silver-sponsors',
   };
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -1865,15 +1867,12 @@
           <a class="docs-info-header" title="Documentation" href="/documentation">
             Documentation                                              </a>
         </h1>
-        <h2>This documentation is only made possible with the help of my sponsors</h2>
-<p>Anime.js is developed and maintained with the generous support of my sponsors. If you're using Anime.js, a monthly contribution would be highly valuable.</p>
-<p>
-<funding-level path="github-sponsors"></funding-level>
-</p>
+        <p>This documentation is brought to you with the help of our incredible sponsors.</p>
 <h2>Platinum sponsors</h2>
 <p>
-<sponsors-list size="large" path="company-sponsors"></sponsors-list>
-</p>      </div>
+<sponsors-list size="large" boxed path="platinum-sponsors"></sponsors-list>
+</p>
+<p>You can support the project and promote your product or service specifically to Anime.js's audience of web developers by <sponsor-button><a href="https://github.com/sponsors/juliangarnier" target="_blank">becoming a sponsor</a></sponsor-button> on GitHub Sponsors.</p>      </div>
                   <div class="docs-info-links-heading">
         <strong class="text-s">In this section</strong>
       </div>
@@ -1995,6 +1994,13 @@
 </span>Getting started</a>
         </li>
               </ul>
+
+      <div class="footer-sponsors">
+        <p>Anime.js is only possible thanks to our incredible sponsors:</p>
+        <sponsors-list path="platinum-sponsors" boxed></sponsors-list>
+        <funding-level path="github-sponsors"></funding-level>
+      </div>
+
     </div>
 
   </article>

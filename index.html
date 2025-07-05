@@ -21,7 +21,9 @@
   window.paths = {
     demos: '/documentation-demos',
     'github-sponsors': '/github-sponsors',
-    'company-sponsors': '/company-sponsors'
+    'platinum-sponsors': '/platinum-sponsors',
+    'gold-sponsors': '/gold-sponsors',
+    'silver-sponsors': '/silver-sponsors',
   };
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -126,7 +128,7 @@
             </div>
             <div class="heading-sponsors text-layout">
               <span class="text-xxs">Sponsored by</span>
-              <sponsors-list path="company-sponsors" size="large"></sponsors-list>
+              <sponsors-list path="platinum-sponsors"></sponsors-list>
             </div>
           </div>
         </div>
@@ -456,8 +458,19 @@ Scopped methods</a></li>
         <h2>Our sponsors</h2>
         <p>Anime.js is 100% free and is only made possible with the help of our sponsors.</p>
         <div class="company-sponsors-list">
-          <sponsors-list size="large" path="company-sponsors"></sponsors-list>
+          <sponsors-list size="large" boxed path="platinum-sponsors"></sponsors-list>
         </div>
+        <div class="company-sponsors-list">
+          <sponsors-list size="small" boxed path="silver-sponsors"></sponsors-list>
+        </div>
+        <ul class="links-list">
+          <li><a class="text-ui" href="https://github.com/sponsors/juliangarnier" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Become a sponsor</a></li>
+        </ul>
       </div>
     </div>
     <div class="section-spacer"></div>
@@ -703,7 +716,7 @@ createTimeline()
       <h3 class="footer-heading text-xs">Explore</h3>
       <ul class="links-list">
         <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
-        <li><a target="_blank" href="https://codepen.io/collection/XLebem">CodePen</a></li>
+        <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen</a></li>
       </ul>
     </div>
     <div class="footer-block footer-logo-block">
