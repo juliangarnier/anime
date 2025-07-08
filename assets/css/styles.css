@@ -1914,27 +1914,27 @@ sponsors-list .sponsor {
   text-decoration: none;
 }
 sponsors-list[size=large] .sponsor {
-  width: 33.33%;
+  width: calc(33.33% - var(--margin-xxs));
   font-size: var(--text-xxs);
 }
 sponsors-list[size=large] .sponsor img {
   margin-bottom: var(--margin-xs);
 }
 sponsors-list[size=medium] .sponsor {
-  width: 25%;
+  width: calc(25% - var(--margin-xxs));
   font-size: var(--text-xxs);
 }
 sponsors-list[size=medium] .sponsor img {
   margin-bottom: var(--margin-xxs);
 }
 sponsors-list[size=small] .sponsor {
-  width: 16.665%;
+  width: calc(16.665% - var(--margin-xxs));
   font-size: 0.6rem;
 }
 sponsors-list[size=small] .sponsor img {
   margin-bottom: var(--margin-xxs);
 }
-@container (width > 30rem) { sponsors-list[size=large] .sponsor { width: 25%; font-size: var(--text-s); } sponsors-list[size=medium] .sponsor { width: 16.665%; font-size: var(--text-xs); } sponsors-list[size=small] .sponsor { width: 8.333%; } }
+@container (width > 30rem) { sponsors-list[size=large] .sponsor { font-size: var(--text-s); } sponsors-list[size=medium] .sponsor { font-size: var(--text-xs); } sponsors-list[size=small] .sponsor { font-size: var(--text-xs); } }
 sponsors-list[boxed] a {
   position: relative;
   padding: var(--margin-xs);
