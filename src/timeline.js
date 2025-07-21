@@ -22,8 +22,9 @@ import {
   stringStartsWith,
   mergeObjects,
   clampInfinity,
-  clampZero,
+  normalizeTime,
   isStr,
+  round,
 } from './helpers.js';
 
 import {
@@ -57,6 +58,7 @@ import {
 
 /**
  * @typedef {Number|String|Function} TimePosition
+ * @export
  */
 
 /**
@@ -327,15 +329,11 @@ export class Timeline extends Timer {
    */
   stretch(newDuration) {
     const currentDuration = this.duration;
-    if (currentDuration === clampZero(newDuration)) return this;
+    if (currentDuration === normalizeTime(newDuration)) return this;
     const timeScale = newDuration / currentDuration;
     const labels = this.labels;
-    forEachChildren(this, (/** @type {JSAnimation} */child) => {
-      child.stretch(child.duration * timeScale);
-    });
-    for (let labelName in labels) {
-      labels[labelName] *= timeScale;
-    }
+    forEachChildren(this, (/** @type {JSAnimation} */child) => child.stretch(child.duration * timeScale));
+    for (let labelName in labels) labels[labelName] *= timeScale;
     return super.stretch(newDuration);
   }
 

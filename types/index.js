@@ -1,6 +1,6 @@
 /**
  * anime.js - ESM
- * @version v4.0.1
+ * @version v4.0.2
  * @author Julian Garnier
  * @license MIT
  * @copyright (c) 2025 Julian Garnier
@@ -137,7 +137,7 @@ const globals = {
     /** @type {Number} */
     tickThreshold: 200,
 };
-const globalVersions = { version: '4.0.1', engine: null };
+const globalVersions = { version: '4.0.2', engine: null };
 if (isBrowser) {
     if (!win.AnimeJS)
         win.AnimeJS = [];
@@ -248,12 +248,12 @@ const interpolate = (start, end, progress) => start + (end - start) * progress;
  * @param  {Number} v
  * @return {Number}
  */
-const clampInfinity = v => v === Infinity ? maxValue : v === -Infinity ? -1e12 : v;
+const clampInfinity = v => v === Infinity ? maxValue : v === -Infinity ? -maxValue : v;
 /**
  * @param  {Number} v
  * @return {Number}
  */
-const clampZero = v => v < minValue ? minValue : v;
+const normalizeTime = v => v <= minValue ? minValue : clampInfinity(round(v, 11));
 // Arrays
 /**
  * @template T
@@ -1112,14 +1112,34 @@ const morphTo = (path2, precision = .33) => ($path1) => {
     return [v1, v2];
 };
 /**
- * @param {SVGGeometryElement} $el
- * @param {Number} start
- * @param {Number} end
- * @return {Proxy}
+ * @param {SVGGeometryElement} [$el]
+ * @return {Number}
  */
-function createDrawableProxy($el, start, end) {
-    const strokeLineCap = getComputedStyle($el).strokeLinecap;
+const getScaleFactor = $el => {
+    let scaleFactor = 1;
+    if ($el && $el.getCTM) {
+        const ctm = $el.getCTM();
+        if (ctm) {
+            const scaleX = sqrt(ctm.a * ctm.a + ctm.b * ctm.b);
+            const scaleY = sqrt(ctm.c * ctm.c + ctm.d * ctm.d);
+            scaleFactor = (scaleX + scaleY) / 2;
+        }
+    }
+    return scaleFactor;
+};
+/**
+ * Creates a proxy that wraps an SVGGeometryElement and adds drawing functionality.
+ * @param {SVGGeometryElement} $el - The SVG element to transform into a drawable
+ * @param {number} start - Starting position (0-1)
+ * @param {number} end - Ending position (0-1)
+ * @return {DrawableSVGGeometry} - Returns a proxy that preserves the original element's type with additional 'draw' attribute functionality
+ */
+const createDrawableProxy = ($el, start, end) => {
     const pathLength = K;
+    const computedStyles = getComputedStyle($el);
+    const strokeLineCap = computedStyles.strokeLinecap;
+    // @ts-ignore
+    const $scalled = computedStyles.vectorEffect === 'non-scaling-stroke' ? $el : null;
     let currentCap = strokeLineCap;
     const proxy = new Proxy($el, {
         get(target, property) {
@@ -1127,7 +1147,6 @@ function createDrawableProxy($el, start, end) {
             if (property === proxyTargetSymbol)
                 return target;
             if (property === 'setAttribute') {
-                /** @param {any[]} args */
                 return (...args) => {
                     if (args[0] === 'draw') {
                         const value = args[1];
@@ -1138,15 +1157,15 @@ function createDrawableProxy($el, start, end) {
                         // const spaceIndex = value.indexOf(' ');
                         // const v1 = round(+value.slice(0, spaceIndex), precision);
                         // const v2 = round(+value.slice(spaceIndex + 1), precision);
-                        const os = v1 * -1e3;
-                        const d1 = (v2 * pathLength) + os;
-                        // Prevents linecap to smear by offsetting the dasharray length by 0.01% when v2 is not at max
-                        const d2 = (pathLength + ((v1 === 0 && v2 === 1) || (v1 === 1 && v2 === 0) ? 0 : 10) - d1);
-                        // Handle cases where the cap is still visible when the line is completly hidden
+                        const scaleFactor = getScaleFactor($scalled);
+                        const os = v1 * -pathLength * scaleFactor;
+                        const d1 = (v2 * pathLength * scaleFactor) + os;
+                        const d2 = (pathLength * scaleFactor +
+                            ((v1 === 0 && v2 === 1) || (v1 === 1 && v2 === 0) ? 0 : 10 * scaleFactor) - d1);
                         if (strokeLineCap !== 'butt') {
                             const newCap = v1 === v2 ? 'butt' : strokeLineCap;
                             if (currentCap !== newCap) {
-                                target.setAttribute('stroke-linecap', `${newCap}`);
+                                target.style.strokeLinecap = `${newCap}`;
                                 currentCap = newCap;
                             }
                         }
@@ -1157,7 +1176,6 @@ function createDrawableProxy($el, start, end) {
                 };
             }
             if (isFnc(value)) {
-                /** @param {any[]} args */
                 return (...args) => Reflect.apply(value, target, args);
             }
             else {
@@ -1169,18 +1187,19 @@ function createDrawableProxy($el, start, end) {
         $el.setAttribute('pathLength', `${pathLength}`);
         proxy.setAttribute('draw', `${start} ${end}`);
     }
-    return /** @type {typeof Proxy} */ ( /** @type {unknown} */(proxy));
-}
+    return /** @type {DrawableSVGGeometry} */ (proxy);
+};
 /**
- * @param {TargetsParam} selector
- * @param {Number} [start=0]
- * @param {Number} [end=0]
- * @return {Array.<Proxy>}
+ * Creates drawable proxies for multiple SVG elements.
+ * @param {TargetsParam} selector - CSS selector, SVG element, or array of elements and selectors
+ * @param {number} [start=0] - Starting position (0-1)
+ * @param {number} [end=0] - Ending position (0-1)
+ * @return {Array<DrawableSVGGeometry>} - Array of proxied elements with drawing functionality
  */
 const createDrawable = (selector, start = 0, end = 0) => {
-    const els = /** @type {Array.<Proxy>} */ (( /** @type {unknown} */(parseTargets(selector))));
-    els.forEach(($el, i) => els[i] = createDrawableProxy(/** @type {SVGGeometryElement} */ ( /** @type {unknown} */($el)), start, end));
-    return els;
+    const els = parseTargets(selector);
+    return els.map($el => createDrawableProxy(
+    /** @type {SVGGeometryElement} */ ($el), start, end));
 };
 // Motion path animation
 /**
@@ -2093,12 +2112,13 @@ class Timer extends Clock {
      */
     stretch(newDuration) {
         const currentDuration = this.duration;
-        if (currentDuration === clampZero(newDuration))
+        const normlizedDuration = normalizeTime(newDuration);
+        if (currentDuration === normlizedDuration)
             return this;
         const timeScale = newDuration / currentDuration;
         const isSetter = newDuration <= minValue;
-        this.duration = isSetter ? minValue : clampZero(clampInfinity(round(currentDuration * timeScale, 12)));
-        this.iterationDuration = isSetter ? minValue : clampZero(clampInfinity(round(this.iterationDuration * timeScale, 12)));
+        this.duration = isSetter ? minValue : normlizedDuration;
+        this.iterationDuration = isSetter ? minValue : normalizeTime(this.iterationDuration * timeScale);
         this._offset *= timeScale;
         this._delay *= timeScale;
         this._loopDelay *= timeScale;
@@ -3051,14 +3071,14 @@ class JSAnimation extends Timer {
      */
     stretch(newDuration) {
         const currentDuration = this.duration;
-        if (currentDuration === clampZero(newDuration))
+        if (currentDuration === normalizeTime(newDuration))
             return this;
         const timeScale = newDuration / currentDuration;
         // NOTE: Find a better way to handle the stretch of an animation after stretch = 0
         forEachChildren(this, (/** @type {Tween} */ tween) => {
             // Rounding is necessary here to minimize floating point errors
-            tween._updateDuration = clampZero(round(tween._updateDuration * timeScale, 12));
-            tween._changeDuration = clampZero(round(tween._changeDuration * timeScale, 12));
+            tween._updateDuration = normalizeTime(tween._updateDuration * timeScale);
+            tween._changeDuration = normalizeTime(tween._changeDuration * timeScale);
             tween._currentTime *= timeScale;
             tween._startTime *= timeScale;
             tween._absoluteStartTime *= timeScale;
@@ -3154,6 +3174,7 @@ const parseWAAPIEasing = (ease) => {
             if (isFnc(parsed))
                 parsedEase = parsed === none ? 'linear' : easingToLinear(parsed);
         }
+        WAAPIEasesLookups[ease] = parsedEase;
     }
     else if (isFnc(ease)) {
         const easing = easingToLinear(ease);
@@ -3163,7 +3184,7 @@ const parseWAAPIEasing = (ease) => {
     else if ( /** @type {Spring} */(ease).ease) {
         parsedEase = easingToLinear(/** @type {Spring} */ (ease).ease);
     }
-    return WAAPIEasesLookups[ease] = parsedEase;
+    return parsedEase;
 };
 /**
  * @typedef {String|Number|Array<String>|Array<Number>} WAAPITweenValue
@@ -3205,6 +3226,7 @@ const parseWAAPIEasing = (ease) => {
  */
 /**
  * @typedef {Record<String, WAAPIKeyframeValue | WAAPIAnimationOptions | Boolean | ScrollObserver | WAAPICallback | EasingParam | WAAPITweenOptions> & WAAPIAnimationOptions} WAAPIAnimationParams
+ * @export
  */
 const transformsShorthands = ['x', 'y', 'z'];
 const commonDefaultPXProperties = [
@@ -3226,6 +3248,8 @@ const validIndividualTransforms = [...transformsShorthands, ...validTransforms.f
 // Setting it to true in case CSS.registerProperty is not supported will automatically skip the registration and fallback to no animation
 let transformsPropertiesRegistered = isBrowser && (isUnd(CSS) || !Object.hasOwnProperty.call(CSS, 'registerProperty'));
 const registerTransformsProperties = () => {
+    if (transformsPropertiesRegistered)
+        return;
     validTransforms.forEach(t => {
         const isSkew = stringStartsWith(t, 'skew');
         const isScale = stringStartsWith(t, 'scale');
@@ -3233,12 +3257,15 @@ const registerTransformsProperties = () => {
         const isTranslate = stringStartsWith(t, 'translate');
         const isAngle = isRotate || isSkew;
         const syntax = isAngle ? '<angle>' : isScale ? "<number>" : isTranslate ? "<length-percentage>" : "*";
-        CSS.registerProperty({
-            name: '--' + t,
-            syntax,
-            inherits: false,
-            initialValue: isTranslate ? '0px' : isAngle ? '0deg' : isScale ? '1' : '0',
-        });
+        try {
+            CSS.registerProperty({
+                name: '--' + t,
+                syntax,
+                inherits: false,
+                initialValue: isTranslate ? '0px' : isAngle ? '0deg' : isScale ? '1' : '0',
+            });
+        }
+        catch { }
     });
     transformsPropertiesRegistered = true;
 };
@@ -3356,8 +3383,7 @@ class WAAPIAnimation {
     constructor(targets, params) {
         if (globals.scope)
             globals.scope.revertibles.push(this);
-        if (!transformsPropertiesRegistered)
-            registerTransformsProperties();
+        registerTransformsProperties();
         const parsedTargets = registerTargets(targets);
         const targetsLength = parsedTargets.length;
         if (!targetsLength) {
@@ -3513,7 +3539,14 @@ class WAAPIAnimation {
     /** @param {Number} time */
     set currentTime(time) {
         const t = time * (globals.timeScale === 1 ? 1 : K);
-        this.forEach(anim => anim.currentTime = t);
+        this.forEach(anim => {
+            // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
+            // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
+            // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event
+            if (t >= this.duration)
+                anim.play();
+            anim.currentTime = t;
+        });
     }
     get progress() {
         return this.currentTime / this.duration;
@@ -4005,6 +4038,7 @@ const utils = {
 
 /**
  * @typedef {Number|String|Function} TimePosition
+ * @export
  */
 /**
  * Timeline's children offsets positions parser
@@ -4260,16 +4294,13 @@ class Timeline extends Timer {
      */
     stretch(newDuration) {
         const currentDuration = this.duration;
-        if (currentDuration === clampZero(newDuration))
+        if (currentDuration === normalizeTime(newDuration))
             return this;
         const timeScale = newDuration / currentDuration;
         const labels = this.labels;
-        forEachChildren(this, (/** @type {JSAnimation} */ child) => {
-            child.stretch(child.duration * timeScale);
-        });
-        for (let labelName in labels) {
+        forEachChildren(this, (/** @type {JSAnimation} */ child) => child.stretch(child.duration * timeScale));
+        for (let labelName in labels)
             labels[labelName] *= timeScale;
-        }
         return super.stretch(newDuration);
     }
     /**
@@ -4431,7 +4462,7 @@ class Spring {
         this.m = clamp(setValue(parameters.mass, 1), 0, K);
         this.s = clamp(setValue(parameters.stiffness, 100), 1, K);
         this.d = clamp(setValue(parameters.damping, 10), .1, K);
-        this.v = clamp(setValue(parameters.velocity, 0), -1e3, K);
+        this.v = clamp(setValue(parameters.velocity, 0), -K, K);
         this.w0 = 0;
         this.zeta = 0;
         this.wd = 0;
@@ -4501,7 +4532,7 @@ class Spring {
         return this.v;
     }
     set velocity(v) {
-        this.v = clamp(setValue(v, 0), -1e3, K);
+        this.v = clamp(setValue(v, 0), -K, K);
         this.compute();
     }
 }
@@ -4621,11 +4652,6 @@ class Transforms {
     }
 }
 /**
- * @typedef {Object} DraggableCursorParams
- * @property {String} [onHover]
- * @property {String} [onGrab]
- */
-/**
  * @template {Array<Number>|DOMTargetSelector|String|Number|Boolean|Function|DraggableCursorParams} T
  * @param {T | ((draggable: Draggable) => T)} value
  * @param {Draggable} draggable
@@ -4633,45 +4659,6 @@ class Transforms {
  */
 const parseDraggableFunctionParameter = (value, draggable) => value && isFnc(value) ? /** @type {Function} */ (value)(draggable) : value;
 let zIndex = 0;
-/**
- * @typedef {Object} DraggableAxisParam
- * @property {String} [mapTo]
- * @property {TweenModifier} [modifier]
- * @property {TweenComposition} [composition]
- * @property {Number|Array<Number>|((draggable: Draggable) => Number|Array<Number>)} [snap]
- */
-/**
- * @typedef {Object} DraggableParams
- * @property {DOMTargetSelector} [trigger]
- * @property {DOMTargetSelector|Array<Number>|((draggable: Draggable) => DOMTargetSelector|Array<Number>)} [container]
- * @property {Boolean|DraggableAxisParam} [x]
- * @property {Boolean|DraggableAxisParam} [y]
- * @property {TweenModifier} [modifier]
- * @property {Number|Array<Number>|((draggable: Draggable) => Number|Array<Number>)} [snap]
- * @property {Number|Array<Number>|((draggable: Draggable) => Number|Array<Number>)} [containerPadding]
- * @property {Number|((draggable: Draggable) => Number)} [containerFriction]
- * @property {Number|((draggable: Draggable) => Number)} [releaseContainerFriction]
- * @property {Number|((draggable: Draggable) => Number)} [dragSpeed]
- * @property {Number|((draggable: Draggable) => Number)} [scrollSpeed]
- * @property {Number|((draggable: Draggable) => Number)} [scrollThreshold]
- * @property {Number|((draggable: Draggable) => Number)} [minVelocity]
- * @property {Number|((draggable: Draggable) => Number)} [maxVelocity]
- * @property {Number|((draggable: Draggable) => Number)} [velocityMultiplier]
- * @property {Number} [releaseMass]
- * @property {Number} [releaseStiffness]
- * @property {Number} [releaseDamping]
- * @property {Boolean} [releaseDamping]
- * @property {EasingParam} [releaseEase]
- * @property {Boolean|DraggableCursorParams|((draggable: Draggable) => Boolean|DraggableCursorParams)} [cursor]
- * @property {Callback<Draggable>} [onGrab]
- * @property {Callback<Draggable>} [onDrag]
- * @property {Callback<Draggable>} [onRelease]
- * @property {Callback<Draggable>} [onUpdate]
- * @property {Callback<Draggable>} [onSettle]
- * @property {Callback<Draggable>} [onSnap]
- * @property {Callback<Draggable>} [onResize]
- * @property {Callback<Draggable>} [onAfterResize]
- */
 class Draggable {
     /**
      * @param {TargetsParam} target
@@ -4817,7 +4804,7 @@ class Draggable {
         /** @type {[Number, Number, Number, Number]} */
         this.dragArea = [0, 0, 0, 0]; // x, y, w, h
         /** @type {[Number, Number, Number, Number]} */
-        this.containerBounds = [-1e12, maxValue, maxValue, -1e12]; // t, r, b, l
+        this.containerBounds = [-maxValue, maxValue, maxValue, -maxValue]; // t, r, b, l
         /** @type {[Number, Number, Number, Number]} */
         this.scrollBounds = [0, 0, 0, 0]; // t, r, b, l
         /** @type {[Number, Number, Number, Number]} */
@@ -4885,7 +4872,7 @@ class Draggable {
         this.canScroll = false;
         this.enabled = false;
         this.initialized = false;
-        this.activeProp = this.disabled[0] ? yProp : xProp;
+        this.activeProp = this.disabled[1] ? xProp : yProp;
         this.animate.animations[this.activeProp].onRender = () => {
             const hasUpdated = this.updated;
             const hasMoved = this.grabbed && hasUpdated;
@@ -5281,10 +5268,10 @@ class Draggable {
         const canScroll = this.canScroll;
         if (!this.containerArray && this.isOutOfBounds(scrollBounds, x, y)) {
             const [st, sr, sb, sl] = scrollBounds;
-            const t = round(clamp(y - st, -1e12, 0), 0);
+            const t = round(clamp(y - st, -maxValue, 0), 0);
             const r = round(clamp(x - sr, 0, maxValue), 0);
             const b = round(clamp(y - sb, 0, maxValue), 0);
-            const l = round(clamp(x - sl, -1e12, 0), 0);
+            const l = round(clamp(x - sl, -maxValue, 0), 0);
             new JSAnimation(scroll, {
                 x: round(scroll.x + (l ? l - gap : r ? r + gap : 0), 0),
                 y: round(scroll.y + (t ? t - gap : b ? b + gap : 0), 0),
@@ -5665,6 +5652,7 @@ class Draggable {
         this.overshootXTicker.revert();
         this.overshootYTicker.revert();
         this.resizeTicker.revert();
+        this.animate.revert();
         return this;
     }
     /**
@@ -6683,7 +6671,7 @@ class ScrollObserver {
             if (syncSmooth && isNum(syncSmooth)) {
                 if ( /** @type {Number} */(syncSmooth) < 1) {
                     const step = 0.0001;
-                    const snap = lp < p && p === 1 ? step : lp > p && !p ? -1e-4 : 0;
+                    const snap = lp < p && p === 1 ? step : lp > p && !p ? -step : 0;
                     p = round(lerp(lp, p, interpolate(.01, .2, /** @type {Number} */ (syncSmooth)), false) + snap, 6);
                 }
             }

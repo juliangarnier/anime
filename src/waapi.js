@@ -36,6 +36,7 @@ import {
 
 import {
   isBrowser,
+  doc,
   K,
   noop,
   emptyString,
@@ -91,13 +92,14 @@ const parseWAAPIEasing = (ease) => {
       const parsed = parseEaseString(ease, WAAPIeases, WAAPIEasesLookups);
       if (isFnc(parsed)) parsedEase = parsed === none ? 'linear' : easingToLinear(parsed);
     }
+    WAAPIEasesLookups[ease] = parsedEase;
   } else if (isFnc(ease)) {
     const easing = easingToLinear(ease);
     if (easing) parsedEase = easing;
   } else if (/** @type {Spring} */(ease).ease) {
     parsedEase = easingToLinear(/** @type {Spring} */(ease).ease);
   }
-  return WAAPIEasesLookups[ease] = parsedEase;
+  return parsedEase;
 }
 
 /**
@@ -146,6 +148,7 @@ const parseWAAPIEasing = (ease) => {
 
 /**
  * @typedef {Record<String, WAAPIKeyframeValue | WAAPIAnimationOptions | Boolean | ScrollObserver | WAAPICallback | EasingParam | WAAPITweenOptions> & WAAPIAnimationOptions} WAAPIAnimationParams
+ * @export
  */
 
 const transformsShorthands = ['x', 'y', 'z'];
@@ -171,6 +174,7 @@ const validIndividualTransforms = [...transformsShorthands, ...validTransforms.f
 let transformsPropertiesRegistered = isBrowser && (isUnd(CSS) || !Object.hasOwnProperty.call(CSS, 'registerProperty'));
 
 const registerTransformsProperties = () => {
+  if (transformsPropertiesRegistered) return;
   validTransforms.forEach(t => {
     const isSkew = stringStartsWith(t, 'skew');
     const isScale = stringStartsWith(t, 'scale');
@@ -178,12 +182,14 @@ const registerTransformsProperties = () => {
     const isTranslate = stringStartsWith(t, 'translate');
     const isAngle = isRotate || isSkew;
     const syntax = isAngle ? '<angle>' : isScale ? "<number>" : isTranslate ? "<length-percentage>" : "*";
-    CSS.registerProperty({
-      name: '--' + t,
-      syntax,
-      inherits: false,
-      initialValue: isTranslate ? '0px' : isAngle ? '0deg' : isScale ? '1' : '0',
-    });
+    try {
+      CSS.registerProperty({
+        name: '--' + t,
+        syntax,
+        inherits: false,
+        initialValue: isTranslate ? '0px' : isAngle ? '0deg' : isScale ? '1' : '0',
+      });
+    } catch {};
   });
   transformsPropertiesRegistered = true;
 }
@@ -300,7 +306,7 @@ export class WAAPIAnimation {
 
     if (globals.scope) globals.scope.revertibles.push(this);
 
-    if (!transformsPropertiesRegistered) registerTransformsProperties();
+    registerTransformsProperties();
 
     const parsedTargets = registerTargets(targets);
     const targetsLength = parsedTargets.length;
@@ -467,7 +473,13 @@ export class WAAPIAnimation {
   /** @param {Number} time */
   set currentTime(time) {
     const t = time * (globals.timeScale === 1 ? 1 : K);
-    this.forEach(anim => anim.currentTime = t);
+    this.forEach(anim => {
+      // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
+      // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
+      // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event
+      if (t >= this.duration) anim.play();
+      anim.currentTime = t;
+    });
   }
 
   get progress() {
