@@ -58,6 +58,7 @@ import {
 
 /**
  * @typedef {Number|String|Function} TimePosition
+ * @export
  */
 
 /**
