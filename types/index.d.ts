@@ -212,7 +212,7 @@ declare function createMotionPath(path: TargetsParam): {
     translateY: FunctionValue;
     rotate: FunctionValue;
 };
-declare function createDrawable(selector: TargetsParam, start?: number, end?: number): Array<DrawableSVGGeometry>;
+declare function createDrawable(selector: TargetsParam, start?: number, end?: number): Array<ProxyConstructor>;
 declare function stagger(val: number | string | [
     number | string,
     number | string
@@ -330,292 +330,6 @@ type DefaultsParams = {
 type Renderable = JSAnimation | Timeline;
 type Tickable = Timer | Renderable;
 type CallbackArgument = Timer & JSAnimation & Timeline;
-declare class Animatable {
-    constructor(targets: TargetsParam, parameters: AnimatableParams);
-    targets: (HTMLElement | SVGElement | JSTarget)[];
-    animations: {};
-    revert(): this;
-}
-declare function createAnimatable(targets: TargetsParam, parameters: AnimatableParams): AnimatableObject;
-type Revertible = Animatable | Tickable | Draggable | ScrollObserver | Scope;
-type DraggableAxisParam = {
-    mapTo?: string;
-    modifier?: TweenModifier;
-    composition?: TweenComposition;
-    snap?: number | number[] | ((draggable: Draggable) => number | Array<number>);
-};
-type DraggableCursorParams = {
-    onHover?: string;
-    onGrab?: string;
-};
-type DraggableParams = {
-    trigger?: DOMTargetSelector;
-    container?: number[] | DOMTargetSelector | ((draggable: Draggable) => DOMTargetSelector | Array<number>);
-    x?: boolean | DraggableAxisParam;
-    y?: boolean | DraggableAxisParam;
-    modifier?: TweenModifier;
-    snap?: number | number[] | ((draggable: Draggable) => number | Array<number>);
-    containerPadding?: number | number[] | ((draggable: Draggable) => number | Array<number>);
-    containerFriction?: number | ((draggable: Draggable) => number);
-    releaseContainerFriction?: number | ((draggable: Draggable) => number);
-    dragSpeed?: number | ((draggable: Draggable) => number);
-    scrollSpeed?: number | ((draggable: Draggable) => number);
-    scrollThreshold?: number | ((draggable: Draggable) => number);
-    minVelocity?: number | ((draggable: Draggable) => number);
-    maxVelocity?: number | ((draggable: Draggable) => number);
-    velocityMultiplier?: number | ((draggable: Draggable) => number);
-    releaseMass?: number;
-    releaseStiffness?: number;
-    releaseDamping?: number;
-    releaseEase?: EasingParam;
-    cursor?: boolean | DraggableCursorParams | ((draggable: Draggable) => boolean | DraggableCursorParams);
-    onGrab?: Callback<Draggable>;
-    onDrag?: Callback<Draggable>;
-    onRelease?: Callback<Draggable>;
-    onUpdate?: Callback<Draggable>;
-    onSettle?: Callback<Draggable>;
-    onSnap?: Callback<Draggable>;
-    onResize?: Callback<Draggable>;
-    onAfterResize?: Callback<Draggable>;
-};
-type DrawableSVGGeometry = SVGGeometryElement & {
-    setAttribute(name: 'draw', value: `${number} ${number}`): void;
-    draw: `${number} ${number}`;
-};
-type EasingFunction = (time: number) => number;
-type EaseStringParamNames = ('linear' | 'linear(x1, x2 25%, x3)' | 'in' | 'out' | 'inOut' | 'inQuad' | 'outQuad' | 'inOutQuad' | 'inCubic' | 'outCubic' | 'inOutCubic' | 'inQuart' | 'outQuart' | 'inOutQuart' | 'inQuint' | 'outQuint' | 'inOutQuint' | 'inSine' | 'outSine' | 'inOutSine' | 'inCirc' | 'outCirc' | 'inOutCirc' | 'inExpo' | 'outExpo' | 'inOutExpo' | 'inBounce' | 'outBounce' | 'inOutBounce' | 'inBack' | 'outBack' | 'inOutBack' | 'inElastic' | 'outElastic' | 'inOutElastic' | 'irregular' | 'cubicBezier' | 'steps' | 'in(p = 1.675)' | 'out(p = 1.675)' | 'inOut(p = 1.675)' | 'inBack(overshoot = 1.70158)' | 'outBack(overshoot = 1.70158)' | 'inOutBack(overshoot = 1.70158)' | 'inElastic(amplitude = 1, period = .3)' | 'outElastic(amplitude = 1, period = .3)' | 'inOutElastic(amplitude = 1, period = .3)' | 'irregular(length = 10, randomness = 1)' | 'cubicBezier(x1, y1, x2, y2)' | 'steps(steps = 10)');
-type EasingParam = (string & {}) | EaseStringParamNames | EasingFunction | Spring;
-type DOMTarget = HTMLElement | SVGElement;
-type JSTarget = Record<string, any>;
-type Target = DOMTarget | JSTarget;
-type TargetSelector = Target | NodeList | string;
-type DOMTargetSelector = DOMTarget | NodeList | string;
-type DOMTargetsParam = Array<DOMTargetSelector> | DOMTargetSelector;
-type DOMTargetsArray = Array<DOMTarget>;
-type JSTargetsParam = Array<JSTarget> | JSTarget;
-type JSTargetsArray = Array<JSTarget>;
-type TargetsParam = Array<TargetSelector> | TargetSelector;
-type TargetsArray = Array<Target>;
-type FunctionValue = (target: Target, index: number, length: number) => number | string | TweenObjectValue | Array<number | string | TweenObjectValue>;
-type TweenModifier = (value: number) => number | string;
-type ColorArray = [number, number, number, number];
-type Callback<T> = (self: T, e?: PointerEvent) => any;
-type TickableCallbacks<T extends unknown> = {
-    onBegin?: Callback<T>;
-    onBeforeUpdate?: Callback<T>;
-    onUpdate?: Callback<T>;
-    onLoop?: Callback<T>;
-    onPause?: Callback<T>;
-    onComplete?: Callback<T>;
-};
-type RenderableCallbacks<T extends unknown> = {
-    onRender?: Callback<T>;
-};
-type Tween = {
-    id: number;
-    parent: JSAnimation;
-    property: string;
-    target: Target;
-    _value: string | number;
-    _func: Function | null;
-    _ease: EasingFunction;
-    _fromNumbers: Array<number>;
-    _toNumbers: Array<number>;
-    _strings: Array<string>;
-    _fromNumber: number;
-    _toNumber: number;
-    _numbers: Array<number>;
-    _number: number;
-    _unit: string;
-    _modifier: TweenModifier;
-    _currentTime: number;
-    _delay: number;
-    _updateDuration: number;
-    _startTime: number;
-    _changeDuration: number;
-    _absoluteStartTime: number;
-    _tweenType: tweenTypes;
-    _valueType: valueTypes;
-    _composition: number;
-    _isOverlapped: number;
-    _isOverridden: number;
-    _renderTransforms: number;
-    _prevRep: Tween;
-    _nextRep: Tween;
-    _prevAdd: Tween;
-    _nextAdd: Tween;
-    _prev: Tween;
-    _next: Tween;
-};
-type TweenDecomposedValue = {
-    /**
-     * - Type
-     */
-    t: number;
-    /**
-     * - Single number value
-     */
-    n: number;
-    /**
-     * - Value unit
-     */
-    u: string;
-    /**
-     * - Value operator
-     */
-    o: string;
-    /**
-     * - Array of Numbers (in case of complex value type)
-     */
-    d: Array<number>;
-    /**
-     * - Strings (in case of complex value type)
-     */
-    s: Array<string>;
-};
-type TweenPropertySiblings = {
-    _head: null | Tween;
-    _tail: null | Tween;
-};
-type TweenLookups = Record<string, TweenPropertySiblings>;
-type TweenReplaceLookups = WeakMap<Target, TweenLookups>;
-type TweenAdditiveLookups = Map<Target, TweenLookups>;
-type TimerOptions = {
-    id?: number | string;
-    duration?: TweenParamValue;
-    delay?: TweenParamValue;
-    loopDelay?: number;
-    reversed?: boolean;
-    alternate?: boolean;
-    loop?: boolean | number;
-    autoplay?: boolean | ScrollObserver;
-    frameRate?: number;
-    playbackRate?: number;
-};
-/**
- *
- * /**
- */
-type TimerParams = TimerOptions & TickableCallbacks<Timer>;
-type TweenParamValue = number | string | FunctionValue;
-type TweenPropValue = TweenParamValue | [TweenParamValue, TweenParamValue];
-type TweenComposition = (string & {}) | 'none' | 'replace' | 'blend' | compositionTypes;
-type TweenParamsOptions = {
-    duration?: TweenParamValue;
-    delay?: TweenParamValue;
-    ease?: EasingParam;
-    modifier?: TweenModifier;
-    composition?: TweenComposition;
-};
-type TweenValues = {
-    from?: TweenParamValue;
-    to?: TweenPropValue;
-    fromTo?: TweenPropValue;
-};
-type TweenKeyValue = TweenParamsOptions & TweenValues;
-type ArraySyntaxValue = Array<TweenKeyValue | TweenPropValue>;
-type TweenOptions = TweenParamValue | (TweenPropValue | TweenKeyValue)[] | TweenKeyValue;
-type TweenObjectValue = Partial<{
-    to: TweenParamValue | Array<TweenParamValue>;
-    from: TweenParamValue | Array<TweenParamValue>;
-    fromTo: TweenParamValue | Array<TweenParamValue>;
-}>;
-type PercentageKeyframeOptions = {
-    ease?: EasingParam;
-};
-type PercentageKeyframeParams = Record<string, TweenParamValue>;
-type PercentageKeyframes = Record<string, PercentageKeyframeParams & PercentageKeyframeOptions>;
-type DurationKeyframes = Array<Record<string, TweenOptions | TweenModifier | boolean> & TweenParamsOptions>;
-type AnimationOptions = {
-    keyframes?: PercentageKeyframes | DurationKeyframes;
-    playbackEase?: EasingParam;
-};
-type AnimationParams = Record<string, TweenOptions | Callback<JSAnimation> | TweenModifier | boolean | PercentageKeyframes | (Record<string, boolean | TweenModifier | TweenOptions> & TweenParamsOptions)[] | ScrollObserver> & TimerOptions & AnimationOptions & TweenParamsOptions & TickableCallbacks<JSAnimation> & RenderableCallbacks<JSAnimation>;
-type TimelineOptions = {
-    defaults?: DefaultsParams;
-    playbackEase?: EasingParam;
-};
-type TimelineParams = TimerOptions & TimelineOptions & TickableCallbacks<Timeline> & RenderableCallbacks<Timeline>;
-type AnimatablePropertySetter = (to: number | Array<number>, duration?: number, ease?: EasingParam) => AnimatableObject;
-type AnimatablePropertyGetter = () => number | Array<number>;
-type AnimatableProperty = AnimatablePropertySetter & AnimatablePropertyGetter;
-type AnimatableObject = Animatable & Record<string, AnimatableProperty>;
-type AnimatablePropertyParamsOptions = {
-    unit?: string;
-    duration?: TweenParamValue;
-    ease?: EasingParam;
-    modifier?: TweenModifier;
-    composition?: TweenComposition;
-};
-type AnimatableParams = Record<string, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions> & AnimatablePropertyParamsOptions;
-declare class WAAPIAnimation {
-    constructor(targets: DOMTargetsParam, params: WAAPIAnimationParams);
-    targets: DOMTargetsArray;
-    animations: Array<globalThis.Animation>;
-    controlAnimation: globalThis.Animation;
-    onComplete: Callback<this>;
-    duration: number;
-    muteCallbacks: boolean;
-    completed: boolean;
-    paused: boolean;
-    reversed: boolean;
-    autoplay: boolean | ScrollObserver;
-    _speed: number;
-    _resolve: Function;
-    _completed: number;
-    _inlineStyles: Array<any>;
-    forEach(callback: string | ((animation: globalThis.Animation) => any)): this;
-    set speed(arg: number);
-    get speed(): number;
-    set currentTime(arg: number);
-    get currentTime(): number;
-    set progress(arg: number);
-    get progress(): number;
-    resume(): this;
-    pause(): this;
-    alternate(): this;
-    play(): this;
-    reverse(): this;
-    seek(time: number, muteCallbacks?: boolean): this;
-    restart(): this;
-    commitStyles(): this;
-    complete(): this;
-    cancel(): this;
-    revert(): this;
-    then(callback?: WAAPICallback): Promise<any>;
-}
-declare namespace waapi {
-    export function animate(targets: DOMTargetsParam, params: WAAPIAnimationParams): WAAPIAnimation;
-    export { easingToLinear as convertEase };
-}
-type WAAPITweenValue = string | number | Array<string> | Array<number>;
-type WAAPIFunctionvalue = (target: DOMTarget, index: number, length: number) => WAAPITweenValue;
-type WAAPIKeyframeValue = WAAPITweenValue | WAAPIFunctionvalue | Array<string | number | WAAPIFunctionvalue>;
-type WAAPICallback = (animation: WAAPIAnimation) => void;
-type WAAPITweenOptions = {
-    to?: WAAPIKeyframeValue;
-    from?: WAAPIKeyframeValue;
-    duration?: number | WAAPIFunctionvalue;
-    delay?: number | WAAPIFunctionvalue;
-    ease?: EasingParam;
-    composition?: CompositeOperation;
-};
-type WAAPIAnimationOptions = {
-    loop?: number | boolean;
-    Reversed?: boolean;
-    Alternate?: boolean;
-    autoplay?: boolean | ScrollObserver;
-    playbackRate?: number;
-    duration?: number | WAAPIFunctionvalue;
-    delay?: number | WAAPIFunctionvalue;
-    ease?: EasingParam;
-    composition?: CompositeOperation;
-    onComplete?: WAAPICallback;
-};
-type WAAPIAnimationParams = Record<string, WAAPIKeyframeValue | WAAPIAnimationOptions | boolean | ScrollObserver | WAAPICallback | EasingParam | WAAPITweenOptions> & WAAPIAnimationOptions;
-declare function easingToLinear(fn: EasingFunction, samples?: number): string;
-type WAAPIAnimationParams = WAAPIAnimationParams;
-type TimePosition = TimePosition;
 declare class Draggable {
     constructor(target: TargetsParam, parameters?: DraggableParams);
     containerArray: number[];
@@ -787,6 +501,46 @@ declare class Draggable {
     handleEvent(e: Event): void;
 }
 declare function createDraggable(target: TargetsParam, parameters?: DraggableParams): Draggable;
+type DraggableCursorParams = {
+    onHover?: string;
+    onGrab?: string;
+};
+type DraggableAxisParam = {
+    mapTo?: string;
+    modifier?: TweenModifier;
+    composition?: TweenComposition;
+    snap?: number | number[] | ((draggable: Draggable) => number | Array<number>);
+};
+type DraggableParams = {
+    trigger?: DOMTargetSelector;
+    container?: number[] | DOMTargetSelector | ((draggable: Draggable) => DOMTargetSelector | Array<number>);
+    x?: boolean | DraggableAxisParam;
+    y?: boolean | DraggableAxisParam;
+    modifier?: TweenModifier;
+    snap?: number | number[] | ((draggable: Draggable) => number | Array<number>);
+    containerPadding?: number | number[] | ((draggable: Draggable) => number | Array<number>);
+    containerFriction?: number | ((draggable: Draggable) => number);
+    releaseContainerFriction?: number | ((draggable: Draggable) => number);
+    dragSpeed?: number | ((draggable: Draggable) => number);
+    scrollSpeed?: number | ((draggable: Draggable) => number);
+    scrollThreshold?: number | ((draggable: Draggable) => number);
+    minVelocity?: number | ((draggable: Draggable) => number);
+    maxVelocity?: number | ((draggable: Draggable) => number);
+    velocityMultiplier?: number | ((draggable: Draggable) => number);
+    releaseMass?: number;
+    releaseStiffness?: number;
+    releaseDamping?: number;
+    releaseEase?: EasingParam;
+    cursor?: boolean | DraggableCursorParams | ((draggable: Draggable) => boolean | DraggableCursorParams);
+    onGrab?: Callback<Draggable>;
+    onDrag?: Callback<Draggable>;
+    onRelease?: Callback<Draggable>;
+    onUpdate?: Callback<Draggable>;
+    onSettle?: Callback<Draggable>;
+    onSnap?: Callback<Draggable>;
+    onResize?: Callback<Draggable>;
+    onAfterResize?: Callback<Draggable>;
+};
 declare class Transforms {
     constructor($el: DOMTarget | DOMProxy);
     $el: DOMTarget | DOMProxy;
@@ -823,6 +577,181 @@ declare class DOMProxy {
         left: any;
     };
 }
+type DraggableParams = DraggableParams;
+declare class Animatable {
+    constructor(targets: TargetsParam, parameters: AnimatableParams);
+    targets: (HTMLElement | SVGElement | JSTarget)[];
+    animations: {};
+    revert(): this;
+}
+declare function createAnimatable(targets: TargetsParam, parameters: AnimatableParams): AnimatableObject;
+type Revertible = Animatable | Tickable | Draggable | ScrollObserver | Scope;
+type EasingFunction = (time: number) => number;
+type EaseStringParamNames = ('linear' | 'linear(x1, x2 25%, x3)' | 'in' | 'out' | 'inOut' | 'inQuad' | 'outQuad' | 'inOutQuad' | 'inCubic' | 'outCubic' | 'inOutCubic' | 'inQuart' | 'outQuart' | 'inOutQuart' | 'inQuint' | 'outQuint' | 'inOutQuint' | 'inSine' | 'outSine' | 'inOutSine' | 'inCirc' | 'outCirc' | 'inOutCirc' | 'inExpo' | 'outExpo' | 'inOutExpo' | 'inBounce' | 'outBounce' | 'inOutBounce' | 'inBack' | 'outBack' | 'inOutBack' | 'inElastic' | 'outElastic' | 'inOutElastic' | 'irregular' | 'cubicBezier' | 'steps' | 'in(p = 1.675)' | 'out(p = 1.675)' | 'inOut(p = 1.675)' | 'inBack(overshoot = 1.70158)' | 'outBack(overshoot = 1.70158)' | 'inOutBack(overshoot = 1.70158)' | 'inElastic(amplitude = 1, period = .3)' | 'outElastic(amplitude = 1, period = .3)' | 'inOutElastic(amplitude = 1, period = .3)' | 'irregular(length = 10, randomness = 1)' | 'cubicBezier(x1, y1, x2, y2)' | 'steps(steps = 10)');
+type EasingParam = (string & {}) | EaseStringParamNames | EasingFunction | Spring;
+type DOMTarget = HTMLElement | SVGElement;
+type JSTarget = Record<string, any>;
+type Target = DOMTarget | JSTarget;
+type TargetSelector = Target | NodeList | string;
+type DOMTargetSelector = DOMTarget | NodeList | string;
+type DOMTargetsParam = Array<DOMTargetSelector> | DOMTargetSelector;
+type DOMTargetsArray = Array<DOMTarget>;
+type JSTargetsParam = Array<JSTarget> | JSTarget;
+type JSTargetsArray = Array<JSTarget>;
+type TargetsParam = Array<TargetSelector> | TargetSelector;
+type TargetsArray = Array<Target>;
+type FunctionValue = (target: Target, index: number, length: number) => number | string | TweenObjectValue | Array<number | string | TweenObjectValue>;
+type TweenModifier = (value: number) => number | string;
+type ColorArray = [number, number, number, number];
+type Callback<T> = (self: T, e?: PointerEvent) => any;
+type TickableCallbacks<T extends unknown> = {
+    onBegin?: Callback<T>;
+    onBeforeUpdate?: Callback<T>;
+    onUpdate?: Callback<T>;
+    onLoop?: Callback<T>;
+    onPause?: Callback<T>;
+    onComplete?: Callback<T>;
+};
+type RenderableCallbacks<T extends unknown> = {
+    onRender?: Callback<T>;
+};
+type Tween = {
+    id: number;
+    parent: JSAnimation;
+    property: string;
+    target: Target;
+    _value: string | number;
+    _func: Function | null;
+    _ease: EasingFunction;
+    _fromNumbers: Array<number>;
+    _toNumbers: Array<number>;
+    _strings: Array<string>;
+    _fromNumber: number;
+    _toNumber: number;
+    _numbers: Array<number>;
+    _number: number;
+    _unit: string;
+    _modifier: TweenModifier;
+    _currentTime: number;
+    _delay: number;
+    _updateDuration: number;
+    _startTime: number;
+    _changeDuration: number;
+    _absoluteStartTime: number;
+    _tweenType: tweenTypes;
+    _valueType: valueTypes;
+    _composition: number;
+    _isOverlapped: number;
+    _isOverridden: number;
+    _renderTransforms: number;
+    _prevRep: Tween;
+    _nextRep: Tween;
+    _prevAdd: Tween;
+    _nextAdd: Tween;
+    _prev: Tween;
+    _next: Tween;
+};
+type TweenDecomposedValue = {
+    /**
+     * - Type
+     */
+    t: number;
+    /**
+     * - Single number value
+     */
+    n: number;
+    /**
+     * - Value unit
+     */
+    u: string;
+    /**
+     * - Value operator
+     */
+    o: string;
+    /**
+     * - Array of Numbers (in case of complex value type)
+     */
+    d: Array<number>;
+    /**
+     * - Strings (in case of complex value type)
+     */
+    s: Array<string>;
+};
+type TweenPropertySiblings = {
+    _head: null | Tween;
+    _tail: null | Tween;
+};
+type TweenLookups = Record<string, TweenPropertySiblings>;
+type TweenReplaceLookups = WeakMap<Target, TweenLookups>;
+type TweenAdditiveLookups = Map<Target, TweenLookups>;
+type TimerOptions = {
+    id?: number | string;
+    duration?: TweenParamValue;
+    delay?: TweenParamValue;
+    loopDelay?: number;
+    reversed?: boolean;
+    alternate?: boolean;
+    loop?: boolean | number;
+    autoplay?: boolean | ScrollObserver;
+    frameRate?: number;
+    playbackRate?: number;
+};
+/**
+ *
+ * /**
+ */
+type TimerParams = TimerOptions & TickableCallbacks<Timer>;
+type TweenParamValue = number | string | FunctionValue;
+type TweenPropValue = TweenParamValue | [TweenParamValue, TweenParamValue];
+type TweenComposition = (string & {}) | 'none' | 'replace' | 'blend' | compositionTypes;
+type TweenParamsOptions = {
+    duration?: TweenParamValue;
+    delay?: TweenParamValue;
+    ease?: EasingParam;
+    modifier?: TweenModifier;
+    composition?: TweenComposition;
+};
+type TweenValues = {
+    from?: TweenParamValue;
+    to?: TweenPropValue;
+    fromTo?: TweenPropValue;
+};
+type TweenKeyValue = TweenParamsOptions & TweenValues;
+type ArraySyntaxValue = Array<TweenKeyValue | TweenPropValue>;
+type TweenOptions = TweenParamValue | (TweenPropValue | TweenKeyValue)[] | TweenKeyValue;
+type TweenObjectValue = Partial<{
+    to: TweenParamValue | Array<TweenParamValue>;
+    from: TweenParamValue | Array<TweenParamValue>;
+    fromTo: TweenParamValue | Array<TweenParamValue>;
+}>;
+type PercentageKeyframeOptions = {
+    ease?: EasingParam;
+};
+type PercentageKeyframeParams = Record<string, TweenParamValue>;
+type PercentageKeyframes = Record<string, PercentageKeyframeParams & PercentageKeyframeOptions>;
+type DurationKeyframes = Array<Record<string, TweenOptions | TweenModifier | boolean> & TweenParamsOptions>;
+type AnimationOptions = {
+    keyframes?: PercentageKeyframes | DurationKeyframes;
+    playbackEase?: EasingParam;
+};
+type AnimationParams = Record<string, TweenOptions | Callback<JSAnimation> | TweenModifier | boolean | PercentageKeyframes | (Record<string, boolean | TweenModifier | TweenOptions> & TweenParamsOptions)[] | ScrollObserver> & TimerOptions & AnimationOptions & TweenParamsOptions & TickableCallbacks<JSAnimation> & RenderableCallbacks<JSAnimation>;
+type TimelineOptions = {
+    defaults?: DefaultsParams;
+    playbackEase?: EasingParam;
+};
+type TimelineParams = TimerOptions & TimelineOptions & TickableCallbacks<Timeline> & RenderableCallbacks<Timeline>;
+type AnimatablePropertySetter = (to: number | Array<number>, duration?: number, ease?: EasingParam) => AnimatableObject;
+type AnimatablePropertyGetter = () => number | Array<number>;
+type AnimatableProperty = AnimatablePropertySetter & AnimatablePropertyGetter;
+type AnimatableObject = Animatable & Record<string, AnimatableProperty>;
+type AnimatablePropertyParamsOptions = {
+    unit?: string;
+    duration?: TweenParamValue;
+    ease?: EasingParam;
+    modifier?: TweenModifier;
+    composition?: TweenComposition;
+};
+type AnimatableParams = Record<string, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions> & AnimatablePropertyParamsOptions;
 declare class Scope {
     constructor(parameters?: ScopeParams);
     defaults: DefaultsParams;
@@ -1022,4 +951,70 @@ type SpringParams = {
     damping?: number;
     velocity?: number;
 };
-export { engine, utils, svg, stagger, eases, DefaultsParams, Renderable, Tickable, CallbackArgument, Revertible, DraggableAxisParam, DraggableCursorParams, DraggableParams, DrawableSVGGeometry, EasingFunction, EaseStringParamNames, EasingParam, DOMTarget, JSTarget, Target, TargetSelector, DOMTargetSelector, DOMTargetsParam, DOMTargetsArray, JSTargetsParam, JSTargetsArray, TargetsParam, TargetsArray, FunctionValue, TweenModifier, ColorArray, Callback, TickableCallbacks, RenderableCallbacks, Tween, TweenDecomposedValue, TweenPropertySiblings, TweenLookups, TweenReplaceLookups, TweenAdditiveLookups, TimerOptions, TimerParams, TweenParamValue, TweenPropValue, TweenComposition, TweenParamsOptions, TweenValues, TweenKeyValue, ArraySyntaxValue, TweenOptions, TweenObjectValue, PercentageKeyframeOptions, PercentageKeyframeParams, PercentageKeyframes, DurationKeyframes, AnimationOptions, AnimationParams, TimelineOptions, TimelineParams, AnimatablePropertySetter, AnimatablePropertyGetter, AnimatableProperty, AnimatableObject, AnimatablePropertyParamsOptions, AnimatableParams, WAAPIAnimationParams, TimePosition, createTimer, Timer, animate, JSAnimation, createTimeline, Timeline, createAnimatable, Animatable, createDraggable, Draggable, createScope, Scope, onScroll, ScrollObserver, scrollContainers, createSpring, Spring, waapi, WAAPIAnimation };
+declare class WAAPIAnimation {
+    constructor(targets: DOMTargetsParam, params: WAAPIAnimationParams);
+    targets: DOMTargetsArray;
+    animations: Array<globalThis.Animation>;
+    controlAnimation: globalThis.Animation;
+    onComplete: Callback<this>;
+    duration: number;
+    muteCallbacks: boolean;
+    completed: boolean;
+    paused: boolean;
+    reversed: boolean;
+    autoplay: boolean | ScrollObserver;
+    _speed: number;
+    _resolve: Function;
+    _completed: number;
+    _inlineStyles: Array<any>;
+    forEach(callback: string | ((animation: globalThis.Animation) => any)): this;
+    set speed(arg: number);
+    get speed(): number;
+    set currentTime(arg: number);
+    get currentTime(): number;
+    set progress(arg: number);
+    get progress(): number;
+    resume(): this;
+    pause(): this;
+    alternate(): this;
+    play(): this;
+    reverse(): this;
+    seek(time: number, muteCallbacks?: boolean): this;
+    restart(): this;
+    commitStyles(): this;
+    complete(): this;
+    cancel(): this;
+    revert(): this;
+    then(callback?: WAAPICallback): Promise<any>;
+}
+declare namespace waapi {
+    export function animate(targets: DOMTargetsParam, params: WAAPIAnimationParams): WAAPIAnimation;
+    export { easingToLinear as convertEase };
+}
+type WAAPITweenValue = string | number | Array<string> | Array<number>;
+type WAAPIFunctionvalue = (target: DOMTarget, index: number, length: number) => WAAPITweenValue;
+type WAAPIKeyframeValue = WAAPITweenValue | WAAPIFunctionvalue | Array<string | number | WAAPIFunctionvalue>;
+type WAAPICallback = (animation: WAAPIAnimation) => void;
+type WAAPITweenOptions = {
+    to?: WAAPIKeyframeValue;
+    from?: WAAPIKeyframeValue;
+    duration?: number | WAAPIFunctionvalue;
+    delay?: number | WAAPIFunctionvalue;
+    ease?: EasingParam;
+    composition?: CompositeOperation;
+};
+type WAAPIAnimationOptions = {
+    loop?: number | boolean;
+    Reversed?: boolean;
+    Alternate?: boolean;
+    autoplay?: boolean | ScrollObserver;
+    playbackRate?: number;
+    duration?: number | WAAPIFunctionvalue;
+    delay?: number | WAAPIFunctionvalue;
+    ease?: EasingParam;
+    composition?: CompositeOperation;
+    onComplete?: WAAPICallback;
+};
+type WAAPIAnimationParams = Record<string, WAAPIKeyframeValue | WAAPIAnimationOptions | boolean | ScrollObserver | WAAPICallback | EasingParam | WAAPITweenOptions> & WAAPIAnimationOptions;
+declare function easingToLinear(fn: EasingFunction, samples?: number): string;
+export { engine, utils, svg, stagger, eases, DefaultsParams, Renderable, Tickable, CallbackArgument, DraggableParams, Revertible, EasingFunction, EaseStringParamNames, EasingParam, DOMTarget, JSTarget, Target, TargetSelector, DOMTargetSelector, DOMTargetsParam, DOMTargetsArray, JSTargetsParam, JSTargetsArray, TargetsParam, TargetsArray, FunctionValue, TweenModifier, ColorArray, Callback, TickableCallbacks, RenderableCallbacks, Tween, TweenDecomposedValue, TweenPropertySiblings, TweenLookups, TweenReplaceLookups, TweenAdditiveLookups, TimerOptions, TimerParams, TweenParamValue, TweenPropValue, TweenComposition, TweenParamsOptions, TweenValues, TweenKeyValue, ArraySyntaxValue, TweenOptions, TweenObjectValue, PercentageKeyframeOptions, PercentageKeyframeParams, PercentageKeyframes, DurationKeyframes, AnimationOptions, AnimationParams, TimelineOptions, TimelineParams, AnimatablePropertySetter, AnimatablePropertyGetter, AnimatableProperty, AnimatableObject, AnimatablePropertyParamsOptions, AnimatableParams, createTimer, Timer, animate, JSAnimation, createTimeline, Timeline, createAnimatable, Animatable, createDraggable, Draggable, createScope, Scope, onScroll, ScrollObserver, scrollContainers, createSpring, Spring, waapi, WAAPIAnimation };
