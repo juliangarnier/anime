@@ -355,12 +355,11 @@
 */
 
 /**
-* @typedef {import('./waapi.js').WAAPIAnimationParams} WAAPIAnimationParams
-* @export
-*/
+ * @typedef {import('./waapi.js').WAAPIAnimationParams} WAAPIAnimationParams
+ * @export
+ */
 
 /** 
-* @typedef {import('./timeline.js').TimePosition} TimePosition 
-* @export
+ * @typedef {import('./timeline.js').TimePosition} TimePosition 
+ * @export
 */
-
