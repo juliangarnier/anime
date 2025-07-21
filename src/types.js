@@ -353,3 +353,14 @@
 /**
  * @typedef {Record<String, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions> & AnimatablePropertyParamsOptions} AnimatableParams
  */
+
+/**
+ * @typedef {import('./waapi.js').WAAPIAnimationParams} WAAPIAnimationParams
+ * @export
+ */
+
+/** 
+ * @typedef {import('./timeline.js').TimePosition} TimePosition 
+ * @export
+*/
+

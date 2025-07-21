@@ -148,6 +148,7 @@ const parseWAAPIEasing = (ease) => {
 
 /**
  * @typedef {Record<String, WAAPIKeyframeValue | WAAPIAnimationOptions | Boolean | ScrollObserver | WAAPICallback | EasingParam | WAAPITweenOptions> & WAAPIAnimationOptions} WAAPIAnimationParams
+ * @export
  */
 
 const transformsShorthands = ['x', 'y', 'z'];
