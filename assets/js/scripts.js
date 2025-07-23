@@ -170,8 +170,8 @@
           this.classPrefix = options.classPrefix;
           parseTree.walk(this);
         }
-        addText(text) {
-          this.buffer += escapeHTML(text);
+        addText(text2) {
+          this.buffer += escapeHTML(text2);
         }
         openNode(node) {
           if (!emitsWrappingTags(node))
@@ -210,8 +210,8 @@
         add(node) {
           this.top.children.push(node);
         }
-        openNode(scope) {
-          const node = newNode({ scope });
+        openNode(scope2) {
+          const node = newNode({ scope: scope2 });
           this.add(node);
           this.stack.push(node);
         }
@@ -260,14 +260,14 @@
           super();
           this.options = options;
         }
-        addText(text) {
-          if (text === "") {
+        addText(text2) {
+          if (text2 === "") {
             return;
           }
-          this.add(text);
+          this.add(text2);
         }
-        startScope(scope) {
-          this.openNode(scope);
+        startScope(scope2) {
+          this.openNode(scope2);
         }
         endScope() {
           this.closeNode();
@@ -477,7 +477,7 @@
           }
         });
       };
-      var MODES = /* @__PURE__ */ Object.freeze({
+      var MODES2 = /* @__PURE__ */ Object.freeze({
         __proto__: null,
         APOS_STRING_MODE,
         BACKSLASH_ESCAPE,
@@ -1008,27 +1008,27 @@
             }
             modeBuffer = "";
           }
-          function emitKeyword(keyword, scope) {
+          function emitKeyword(keyword, scope2) {
             if (keyword === "")
               return;
-            emitter.startScope(scope);
+            emitter.startScope(scope2);
             emitter.addText(keyword);
             emitter.endScope();
           }
-          function emitMultiClass(scope, match) {
+          function emitMultiClass(scope2, match) {
             let i = 1;
             const max2 = match.length - 1;
             while (i <= max2) {
-              if (!scope._emit[i]) {
+              if (!scope2._emit[i]) {
                 i++;
                 continue;
               }
-              const klass = language.classNameAliases[scope[i]] || scope[i];
-              const text = match[i];
+              const klass = language.classNameAliases[scope2[i]] || scope2[i];
+              const text2 = match[i];
               if (klass) {
-                emitKeyword(text, klass);
+                emitKeyword(text2, klass);
               } else {
-                modeBuffer = text;
+                modeBuffer = text2;
                 processKeywords();
                 modeBuffer = "";
               }
@@ -1335,8 +1335,8 @@
             }
           }
           node = element;
-          const text = node.textContent;
-          const result = language ? highlight2(text, { language, ignoreIllegals: true }) : highlightAuto(text);
+          const text2 = node.textContent;
+          const result = language ? highlight2(text2, { language, ignoreIllegals: true }) : highlightAuto(text2);
           element.innerHTML = result.value;
           element.dataset.highlighted = "yes";
           updateClassName(element, language, result.language);
@@ -1351,7 +1351,7 @@
               relevance: result.secondBest.relevance
             };
           }
-          fire("after:highlightElement", { el: element, result, text });
+          fire("after:highlightElement", { el: element, result, text: text2 });
         }
         function configure(userOptions) {
           options = inherit(options, userOptions);
@@ -1496,12 +1496,12 @@
           optional,
           anyNumberOfTimes
         };
-        for (const key2 in MODES) {
-          if (typeof MODES[key2] === "object") {
-            deepFreeze(MODES[key2]);
+        for (const key2 in MODES2) {
+          if (typeof MODES2[key2] === "object") {
+            deepFreeze(MODES2[key2]);
           }
         }
-        Object.assign(hljs, MODES);
+        Object.assign(hljs, MODES2);
         return hljs;
       };
       var highlight = HLJS({});
@@ -8414,7 +8414,7 @@
         heightSegments,
         depthSegments
       };
-      const scope = this;
+      const scope2 = this;
       widthSegments = Math.floor(widthSegments);
       heightSegments = Math.floor(heightSegments);
       depthSegments = Math.floor(depthSegments);
@@ -8473,7 +8473,7 @@
             groupCount += 6;
           }
         }
-        scope.addGroup(groupStart, groupCount, materialIndex);
+        scope2.addGroup(groupStart, groupCount, materialIndex);
         groupStart += groupCount;
         numberOfVertices += vertexCounter;
       }
@@ -10356,7 +10356,7 @@
         thetaStart,
         thetaLength
       };
-      const scope = this;
+      const scope2 = this;
       radialSegments = Math.floor(radialSegments);
       heightSegments = Math.floor(heightSegments);
       const indices = [];
@@ -10419,7 +10419,7 @@
             }
           }
         }
-        scope.addGroup(groupStart, groupCount, 0);
+        scope2.addGroup(groupStart, groupCount, 0);
         groupStart += groupCount;
       }
       function generateCap(top) {
@@ -10461,7 +10461,7 @@
           }
           groupCount += 3;
         }
-        scope.addGroup(groupStart, groupCount, top === true ? 1 : 2);
+        scope2.addGroup(groupStart, groupCount, top === true ? 1 : 2);
         groupStart += groupCount;
       }
     }
@@ -11639,7 +11639,7 @@
   };
   var LoadingManager = class {
     constructor(onLoad, onProgress, onError) {
-      const scope = this;
+      const scope2 = this;
       let isLoading = false;
       let itemsLoaded = 0;
       let itemsTotal = 0;
@@ -11652,27 +11652,27 @@
       this.itemStart = function(url) {
         itemsTotal++;
         if (isLoading === false) {
-          if (scope.onStart !== void 0) {
-            scope.onStart(url, itemsLoaded, itemsTotal);
+          if (scope2.onStart !== void 0) {
+            scope2.onStart(url, itemsLoaded, itemsTotal);
           }
         }
         isLoading = true;
       };
       this.itemEnd = function(url) {
         itemsLoaded++;
-        if (scope.onProgress !== void 0) {
-          scope.onProgress(url, itemsLoaded, itemsTotal);
+        if (scope2.onProgress !== void 0) {
+          scope2.onProgress(url, itemsLoaded, itemsTotal);
         }
         if (itemsLoaded === itemsTotal) {
           isLoading = false;
-          if (scope.onLoad !== void 0) {
-            scope.onLoad();
+          if (scope2.onLoad !== void 0) {
+            scope2.onLoad();
           }
         }
       };
       this.itemError = function(url) {
-        if (scope.onError !== void 0) {
-          scope.onError(url);
+        if (scope2.onError !== void 0) {
+          scope2.onError(url);
         }
       };
       this.resolveURL = function(url) {
@@ -11723,9 +11723,9 @@
     load() {
     }
     loadAsync(url, onProgress) {
-      const scope = this;
+      const scope2 = this;
       return new Promise(function(resolve, reject) {
-        scope.load(url, resolve, onProgress, reject);
+        scope2.load(url, resolve, onProgress, reject);
       });
     }
     parse() {
@@ -11848,9 +11848,9 @@
           case "blob":
             return response.blob();
           case "document":
-            return response.text().then((text) => {
+            return response.text().then((text2) => {
               const parser = new DOMParser();
-              return parser.parseFromString(text, mimeType);
+              return parser.parseFromString(text2, mimeType);
             });
           case "json":
             return response.json();
@@ -11909,14 +11909,14 @@
       if (this.path !== void 0)
         url = this.path + url;
       url = this.manager.resolveURL(url);
-      const scope = this;
+      const scope2 = this;
       const cached = Cache.get(url);
       if (cached !== void 0) {
-        scope.manager.itemStart(url);
+        scope2.manager.itemStart(url);
         setTimeout(function() {
           if (onLoad)
             onLoad(cached);
-          scope.manager.itemEnd(url);
+          scope2.manager.itemEnd(url);
         }, 0);
         return cached;
       }
@@ -11926,14 +11926,14 @@
         Cache.add(url, this);
         if (onLoad)
           onLoad(this);
-        scope.manager.itemEnd(url);
+        scope2.manager.itemEnd(url);
       }
       function onImageError(event) {
         removeEventListeners();
         if (onError)
           onError(event);
-        scope.manager.itemError(url);
-        scope.manager.itemEnd(url);
+        scope2.manager.itemError(url);
+        scope2.manager.itemEnd(url);
       }
       function removeEventListeners() {
         image.removeEventListener("load", onImageLoad, false);
@@ -11945,7 +11945,7 @@
         if (this.crossOrigin !== void 0)
           image.crossOrigin = this.crossOrigin;
       }
-      scope.manager.itemStart(url);
+      scope2.manager.itemStart(url);
       image.src = url;
       return image;
     }
@@ -12411,15 +12411,15 @@
       if (this.path !== void 0)
         url = this.path + url;
       url = this.manager.resolveURL(url);
-      const scope = this;
+      const scope2 = this;
       const cached = Cache.get(url);
       if (cached !== void 0) {
-        scope.manager.itemStart(url);
+        scope2.manager.itemStart(url);
         if (cached.then) {
           cached.then((imageBitmap) => {
             if (onLoad)
               onLoad(imageBitmap);
-            scope.manager.itemEnd(url);
+            scope2.manager.itemEnd(url);
           }).catch((e) => {
             if (onError)
               onError(e);
@@ -12429,7 +12429,7 @@
         setTimeout(function() {
           if (onLoad)
             onLoad(cached);
-          scope.manager.itemEnd(url);
+          scope2.manager.itemEnd(url);
         }, 0);
         return cached;
       }
@@ -12439,22 +12439,22 @@
       const promise = fetch(url, fetchOptions).then(function(res) {
         return res.blob();
       }).then(function(blob) {
-        return createImageBitmap(blob, Object.assign(scope.options, { colorSpaceConversion: "none" }));
+        return createImageBitmap(blob, Object.assign(scope2.options, { colorSpaceConversion: "none" }));
       }).then(function(imageBitmap) {
         Cache.add(url, imageBitmap);
         if (onLoad)
           onLoad(imageBitmap);
-        scope.manager.itemEnd(url);
+        scope2.manager.itemEnd(url);
         return imageBitmap;
       }).catch(function(e) {
         if (onError)
           onError(e);
         Cache.remove(url);
-        scope.manager.itemError(url);
-        scope.manager.itemEnd(url);
+        scope2.manager.itemError(url);
+        scope2.manager.itemEnd(url);
       });
       Cache.add(url, promise);
-      scope.manager.itemStart(url);
+      scope2.manager.itemStart(url);
     }
   };
   var ArrayCamera = class extends PerspectiveCamera {
@@ -14756,7 +14756,7 @@
     };
   }
   function WebGLClipping(properties) {
-    const scope = this;
+    const scope2 = this;
     let globalState = null, numGlobalPlanes = 0, localClippingEnabled = false, renderingShadows = false;
     const plane = new Plane(), viewNormalMatrix = new Matrix3(), uniform = { value: null, needsUpdate: false };
     this.uniform = uniform;
@@ -14805,8 +14805,8 @@
         uniform.value = globalState;
         uniform.needsUpdate = numGlobalPlanes > 0;
       }
-      scope.numPlanes = numGlobalPlanes;
-      scope.numIntersection = 0;
+      scope2.numPlanes = numGlobalPlanes;
+      scope2.numIntersection = 0;
     }
     function projectPlanes(planes, camera, dstOffset, skipTransform) {
       const nPlanes = planes !== null ? planes.length : 0;
@@ -14828,8 +14828,8 @@
         uniform.value = dstArray;
         uniform.needsUpdate = true;
       }
-      scope.numPlanes = nPlanes;
-      scope.numIntersection = 0;
+      scope2.numPlanes = nPlanes;
+      scope2.numIntersection = 0;
       return dstArray;
     }
   }
@@ -18327,16 +18327,16 @@
     const fullScreenTri = new BufferGeometry();
     fullScreenTri.setAttribute("position", new BufferAttribute(new Float32Array([-1, -1, 0.5, 3, -1, 0.5, -1, 3, 0.5]), 3));
     const fullScreenMesh = new Mesh(fullScreenTri, shadowMaterialVertical);
-    const scope = this;
+    const scope2 = this;
     this.enabled = false;
     this.autoUpdate = true;
     this.needsUpdate = false;
     this.type = PCFShadowMap;
     let _previousType = this.type;
     this.render = function(lights, scene, camera) {
-      if (scope.enabled === false)
+      if (scope2.enabled === false)
         return;
-      if (scope.autoUpdate === false && scope.needsUpdate === false)
+      if (scope2.autoUpdate === false && scope2.needsUpdate === false)
         return;
       if (lights.length === 0)
         return;
@@ -18401,7 +18401,7 @@
         shadow.needsUpdate = false;
       }
       _previousType = this.type;
-      scope.needsUpdate = false;
+      scope2.needsUpdate = false;
       renderer.setRenderTarget(currentRenderTarget, activeCubeFace, activeMipmapLevel);
     };
     function VSMPass(shadow, camera) {
@@ -20917,7 +20917,7 @@ void main() {
   var WebXRManager = class extends EventDispatcher {
     constructor(renderer, gl) {
       super();
-      const scope = this;
+      const scope2 = this;
       let session = null;
       let framebufferScaleFactor = 1;
       let referenceSpace = null;
@@ -21009,20 +21009,20 @@ void main() {
         session = null;
         newRenderTarget = null;
         animation.stop();
-        scope.isPresenting = false;
+        scope2.isPresenting = false;
         renderer.setPixelRatio(currentPixelRatio);
         renderer.setSize(currentSize.width, currentSize.height, false);
-        scope.dispatchEvent({ type: "sessionend" });
+        scope2.dispatchEvent({ type: "sessionend" });
       }
       this.setFramebufferScaleFactor = function(value) {
         framebufferScaleFactor = value;
-        if (scope.isPresenting === true) {
+        if (scope2.isPresenting === true) {
           console.warn("THREE.WebXRManager: Cannot change framebuffer scale while presenting.");
         }
       };
       this.setReferenceSpaceType = function(value) {
         referenceSpaceType = value;
-        if (scope.isPresenting === true) {
+        if (scope2.isPresenting === true) {
           console.warn("THREE.WebXRManager: Cannot change reference space type while presenting.");
         }
       };
@@ -21115,8 +21115,8 @@ void main() {
           referenceSpace = await session.requestReferenceSpace(referenceSpaceType);
           animation.setContext(session);
           animation.start();
-          scope.isPresenting = true;
-          scope.dispatchEvent({ type: "sessionstart" });
+          scope2.isPresenting = true;
+          scope2.dispatchEvent({ type: "sessionstart" });
         }
       };
       this.getEnvironmentBlendMode = function() {
@@ -21349,7 +21349,7 @@ void main() {
         if (onAnimationFrameCallback)
           onAnimationFrameCallback(time, frame);
         if (frame.detectedPlanes) {
-          scope.dispatchEvent({ type: "planesdetected", data: frame });
+          scope2.dispatchEvent({ type: "planesdetected", data: frame });
         }
         xrFrame = null;
       }
@@ -23501,10 +23501,13 @@ void main() {
   var K = 1e3;
   var maxFps = 120;
   var emptyString = "";
-  var shortTransforms = new Map();
-  shortTransforms.set("x", "translateX");
-  shortTransforms.set("y", "translateY");
-  shortTransforms.set("z", "translateZ");
+  var shortTransforms = /* @__PURE__ */ (() => {
+    const map = new Map();
+    map.set("x", "translateX");
+    map.set("y", "translateY");
+    map.set("z", "translateZ");
+    return map;
+  })();
   var validTransforms = [
     "translateX",
     "translateY",
@@ -23524,7 +23527,7 @@ void main() {
     "matrix",
     "matrix3d"
   ];
-  var transformsFragmentStrings = validTransforms.reduce((a, v) => ({ ...a, [v]: v + "(" }), {});
+  var transformsFragmentStrings = /* @__PURE__ */ validTransforms.reduce((a, v) => ({ ...a, [v]: v + "(" }), {});
   var noop = () => {
   };
   var hexTestRgx = /(^#([\da-f]{3}){1,2}$)|(^#([\da-f]{4}){1,2}$)/i;
@@ -23561,15 +23564,17 @@ void main() {
     onComplete: noop,
     onRender: noop
   };
+  var scope = {
+    current: null,
+    root: doc
+  };
   var globals = {
     defaults,
-    root: doc,
-    scope: null,
     precision: 4,
     timeScale: 1,
     tickThreshold: 200
   };
-  var globalVersions = { version: "4.0.2", engine: null };
+  var globalVersions = { version: "4.1.0", engine: null };
   if (isBrowser) {
     if (!win.AnimeJS)
       win.AnimeJS = [];
@@ -23619,6 +23624,20 @@ void main() {
   };
   var snap = (v, increment) => isArr(increment) ? increment.reduce((closest, cv) => abs(cv - v) < abs(closest - v) ? cv : closest) : increment ? _round(v / increment) * increment : v;
   var interpolate = (start, end, progress) => start + (end - start) * progress;
+  var random = (min, max2, decimalLength) => {
+    const m = 10 ** (decimalLength || 0);
+    return floor((Math.random() * (max2 - min + 1 / m) + min) * m) / m;
+  };
+  var shuffle = (items) => {
+    let m = items.length, t, i;
+    while (m) {
+      i = random(0, --m);
+      t = items[m];
+      items[m] = items[i];
+      items[i] = t;
+    }
+    return items;
+  };
   var clampInfinity = (v) => v === Infinity ? maxValue : v === -Infinity ? -1e12 : v;
   var normalizeTime = (v) => v <= minValue ? minValue : clampInfinity(round(v, 11));
   var cloneArray = (a) => isArr(a) ? [...a] : a;
@@ -23660,6 +23679,27 @@ void main() {
     next ? next[prevProp] = child : parent._tail = child;
     child[prevProp] = prev;
     child[nextProp] = next;
+  };
+  var createRefreshable = (constructor) => {
+    let tracked;
+    return (...args) => {
+      let currentIteration, currentIterationProgress, reversed, alternate;
+      if (tracked) {
+        currentIteration = tracked.currentIteration;
+        currentIterationProgress = tracked.iterationProgress;
+        reversed = tracked.reversed;
+        alternate = tracked._alternate;
+        tracked.revert();
+      }
+      const cleanup = constructor(...args);
+      if (cleanup && !isFnc(cleanup) && cleanup.revert)
+        tracked = cleanup;
+      if (!isUnd(currentIterationProgress)) {
+        tracked.currentIteration = currentIteration;
+        tracked.iterationProgress = (alternate ? !(currentIteration % 2) ? reversed : !reversed : reversed) ? 1 - currentIterationProgress : currentIterationProgress;
+      }
+      return cleanup || noop;
+    };
   };
   var Clock2 = class {
     constructor(initTime = 0) {
@@ -24000,8 +24040,8 @@ void main() {
     }
     return animation;
   };
-  var engineTickMethod = isBrowser ? requestAnimationFrame : setImmediate;
-  var engineCancelMethod = isBrowser ? cancelAnimationFrame : clearImmediate;
+  var engineTickMethod = /* @__PURE__ */ (() => isBrowser ? requestAnimationFrame : setImmediate)();
+  var engineCancelMethod = /* @__PURE__ */ (() => isBrowser ? cancelAnimationFrame : clearImmediate)();
   var Engine = class extends Clock2 {
     constructor(initTime) {
       super(initTime);
@@ -24127,7 +24167,7 @@ void main() {
     return inlineTransforms && !isUnd(inlinedStylesPropertyValue) ? inlinedStylesPropertyValue : stringStartsWith(propName, "scale") ? "1" : stringStartsWith(propName, "rotate") || stringStartsWith(propName, "skew") ? "0deg" : "0px";
   };
   function getNodeList(v) {
-    const n = isStr(v) ? globals.root.querySelectorAll(v) : v;
+    const n = isStr(v) ? scope.root.querySelectorAll(v) : v;
     if (n instanceof NodeList || n instanceof HTMLCollection)
       return n;
   }
@@ -24688,8 +24728,8 @@ void main() {
         onBeforeUpdate,
         onUpdate
       } = parameters;
-      if (globals.scope)
-        globals.scope.revertibles.push(this);
+      if (scope.current)
+        scope.current.register(this);
       const timerInitTime = parent ? 0 : engine._elapsedTime;
       const timerDefaults = parent ? parent.defaults : globals.defaults;
       const timerDelay = isFnc(delay) || isUnd(delay) ? timerDefaults.delay : +delay;
@@ -24765,13 +24805,13 @@ void main() {
       this.currentTime = this.iterationDuration * this._currentIteration + time;
     }
     get progress() {
-      return clamp2(round(this._currentTime / this.duration, 5), 0, 1);
+      return clamp2(round(this._currentTime / this.duration, 10), 0, 1);
     }
     set progress(progress) {
       this.currentTime = this.duration * progress;
     }
     get iterationProgress() {
-      return clamp2(round(this._iterationTime / this.iterationDuration, 5), 0, 1);
+      return clamp2(round(this._iterationTime / this.iterationDuration, 10), 0, 1);
     }
     set iterationProgress(progress) {
       const iterationDuration = this.iterationDuration;
@@ -25044,9 +25084,9 @@ void main() {
       const parsedFn = hasParams ? easesFunctions[string]() : easesFunctions[string];
       return parsedFn ? easesLookups[string] = parsedFn : none;
     } else {
-      const split = string.slice(0, -1).split("(");
-      const parsedFn = easesFunctions[split[0]];
-      return parsedFn ? easesLookups[string] = parsedFn(...split[1].split(",")) : none;
+      const split2 = string.slice(0, -1).split("(");
+      const parsedFn = easesFunctions[split2[0]];
+      return parsedFn ? easesLookups[string] = parsedFn(...split2[1].split(",")) : none;
     }
   };
   var eases = /* @__PURE__ */ (() => {
@@ -25570,12 +25610,13 @@ void main() {
     }
     refresh() {
       forEachChildren(this, (tween) => {
-        const ogValue = getOriginalAnimatableValue(tween.target, tween.property, tween._tweenType);
-        decomposeRawValue(ogValue, decomposedOriginalValue);
-        tween._fromNumbers = cloneArray(decomposedOriginalValue.d);
-        tween._fromNumber = decomposedOriginalValue.n;
-        if (tween._func) {
-          decomposeRawValue(tween._func(), toTargetObject);
+        const tweenFunc = tween._func;
+        if (tweenFunc) {
+          const ogValue = getOriginalAnimatableValue(tween.target, tween.property, tween._tweenType);
+          decomposeRawValue(ogValue, decomposedOriginalValue);
+          decomposeRawValue(tweenFunc(), toTargetObject);
+          tween._fromNumbers = cloneArray(decomposedOriginalValue.d);
+          tween._fromNumber = decomposedOriginalValue.n;
           tween._toNumbers = cloneArray(toTargetObject.d);
           tween._strings = cloneArray(toTargetObject.s);
           tween._toNumber = toTargetObject.n;
@@ -25650,30 +25691,8 @@ void main() {
     "borderRadius",
     ...transformsShorthands
   ];
-  var validIndividualTransforms = [...transformsShorthands, ...validTransforms.filter((t) => ["X", "Y", "Z"].some((axis) => t.endsWith(axis)))];
-  var transformsPropertiesRegistered = isBrowser && (isUnd(CSS) || !Object.hasOwnProperty.call(CSS, "registerProperty"));
-  var registerTransformsProperties = () => {
-    if (transformsPropertiesRegistered)
-      return;
-    validTransforms.forEach((t) => {
-      const isSkew = stringStartsWith(t, "skew");
-      const isScale = stringStartsWith(t, "scale");
-      const isRotate = stringStartsWith(t, "rotate");
-      const isTranslate = stringStartsWith(t, "translate");
-      const isAngle = isRotate || isSkew;
-      const syntax = isAngle ? "<angle>" : isScale ? "<number>" : isTranslate ? "<length-percentage>" : "*";
-      try {
-        CSS.registerProperty({
-          name: "--" + t,
-          syntax,
-          inherits: false,
-          initialValue: isTranslate ? "0px" : isAngle ? "0deg" : isScale ? "1" : "0"
-        });
-      } catch {
-      }
-    });
-    transformsPropertiesRegistered = true;
-  };
+  var validIndividualTransforms = /* @__PURE__ */ (() => [...transformsShorthands, ...validTransforms.filter((t) => ["X", "Y", "Z"].some((axis) => t.endsWith(axis)))])();
+  var transformsPropertiesRegistered = null;
   var WAAPIAnimationsLookups = {
     _head: null,
     _tail: null
@@ -25752,9 +25771,32 @@ void main() {
   };
   var WAAPIAnimation = class {
     constructor(targets, params) {
-      if (globals.scope)
-        globals.scope.revertibles.push(this);
-      registerTransformsProperties();
+      if (scope.current)
+        scope.current.register(this);
+      if (isNil(transformsPropertiesRegistered)) {
+        if (isBrowser && (isUnd(CSS) || !Object.hasOwnProperty.call(CSS, "registerProperty"))) {
+          transformsPropertiesRegistered = false;
+        } else {
+          validTransforms.forEach((t) => {
+            const isSkew = stringStartsWith(t, "skew");
+            const isScale = stringStartsWith(t, "scale");
+            const isRotate = stringStartsWith(t, "rotate");
+            const isTranslate = stringStartsWith(t, "translate");
+            const isAngle = isRotate || isSkew;
+            const syntax = isAngle ? "<angle>" : isScale ? "<number>" : isTranslate ? "<length-percentage>" : "*";
+            try {
+              CSS.registerProperty({
+                name: "--" + t,
+                syntax,
+                inherits: false,
+                initialValue: isTranslate ? "0px" : isAngle ? "0deg" : isScale ? "1" : "0"
+              });
+            } catch {
+            }
+          });
+          transformsPropertiesRegistered = true;
+        }
+      }
       const parsedTargets = registerTargets(targets);
       const targetsLength = parsedTargets.length;
       if (!targetsLength) {
@@ -26055,21 +26097,8 @@ void main() {
     }
     return targetsArray;
   };
-  var random = (min, max2, decimalLength) => {
-    const m = 10 ** (decimalLength || 0);
-    return floor((Math.random() * (max2 - min + 1 / m) + min) * m) / m;
-  };
+  var keepTime = createRefreshable;
   var randomPick = (items) => items[random(0, items.length - 1)];
-  var shuffle = (items) => {
-    let m = items.length, t, i;
-    while (m) {
-      i = random(0, --m);
-      t = items[m];
-      items[m] = items[i];
-      items[i] = t;
-    }
-    return items;
-  };
   var roundPad = (v, decimalLength) => (+v).toFixed(decimalLength);
   var padStart = (v, totalLength, padString) => `${v}`.padStart(totalLength, padString);
   var padEnd = (v, totalLength, padString) => `${v}`.padEnd(totalLength, padString);
@@ -26113,6 +26142,7 @@ void main() {
     shuffle,
     lerp: lerp2,
     sync,
+    keepTime,
     clamp: makeChainable(clamp2),
     round: makeChainable(round),
     snap: makeChainable(snap),
@@ -26149,10 +26179,10 @@ void main() {
     const matchedRelativeOperator = relativeValuesExecRgx.exec(timePosStr);
     if (matchedRelativeOperator) {
       const fullOperator = matchedRelativeOperator[0];
-      const split = timePosStr.split(fullOperator);
-      const labelOffset = hasLabels && split[0] ? tlLabels[split[0]] : tlDuration;
+      const split2 = timePosStr.split(fullOperator);
+      const labelOffset = hasLabels && split2[0] ? tlLabels[split2[0]] : tlDuration;
       const parsedOffset = hasSibling ? prevOffset : hasLabels ? labelOffset : tlDuration;
-      const parsedNumericalOffset = +split[1];
+      const parsedNumericalOffset = +split2[1];
       return getRelativeValue(parsedOffset, parsedNumericalOffset, fullOperator[0]);
     } else {
       return hasSibling ? prevOffset : hasLabels ? !isUnd(tlLabels[timePosStr]) ? tlLabels[timePosStr] : tlDuration : tlDuration;
@@ -26282,8 +26312,8 @@ void main() {
   var createTimeline = (parameters) => new Timeline(parameters).init();
   var Animatable = class {
     constructor(targets, parameters) {
-      if (globals.scope)
-        globals.scope.revertibles.push(this);
+      if (scope.current)
+        scope.current.register(this);
       const globalParams = {};
       const properties = {};
       this.targets = [];
@@ -26545,8 +26575,8 @@ void main() {
     constructor(target, parameters = {}) {
       if (!target)
         return;
-      if (globals.scope)
-        globals.scope.revertibles.push(this);
+      if (scope.current)
+        scope.current.register(this);
       const paramX = parameters.x;
       const paramY = parameters.y;
       const trigger = parameters.trigger;
@@ -27445,8 +27475,8 @@ void main() {
   var createDraggable = (target, parameters) => new Draggable(target, parameters);
   var Scope = class {
     constructor(parameters = {}) {
-      if (globals.scope)
-        globals.scope.revertibles.push(this);
+      if (scope.current)
+        scope.current.register(this);
       const rootParam = parameters.root;
       let root = doc;
       if (rootParam) {
@@ -27460,6 +27490,11 @@ void main() {
       this.constructors = [];
       this.revertConstructors = [];
       this.revertibles = [];
+      this.constructorsOnce = [];
+      this.revertConstructorsOnce = [];
+      this.revertiblesOnce = [];
+      this.once = false;
+      this.onceIndex = 0;
       this.methods = {};
       this.matches = {};
       this.mediaQueryLists = {};
@@ -27472,23 +27507,28 @@ void main() {
         }
       }
     }
+    register(revertible) {
+      const store = this.once ? this.revertiblesOnce : this.revertibles;
+      store.push(revertible);
+    }
     execute(cb) {
-      let activeScope = globals.scope;
-      let activeRoot = globals.root;
+      let activeScope = scope.current;
+      let activeRoot = scope.root;
       let activeDefaults = globals.defaults;
-      globals.scope = this;
-      globals.root = this.root;
+      scope.current = this;
+      scope.root = this.root;
       globals.defaults = this.defaults;
       const mqs = this.mediaQueryLists;
       for (let mq in mqs)
         this.matches[mq] = mqs[mq].matches;
       const returned = cb(this);
-      globals.scope = activeScope;
-      globals.root = activeRoot;
+      scope.current = activeScope;
+      scope.root = activeRoot;
       globals.defaults = activeDefaults;
       return returned;
     }
     refresh() {
+      this.onceIndex = 0;
       this.execute(() => {
         let i = this.revertibles.length;
         let y = this.revertConstructors.length;
@@ -27500,7 +27540,7 @@ void main() {
         this.revertConstructors.length = 0;
         this.constructors.forEach((constructor) => {
           const revertConstructor = constructor(this);
-          if (revertConstructor) {
+          if (isFnc(revertConstructor)) {
             this.revertConstructors.push(revertConstructor);
           }
         });
@@ -27508,12 +27548,13 @@ void main() {
       return this;
     }
     add(a1, a2) {
+      this.once = false;
       if (isFnc(a1)) {
         const constructor = a1;
         this.constructors.push(constructor);
         this.execute(() => {
           const revertConstructor = constructor(this);
-          if (revertConstructor) {
+          if (isFnc(revertConstructor)) {
             this.revertConstructors.push(revertConstructor);
           }
         });
@@ -27521,6 +27562,38 @@ void main() {
         this.methods[a1] = (...args) => this.execute(() => a2(...args));
       }
       return this;
+    }
+    addOnce(scopeConstructorCallback) {
+      this.once = true;
+      if (isFnc(scopeConstructorCallback)) {
+        const currentIndex = this.onceIndex++;
+        const tracked = this.constructorsOnce[currentIndex];
+        if (tracked)
+          return this;
+        const constructor = scopeConstructorCallback;
+        this.constructorsOnce[currentIndex] = constructor;
+        this.execute(() => {
+          const revertConstructor = constructor(this);
+          if (isFnc(revertConstructor)) {
+            this.revertConstructorsOnce.push(revertConstructor);
+          }
+        });
+      }
+      return this;
+    }
+    keepTime(cb) {
+      this.once = true;
+      const currentIndex = this.onceIndex++;
+      const tracked = this.constructorsOnce[currentIndex];
+      if (isFnc(tracked))
+        return tracked(this);
+      const constructor = createRefreshable(cb);
+      this.constructorsOnce[currentIndex] = constructor;
+      let trackedTickable;
+      this.execute(() => {
+        trackedTickable = constructor(this);
+      });
+      return trackedTickable;
     }
     handleEvent(e) {
       switch (e.type) {
@@ -27532,18 +27605,30 @@ void main() {
     revert() {
       const revertibles = this.revertibles;
       const revertConstructors = this.revertConstructors;
+      const revertiblesOnce = this.revertiblesOnce;
+      const revertConstructorsOnce = this.revertConstructorsOnce;
       const mqs = this.mediaQueryLists;
       let i = revertibles.length;
-      let y = revertConstructors.length;
+      let j = revertConstructors.length;
+      let k = revertiblesOnce.length;
+      let l = revertConstructorsOnce.length;
       while (i--)
         revertibles[i].revert();
-      while (y--)
-        revertConstructors[y](this);
+      while (j--)
+        revertConstructors[j](this);
+      while (k--)
+        revertiblesOnce[k].revert();
+      while (l--)
+        revertConstructorsOnce[l](this);
       for (let mq in mqs)
         mqs[mq].removeEventListener("change", this);
       revertibles.length = 0;
       revertConstructors.length = 0;
       this.constructors.length = 0;
+      revertiblesOnce.length = 0;
+      revertConstructorsOnce.length = 0;
+      this.constructorsOnce.length = 0;
+      this.onceIndex = 0;
       this.matches = {};
       this.methods = {};
       this.mediaQueryLists = {};
@@ -27779,11 +27864,11 @@ void main() {
     return $linkedTarget;
   };
   var scrollerIndex = 0;
-  var debugColors = ["#FF4B4B", "#FF971B", "#FFC730", "#F9F640", "#7AFF5A", "#18FF74", "#17E09B", "#3CFFEC", "#05DBE9", "#33B3F1", "#638CF9", "#C563FE", "#FF4FCF", "#F93F8A"];
+  var debugColors$1 = ["#FF4B4B", "#FF971B", "#FFC730", "#F9F640", "#7AFF5A", "#18FF74", "#17E09B", "#3CFFEC", "#05DBE9", "#33B3F1", "#638CF9", "#C563FE", "#FF4FCF", "#F93F8A"];
   var ScrollObserver = class {
     constructor(parameters = {}) {
-      if (globals.scope)
-        globals.scope.revertibles.push(this);
+      if (scope.current)
+        scope.current.register(this);
       const syncMode = setValue(parameters.sync, "play pause");
       const ease = syncMode ? parseEasings(syncMode) : null;
       const isLinear = syncMode && (syncMode === "linear" || syncMode === none);
@@ -27918,7 +28003,7 @@ void main() {
       const $debug = doc.createElement("div");
       const $thresholds = doc.createElement("div");
       const $triggers = doc.createElement("div");
-      const color2 = debugColors[this.index % debugColors.length];
+      const color2 = debugColors$1[this.index % debugColors$1.length];
       const useWin = container.useWin;
       const containerWidth = useWin ? container.winWidth : container.width;
       const containerHeight = useWin ? container.winHeight : container.height;
@@ -28231,6 +28316,358 @@ void main() {
     }
   };
   var onScroll = (parameters = {}) => new ScrollObserver(parameters);
+  var segmenter = !isUnd(Intl) && Intl.Segmenter;
+  var valueRgx = /\{value\}/g;
+  var indexRgx = /\{i\}/g;
+  var whiteSpaceGroupRgx = /(\s+)/;
+  var whiteSpaceRgx = /^\s+$/;
+  var lineType = "line";
+  var wordType = "word";
+  var charType = "char";
+  var dataLine = `data-line`;
+  var wordSegmenter = null;
+  var graphemeSegmenter = null;
+  var $splitTemplate = null;
+  var isSegmentWordLike = (seg) => {
+    return seg.isWordLike || seg.segment === " " || isNum(+seg.segment);
+  };
+  var setAriaHidden = ($el) => $el.setAttribute("aria-hidden", "true");
+  var getAllTopLevelElements = ($el, type) => [...$el.querySelectorAll(`[data-${type}]:not([data-${type}] [data-${type}])`)];
+  var debugColors = { line: "#00D672", word: "#FF4B4B", char: "#5A87FF" };
+  var filterEmptyElements = ($el) => {
+    if (!$el.childElementCount && !$el.textContent.trim()) {
+      const $parent = $el.parentElement;
+      $el.remove();
+      if ($parent)
+        filterEmptyElements($parent);
+    }
+  };
+  var filterLineElements = ($el, lineIndex, bin) => {
+    const dataLineAttr = $el.getAttribute(dataLine);
+    if (dataLineAttr !== null && +dataLineAttr !== lineIndex || $el.tagName === "BR")
+      bin.add($el);
+    let i = $el.childElementCount;
+    while (i--)
+      filterLineElements($el.children[i], lineIndex, bin);
+    return bin;
+  };
+  var generateTemplate = (type, params = {}) => {
+    let template = ``;
+    const classString = isStr(params.class) ? ` class="${params.class}"` : "";
+    const cloneType = setValue(params.clone, false);
+    const wrapType = setValue(params.wrap, false);
+    const overflow = wrapType ? wrapType === true ? "clip" : wrapType : cloneType ? "clip" : false;
+    if (wrapType)
+      template += `<span${overflow ? ` style="overflow:${overflow};"` : ""}>`;
+    template += `<span${classString}${cloneType ? ` style="position:relative;"` : ""} data-${type}="{i}">`;
+    if (cloneType) {
+      const left = cloneType === "left" ? "-100%" : cloneType === "right" ? "100%" : "0";
+      const top = cloneType === "top" ? "-100%" : cloneType === "bottom" ? "100%" : "0";
+      template += `<span>{value}</span>`;
+      template += `<span inert style="position:absolute;top:${top};left:${left};white-space:nowrap;">{value}</span>`;
+    } else {
+      template += `{value}`;
+    }
+    template += `</span>`;
+    if (wrapType)
+      template += `</span>`;
+    return template;
+  };
+  var processHTMLTemplate = (htmlTemplate, store, node, $parentFragment, type, debug, lineIndex, wordIndex, charIndex) => {
+    const isLine = type === lineType;
+    const isChar = type === charType;
+    const className = `_${type}_`;
+    const template = isFnc(htmlTemplate) ? htmlTemplate(node) : htmlTemplate;
+    const displayStyle = isLine ? "block" : "inline-block";
+    $splitTemplate.innerHTML = template.replace(valueRgx, `<i class="${className}"></i>`).replace(indexRgx, `${isChar ? charIndex : isLine ? lineIndex : wordIndex}`);
+    const $content = $splitTemplate.content;
+    const $highestParent = $content.firstElementChild;
+    const $split = $content.querySelector(`[data-${type}]`) || $highestParent;
+    const $replacables = $content.querySelectorAll(`i.${className}`);
+    const replacablesLength = $replacables.length;
+    if (replacablesLength) {
+      $highestParent.style.display = displayStyle;
+      $split.style.display = displayStyle;
+      $split.setAttribute(dataLine, `${lineIndex}`);
+      if (!isLine) {
+        $split.setAttribute("data-word", `${wordIndex}`);
+        if (isChar)
+          $split.setAttribute("data-char", `${charIndex}`);
+      }
+      let i = replacablesLength;
+      while (i--) {
+        const $replace = $replacables[i];
+        const $closestParent = $replace.parentElement;
+        $closestParent.style.display = displayStyle;
+        if (isLine) {
+          $closestParent.innerHTML = node.innerHTML;
+        } else {
+          $closestParent.replaceChild(node.cloneNode(true), $replace);
+        }
+      }
+      store.push($split);
+      $parentFragment.appendChild($content);
+    } else {
+      console.warn(`The expression "{value}" is missing from the provided template.`);
+    }
+    if (debug)
+      $highestParent.style.outline = `1px dotted ${debugColors[type]}`;
+    return $highestParent;
+  };
+  var TextSplitter = class {
+    constructor(target, parameters = {}) {
+      if (!wordSegmenter)
+        wordSegmenter = segmenter ? new segmenter([], { granularity: wordType }) : {
+          segment: (text2) => {
+            const segments = [];
+            const words2 = text2.split(whiteSpaceGroupRgx);
+            for (let i = 0, l = words2.length; i < l; i++) {
+              const segment = words2[i];
+              segments.push({
+                segment,
+                isWordLike: !whiteSpaceRgx.test(segment)
+              });
+            }
+            return segments;
+          }
+        };
+      if (!graphemeSegmenter)
+        graphemeSegmenter = segmenter ? new segmenter([], { granularity: "grapheme" }) : {
+          segment: (text2) => [...text2].map((char) => ({ segment: char }))
+        };
+      if (!$splitTemplate && isBrowser)
+        $splitTemplate = doc.createElement("template");
+      if (scope.current)
+        scope.current.register(this);
+      const { words, chars, lines, accessible, includeSpaces, debug } = parameters;
+      const $target = (target = isArr(target) ? target[0] : target) && target.nodeType ? target : (getNodeList(target) || [])[0];
+      const lineParams = lines === true ? {} : lines;
+      const wordParams = words === true || isUnd(words) ? {} : words;
+      const charParams = chars === true ? {} : chars;
+      this.debug = setValue(debug, false);
+      this.includeSpaces = setValue(includeSpaces, false);
+      this.accessible = setValue(accessible, true);
+      this.linesOnly = lineParams && (!wordParams && !charParams);
+      this.lineTemplate = isObj(lineParams) ? generateTemplate(lineType, lineParams) : lineParams;
+      this.wordTemplate = isObj(wordParams) || this.linesOnly ? generateTemplate(wordType, wordParams) : wordParams;
+      this.charTemplate = isObj(charParams) ? generateTemplate(charType, charParams) : charParams;
+      this.$target = $target;
+      this.html = $target && $target.innerHTML;
+      this.lines = [];
+      this.words = [];
+      this.chars = [];
+      this.effects = [];
+      this.effectsCleanups = [];
+      this.cache = null;
+      this.ready = false;
+      this.width = 0;
+      this.resizeTimeout = null;
+      const handleSplit = () => this.html && (lineParams || wordParams || charParams) && this.split();
+      this.resizeObserver = new ResizeObserver(() => {
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+          const currentWidth = $target.offsetWidth;
+          if (currentWidth === this.width)
+            return;
+          this.width = currentWidth;
+          handleSplit();
+        }, 150);
+      });
+      if (this.lineTemplate && !this.ready) {
+        doc.fonts.ready.then(handleSplit);
+      } else {
+        handleSplit();
+      }
+      $target ? this.resizeObserver.observe($target) : console.warn("No Text Splitter target found.");
+    }
+    addEffect(effect) {
+      if (!isFnc(effect))
+        return console.warn("Effect must return a function.");
+      const refreshableEffect = createRefreshable(effect);
+      this.effects.push(refreshableEffect);
+      if (this.ready)
+        this.effectsCleanups[this.effects.length - 1] = refreshableEffect(this);
+      return this;
+    }
+    revert() {
+      clearTimeout(this.resizeTimeout);
+      this.lines.length = this.words.length = this.chars.length = 0;
+      this.resizeObserver.disconnect();
+      this.effectsCleanups.forEach((cleanup) => isFnc(cleanup) ? cleanup(this) : cleanup.revert && cleanup.revert());
+      this.$target.innerHTML = this.html;
+      return this;
+    }
+    splitNode(node) {
+      const wordTemplate = this.wordTemplate;
+      const charTemplate = this.charTemplate;
+      const includeSpaces = this.includeSpaces;
+      const debug = this.debug;
+      const nodeType = node.nodeType;
+      if (nodeType === 3) {
+        const nodeText = node.nodeValue;
+        if (nodeText.trim()) {
+          const tempWords = [];
+          const words = this.words;
+          const chars = this.chars;
+          const wordSegments = wordSegmenter.segment(nodeText);
+          const $wordsFragment = doc.createDocumentFragment();
+          let prevSeg = null;
+          for (const wordSegment of wordSegments) {
+            const segment = wordSegment.segment;
+            const isWordLike = isSegmentWordLike(wordSegment);
+            if (!prevSeg || isWordLike && (prevSeg && isSegmentWordLike(prevSeg))) {
+              tempWords.push(segment);
+            } else {
+              const lastWordIndex = tempWords.length - 1;
+              const lastWord = tempWords[lastWordIndex];
+              if (!lastWord.includes(" ") && !segment.includes(" ")) {
+                tempWords[lastWordIndex] += segment;
+              } else {
+                tempWords.push(segment);
+              }
+            }
+            prevSeg = wordSegment;
+          }
+          for (let i = 0, l = tempWords.length; i < l; i++) {
+            const word = tempWords[i];
+            if (!word.trim()) {
+              if (i && includeSpaces)
+                continue;
+              $wordsFragment.appendChild(doc.createTextNode(word));
+            } else {
+              const nextWord = tempWords[i + 1];
+              const hasWordFollowingSpace = includeSpaces && nextWord && !nextWord.trim();
+              const wordToProcess = word;
+              const charSegments = charTemplate ? graphemeSegmenter.segment(wordToProcess) : null;
+              const $charsFragment = charTemplate ? doc.createDocumentFragment() : doc.createTextNode(hasWordFollowingSpace ? word + "\xA0" : word);
+              if (charTemplate) {
+                const charSegmentsArray = [...charSegments];
+                for (let j = 0, jl = charSegmentsArray.length; j < jl; j++) {
+                  const charSegment = charSegmentsArray[j];
+                  const isLastChar = j === jl - 1;
+                  const charText = isLastChar && hasWordFollowingSpace ? charSegment.segment + "\xA0" : charSegment.segment;
+                  const $charNode = doc.createTextNode(charText);
+                  processHTMLTemplate(charTemplate, chars, $charNode, $charsFragment, charType, debug, -1, words.length, chars.length);
+                }
+              }
+              if (wordTemplate) {
+                processHTMLTemplate(wordTemplate, words, $charsFragment, $wordsFragment, wordType, debug, -1, words.length, chars.length);
+              } else if (charTemplate) {
+                $wordsFragment.appendChild($charsFragment);
+              } else {
+                $wordsFragment.appendChild(doc.createTextNode(word));
+              }
+              if (hasWordFollowingSpace)
+                i++;
+            }
+          }
+          node.parentNode.replaceChild($wordsFragment, node);
+        }
+      } else if (nodeType === 1) {
+        const childNodes = [...node.childNodes];
+        for (let i = 0, l = childNodes.length; i < l; i++)
+          this.splitNode(childNodes[i]);
+      }
+    }
+    split(clearCache = false) {
+      const $el = this.$target;
+      const isCached = !!this.cache && !clearCache;
+      const lineTemplate = this.lineTemplate;
+      const wordTemplate = this.wordTemplate;
+      const charTemplate = this.charTemplate;
+      const fontsReady = doc.fonts.status !== "loading";
+      const canSplitLines = lineTemplate && fontsReady;
+      this.ready = !lineTemplate || fontsReady;
+      if (!isCached) {
+        if (clearCache) {
+          $el.innerHTML = this.html;
+          this.words.length = this.chars.length = 0;
+        }
+        this.splitNode($el);
+        this.cache = $el.innerHTML;
+      }
+      if (canSplitLines) {
+        this.effectsCleanups.forEach((cleanup) => isFnc(cleanup) && cleanup(this));
+        if (isCached)
+          $el.innerHTML = this.cache;
+        this.lines.length = 0;
+        if (wordTemplate)
+          this.words = getAllTopLevelElements($el, wordType);
+      }
+      if (charTemplate && (canSplitLines || wordTemplate)) {
+        this.chars = getAllTopLevelElements($el, charType);
+      }
+      const elementsArray = this.words.length ? this.words : this.chars;
+      let y, linesCount = 0;
+      for (let i = 0, l = elementsArray.length; i < l; i++) {
+        const $el2 = elementsArray[i];
+        const { top, height } = $el2.getBoundingClientRect();
+        if (y && top - y > height * 0.5)
+          linesCount++;
+        $el2.setAttribute(dataLine, `${linesCount}`);
+        const nested = $el2.querySelectorAll(`[${dataLine}]`);
+        let c = nested.length;
+        while (c--)
+          nested[c].setAttribute(dataLine, `${linesCount}`);
+        y = top;
+      }
+      if (canSplitLines) {
+        const linesFragment = doc.createDocumentFragment();
+        const parents = new Set();
+        const clones = [];
+        for (let lineIndex = 0; lineIndex < linesCount + 1; lineIndex++) {
+          const $clone = $el.cloneNode(true);
+          filterLineElements($clone, lineIndex, new Set()).forEach(($el2) => {
+            const $parent = $el2.parentElement;
+            if ($parent)
+              parents.add($parent);
+            $el2.remove();
+          });
+          clones.push($clone);
+        }
+        parents.forEach(filterEmptyElements);
+        for (let cloneIndex = 0, clonesLength = clones.length; cloneIndex < clonesLength; cloneIndex++) {
+          processHTMLTemplate(lineTemplate, this.lines, clones[cloneIndex], linesFragment, lineType, this.debug, cloneIndex);
+        }
+        $el.innerHTML = "";
+        $el.appendChild(linesFragment);
+        if (wordTemplate)
+          this.words = getAllTopLevelElements($el, wordType);
+        if (charTemplate)
+          this.chars = getAllTopLevelElements($el, charType);
+      }
+      if (this.linesOnly) {
+        const words = this.words;
+        let w = words.length;
+        while (w--) {
+          const $word = words[w];
+          $word.replaceWith($word.textContent);
+        }
+        words.length = 0;
+      }
+      if (canSplitLines || clearCache) {
+        this.effects.forEach((effect, i) => this.effectsCleanups[i] = effect(this));
+      }
+      if (this.accessible && (canSplitLines || !isCached)) {
+        const $accessible = doc.createElement("span");
+        $accessible.style.cssText = `position:absolute;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);width:1px;height:1px;white-space:nowrap;`;
+        $accessible.innerHTML = this.html;
+        $el.insertBefore($accessible, $el.firstChild);
+        this.lines.forEach(setAriaHidden);
+        this.words.forEach(setAriaHidden);
+        this.chars.forEach(setAriaHidden);
+      }
+      this.width = $el.offsetWidth;
+      return this;
+    }
+    refresh() {
+      this.split(true);
+    }
+  };
+  var split = (target, parameters) => new TextSplitter(target, parameters);
+  var text = {
+    split
+  };
   var stagger = (val, params = {}) => {
     let values = [];
     let maxValue2 = 0;
@@ -28242,22 +28679,29 @@ void main() {
     const staggerEase = hasSpring ? ease.ease : hasEasing ? parseEasings(ease) : null;
     const grid = params.grid;
     const axis = params.axis;
+    const customTotal = params.total;
     const fromFirst = isUnd(from) || from === 0 || from === "first";
     const fromCenter = from === "center";
     const fromLast = from === "last";
+    const fromRandom = from === "random";
     const isRange = isArr(val);
+    const useProp = params.use;
     const val1 = isRange ? parseNumber(val[0]) : parseNumber(val);
     const val2 = isRange ? parseNumber(val[1]) : 0;
     const unitMatch = unitsExecRgx.exec((isRange ? val[1] : val) + emptyString);
     const start = params.start || 0 + (isRange ? val1 : 0);
     let fromIndex = fromFirst ? 0 : isNum(from) ? from : 0;
-    return (_, i, t, tl) => {
+    return (target, i, t, tl) => {
+      const [registeredTarget] = registerTargets(target);
+      const total = isUnd(customTotal) ? t : customTotal;
+      const customIndex = !isUnd(useProp) ? isFnc(useProp) ? useProp(registeredTarget, i, total) : getOriginalAnimatableValue(registeredTarget, useProp) : false;
+      const staggerIndex = isNum(customIndex) || isStr(customIndex) && isNum(+customIndex) ? +customIndex : i;
       if (fromCenter)
-        fromIndex = (t - 1) / 2;
+        fromIndex = (total - 1) / 2;
       if (fromLast)
-        fromIndex = t - 1;
+        fromIndex = total - 1;
       if (!values.length) {
-        for (let index = 0; index < t; index++) {
+        for (let index = 0; index < total; index++) {
           if (!grid) {
             values.push(abs(fromIndex - index));
           } else {
@@ -28280,10 +28724,12 @@ void main() {
           values = values.map((val3) => staggerEase(val3 / maxValue2) * maxValue2);
         if (reversed)
           values = values.map((val3) => axis ? val3 < 0 ? val3 * -1 : -val3 : abs(maxValue2 - val3));
+        if (fromRandom)
+          values = shuffle(values);
       }
       const spacing = isRange ? (val2 - val1) / maxValue2 : val1;
       const offset = tl ? parseTimelinePosition(tl, isUnd(params.start) ? tl.iterationDuration : start) : start;
-      let output = offset + (spacing * round(values[i], 2) || 0);
+      let output = offset + (spacing * round(values[staggerIndex], 2) || 0);
       if (params.modifier)
         output = params.modifier(output);
       if (unitMatch)
@@ -28297,38 +28743,13 @@ void main() {
     constructor() {
       super();
       this.heartsAnimation = null;
-      this.x = 0;
-      this.y = 0;
+      this.pointerX = 0;
+      this.pointerY = 0;
       this.spread = 16;
       this.$svg = null;
-    }
-    connectedCallback() {
-      const $el = document.createElement("div");
-      $el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon"><g id="sponsor" fill="none" fill-rule="evenodd"><path fill="currentColor" fill-rule="nonzero" d="M12 18.445a.778.778 0 0 1-.34-.078C11.39 18.235 5 15.077 5 9.889a3.889 3.889 0 0 1 6.638-2.75L12 7.5l.362-.361A3.889 3.889 0 0 1 19 9.889c0 5.17-6.387 8.344-6.66 8.478a.778.778 0 0 1-.34.078z"></path></g></svg>';
-      this.$svg = $el.querySelector("svg");
-      this.addEventListener("mouseenter", this);
-      this.addEventListener("mousemove", this);
-      this.addEventListener("mouseleave", this);
-    }
-    disconnectedCallback() {
-      this.removeEventListener("mouseenter", this);
-      this.removeEventListener("mousemove", this);
-      this.removeEventListener("mouseleave", this);
-      utils.remove(this.$svg);
-    }
-    mousemove(e) {
-      const { width, height, left, top } = this.getBoundingClientRect();
-      this.x = utils.clamp(e.clientX - left, this.spread, width - this.spread);
-      this.y = utils.clamp(e.clientY - top, 0, height);
-    }
-    mouseenter(e) {
-      this.mousemove(e);
-      animate(this.$svg, {
-        scale: [1, 1.25, 1],
-        loop: true,
-        duration: 900
-      });
+      this.randomTimer;
       this.heartsAnimation = createTimer({
+        autoplay: false,
         duration: 100,
         loop: true,
         onLoop: () => {
@@ -28340,13 +28761,13 @@ void main() {
           const prefixB = prefixA === "-=" ? "+=" : "-=";
           animate($particle, {
             translateX: [
-              this.x + utils.random(-this.spread, this.spread),
+              this.pointerX + utils.random(-this.spread, this.spread),
               prefixA + (5 + utils.random(-2, 2, 2)),
               prefixB + (6 + utils.random(-2, 2, 2)),
               prefixA + (4 + utils.random(-2, 2, 2))
             ],
             translateY: [
-              { from: this.y + utils.random(-5, 5), to: "-=" + utils.random(30, 50) }
+              { from: this.pointerY + utils.random(-5, 5), to: "-=" + utils.random(30, 50) }
             ],
             scale: [{ from: 0, to: 0.85 }, { to: 0 }],
             duration: 1200,
@@ -28355,10 +28776,56 @@ void main() {
         }
       });
     }
+    connectedCallback() {
+      const $el = document.createElement("div");
+      $el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon"><g id="sponsor" fill="none" fill-rule="evenodd"><path fill="currentColor" fill-rule="nonzero" d="M12 18.445a.778.778 0 0 1-.34-.078C11.39 18.235 5 15.077 5 9.889a3.889 3.889 0 0 1 6.638-2.75L12 7.5l.362-.361A3.889 3.889 0 0 1 19 9.889c0 5.17-6.387 8.344-6.66 8.478a.778.778 0 0 1-.34.078z"></path></g></svg>';
+      this.$svg = $el.querySelector("svg");
+      this.addEventListener("mouseenter", this);
+      this.addEventListener("mousemove", this);
+      this.addEventListener("mouseleave", this);
+    }
+    randomAnimation() {
+      this.randomTimer = createTimer({
+        duration: utils.random(1e3, 4e3),
+        onComplete: () => {
+          const { width } = this.getBoundingClientRect();
+          animate(this, {
+            pointerX: [utils.random(0, 40), utils.random(width - 40, width)],
+            pointerY: [utils.random(20, 40), utils.random(20, 40)],
+            ease: "linear",
+            onComplete: () => {
+              this.heartsAnimation.pause();
+            }
+          });
+          this.heartsAnimation.play();
+          this.randomAnimation();
+        }
+      });
+    }
+    disconnectedCallback() {
+      this.removeEventListener("mouseenter", this);
+      this.removeEventListener("mousemove", this);
+      this.removeEventListener("mouseleave", this);
+      utils.remove(this.$svg);
+      this.heartsAnimation.revert();
+    }
+    mousemove(e) {
+      const { width, height, left, top } = this.getBoundingClientRect();
+      this.pointerX = utils.clamp(e.clientX - left, this.spread, width - this.spread);
+      this.pointerY = utils.clamp(e.clientY - top, 0, height);
+    }
+    mouseenter(e) {
+      this.mousemove(e);
+      animate(this.$svg, {
+        scale: [1, 1.25, 1],
+        loop: true,
+        duration: 900
+      });
+      this.heartsAnimation.play();
+    }
     mouseleave() {
       animate(this.$svg, { scale: 1, duration: 500 });
-      if (this.heartsAnimation)
-        this.heartsAnimation.revert();
+      this.heartsAnimation.pause();
     }
     handleEvent(e) {
       const type = e.type;
@@ -34766,7 +35233,7 @@ void main() {
       });
     }
     load(url, onLoad, onProgress, onError) {
-      const scope = this;
+      const scope2 = this;
       let resourcePath;
       if (this.resourcePath !== "") {
         resourcePath = this.resourcePath;
@@ -34783,8 +35250,8 @@ void main() {
         } else {
           console.error(e);
         }
-        scope.manager.itemError(url);
-        scope.manager.itemEnd(url);
+        scope2.manager.itemError(url);
+        scope2.manager.itemEnd(url);
       };
       const loader = new FileLoader(this.manager);
       loader.setPath(this.path);
@@ -34793,9 +35260,9 @@ void main() {
       loader.setWithCredentials(this.withCredentials);
       loader.load(url, function(data) {
         try {
-          scope.parse(data, resourcePath, function(gltf) {
+          scope2.parse(data, resourcePath, function(gltf) {
             onLoad(gltf);
-            scope.manager.itemEnd(url);
+            scope2.manager.itemEnd(url);
           }, _onError);
         } catch (e) {
           _onError(e);
@@ -34900,9 +35367,9 @@ void main() {
       parser.parse(onLoad, onError);
     }
     parseAsync(data, path) {
-      const scope = this;
+      const scope2 = this;
       return new Promise(function(resolve, reject) {
-        scope.parse(data, path, resolve, reject);
+        scope2.parse(data, path, resolve, reject);
       });
     }
   };
@@ -37604,10 +38071,10 @@ void main() {
 
   // js/pages/home/engine.js
   var Engine2 = class {
-    constructor(materials, scope, stage) {
+    constructor(materials, scope2, stage) {
       this.geometries = null;
       this.materials = materials;
-      this.scope = scope;
+      this.scope = scope2;
       this.stage = stage;
       this.raycaster = new Raycaster();
       this.root = create3DTarget(new Group());
@@ -38124,11 +38591,11 @@ void main() {
     }
     textNodes.forEach((textNode) => {
       const parent = textNode.parentNode;
-      const text = textNode.nodeValue;
-      if (!text.trim())
+      const text2 = textNode.nodeValue;
+      if (!text2.trim())
         return;
       const fragment2 = document.createDocumentFragment();
-      const words = text.split(/(\s+)/);
+      const words = text2.split(/(\s+)/);
       words.forEach((word) => {
         if (!word)
           return;
@@ -41139,7 +41606,7 @@ void main() {
     return indices;
   }
   var MAX_BITS = 32;
-  function search(text, pattern, patternAlphabet, {
+  function search(text2, pattern, patternAlphabet, {
     location: location2 = Config.location,
     distance = Config.distance,
     threshold = Config.threshold,
@@ -41152,14 +41619,14 @@ void main() {
       throw new Error(PATTERN_LENGTH_TOO_LARGE(MAX_BITS));
     }
     const patternLen = pattern.length;
-    const textLen = text.length;
+    const textLen = text2.length;
     const expectedLocation = Math.max(0, Math.min(location2, textLen));
     let currentThreshold = threshold;
     let bestLocation = expectedLocation;
     const computeMatches = minMatchCharLength > 1 || includeMatches;
     const matchMask = computeMatches ? Array(textLen) : [];
     let index;
-    while ((index = text.indexOf(pattern, bestLocation)) > -1) {
+    while ((index = text2.indexOf(pattern, bestLocation)) > -1) {
       let score = computeScore$1(pattern, {
         currentLocation: index,
         expectedLocation,
@@ -41206,7 +41673,7 @@ void main() {
       bitArr[finish + 1] = (1 << i) - 1;
       for (let j = finish; j >= start; j -= 1) {
         let currentLocation = j - 1;
-        let charMatch = patternAlphabet[text.charAt(currentLocation)];
+        let charMatch = patternAlphabet[text2.charAt(currentLocation)];
         if (computeMatches) {
           matchMask[currentLocation] = +!!charMatch;
         }
@@ -41316,18 +41783,18 @@ void main() {
         addChunk(this.pattern, 0);
       }
     }
-    searchIn(text) {
+    searchIn(text2) {
       const { isCaseSensitive, includeMatches } = this.options;
       if (!isCaseSensitive) {
-        text = text.toLowerCase();
+        text2 = text2.toLowerCase();
       }
-      if (this.pattern === text) {
+      if (this.pattern === text2) {
         let result2 = {
           isMatch: true,
           score: 0
         };
         if (includeMatches) {
-          result2.indices = [[0, text.length - 1]];
+          result2.indices = [[0, text2.length - 1]];
         }
         return result2;
       }
@@ -41343,7 +41810,7 @@ void main() {
       let totalScore = 0;
       let hasMatches = false;
       this.chunks.forEach(({ pattern, alphabet, startIndex }) => {
-        const { isMatch, score, indices } = search(text, pattern, alphabet, {
+        const { isMatch, score, indices } = search(text2, pattern, alphabet, {
           location: location2 + startIndex,
           distance,
           threshold,
@@ -41400,8 +41867,8 @@ void main() {
     static get singleRegex() {
       return /^=(.*)$/;
     }
-    search(text) {
-      const isMatch = text === this.pattern;
+    search(text2) {
+      const isMatch = text2 === this.pattern;
       return {
         isMatch,
         score: isMatch ? 0 : 1,
@@ -41422,13 +41889,13 @@ void main() {
     static get singleRegex() {
       return /^!(.*)$/;
     }
-    search(text) {
-      const index = text.indexOf(this.pattern);
+    search(text2) {
+      const index = text2.indexOf(this.pattern);
       const isMatch = index === -1;
       return {
         isMatch,
         score: isMatch ? 0 : 1,
-        indices: [0, text.length - 1]
+        indices: [0, text2.length - 1]
       };
     }
   };
@@ -41445,8 +41912,8 @@ void main() {
     static get singleRegex() {
       return /^\^(.*)$/;
     }
-    search(text) {
-      const isMatch = text.startsWith(this.pattern);
+    search(text2) {
+      const isMatch = text2.startsWith(this.pattern);
       return {
         isMatch,
         score: isMatch ? 0 : 1,
@@ -41467,12 +41934,12 @@ void main() {
     static get singleRegex() {
       return /^!\^(.*)$/;
     }
-    search(text) {
-      const isMatch = !text.startsWith(this.pattern);
+    search(text2) {
+      const isMatch = !text2.startsWith(this.pattern);
       return {
         isMatch,
         score: isMatch ? 0 : 1,
-        indices: [0, text.length - 1]
+        indices: [0, text2.length - 1]
       };
     }
   };
@@ -41489,12 +41956,12 @@ void main() {
     static get singleRegex() {
       return /^(.*)\$$/;
     }
-    search(text) {
-      const isMatch = text.endsWith(this.pattern);
+    search(text2) {
+      const isMatch = text2.endsWith(this.pattern);
       return {
         isMatch,
         score: isMatch ? 0 : 1,
-        indices: [text.length - this.pattern.length, text.length - 1]
+        indices: [text2.length - this.pattern.length, text2.length - 1]
       };
     }
   };
@@ -41511,12 +41978,12 @@ void main() {
     static get singleRegex() {
       return /^!(.*)\$$/;
     }
-    search(text) {
-      const isMatch = !text.endsWith(this.pattern);
+    search(text2) {
+      const isMatch = !text2.endsWith(this.pattern);
       return {
         isMatch,
         score: isMatch ? 0 : 1,
-        indices: [0, text.length - 1]
+        indices: [0, text2.length - 1]
       };
     }
   };
@@ -41552,8 +42019,8 @@ void main() {
     static get singleRegex() {
       return /^(.*)$/;
     }
-    search(text) {
-      return this._bitapSearch.searchIn(text);
+    search(text2) {
+      return this._bitapSearch.searchIn(text2);
     }
   };
   var IncludeMatch = class extends BaseMatch {
@@ -41569,12 +42036,12 @@ void main() {
     static get singleRegex() {
       return /^'(.*)$/;
     }
-    search(text) {
+    search(text2) {
       let location2 = 0;
       let index;
       const indices = [];
       const patternLen = this.pattern.length;
-      while ((index = text.indexOf(this.pattern, location2)) > -1) {
+      while ((index = text2.indexOf(this.pattern, location2)) > -1) {
         location2 = index + patternLen;
         indices.push([index, location2 - 1]);
       }
@@ -41660,7 +42127,7 @@ void main() {
     static condition(_, options) {
       return options.useExtendedSearch;
     }
-    searchIn(text) {
+    searchIn(text2) {
       const query = this.query;
       if (!query) {
         return {
@@ -41669,7 +42136,7 @@ void main() {
         };
       }
       const { includeMatches, isCaseSensitive } = this.options;
-      text = isCaseSensitive ? text : text.toLowerCase();
+      text2 = isCaseSensitive ? text2 : text2.toLowerCase();
       let numMatches = 0;
       let allIndices = [];
       let totalScore = 0;
@@ -41679,7 +42146,7 @@ void main() {
         numMatches = 0;
         for (let j = 0, pLen = searchers2.length; j < pLen; j += 1) {
           const searcher = searchers2[j];
-          const { isMatch, indices, score } = searcher.search(text);
+          const { isMatch, indices, score } = searcher.search(text2);
           if (isMatch) {
             numMatches += 1;
             totalScore += score;
@@ -41916,16 +42383,16 @@ void main() {
       const searcher = createSearcher(query, this.options);
       const { records } = this._myIndex;
       const results = [];
-      records.forEach(({ v: text, i: idx, n: norm2 }) => {
-        if (!isDefined(text)) {
+      records.forEach(({ v: text2, i: idx, n: norm2 }) => {
+        if (!isDefined(text2)) {
           return;
         }
-        const { isMatch, score, indices } = searcher.searchIn(text);
+        const { isMatch, score, indices } = searcher.searchIn(text2);
         if (isMatch) {
           results.push({
-            item: text,
+            item: text2,
             idx,
-            matches: [{ score, value: text, norm: norm2, indices }]
+            matches: [{ score, value: text2, norm: norm2, indices }]
           });
         }
       });
@@ -42015,16 +42482,16 @@ void main() {
       }
       let matches = [];
       if (isArray(value)) {
-        value.forEach(({ v: text, i: idx, n: norm2 }) => {
-          if (!isDefined(text)) {
+        value.forEach(({ v: text2, i: idx, n: norm2 }) => {
+          if (!isDefined(text2)) {
             return;
           }
-          const { isMatch, score, indices } = searcher.searchIn(text);
+          const { isMatch, score, indices } = searcher.searchIn(text2);
           if (isMatch) {
             matches.push({
               score,
               key: key2,
-              value: text,
+              value: text2,
               idx,
               norm: norm2,
               indices
@@ -42032,10 +42499,10 @@ void main() {
           }
         });
       } else {
-        const { v: text, n: norm2 } = value;
-        const { isMatch, score, indices } = searcher.searchIn(text);
+        const { v: text2, n: norm2 } = value;
+        const { isMatch, score, indices } = searcher.searchIn(text2);
         if (isMatch) {
-          matches.push({ score, key: key2, value: text, norm: norm2, indices });
+          matches.push({ score, key: key2, value: text2, norm: norm2, indices });
         }
       }
       return matches;
@@ -42244,6 +42711,701 @@ void main() {
               endsParent: true
             }
           ]
+        }
+      ]
+    };
+  }
+
+  // node_modules/highlight.js/es/languages/css.js
+  var MODES = (hljs) => {
+    return {
+      IMPORTANT: {
+        scope: "meta",
+        begin: "!important"
+      },
+      BLOCK_COMMENT: hljs.C_BLOCK_COMMENT_MODE,
+      HEXCOLOR: {
+        scope: "number",
+        begin: /#(([0-9a-fA-F]{3,4})|(([0-9a-fA-F]{2}){3,4}))\b/
+      },
+      FUNCTION_DISPATCH: {
+        className: "built_in",
+        begin: /[\w-]+(?=\()/
+      },
+      ATTRIBUTE_SELECTOR_MODE: {
+        scope: "selector-attr",
+        begin: /\[/,
+        end: /\]/,
+        illegal: "$",
+        contains: [
+          hljs.APOS_STRING_MODE,
+          hljs.QUOTE_STRING_MODE
+        ]
+      },
+      CSS_NUMBER_MODE: {
+        scope: "number",
+        begin: hljs.NUMBER_RE + "(%|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc|px|deg|grad|rad|turn|s|ms|Hz|kHz|dpi|dpcm|dppx)?",
+        relevance: 0
+      },
+      CSS_VARIABLE: {
+        className: "attr",
+        begin: /--[A-Za-z_][A-Za-z0-9_-]*/
+      }
+    };
+  };
+  var TAGS = [
+    "a",
+    "abbr",
+    "address",
+    "article",
+    "aside",
+    "audio",
+    "b",
+    "blockquote",
+    "body",
+    "button",
+    "canvas",
+    "caption",
+    "cite",
+    "code",
+    "dd",
+    "del",
+    "details",
+    "dfn",
+    "div",
+    "dl",
+    "dt",
+    "em",
+    "fieldset",
+    "figcaption",
+    "figure",
+    "footer",
+    "form",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "header",
+    "hgroup",
+    "html",
+    "i",
+    "iframe",
+    "img",
+    "input",
+    "ins",
+    "kbd",
+    "label",
+    "legend",
+    "li",
+    "main",
+    "mark",
+    "menu",
+    "nav",
+    "object",
+    "ol",
+    "p",
+    "q",
+    "quote",
+    "samp",
+    "section",
+    "span",
+    "strong",
+    "summary",
+    "sup",
+    "table",
+    "tbody",
+    "td",
+    "textarea",
+    "tfoot",
+    "th",
+    "thead",
+    "time",
+    "tr",
+    "ul",
+    "var",
+    "video"
+  ];
+  var MEDIA_FEATURES = [
+    "any-hover",
+    "any-pointer",
+    "aspect-ratio",
+    "color",
+    "color-gamut",
+    "color-index",
+    "device-aspect-ratio",
+    "device-height",
+    "device-width",
+    "display-mode",
+    "forced-colors",
+    "grid",
+    "height",
+    "hover",
+    "inverted-colors",
+    "monochrome",
+    "orientation",
+    "overflow-block",
+    "overflow-inline",
+    "pointer",
+    "prefers-color-scheme",
+    "prefers-contrast",
+    "prefers-reduced-motion",
+    "prefers-reduced-transparency",
+    "resolution",
+    "scan",
+    "scripting",
+    "update",
+    "width",
+    "min-width",
+    "max-width",
+    "min-height",
+    "max-height"
+  ];
+  var PSEUDO_CLASSES = [
+    "active",
+    "any-link",
+    "blank",
+    "checked",
+    "current",
+    "default",
+    "defined",
+    "dir",
+    "disabled",
+    "drop",
+    "empty",
+    "enabled",
+    "first",
+    "first-child",
+    "first-of-type",
+    "fullscreen",
+    "future",
+    "focus",
+    "focus-visible",
+    "focus-within",
+    "has",
+    "host",
+    "host-context",
+    "hover",
+    "indeterminate",
+    "in-range",
+    "invalid",
+    "is",
+    "lang",
+    "last-child",
+    "last-of-type",
+    "left",
+    "link",
+    "local-link",
+    "not",
+    "nth-child",
+    "nth-col",
+    "nth-last-child",
+    "nth-last-col",
+    "nth-last-of-type",
+    "nth-of-type",
+    "only-child",
+    "only-of-type",
+    "optional",
+    "out-of-range",
+    "past",
+    "placeholder-shown",
+    "read-only",
+    "read-write",
+    "required",
+    "right",
+    "root",
+    "scope",
+    "target",
+    "target-within",
+    "user-invalid",
+    "valid",
+    "visited",
+    "where"
+  ];
+  var PSEUDO_ELEMENTS = [
+    "after",
+    "backdrop",
+    "before",
+    "cue",
+    "cue-region",
+    "first-letter",
+    "first-line",
+    "grammar-error",
+    "marker",
+    "part",
+    "placeholder",
+    "selection",
+    "slotted",
+    "spelling-error"
+  ];
+  var ATTRIBUTES2 = [
+    "align-content",
+    "align-items",
+    "align-self",
+    "all",
+    "animation",
+    "animation-delay",
+    "animation-direction",
+    "animation-duration",
+    "animation-fill-mode",
+    "animation-iteration-count",
+    "animation-name",
+    "animation-play-state",
+    "animation-timing-function",
+    "backface-visibility",
+    "background",
+    "background-attachment",
+    "background-blend-mode",
+    "background-clip",
+    "background-color",
+    "background-image",
+    "background-origin",
+    "background-position",
+    "background-repeat",
+    "background-size",
+    "block-size",
+    "border",
+    "border-block",
+    "border-block-color",
+    "border-block-end",
+    "border-block-end-color",
+    "border-block-end-style",
+    "border-block-end-width",
+    "border-block-start",
+    "border-block-start-color",
+    "border-block-start-style",
+    "border-block-start-width",
+    "border-block-style",
+    "border-block-width",
+    "border-bottom",
+    "border-bottom-color",
+    "border-bottom-left-radius",
+    "border-bottom-right-radius",
+    "border-bottom-style",
+    "border-bottom-width",
+    "border-collapse",
+    "border-color",
+    "border-image",
+    "border-image-outset",
+    "border-image-repeat",
+    "border-image-slice",
+    "border-image-source",
+    "border-image-width",
+    "border-inline",
+    "border-inline-color",
+    "border-inline-end",
+    "border-inline-end-color",
+    "border-inline-end-style",
+    "border-inline-end-width",
+    "border-inline-start",
+    "border-inline-start-color",
+    "border-inline-start-style",
+    "border-inline-start-width",
+    "border-inline-style",
+    "border-inline-width",
+    "border-left",
+    "border-left-color",
+    "border-left-style",
+    "border-left-width",
+    "border-radius",
+    "border-right",
+    "border-right-color",
+    "border-right-style",
+    "border-right-width",
+    "border-spacing",
+    "border-style",
+    "border-top",
+    "border-top-color",
+    "border-top-left-radius",
+    "border-top-right-radius",
+    "border-top-style",
+    "border-top-width",
+    "border-width",
+    "bottom",
+    "box-decoration-break",
+    "box-shadow",
+    "box-sizing",
+    "break-after",
+    "break-before",
+    "break-inside",
+    "caption-side",
+    "caret-color",
+    "clear",
+    "clip",
+    "clip-path",
+    "clip-rule",
+    "color",
+    "column-count",
+    "column-fill",
+    "column-gap",
+    "column-rule",
+    "column-rule-color",
+    "column-rule-style",
+    "column-rule-width",
+    "column-span",
+    "column-width",
+    "columns",
+    "contain",
+    "content",
+    "content-visibility",
+    "counter-increment",
+    "counter-reset",
+    "cue",
+    "cue-after",
+    "cue-before",
+    "cursor",
+    "direction",
+    "display",
+    "empty-cells",
+    "filter",
+    "flex",
+    "flex-basis",
+    "flex-direction",
+    "flex-flow",
+    "flex-grow",
+    "flex-shrink",
+    "flex-wrap",
+    "float",
+    "flow",
+    "font",
+    "font-display",
+    "font-family",
+    "font-feature-settings",
+    "font-kerning",
+    "font-language-override",
+    "font-size",
+    "font-size-adjust",
+    "font-smoothing",
+    "font-stretch",
+    "font-style",
+    "font-synthesis",
+    "font-variant",
+    "font-variant-caps",
+    "font-variant-east-asian",
+    "font-variant-ligatures",
+    "font-variant-numeric",
+    "font-variant-position",
+    "font-variation-settings",
+    "font-weight",
+    "gap",
+    "glyph-orientation-vertical",
+    "grid",
+    "grid-area",
+    "grid-auto-columns",
+    "grid-auto-flow",
+    "grid-auto-rows",
+    "grid-column",
+    "grid-column-end",
+    "grid-column-start",
+    "grid-gap",
+    "grid-row",
+    "grid-row-end",
+    "grid-row-start",
+    "grid-template",
+    "grid-template-areas",
+    "grid-template-columns",
+    "grid-template-rows",
+    "hanging-punctuation",
+    "height",
+    "hyphens",
+    "icon",
+    "image-orientation",
+    "image-rendering",
+    "image-resolution",
+    "ime-mode",
+    "inline-size",
+    "isolation",
+    "justify-content",
+    "left",
+    "letter-spacing",
+    "line-break",
+    "line-height",
+    "list-style",
+    "list-style-image",
+    "list-style-position",
+    "list-style-type",
+    "margin",
+    "margin-block",
+    "margin-block-end",
+    "margin-block-start",
+    "margin-bottom",
+    "margin-inline",
+    "margin-inline-end",
+    "margin-inline-start",
+    "margin-left",
+    "margin-right",
+    "margin-top",
+    "marks",
+    "mask",
+    "mask-border",
+    "mask-border-mode",
+    "mask-border-outset",
+    "mask-border-repeat",
+    "mask-border-slice",
+    "mask-border-source",
+    "mask-border-width",
+    "mask-clip",
+    "mask-composite",
+    "mask-image",
+    "mask-mode",
+    "mask-origin",
+    "mask-position",
+    "mask-repeat",
+    "mask-size",
+    "mask-type",
+    "max-block-size",
+    "max-height",
+    "max-inline-size",
+    "max-width",
+    "min-block-size",
+    "min-height",
+    "min-inline-size",
+    "min-width",
+    "mix-blend-mode",
+    "nav-down",
+    "nav-index",
+    "nav-left",
+    "nav-right",
+    "nav-up",
+    "none",
+    "normal",
+    "object-fit",
+    "object-position",
+    "opacity",
+    "order",
+    "orphans",
+    "outline",
+    "outline-color",
+    "outline-offset",
+    "outline-style",
+    "outline-width",
+    "overflow",
+    "overflow-wrap",
+    "overflow-x",
+    "overflow-y",
+    "padding",
+    "padding-block",
+    "padding-block-end",
+    "padding-block-start",
+    "padding-bottom",
+    "padding-inline",
+    "padding-inline-end",
+    "padding-inline-start",
+    "padding-left",
+    "padding-right",
+    "padding-top",
+    "page-break-after",
+    "page-break-before",
+    "page-break-inside",
+    "pause",
+    "pause-after",
+    "pause-before",
+    "perspective",
+    "perspective-origin",
+    "pointer-events",
+    "position",
+    "quotes",
+    "resize",
+    "rest",
+    "rest-after",
+    "rest-before",
+    "right",
+    "row-gap",
+    "scroll-margin",
+    "scroll-margin-block",
+    "scroll-margin-block-end",
+    "scroll-margin-block-start",
+    "scroll-margin-bottom",
+    "scroll-margin-inline",
+    "scroll-margin-inline-end",
+    "scroll-margin-inline-start",
+    "scroll-margin-left",
+    "scroll-margin-right",
+    "scroll-margin-top",
+    "scroll-padding",
+    "scroll-padding-block",
+    "scroll-padding-block-end",
+    "scroll-padding-block-start",
+    "scroll-padding-bottom",
+    "scroll-padding-inline",
+    "scroll-padding-inline-end",
+    "scroll-padding-inline-start",
+    "scroll-padding-left",
+    "scroll-padding-right",
+    "scroll-padding-top",
+    "scroll-snap-align",
+    "scroll-snap-stop",
+    "scroll-snap-type",
+    "scrollbar-color",
+    "scrollbar-gutter",
+    "scrollbar-width",
+    "shape-image-threshold",
+    "shape-margin",
+    "shape-outside",
+    "speak",
+    "speak-as",
+    "src",
+    "tab-size",
+    "table-layout",
+    "text-align",
+    "text-align-all",
+    "text-align-last",
+    "text-combine-upright",
+    "text-decoration",
+    "text-decoration-color",
+    "text-decoration-line",
+    "text-decoration-style",
+    "text-emphasis",
+    "text-emphasis-color",
+    "text-emphasis-position",
+    "text-emphasis-style",
+    "text-indent",
+    "text-justify",
+    "text-orientation",
+    "text-overflow",
+    "text-rendering",
+    "text-shadow",
+    "text-transform",
+    "text-underline-position",
+    "top",
+    "transform",
+    "transform-box",
+    "transform-origin",
+    "transform-style",
+    "transition",
+    "transition-delay",
+    "transition-duration",
+    "transition-property",
+    "transition-timing-function",
+    "unicode-bidi",
+    "vertical-align",
+    "visibility",
+    "voice-balance",
+    "voice-duration",
+    "voice-family",
+    "voice-pitch",
+    "voice-range",
+    "voice-rate",
+    "voice-stress",
+    "voice-volume",
+    "white-space",
+    "widows",
+    "width",
+    "will-change",
+    "word-break",
+    "word-spacing",
+    "word-wrap",
+    "writing-mode",
+    "z-index"
+  ].reverse();
+  function css(hljs) {
+    const regex = hljs.regex;
+    const modes = MODES(hljs);
+    const VENDOR_PREFIX = { begin: /-(webkit|moz|ms|o)-(?=[a-z])/ };
+    const AT_MODIFIERS = "and or not only";
+    const AT_PROPERTY_RE = /@-?\w[\w]*(-\w+)*/;
+    const IDENT_RE2 = "[a-zA-Z-][a-zA-Z0-9_-]*";
+    const STRINGS = [
+      hljs.APOS_STRING_MODE,
+      hljs.QUOTE_STRING_MODE
+    ];
+    return {
+      name: "CSS",
+      case_insensitive: true,
+      illegal: /[=|'\$]/,
+      keywords: { keyframePosition: "from to" },
+      classNameAliases: {
+        keyframePosition: "selector-tag"
+      },
+      contains: [
+        modes.BLOCK_COMMENT,
+        VENDOR_PREFIX,
+        modes.CSS_NUMBER_MODE,
+        {
+          className: "selector-id",
+          begin: /#[A-Za-z0-9_-]+/,
+          relevance: 0
+        },
+        {
+          className: "selector-class",
+          begin: "\\." + IDENT_RE2,
+          relevance: 0
+        },
+        modes.ATTRIBUTE_SELECTOR_MODE,
+        {
+          className: "selector-pseudo",
+          variants: [
+            { begin: ":(" + PSEUDO_CLASSES.join("|") + ")" },
+            { begin: ":(:)?(" + PSEUDO_ELEMENTS.join("|") + ")" }
+          ]
+        },
+        modes.CSS_VARIABLE,
+        {
+          className: "attribute",
+          begin: "\\b(" + ATTRIBUTES2.join("|") + ")\\b"
+        },
+        {
+          begin: /:/,
+          end: /[;}{]/,
+          contains: [
+            modes.BLOCK_COMMENT,
+            modes.HEXCOLOR,
+            modes.IMPORTANT,
+            modes.CSS_NUMBER_MODE,
+            ...STRINGS,
+            {
+              begin: /(url|data-uri)\(/,
+              end: /\)/,
+              relevance: 0,
+              keywords: { built_in: "url data-uri" },
+              contains: [
+                ...STRINGS,
+                {
+                  className: "string",
+                  begin: /[^)]/,
+                  endsWithParent: true,
+                  excludeEnd: true
+                }
+              ]
+            },
+            modes.FUNCTION_DISPATCH
+          ]
+        },
+        {
+          begin: regex.lookahead(/@/),
+          end: "[{;]",
+          relevance: 0,
+          illegal: /:/,
+          contains: [
+            {
+              className: "keyword",
+              begin: AT_PROPERTY_RE
+            },
+            {
+              begin: /\s/,
+              endsWithParent: true,
+              excludeEnd: true,
+              relevance: 0,
+              keywords: {
+                $pattern: /[a-z-]+/,
+                keyword: AT_MODIFIERS,
+                attribute: MEDIA_FEATURES.join(" ")
+              },
+              contains: [
+                {
+                  begin: /[a-z-]+(?=:)/,
+                  className: "attribute"
+                },
+                ...STRINGS,
+                modes.CSS_NUMBER_MODE
+              ]
+            }
+          ]
+        },
+        {
+          className: "selector-tag",
+          begin: "\\b(" + TAGS.join("|") + ")\\b"
         }
       ]
     };
@@ -43092,6 +44254,9 @@ void main() {
         self2.methods.minimiseDemos(true);
         return () => {
           $el.classList.remove("is-small");
+          if (self2.data.draggable) {
+            self2.data.draggable.revert();
+          }
         };
       });
       document.addEventListener("click", this, false);
@@ -43142,7 +44307,7 @@ void main() {
           const id = $demo.dataset.id;
           const $live = $demo.querySelector(".docs-demo-live");
           const $viewer = $live.querySelector(".viewer");
-          const scope = createScope({ root: $live });
+          const scope2 = createScope({ root: $live });
           const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
               const $target = entry.target;
@@ -43166,7 +44331,7 @@ void main() {
               $template: $demo.querySelector(".docs-demo-template"),
               $live,
               code: this.demosCode[id],
-              scope
+              scope: scope2
             }
           ];
         }));
@@ -43209,6 +44374,7 @@ void main() {
           const innerHTML = $live.innerHTML;
           $live.innerHTML = "";
           $live.appendChild($iframe);
+          $live.style.opacity = 1e-3;
           setTimeout(() => {
             try {
               const $docsDemoJS = $demo.querySelector(".docs-demo-js");
@@ -43216,8 +44382,8 @@ void main() {
               $iframeDoc.open();
               $iframeDoc.write("<!DOCTYPE html><html><head></head><body></body></html>");
               $iframeDoc.close();
-              $iframeDoc.documentElement.style.background = "transparent";
-              $iframeDoc.body.style.background = "transparent";
+              $iframeDoc.documentElement.style.background = "var(--hex-current-3)";
+              $iframeDoc.body.style.background = "var(--hex-current-3)";
               const styles = document.querySelectorAll('link[rel="stylesheet"], style');
               styles.forEach((style) => {
                 try {
@@ -43244,13 +44410,15 @@ void main() {
                 } catch (scriptError) {
                   console.error("Error adding script to iframe:", scriptError);
                 }
+                $live.style.opacity = 1;
               }, 50);
             } catch (error) {
               console.error("Error setting up iframe:", error);
+              $live.style.opacity = 1;
             }
           }, 66);
         } else {
-          demo.scope.add((demoCtx) => demo.code(demoCtx, animate, createTimeline, createTimer, createAnimatable, createDraggable, createScope, onScroll, engine, eases, createSpring, stagger, utils, svg, waapi, createViewer));
+          demo.scope.add((demoCtx) => demo.code(demoCtx, animate, createTimeline, createTimer, createAnimatable, createDraggable, createScope, onScroll, engine, eases, createSpring, stagger, utils, svg, waapi, text, createViewer));
         }
       }
     }
@@ -43647,6 +44815,7 @@ void main() {
   function initDocs() {
     core_default.registerLanguage("javascript", javascript);
     core_default.registerLanguage("xml", xml);
+    core_default.registerLanguage("css", css);
     core_default.registerLanguage("bash", bash);
     new Docs();
   }
@@ -43782,7 +44951,6 @@ void main() {
             errorMessage.classList.add("is-active");
             form.classList.remove("is-pending");
             formFields.classList.remove("is-active");
-            console.error("Error:", error);
             setTimeout(() => {
               errorMessage.classList.remove("is-active");
               form.classList.remove("is-pending");
@@ -43833,7 +45001,7 @@ void main() {
  */
 /**
  * anime.js - ESM
- * @version v4.0.2
+ * @version v4.1.0
  * @author Julian Garnier
  * @license MIT
  * @copyright (c) 2025 Julian Garnier

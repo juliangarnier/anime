@@ -28,6 +28,7 @@ window.demos['docs'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -74,6 +75,7 @@ window.demos['getting-started'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -128,6 +130,7 @@ window.demos['getting-started-installation'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const wrapChars = str => str.replace(/./g, '<span style="display:inline-block">$&</span>');
@@ -238,6 +241,7 @@ window.demos['getting-started-imports'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const wrapChars = str => str.replace(/./g, '<span style="display:inline-block">$&</span>');
@@ -358,6 +362,7 @@ window.demos['getting-started-using-with-vanilla-js'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $logo ] = utils.$('.logo.js');
@@ -461,6 +466,7 @@ window.demos['getting-started-using-with-react'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $logo ] = utils.$('.logo');
@@ -573,6 +579,7 @@ window.demos['timer'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $time, $count ] = utils.$('.value');
@@ -634,6 +641,7 @@ window.demos['timer-timer-playback-settings'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -694,6 +702,7 @@ window.demos['timer-timer-playback-settings-delay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -766,6 +775,7 @@ window.demos['timer-timer-playback-settings-duration'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -850,6 +860,7 @@ window.demos['timer-timer-playback-settings-loop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -939,6 +950,7 @@ window.demos['timer-timer-playback-settings-playback-loopdelay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -1029,6 +1041,7 @@ window.demos['timer-timer-playback-settings-alternate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -1119,6 +1132,7 @@ window.demos['timer-timer-playback-settings-reversed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $iterationTime ] = utils.$('.iteration-time');
@@ -1206,6 +1220,7 @@ window.demos['timer-timer-playback-settings-autoplay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -1308,6 +1323,7 @@ window.demos['timer-timer-playback-settings-framerate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -1414,6 +1430,7 @@ window.demos['timer-timer-playback-settings-playbackrate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -1484,6 +1501,7 @@ window.demos['timer-timer-callbacks'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -1556,6 +1574,7 @@ window.demos['timer-timer-callbacks-onbegin'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $status ] = utils.$('.status');
@@ -1647,6 +1666,7 @@ window.demos['timer-timer-callbacks-oncomplete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $status ] = utils.$('.status');
@@ -1733,6 +1753,7 @@ window.demos['timer-timer-callbacks-onupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $updates ] = utils.$('.updates');
@@ -1822,6 +1843,7 @@ window.demos['timer-timer-callbacks-onloop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -1923,6 +1945,7 @@ window.demos['timer-timer-callbacks-onpause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $resumeButton, $pauseButton ] = utils.$('.button');
@@ -2020,6 +2043,7 @@ window.demos['timer-timer-callbacks-then'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $status ] = utils.$('.status');
@@ -2080,6 +2104,7 @@ window.demos['timer-timer-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -2150,6 +2175,7 @@ window.demos['timer-timer-methods-play'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -2240,6 +2266,7 @@ window.demos['timer-timer-methods-reverse'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $reverseButton ] = utils.$('.reverse');
@@ -2329,6 +2356,7 @@ window.demos['timer-timer-methods-pause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $pauseButton ] = utils.$('.pause');
@@ -2417,6 +2445,7 @@ window.demos['timer-timer-methods-restart'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $restartButton ] = utils.$('.restart');
@@ -2505,6 +2534,7 @@ window.demos['timer-timer-methods-alternate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $alternateButton ] = utils.$('.button');
@@ -2601,6 +2631,7 @@ window.demos['timer-timer-methods-resume'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $resumeButton, $pauseButton, $alternateButton ] = utils.$('.button');
@@ -2697,6 +2728,7 @@ window.demos['timer-timer-methods-complete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $completeButton ] = utils.$('.complete');
@@ -2788,6 +2820,7 @@ window.demos['timer-timer-methods-cancel'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -2882,6 +2915,7 @@ window.demos['timer-timer-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -2979,6 +3013,7 @@ window.demos['timer-timer-methods-seek'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -3105,6 +3140,7 @@ window.demos['timer-timer-methods-stretch'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -3175,6 +3211,7 @@ window.demos['timer-timer-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -3200,44 +3237,18 @@ window.demos['timer-timer-properties'] = function(
   <div id="animation" class="docs-demo-content">
     <style async class="docs-demo-css">
     #animation .text-xl {
-  color: currentColor;
   font-size: 1.5rem;
+  color: currentColor;
   letter-spacing: 0.06em;
-  margin-left: .07em;
-  margin-top: -.2em;
-}
-
-#animation .text-xl span {
-  margin-top: calc(.25rem + 1px);
 }    </style>
     <div class="docs-demo-html docs-demo-live demo">
-    <h2 class="large grid centered square-grid text-xl">
-  <span>H</span>
-  <span>E</span>
-  <span>L</span>
-  <span>L</span>
-  <span>O</span>
-  <span>&nbsp;</span>
-  <span>W</span>
-  <span>O</span>
-  <span>R</span>
-  <span>L</span>
-  <span>D</span>
-</h2>        </div>
+    <div class="large grid centered square-grid">
+  <h2 class="text-xl">HELLO WORLD</h2>
+</div>        </div>
     <div class="docs-demo-html docs-demo-template">
-    <h2 class="large grid centered square-grid text-xl">
-  <span>H</span>
-  <span>E</span>
-  <span>L</span>
-  <span>L</span>
-  <span>O</span>
-  <span>&nbsp;</span>
-  <span>W</span>
-  <span>O</span>
-  <span>R</span>
-  <span>L</span>
-  <span>D</span>
-</h2>        </div>
+    <div class="large grid centered square-grid">
+  <h2 class="text-xl">HELLO WORLD</h2>
+</div>        </div>
     <script class="docs-demo-js">
 window.demos['animation'] = function(
   ctx,
@@ -3255,9 +3266,12 @@ window.demos['animation'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
-animate('span', {
+const { chars } = text.split('h2', { words: false, chars: true });
+
+animate(chars, {
   // Property keyframes
   y: [
     { to: '-2.75rem', ease: 'outExpo', duration: 600 },
@@ -3268,7 +3282,7 @@ animate('span', {
     from: '-1turn',
     delay: 0
   },
-  delay: (_, i) => i * 50, // Function based value
+  delay: stagger(50),
   ease: 'inOutCirc',
   loopDelay: 1000,
   loop: true
@@ -3323,6 +3337,7 @@ window.demos['animation-targets'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -3385,6 +3400,7 @@ window.demos['animation-targets-css-selector'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', { x: '17rem' });
@@ -3460,6 +3476,7 @@ window.demos['animation-targets-dom-elements'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demo = document.querySelector('#selector-demo');
@@ -3521,6 +3538,7 @@ window.demos['animation-targets-javascript-objects'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $log ] = utils.$('code');
@@ -3593,6 +3611,7 @@ window.demos['animation-targets-array-of-targets'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $log ] = utils.$('.demo code');
@@ -3654,6 +3673,7 @@ window.demos['animation-animatable-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -3704,6 +3724,7 @@ window.demos['animation-animatable-properties-css-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -3776,6 +3797,7 @@ window.demos['animation-animatable-properties-css-transforms'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -3867,6 +3889,7 @@ window.demos['animation-animatable-properties-css-variables'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 // Set the CSS variables as properties on the animated elements
@@ -3938,6 +3961,7 @@ window.demos['animation-animatable-properties-javascript-object-properties'] = f
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const myObject = {
@@ -4011,6 +4035,7 @@ window.demos['animation-animatable-properties-html-attributes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('input', {
@@ -4091,6 +4116,7 @@ window.demos['animation-animatable-properties-svg-attributes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate(['feTurbulence', 'feDisplacementMap'], {
@@ -4155,6 +4181,7 @@ window.demos['animation-tween-value-types'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -4205,6 +4232,7 @@ window.demos['animation-tween-value-types-numerical-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -4266,6 +4294,7 @@ window.demos['animation-tween-value-types-unit-conversion-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -4341,6 +4370,7 @@ window.demos['animation-tween-value-types-relative-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $clock ] = utils.$('.clock');
@@ -4424,6 +4454,7 @@ window.demos['animation-tween-value-types-color-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.hex',  {
@@ -4514,6 +4545,7 @@ window.demos['animation-tween-value-types-color-function-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.circle',  {
@@ -4590,6 +4622,7 @@ window.demos['animation-tween-value-types-css-variable'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square',  {
@@ -4670,6 +4703,7 @@ window.demos['animation-tween-value-types-function-based'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -4732,6 +4766,7 @@ window.demos['animation-tween-parameters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -4782,6 +4817,7 @@ window.demos['animation-tween-parameters-to'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -4848,6 +4884,7 @@ window.demos['animation-tween-parameters-from'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -4912,6 +4949,7 @@ window.demos['animation-tween-parameters-delay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -4978,6 +5016,7 @@ window.demos['animation-tween-parameters-duration'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -5062,6 +5101,7 @@ window.demos['animation-tween-parameters-ease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -5180,6 +5220,7 @@ window.demos['animation-tween-parameters-composition'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const squares = utils.$('.square');
@@ -5321,6 +5362,7 @@ window.demos['animation-tween-parameters-modifier'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -5393,6 +5435,7 @@ window.demos['animation-keyframes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -5443,6 +5486,7 @@ window.demos['animation-keyframes-tween-values-keyframes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -5509,6 +5553,7 @@ window.demos['animation-keyframes-tween-parameters-keyframes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -5585,6 +5630,7 @@ window.demos['animation-keyframes-duration-based-keyframes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -5655,6 +5701,7 @@ window.demos['animation-keyframes-percentage-based-keyframes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -5722,6 +5769,7 @@ window.demos['animation-animation-playback-settings'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -5772,6 +5820,7 @@ window.demos['animation-animation-playback-settings-delay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const playbackDelay = animate('.delay', {
@@ -5853,6 +5902,7 @@ window.demos['animation-animation-playback-settings-duration'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.dur-0', {
@@ -5949,6 +5999,7 @@ window.demos['animation-animation-playback-settings-loop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.loop', {
@@ -6026,6 +6077,7 @@ window.demos['animation-animation-playback-settings-playback-loopdelay'] = funct
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const loopDelayAnimation = animate('.circle', {
@@ -6111,6 +6163,7 @@ window.demos['animation-animation-playback-settings-alternate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.dir-normal', {
@@ -6195,6 +6248,7 @@ window.demos['animation-animation-playback-settings-reversed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.dir-normal', {
@@ -6272,6 +6326,7 @@ window.demos['animation-animation-playback-settings-autoplay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.autoplay-true', {
@@ -6355,6 +6410,7 @@ window.demos['animation-animation-playback-settings-framerate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -6448,6 +6504,7 @@ window.demos['animation-animation-playback-settings-playbackrate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -6523,6 +6580,7 @@ window.demos['animation-animation-playback-settings-playbackease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -6587,6 +6645,7 @@ window.demos['animation-animation-callbacks'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -6645,6 +6704,7 @@ window.demos['animation-animation-callbacks-onbegin'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -6716,6 +6776,7 @@ window.demos['animation-animation-callbacks-oncomplete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -6789,6 +6850,7 @@ window.demos['animation-animation-callbacks-onbeforeupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -6870,6 +6932,7 @@ window.demos['animation-animation-callbacks-onupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -6945,6 +7008,7 @@ window.demos['animation-animation-callbacks-onrender'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $rendersLog ] = utils.$('.value');
@@ -7020,6 +7084,7 @@ window.demos['animation-animation-callbacks-onloop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -7109,6 +7174,7 @@ window.demos['animation-animation-callbacks-onpause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $animateButton, $pauseButton, $removeButton ] = utils.$('.button');
@@ -7207,6 +7273,7 @@ window.demos['animation-animation-callbacks-then'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -7267,6 +7334,7 @@ window.demos['animation-animation-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -7333,6 +7401,7 @@ window.demos['animation-animation-methods-play'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -7419,6 +7488,7 @@ window.demos['animation-animation-methods-reverse'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $reverseButton ] = utils.$('.reverse');
@@ -7504,6 +7574,7 @@ window.demos['animation-animation-methods-pause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $pauseButton ] = utils.$('.pause');
@@ -7591,6 +7662,7 @@ window.demos['animation-animation-methods-restart'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $restartButton ] = utils.$('.restart');
@@ -7678,6 +7750,7 @@ window.demos['animation-animation-methods-alternate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $alternateButton ] = utils.$('.button');
@@ -7768,6 +7841,7 @@ window.demos['animation-animation-methods-resume'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $pauseButton, $alternateButton, $resumeButton ] = utils.$('.button');
@@ -7860,6 +7934,7 @@ window.demos['animation-animation-methods-complete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $completeButton ] = utils.$('.complete');
@@ -7949,6 +8024,7 @@ window.demos['animation-animation-methods-cancel'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $cancelButton ] = utils.$('.cancel');
@@ -8042,6 +8118,7 @@ window.demos['animation-animation-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -8138,6 +8215,7 @@ window.demos['animation-animation-methods-seek'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -8254,6 +8332,7 @@ window.demos['animation-animation-methods-stretch'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -8348,6 +8427,7 @@ window.demos['animation-animation-methods-refresh'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $refreshButton ] = utils.$('.refresh');
@@ -8417,6 +8497,7 @@ window.demos['animation-animation-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -8475,6 +8556,7 @@ window.demos['timeline'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline({ defaults: { duration: 750 } });
@@ -8571,6 +8653,7 @@ window.demos['timeline-add-timers'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $timer01, $timer02, $timer03 ] = utils.$('.timer');
@@ -8652,6 +8735,7 @@ window.demos['timeline-add-animations'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const circleAnimation = animate('.circle', {
@@ -8732,6 +8816,7 @@ window.demos['timeline-sync-waapi-animations'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const circle = waapi.animate('.circle', {
@@ -8817,6 +8902,7 @@ window.demos['timeline-sync-timelines'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const circleAnimation = animate('.circle', {
@@ -8932,6 +9018,7 @@ window.demos['timeline-call-functions'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $functionA ] = utils.$('.function-A');
@@ -9004,6 +9091,7 @@ window.demos['timeline-time-position'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -9071,6 +9159,7 @@ window.demos['timeline-timeline-playback-settings'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -9129,6 +9218,7 @@ window.demos['timeline-timeline-playback-settings-defaults'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -9213,6 +9303,7 @@ window.demos['timeline-timeline-playback-settings-delay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -9300,6 +9391,7 @@ window.demos['timeline-timeline-playback-settings-loop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -9383,6 +9475,7 @@ window.demos['timeline-timeline-playback-settings-playback-loopdelay'] = functio
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -9465,6 +9558,7 @@ window.demos['timeline-timeline-playback-settings-alternate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -9549,6 +9643,7 @@ window.demos['timeline-timeline-playback-settings-reversed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -9644,6 +9739,7 @@ window.demos['timeline-timeline-playback-settings-autoplay'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $paused ] = utils.$('.paused');
@@ -9741,6 +9837,7 @@ window.demos['timeline-timeline-playback-settings-framerate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -9843,6 +9940,7 @@ window.demos['timeline-timeline-playback-settings-playbackrate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -9927,6 +10025,7 @@ window.demos['timeline-timeline-playback-settings-playbackease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -9985,6 +10084,7 @@ window.demos['timeline-timeline-callbacks'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -10051,6 +10151,7 @@ window.demos['timeline-timeline-callbacks-onbegin'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10132,6 +10233,7 @@ window.demos['timeline-timeline-callbacks-oncomplete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10214,6 +10316,7 @@ window.demos['timeline-timeline-callbacks-onbeforeupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10299,6 +10402,7 @@ window.demos['timeline-timeline-callbacks-onupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10384,6 +10488,7 @@ window.demos['timeline-timeline-callbacks-onrender'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10469,6 +10574,7 @@ window.demos['timeline-timeline-callbacks-onloop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10568,6 +10674,7 @@ window.demos['timeline-timeline-callbacks-onpause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $animateButton, $pauseButton, $removeButton ] = utils.$('.button');
@@ -10680,6 +10787,7 @@ window.demos['timeline-timeline-callbacks-then'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10743,6 +10851,7 @@ window.demos['timeline-timeline-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -10801,6 +10910,7 @@ window.demos['timeline-timeline-methods-add'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10887,6 +10997,7 @@ window.demos['timeline-timeline-methods-set'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -10955,6 +11066,7 @@ window.demos['timeline-timeline-methods-sync'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const circleAnimation = waapi.animate('.circle', {
@@ -11044,6 +11156,7 @@ window.demos['timeline-timeline-methods-label'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -11139,6 +11252,7 @@ window.demos['timeline-timeline-methods-remove'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $removeA, $removeB, $removeC ] = utils.$('.button');
@@ -11249,6 +11363,7 @@ window.demos['timeline-timeline-methods-call'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $functionA ] = utils.$('.function-A');
@@ -11321,6 +11436,7 @@ window.demos['timeline-timeline-methods-init'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -11400,6 +11516,7 @@ window.demos['timeline-timeline-methods-play'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -11488,6 +11605,7 @@ window.demos['timeline-timeline-methods-reverse'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $reverseButton ] = utils.$('.reverse');
@@ -11574,6 +11692,7 @@ window.demos['timeline-timeline-methods-pause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $pauseButton ] = utils.$('.pause');
@@ -11663,6 +11782,7 @@ window.demos['timeline-timeline-methods-restart'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $restartButton ] = utils.$('.restart');
@@ -11752,6 +11872,7 @@ window.demos['timeline-timeline-methods-alternate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $alternateButton ] = utils.$('.button');
@@ -11844,6 +11965,7 @@ window.demos['timeline-timeline-methods-resume'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $pauseButton, $alternateButton, $resumeButton ] = utils.$('.button');
@@ -11936,6 +12058,7 @@ window.demos['timeline-timeline-methods-complete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $completeButton ] = utils.$('.complete');
@@ -12026,6 +12149,7 @@ window.demos['timeline-timeline-methods-cancel'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $cancelButton ] = utils.$('.cancel');
@@ -12121,6 +12245,7 @@ window.demos['timeline-timeline-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -12219,6 +12344,7 @@ window.demos['timeline-timeline-methods-seek'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -12336,6 +12462,7 @@ window.demos['timeline-timeline-methods-stretch'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -12432,6 +12559,7 @@ window.demos['timeline-timeline-methods-refresh'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $refreshButton ] = utils.$('.refresh');
@@ -12499,6 +12627,7 @@ window.demos['timeline-timeline-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -12559,6 +12688,7 @@ window.demos['animatable'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -12638,6 +12768,7 @@ window.demos['animatable-animatable-settings'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -12698,6 +12829,7 @@ window.demos['animatable-animatable-settings-unit'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -12798,6 +12930,7 @@ window.demos['animatable-animatable-settings-duration'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -12893,6 +13026,7 @@ window.demos['animatable-animatable-settings-ease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const clock1 = createAnimatable('.clock-1', {
@@ -13001,6 +13135,7 @@ window.demos['animatable-animatable-settings-modifier'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const PI = Math.PI;
@@ -13088,6 +13223,7 @@ window.demos['animatable-animatable-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -13184,6 +13320,7 @@ window.demos['animatable-animatable-methods-getters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13280,6 +13417,7 @@ window.demos['animatable-animatable-methods-setters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13389,6 +13527,7 @@ window.demos['animatable-animatable-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13474,6 +13613,7 @@ window.demos['animatable-animatable-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -13524,6 +13664,7 @@ window.demos['draggable'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square');
@@ -13577,6 +13718,7 @@ window.demos['draggable-draggable-axes-parameters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -13637,6 +13779,7 @@ window.demos['draggable-draggable-axes-parameters-x'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square.enabled', {
@@ -13710,6 +13853,7 @@ window.demos['draggable-draggable-axes-parameters-y'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square.enabled', {
@@ -13802,6 +13946,7 @@ window.demos['draggable-draggable-axes-parameters-snap'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -13863,6 +14008,7 @@ window.demos['draggable-draggable-axes-parameters-modifier'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -13923,6 +14069,7 @@ window.demos['draggable-draggable-axes-parameters-mapto'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 utils.set('.square', { z: 100 });
@@ -13981,6 +14128,7 @@ window.demos['draggable-draggable-settings'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -14035,6 +14183,7 @@ window.demos['draggable-draggable-settings-trigger'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.row', {
@@ -14104,6 +14253,7 @@ window.demos['draggable-draggable-settings-container'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14175,6 +14325,7 @@ window.demos['draggable-draggable-settings-containerpadding'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14238,6 +14389,7 @@ window.demos['draggable-draggable-settings-containerfriction'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14305,6 +14457,7 @@ window.demos['draggable-draggable-settings-releasecontainerfriction'] = function
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14372,6 +14525,7 @@ window.demos['draggable-draggable-settings-releasemass'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14439,6 +14593,7 @@ window.demos['draggable-draggable-settings-releasestiffness'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14506,6 +14661,7 @@ window.demos['draggable-draggable-settings-releasedamping'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14573,6 +14729,7 @@ window.demos['draggable-draggable-settings-velocitymultiplier'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14640,6 +14797,7 @@ window.demos['draggable-draggable-settings-minvelocity'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14707,6 +14865,7 @@ window.demos['draggable-draggable-settings-maxvelocity'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14774,6 +14933,7 @@ window.demos['draggable-draggable-settings-releaseease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14844,6 +15004,7 @@ window.demos['draggable-draggable-settings-dragspeed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14932,6 +15093,7 @@ window.demos['draggable-draggable-settings-scrollthreshold'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15000,6 +15162,7 @@ window.demos['draggable-draggable-settings-scrollspeed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15062,6 +15225,7 @@ window.demos['draggable-draggable-settings-cursor'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15124,6 +15288,7 @@ window.demos['draggable-draggable-callbacks'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -15182,6 +15347,7 @@ window.demos['draggable-draggable-callbacks-ongrab'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15254,6 +15420,7 @@ window.demos['draggable-draggable-callbacks-ondrag'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15326,6 +15493,7 @@ window.demos['draggable-draggable-callbacks-onupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15398,6 +15566,7 @@ window.demos['draggable-draggable-callbacks-onrelease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15470,6 +15639,7 @@ window.demos['draggable-draggable-callbacks-onsnap'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15544,6 +15714,7 @@ window.demos['draggable-draggable-callbacks-onsettle'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15604,7 +15775,7 @@ createDraggable('.square', {
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-draggable-draggable-callbacks-onresize" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -15620,6 +15791,7 @@ createDraggable('.square', {
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       const [ $value ] = utils.$('.value');
 
@@ -15679,7 +15851,7 @@ createDraggable('.square', {
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-draggable-draggable-callbacks-onafterresize" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -15695,6 +15867,7 @@ createDraggable('.square', {
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       const [ $value ] = utils.$('.value');
 
@@ -15755,6 +15928,7 @@ window.demos['draggable-draggable-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -15815,6 +15989,7 @@ window.demos['draggable-draggable-methods-disable'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $disableButton ] = utils.$('.disable');
@@ -15890,6 +16065,7 @@ window.demos['draggable-draggable-methods-enable'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $enableButton ] = utils.$('.enable');
@@ -15967,6 +16143,7 @@ window.demos['draggable-draggable-methods-setx'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $setButton ] = utils.$('.set');
@@ -16042,6 +16219,7 @@ window.demos['draggable-draggable-methods-sety'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $setButton ] = utils.$('.set');
@@ -16125,6 +16303,7 @@ window.demos['draggable-draggable-methods-animateinview'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $animateInView ] = utils.$('.animate-button');
@@ -16182,7 +16361,7 @@ $animateInView.removeEventListener('click', animateInView);}
   </div>
 </div>
 <fieldset class="absolute controls">
-  <button class="button scroll-button">Scroll in view</button>
+  <button class="button">Scroll in view</button>
 </fieldset>        </div>
     <div class="docs-demo-html docs-demo-template">
     <div class="scroll-container scroll-x scroll-y">
@@ -16193,7 +16372,7 @@ $animateInView.removeEventListener('click', animateInView);}
   </div>
 </div>
 <fieldset class="absolute controls">
-  <button class="button scroll-button">Scroll in view</button>
+  <button class="button">Scroll in view</button>
 </fieldset>        </div>
     <script class="docs-demo-js">
 window.demos['draggable-draggable-methods-scrollinview'] = function(
@@ -16212,9 +16391,10 @@ window.demos['draggable-draggable-methods-scrollinview'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
-const [ $scrollInView ] = utils.$('.scroll-button');
+const [ $scrollInView ] = utils.$('.button');
 
 const draggable = createDraggable('.square', {
   container: '.scroll-container',
@@ -16295,6 +16475,7 @@ window.demos['draggable-draggable-methods-stop'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $stopButton ] = utils.$('.stop');
@@ -16376,6 +16557,7 @@ window.demos['draggable-draggable-methods-reset'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $resetButton ] = utils.$('.reset');
@@ -16451,6 +16633,7 @@ window.demos['draggable-draggable-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -16529,6 +16712,7 @@ window.demos['draggable-draggable-methods-refresh'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $refreshButton ] = utils.$('.refresh');
@@ -16593,6 +16777,7 @@ window.demos['draggable-draggable-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -16702,6 +16887,7 @@ window.demos['scroll'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ container ] = utils.$('.scroll-container');
@@ -16802,6 +16988,7 @@ window.demos['scroll-scrollobserver-settings'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -16874,6 +17061,7 @@ window.demos['scroll-scrollobserver-settings-container'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -16972,6 +17160,7 @@ window.demos['scroll-scrollobserver-settings-target'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $timer ] = utils.$('.timer');
@@ -17074,6 +17263,7 @@ window.demos['scroll-scrollobserver-settings-debug'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -17167,6 +17357,7 @@ window.demos['scroll-scrollobserver-settings-axis'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -17289,6 +17480,7 @@ window.demos['scroll-scrollobserver-settings-repeat'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $repeat ] = utils.$('.repeat .value');
@@ -17372,6 +17564,7 @@ window.demos['scroll-scrollobserver-thresholds'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -17448,6 +17641,7 @@ window.demos['scroll-scrollobserver-thresholds-numeric-values'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -17546,6 +17740,7 @@ window.demos['scroll-scrollobserver-thresholds-positions-shorthands'] = function
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -17642,6 +17837,7 @@ window.demos['scroll-scrollobserver-thresholds-relative-position-values'] = func
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -17744,6 +17940,7 @@ window.demos['scroll-scrollobserver-thresholds-min-max'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 utils.$('.square').forEach($square => {
@@ -17812,6 +18009,7 @@ window.demos['scroll-scrollobserver-synchronisation-modes'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -17888,6 +18086,7 @@ window.demos['scroll-scrollobserver-synchronisation-modes-method-names'] = funct
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -17982,6 +18181,7 @@ window.demos['scroll-scrollobserver-synchronisation-modes-playback-progress'] = 
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -18076,6 +18276,7 @@ window.demos['scroll-scrollobserver-synchronisation-modes-smooth-scroll'] = func
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -18172,6 +18373,7 @@ window.demos['scroll-scrollobserver-synchronisation-modes-eased-scroll'] = funct
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -18237,6 +18439,7 @@ window.demos['scroll-scrollobserver-callbacks'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -18319,6 +18522,7 @@ window.demos['scroll-scrollobserver-callbacks-onenter'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -18424,6 +18628,7 @@ window.demos['scroll-scrollobserver-callbacks-onenterforward'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -18529,6 +18734,7 @@ window.demos['scroll-scrollobserver-callbacks-onenterbackward'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -18634,6 +18840,7 @@ window.demos['scroll-scrollobserver-callbacks-onleave'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -18739,6 +18946,7 @@ window.demos['scroll-scrollobserver-callbacks-onleaveforward'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -18844,6 +19052,7 @@ window.demos['scroll-scrollobserver-callbacks-onleavebackward'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -18949,6 +19158,7 @@ window.demos['scroll-scrollobserver-callbacks-onupdate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -19052,6 +19262,7 @@ window.demos['scroll-scrollobserver-callbacks-onsynccomplete'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -19121,6 +19332,7 @@ window.demos['scroll-scrollobserver-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -19197,6 +19409,7 @@ window.demos['scroll-scrollobserver-methods-link'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -19294,6 +19507,7 @@ window.demos['scroll-scrollobserver-methods-refresh'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const scrollSettings = {
@@ -19402,6 +19616,7 @@ window.demos['scroll-scrollobserver-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -19440,7 +19655,7 @@ animate('.square', {
 <article class="docs-demo theme-color theme-color-6" data-id="scroll-scrollobserver-properties">
   <header class="docs-demo-header">
     <h2 class="text-ui">
-      scrollObserver properties      <!--  -->
+      ScrollObserver properties      <!--  -->
                 </h2>
   </header>
   <div id="scroll-scrollobserver-properties" class="docs-demo-content dotted-grid">
@@ -19467,6 +19682,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -19509,7 +19725,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-scope" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -19525,6 +19741,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       createScope({
   mediaQueries: {
@@ -19593,7 +19810,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-scope-add-constructor-function" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -19609,6 +19826,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       createScope({
   mediaQueries: { isSmall: '(max-width: 200px)' },
@@ -19685,7 +19903,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-scope-register-method-function" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -19701,6 +19919,7 @@ window.demos['scroll-scrollobserver-properties'] = function(
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       const scope = createScope({
   mediaQueries: { isSmall: '(max-width: 200px)' },
@@ -19778,6 +19997,7 @@ window.demos['scope-scope-parameters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -19846,6 +20066,7 @@ window.demos['scope-scope-parameters-root'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 createScope({ root: '.row:nth-child(2)' })
@@ -19928,6 +20149,7 @@ window.demos['scope-scope-parameters-defaults'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const rows = utils.$('.row');
@@ -19991,7 +20213,7 @@ rows.forEach(($row, i) => {
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-scope-scope-parameters-mediaqueries" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -20007,6 +20229,7 @@ rows.forEach(($row, i) => {
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       createScope({
   mediaQueries: {
@@ -20080,6 +20303,7 @@ window.demos['scope-scope-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -20122,7 +20346,7 @@ window.demos['scope-scope-methods'] = function(
   </div>
 </div>        </div>
         <!-- IFRAME CODE -->
-    <input type="text" class="docs-demo-js" value="
+    <input id="docs-demo-js-scope-scope-methods-add" type="text" class="docs-demo-js" value="
       import {
         animate,
         createTimeline,
@@ -20138,6 +20362,7 @@ window.demos['scope-scope-methods'] = function(
         utils,
         svg,
         waapi,
+        text,
       } from '/assets/js/anime.esm.js';
       const scope = createScope({
   mediaQueries: {
@@ -20200,6 +20425,188 @@ document.addEventListener('pointerdown', scope.methods.onPointerDown);    " />
       </div>
   <div class="docs-nav-menu ui-group">
         <button class="demo-reload-button" data-id="scope-scope-methods-add" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-7" data-id="scope-scope-methods-addonce">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      addOnce()      <!--  -->
+                </h2>
+  </header>
+  <div id="scope-scope-methods-addonce" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="iframe-content resizable">
+  <div class="scopped small centered">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="iframe-content resizable">
+  <div class="scopped small centered">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+</div>        </div>
+        <!-- IFRAME CODE -->
+    <input id="docs-demo-js-scope-scope-methods-addonce" type="text" class="docs-demo-js" value="
+      import {
+        animate,
+        createTimeline,
+        createTimer,
+        createAnimatable,
+        createDraggable,
+        createScope,
+        onScroll,
+        engine,
+        eases,
+        createSpring,
+        stagger,
+        utils,
+        svg,
+        waapi,
+        text,
+      } from '/assets/js/anime.esm.js';
+      const scope = createScope({
+  mediaQueries: {
+    isSmall: '(max-width: 200px)',
+  }
+})
+.add(self => {
+ 
+  self.addOnce(() => {
+    /* Animations declared here won't be reverted between mediaqueries changes */
+    createTimeline().add('.circle', {
+      backgroundColor: [
+        $el => utils.get($el, `--hex-red-1`),
+        $el => utils.get($el, `--hex-citrus-1`),
+      ],
+      loop: true,
+      alternate: true,
+      duration: 2000,
+    }, stagger(100));
+  });
+ 
+  self.add(() => {
+    createTimeline().add('.circle', {
+      x: self.matches.isSmall ? [-30, 30] : [-70, 70],
+      scale: [.5, 1.1],
+      loop: true,
+      alternate: true,
+    }, stagger(100)).init();
+  });
+      
+});    " />
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="scope-scope-methods-addonce" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-7" data-id="scope-scope-methods-keeptime">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      keepTime()      <!--  -->
+                </h2>
+  </header>
+  <div id="scope-scope-methods-keeptime" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="iframe-content resizable">
+  <div class="scopped small centered">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="iframe-content resizable">
+  <div class="scopped small centered">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+</div>        </div>
+        <!-- IFRAME CODE -->
+    <input id="docs-demo-js-scope-scope-methods-keeptime" type="text" class="docs-demo-js" value="
+      import {
+        animate,
+        createTimeline,
+        createTimer,
+        createAnimatable,
+        createDraggable,
+        createScope,
+        onScroll,
+        engine,
+        eases,
+        createSpring,
+        stagger,
+        utils,
+        svg,
+        waapi,
+        text,
+      } from '/assets/js/anime.esm.js';
+      const scope = createScope({
+  mediaQueries: {
+    isSmall: '(max-width: 200px)',
+  }
+})
+.add(self => {
+ 
+  self.addOnce(() => {
+    /* Animations declared here won't be reverted between mediaqueries changes */
+    createTimeline().add('.circle', {
+      backgroundColor: [
+        $el => utils.get($el, `--hex-red-1`),
+        $el => utils.get($el, `--hex-citrus-1`),
+      ],
+      loop: true,
+      alternate: true,
+      duration: 2000,
+    }, stagger(100));
+  });
+ 
+  self.keepTime(() => createTimeline().add('.circle', {
+    x: self.matches.isSmall ? [-30, 30] : [-70, 70],
+    scale: [.5, 1.1],
+    loop: true,
+    alternate: true,
+  }, stagger(100)).init());
+      
+});    " />
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="scope-scope-methods-keeptime" title="Refresh demo">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
@@ -20299,6 +20706,7 @@ window.demos['scope-scope-methods-revert'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $button1, $button2 ] = utils.$('.revert');
@@ -20447,6 +20855,7 @@ window.demos['scope-scope-methods-refresh'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $button1, $button2 ] = utils.$('.refresh');
@@ -20530,6 +20939,7 @@ window.demos['scope-scope-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -20598,6 +21008,7 @@ window.demos['stagger'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -20685,6 +21096,7 @@ window.demos['stagger-time-staggering'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -20768,6 +21180,7 @@ window.demos['stagger-values-staggering'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -20838,6 +21251,7 @@ window.demos['stagger-timeline-positions-staggering'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline();
@@ -20905,6 +21319,7 @@ window.demos['stagger-stagger-value-types'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -20981,6 +21396,7 @@ window.demos['stagger-stagger-value-types-numerical-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -21063,6 +21479,7 @@ window.demos['stagger-stagger-value-types-range-value'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -21119,6 +21536,7 @@ window.demos['stagger-stagger-parameters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -21195,6 +21613,7 @@ window.demos['stagger-stagger-parameters-stagger-start'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -21353,28 +21772,40 @@ window.demos['stagger-stagger-parameters-stagger-from'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const tl = createTimeline({
   loop: true,
-  alternate: true,
+  defaults: { duration: 500 },
+  delay: 500,
+  loopDelay: 500
 })
+.add('.row:nth-child(1) .square:nth-child(8)', { color: '#FFF', scale: 1.2 })
 .add('.row:nth-child(1) .square', {
   scale: 0,
-  delay: stagger(50, { from: 8 }),
-})
+  delay: stagger(25, { from: 7 }),
+}, '<')
+.add('.row:nth-child(2) .square:first-child', { color: '#FFF', scale: 1.2 })
 .add('.row:nth-child(2) .square', {
   scale: 0,
-  delay: stagger(50, { from: 'first' }),
-})
+  delay: stagger(25, { from: 'first' }),
+}, '<')
+.add('.row:nth-child(3) .square:nth-child(6)', { color: '#FFF', scale: 1.2 })
 .add('.row:nth-child(3) .square', {
   scale: 0,
-  delay: stagger(50, { from: 'center' }),
-})
+  delay: stagger(25, { from: 'center' }),
+}, '<')
+.add('.row:nth-child(4) .square:last-child', { color: '#FFF', scale: 1.2 })
 .add('.row:nth-child(4) .square', {
   scale: 0,
-  delay: stagger(50, { from: 'last' }),
-});
+  delay: stagger(25, { from: 'last' }),
+}, '<')
+.set('.row .square', { color: 'currentColor' })
+.add('.row .square', {
+  scale: 1,
+  delay: stagger(25, { from: 'random' }),
+})
 }
 </script>
       </div>
@@ -21455,6 +21886,7 @@ window.demos['stagger-stagger-parameters-stagger-reversed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -21535,6 +21967,7 @@ window.demos['stagger-stagger-parameters-stagger-ease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -21693,6 +22126,7 @@ window.demos['stagger-stagger-parameters-stagger-grid'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $squares = utils.$('.square');
@@ -21870,6 +22304,7 @@ window.demos['stagger-stagger-parameters-stagger-grid-axis'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const grid = [11, 4];
@@ -21972,6 +22407,7 @@ window.demos['stagger-stagger-parameters-stagger-modifier'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.square', {
@@ -21991,6 +22427,182 @@ animate('.square', {
       </div>
   <div class="docs-nav-menu ui-group">
         <button class="demo-reload-button" data-id="stagger-stagger-parameters-stagger-modifier" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-8" data-id="stagger-stagger-parameters-stagger-use">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      Stagger use      <!-- <span title="Is new in V4" class="badge">V4</span> -->
+                </h2>
+  </header>
+  <div id="stagger-stagger-parameters-stagger-use" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="small row">
+  <div class="square" data-index="2"></div>
+  <div class="padded label">data-index="2"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="0"></div>
+  <div class="padded label">data-index="0"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="3"></div>
+  <div class="padded label">data-index="3"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="1"></div>
+  <div class="padded label">data-index="1"</div>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="small row">
+  <div class="square" data-index="2"></div>
+  <div class="padded label">data-index="2"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="0"></div>
+  <div class="padded label">data-index="0"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="3"></div>
+  <div class="padded label">data-index="3"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="1"></div>
+  <div class="padded label">data-index="1"</div>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['stagger-stagger-parameters-stagger-use'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+animate('.square', {
+  x: '17rem',
+  rotate: 90,
+  delay: stagger(250, { use: 'data-index' }),
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="stagger-stagger-parameters-stagger-use" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-8" data-id="stagger-stagger-parameters-stagger-total">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      Stagger total      <!-- <span title="Is new in V4" class="badge">V4</span> -->
+                </h2>
+  </header>
+  <div id="stagger-stagger-parameters-stagger-total" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="small row">
+  <div class="square" data-index="0"></div>
+  <div class="padded label">data-index="0"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="0"></div>
+  <div class="padded label">data-index="0"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="1"></div>
+  <div class="padded label">data-index="1"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="1"></div>
+  <div class="padded label">data-index="1"</div>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="small row">
+  <div class="square" data-index="0"></div>
+  <div class="padded label">data-index="0"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="0"></div>
+  <div class="padded label">data-index="0"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="1"></div>
+  <div class="padded label">data-index="1"</div>
+</div>
+<div class="small row">
+  <div class="square" data-index="1"></div>
+  <div class="padded label">data-index="1"</div>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['stagger-stagger-parameters-stagger-total'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+animate('.square', {
+  x: '17rem',
+  rotate: 90,
+  delay: stagger(250, { use: 'data-index', total: 2, reversed: true }),
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="stagger-stagger-parameters-stagger-total" title="Refresh demo">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
@@ -22036,6 +22648,7 @@ window.demos['svg'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -22092,6 +22705,7 @@ window.demos['svg-morphto'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $path1, $path2 ] = utils.$('polygon');
@@ -22206,6 +22820,7 @@ window.demos['svg-createdrawable'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate(svg.createDrawable('.line'), {
@@ -22288,6 +22903,7 @@ window.demos['svg-createmotionpath'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 // Animate the transforms properties of .car the motion path values
@@ -22326,7 +22942,1434 @@ animate(svg.createDrawable('path'), {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities">
+<article class="docs-demo theme-color theme-color-10" data-id="text">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      Text      <!-- <span title="Is new in V4" class="badge">V4</span> -->
+                </h2>
+  </header>
+  <div id="text" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+  <article class="docs-demo theme-color theme-color-10" data-id="text-split">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      split()      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split" class="docs-demo-content">
+    <style async class="docs-demo-css">
+    #text-split .text-xl {
+  font-size: 1.5rem;
+  color: currentColor;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+}    </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered grid square-grid">
+  <p class="text-xl">
+    All-in-one text splitter<br>
+    テキストスプリッター
+  </p>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered grid square-grid">
+  <p class="text-xl">
+    All-in-one text splitter<br>
+    テキストスプリッター
+  </p>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const { words, chars } = text.split('p', {
+  words: { wrap: 'clip' },
+  chars: true,
+});
+
+createTimeline({
+  loop: true,
+  defaults: { ease: 'inOut(3)', duration: 650 }
+})
+.add(words, {
+  y: [$el => +$el.dataset.line % 2 ? '100%' : '-100%', '0%'],
+}, stagger(125))
+.add(chars, {
+  y: $el => +$el.dataset.line % 2 ? '100%' : '-100%',
+}, stagger(10, { from: 'random' }))
+.init();
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+  <article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      TextSplitter settings      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+  <article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings-lines">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      lines      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings-lines" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by lines.<br>線で分割します。</p>
+</div>
+<div class="small row"></div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by lines.<br>線で分割します。</p>
+</div>
+<div class="small row"></div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings-lines'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+text.split('p', {
+  lines: { wrap: 'clip' },
+})
+.addEffect(({ lines }) => animate(lines, {
+  y: [
+    { to: ['100%', '0%'] },
+    { to: '-100%', delay: 750, ease: 'in(3)' }
+  ],
+  duration: 750,
+  ease: 'out(3)',
+  delay: stagger(200),
+  loop: true,
+  loopDelay: 500,
+}));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-settings-lines" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings-words">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      words      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings-words" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>単語ごとに分割します。</p>
+</div>
+<div class="small row"></div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>単語ごとに分割します。</p>
+</div>
+<div class="small row"></div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings-words'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const { words } = text.split('p', {
+  words: { wrap: 'clip' },
+})
+
+animate(words, {
+  y: [
+    { to: ['100%', '0%'] },
+    { to: '-100%', delay: 750, ease: 'in(3)' }
+  ],
+  duration: 750,
+  ease: 'out(3)',
+  delay: stagger(100),
+  loop: true,
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-settings-words" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings-chars">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      chars      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings-chars" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by chars.<br>文字ごとに分割します。</p>
+</div>
+<div class="small row"></div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by chars.<br>文字ごとに分割します。</p>
+</div>
+<div class="small row"></div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings-chars'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const { chars } = text.split('p', {
+  chars: { wrap: 'clip' },
+});
+
+animate(chars, {
+  y: [
+    { to: ['100%', '0%'] },
+    { to: '-100%', delay: 750, ease: 'in(3)' }
+  ],
+  duration: 750,
+  ease: 'out(3)',
+  delay: stagger(50),
+  loop: true,
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-settings-chars" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings-debug">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      debug      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings-debug" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by chars.<br>文字ごとに分割します。</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Toggle debug</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by chars.<br>文字ごとに分割します。</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Toggle debug</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings-debug'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const [ $button ] = utils.$('button');
+const [ $p ] = utils.$('p');
+
+let debug = false;
+let split;
+
+const toggleDebug = () => {
+  if (split) split.revert();
+  debug = !debug;
+  split = text.split($p, {
+    lines: true,
+    chars: true,
+    words: true,
+    debug: debug,
+  });
+}
+
+toggleDebug();
+
+$button.addEventListener('click', toggleDebug);return function() {
+$button.removeEventListener('click', toggleDebug);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-settings-debug" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings-includespaces">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      includeSpaces      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings-includespaces" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>Include spaces or not.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Toggle spaces</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>Include spaces or not.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Toggle spaces</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings-includespaces'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const [ $button ] = utils.$('button');
+const [ $p ] = utils.$('p');
+
+let includeSpaces = true;
+let split;
+
+const toggleSpaces = () => {
+  if (split) split.revert();
+  includeSpaces = !includeSpaces;
+  split = text.split($p, {
+    debug: true,
+    includeSpaces: includeSpaces,
+  });
+}
+
+toggleSpaces();
+
+$button.addEventListener('click', toggleSpaces);return function() {
+$button.removeEventListener('click', toggleSpaces);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-settings-includespaces" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-settings-accessible">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      accessible      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-settings-accessible" class="docs-demo-content">
+    <style async class="docs-demo-css">
+    .docs-demo.is-active #text-split-textsplitter-settings-accessible .docs-demo-template {
+  opacity: 0;
+}
+
+#text-split-textsplitter-settings-accessible .large.row {
+  perspective: 600px;
+}
+
+#text-split-textsplitter-settings-accessible .text-xl {
+  transform-style: preserve-3d;
+}    </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>単語ごとに分割します。</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Toggle accessible</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>単語ごとに分割します。</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Toggle accessible</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-settings-accessible'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const [ $button ] = utils.$('button');
+const split = text.split('p', { debug: true });
+const $accessible = split.$target.firstChild;
+
+$accessible.style.cssText = `
+  opacity: 0;
+  position: absolute;
+  color: var(--hex-green-1);
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  outline: currentColor dotted 1px;
+`;
+
+const showAccessibleClone = createTimeline({
+  defaults: { ease: 'inOutQuad' },
+})
+.add($accessible, {
+  opacity: 1,
+  z: '-2rem',
+}, 0)
+.add('p', {
+  rotateX: 0,
+  rotateY: 60
+}, 0)
+.add(split.words, {
+  z: '6rem',
+  opacity: .75,
+  outlineColor: { from: '#FFF0' },
+  duration: 750,
+  delay: stagger(40, { from: 'random' })
+}, 0)
+.init();
+
+const toggleAccessibleClone = () => {
+  showAccessibleClone.alternate().resume();
+}
+ 
+$button.addEventListener('click', toggleAccessibleClone);return function() {
+$button.removeEventListener('click', showAccessibleClone);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-settings-accessible" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-split-parameters">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      Split parameters      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-split-parameters" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text-split-split-parameters'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+  <article class="docs-demo theme-color theme-color-10" data-id="text-split-split-parameters-class">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      class      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-split-parameters-class" class="docs-demo-content">
+    <style async class="docs-demo-css">
+    .split-char {
+  color: var(--hex-current-1);
+  background-color: var(--hex-current-3);
+  outline: 1px solid var(--hex-current-2);
+  border-radius: .25rem;
+}    </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Custom CSS class.</p>
+</div>
+<div class="small row"></div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Custom CSS class.</p>
+</div>
+<div class="small row"></div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-split-parameters-class'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+text.split('p', {
+  chars: { class: 'split-char' },
+});
+
+animate('.split-char', {
+  y: ['0rem', '-1rem', '0rem'],
+  loop: true,
+  delay: stagger(100)
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-split-parameters-class" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-split-parameters-wrap">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      wrap      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-split-parameters-wrap" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split and wrap text.</p>
+</div>
+<div class="small row"></div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split and wrap text.</p>
+</div>
+<div class="small row"></div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-split-parameters-wrap'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const { chars } = text.split('p', {
+  chars: { wrap: true },
+});
+
+animate(chars, {
+  y: ['75%', '0%'],
+  duration: 750,
+  ease: 'out(3)',
+  delay: stagger(50),
+  loop: true,
+  alternate: true,
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-split-parameters-wrap" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-split-parameters-clone">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      clone      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-split-parameters-clone" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split and clone text.</p>
+</div>
+<div class="small row"></div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split and clone text.</p>
+</div>
+<div class="small row"></div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-split-parameters-clone'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const { chars } = text.split('p', {
+  chars: {
+    wrap: 'clip',
+    clone: 'bottom'
+  },
+});
+
+createTimeline()
+.add(chars, {
+  y: '-100%',
+  loop: true,
+  loopDelay: 350,
+  duration: 750,
+  ease: 'inOut(2)',
+}, stagger(150, { from: 'center' }));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-split-parameters-clone" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-html-template">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      HTML template      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-html-template" class="docs-demo-content">
+    <style async class="docs-demo-css">
+    .char-3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50% 1rem;
+}
+
+.face {
+  position: absolute;
+  left: 0;
+}
+
+.face-bottom {
+  top: 100%;
+  transform-origin: 50% 0%;
+  transform: rotateX(90deg);
+}
+
+.face-top {
+  bottom: 100%;
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg);
+}    </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Custom HTML template.</p>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Custom HTML template.</p>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-html-template'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+text.split('p', {
+  chars: `<span class="char-3d word-{i}">
+    <em class="face face-top">{value}</em>
+    <em class="face-front">{value}</em>
+    <em class="face face-bottom">{value}</em>
+  </span>`,
+});
+
+const charsStagger = stagger(100, { start: 0 });
+
+createTimeline({ defaults: { ease: 'linear', loop: true, duration: 750 }})
+.add('.char-3d', { rotateX: -90 }, charsStagger)
+.add('.char-3d .face-top', { opacity: [.5, 0] }, charsStagger)
+.add('.char-3d .face-front', { opacity: [1, .5] }, charsStagger)
+.add('.char-3d .face-bottom', { opacity: [.5, 1] }, charsStagger);
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-html-template" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-methods">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      TextSplitter methods      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-methods" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-methods'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+  <article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-methods-addeffect">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      addEffect()      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-methods-addeffect" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="iframe-content resizable">
+  <div class="medium centered row">
+    <p class="text-l">Hover the words to animate their color, then resize the text.</p>
+  </div>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="iframe-content resizable">
+  <div class="medium centered row">
+    <p class="text-l">Hover the words to animate their color, then resize the text.</p>
+  </div>
+</div>        </div>
+        <!-- IFRAME CODE -->
+    <input id="docs-demo-js-text-split-textsplitter-methods-addeffect" type="text" class="docs-demo-js" value="
+      import {
+        animate,
+        createTimeline,
+        createTimer,
+        createAnimatable,
+        createDraggable,
+        createScope,
+        onScroll,
+        engine,
+        eases,
+        createSpring,
+        stagger,
+        utils,
+        svg,
+        waapi,
+        text,
+      } from '/assets/js/anime.esm.js';
+      const colors = [];
+
+text.split('p', {
+  lines: true,
+})
+/* Registering an animation to the split */
+.addEffect(({ lines }) => animate(lines, {
+  y: ['50%', '-50%'],
+  loop: true,
+  alternate: true,
+  delay: stagger(400),
+  ease: 'inOutQuad',
+}))
+/* Registering a callback to the split */
+.addEffect(split => {
+  split.words.forEach(($el, i) => {
+    const color = colors[i];
+    if (color) utils.set($el, { color });
+    $el.addEventListener('pointerenter', () => {
+      animate($el, {
+        color: utils.randomPick(['#FF4B4B', '#FFCC2A', '#B7FF54', '#57F695']),
+        duration: 250,
+      })
+    });
+  });
+  return () => {
+    /* Called between each split */
+    split.words.forEach((w, i) => colors[i] = utils.get(w, 'color'));
+  }
+});    " />
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-methods-addeffect" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-methods-revert">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      revert()      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-methods-revert" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>単語ごとに分割します。</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Revert</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Split text by words.<br>単語ごとに分割します。</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Revert</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-methods-revert'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const [ $button ] = utils.$('button');
+const [ $p ] = utils.$('p');
+
+const split = text.split('p', {
+  words: { wrap: 'clip' },
+  debug: true,
+});
+
+split.addEffect((self) => animate(self.words, {
+  y: ['100%', '0%'],
+  duration: 1250,
+  ease: 'out(3)',
+  delay: stagger(100),
+  loop: true,
+  alternate: true,
+}));
+
+const revertSplit = () => {
+  split.revert();
+  $button.setAttribute('disabled', 'true');
+}
+
+$button.addEventListener('click', revertSplit);return function() {
+$button.removeEventListener('click', revertSplit);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-methods-revert" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-methods-refresh">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      refresh()      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-methods-refresh" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large centered row">
+  <p class="text-xl">Lorem ipsum dolor</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Add word</button>
+    <button>Remove word</button>
+  </fieldset>
+</div>    <style>#text-split-textsplitter-methods-refresh .docs-demo-template { display: none }</style>    </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large centered row">
+  <p class="text-xl">Lorem ipsum dolor</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Add word</button>
+    <button>Remove word</button>
+  </fieldset>
+</div>    <style>#text-split-textsplitter-methods-refresh .docs-demo-template { display: none }</style>    </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-methods-refresh'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const [ $add, $remove ] = utils.$('button');
+const [ $p ] = utils.$('p');
+
+const split = text.split('p', {
+  lines: { wrap: 'clip' },
+  debug: true,
+});
+
+split.addEffect((self) => animate(self.words, {
+  y: ['0%', '75%'],
+  loop: true,
+  alternate: true,
+  ease: 'inOutQuad',
+  delay: stagger(150)
+}));
+
+const words = ['sit', 'amet', 'consectetur', 'adipiscing', 'elit', 'tortor', 'lectus', 'aliquet'];
+
+const addRandomWord = () => {
+  split.html += ' ' + utils.randomPick(words);
+  split.refresh();
+}
+
+const removeRandomWord = () => {
+  const words = split.words.map(w => w.innerHTML);
+  split.html = (words.splice(utils.random(0, words.length - 1), 1), words).join(' ');
+  split.refresh();
+}
+
+$add.addEventListener('click', addRandomWord);
+$remove.addEventListener('click', removeRandomWord);return function() {
+$add.removeEventListener('click', addRandomWord);
+$remove.addEventListener('click', removeRandomWord);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="text-split-textsplitter-methods-refresh" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-10" data-id="text-split-textsplitter-properties">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      TextSplitter properties      <!--  -->
+                </h2>
+  </header>
+  <div id="text-split-textsplitter-properties" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text-split-textsplitter-properties'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-11" data-id="utilities">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Utilities      <!--  -->
@@ -22356,6 +24399,7 @@ window.demos['utilities'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -22372,7 +24416,7 @@ window.demos['utilities'] = function(
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-10" data-id="utilities-dollar-sign">
+  <article class="docs-demo theme-color theme-color-11" data-id="utilities-dollar-sign">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       $()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -22460,6 +24504,7 @@ window.demos['utilities-dollar-sign'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 // Targets all the '.square' elements
@@ -22493,7 +24538,7 @@ createScope({ root: '.row:nth-child(2)' }).add(() => {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-get">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-get">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       get()      <!--  -->
@@ -22545,6 +24590,7 @@ window.demos['utilities-get'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $raw, $rem, $num ] = utils.$('.value');
@@ -22586,7 +24632,7 @@ animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-set">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-set">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       set()      <!--  -->
@@ -22642,6 +24688,7 @@ window.demos['utilities-set'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $set, $revert ] = utils.$('button');
@@ -22692,7 +24739,7 @@ $revert.removeEventListener('click', revertStyles);}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-remove">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-remove">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       remove()      <!--  -->
@@ -22754,6 +24801,7 @@ window.demos['utilities-remove'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 let updates = 0;
@@ -22799,7 +24847,7 @@ $removeSecondButton.onclick = () => {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-clean-inline-styles">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-clean-inline-styles">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       cleanInlineStyles()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -22843,6 +24891,7 @@ window.demos['utilities-clean-inline-styles'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 utils.set('.square', { scale: .75 });
@@ -22879,7 +24928,110 @@ animate('.clean-styles', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-random">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-createtimekeeper">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      keepTime()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
+                </h2>
+  </header>
+  <div id="utilities-createtimekeeper" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row spaced-evenly">
+  <div class="col">
+    <div class="clock input"></div>
+  </div>
+  <div class="col">
+    <div class="clock lerped"></div>
+  </div>
+  <div class="col">
+    <div class="clock lerped-15"></div>
+  </div>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Switch target</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row spaced-evenly">
+  <div class="col">
+    <div class="clock input"></div>
+  </div>
+  <div class="col">
+    <div class="clock lerped"></div>
+  </div>
+  <div class="col">
+    <div class="clock lerped-15"></div>
+  </div>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Switch target</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['utilities-createtimekeeper'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  createSpring,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  createViewer,
+) {
+const [ $button ] = utils.$('button');
+const clocks = utils.$('.clock');
+let targetIndex = 0;
+
+const animateNextTarget = utils.keepTime(() => {
+  if (targetIndex > clocks.length - 1) targetIndex = 0;
+  return animate(clocks[targetIndex++], {
+    color: ['#B7FF54', '#FF4B4B'],
+    rotate: 360,
+    ease: 'linear',
+    duration: 8000,
+    loop: true,
+  })
+});
+
+animateNextTarget();
+
+$button.addEventListener('click', animateNextTarget);return function() {
+$button.removeEventListener('click', animateNextTarget);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="demo-reload-button" data-id="utilities-createtimekeeper" title="Refresh demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 6.125A5.875 5.875 0 0 1 17.875 12H20.5L17 15.5 13.5 12h2.625a4.125 4.125 0 0 0-3.92-4.12L12 7.875a4.125 4.125 0 1 0 2.916 7.042l1.238 1.237A5.875 5.875 0 1 1 12 6.124z"/>
+  </g>
+</svg>
+    </button>
+        <button class="minimise-demo-button" title="Minimize demo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+    </button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-random">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       random()      <!--  -->
@@ -22931,6 +25083,7 @@ window.demos['utilities-random'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 utils.set('.square', {
@@ -22958,7 +25111,7 @@ utils.set('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-random-pick">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-random-pick">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       randomPick()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23010,12 +25163,13 @@ window.demos['utilities-random-pick'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 utils.set('.letter', {
   x: () => utils.randomPick([5, 9, 13, 17]) + 'rem',
   scale: () => utils.randomPick([1, 1.25, 1.5, 1.75]),
-  color: () => `var(--hex-${utils.randomPick(['red', 'orange', 'yellow'])})`,
+  color: () => `var(--hex-${utils.randomPick(['red', 'orange', 'yellow'])}-1)`,
   innerHTML: () => utils.randomPick('ABCD'),
 });
 }
@@ -23038,7 +25192,7 @@ utils.set('.letter', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-shuffle">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-shuffle">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       shuffle()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23053,7 +25207,7 @@ utils.set('.letter', {
   position: absolute;
   left: 0;
   top: 0;
-  background-color: rgba(var(--rgb-current), .25);
+  background-color: rgba(var(--rgb-current-1), .25);
 }
 
 #utilities-shuffle .docs-demo-template .square {
@@ -23104,6 +25258,7 @@ window.demos['utilities-shuffle'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $shuffle ] = utils.$('button');
@@ -23138,7 +25293,7 @@ $shuffle.removeEventListener('click', shuffle);}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-sync">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-sync">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       sync()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23190,6 +25345,7 @@ window.demos['utilities-sync'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -23231,7 +25387,7 @@ $range.removeEventListener('input', updateSpeed);}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-lerp">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-lerp">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       lerp()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23287,6 +25443,7 @@ window.demos['utilities-lerp'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $input ] = utils.$('.input');
@@ -23343,7 +25500,7 @@ loop.cancel();}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-round">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-round">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       round()      <!--  -->
@@ -23391,6 +25548,7 @@ window.demos['utilities-round'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.normal', {
@@ -23425,7 +25583,7 @@ animate('.rounded', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-clamp">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-clamp">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       clamp()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23473,6 +25631,7 @@ window.demos['utilities-clamp'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.normal', {
@@ -23509,7 +25668,7 @@ animate('.clamped', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-snap">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-snap">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       snap()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23557,6 +25716,7 @@ window.demos['utilities-snap'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.normal', {
@@ -23593,7 +25753,7 @@ animate('.snapped', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-wrap">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-wrap">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       wrap()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23641,6 +25801,7 @@ window.demos['utilities-wrap'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.normal', {
@@ -23677,7 +25838,7 @@ animate('.wrapped', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-map-range">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-map-range">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       mapRange()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23725,6 +25886,7 @@ window.demos['utilities-map-range'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.normal', {
@@ -23761,7 +25923,7 @@ animate('.mapped', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-interpolate">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-interpolate">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       interpolate()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23809,6 +25971,7 @@ window.demos['utilities-interpolate'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.normal', {
@@ -23845,7 +26008,7 @@ animate('.interpolated', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-round-pad">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-round-pad">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       roundPad()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23883,6 +26046,7 @@ window.demos['utilities-round-pad'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.value', {
@@ -23911,7 +26075,7 @@ animate('.value', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-pad-start">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-pad-start">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       padStart()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -23949,6 +26113,7 @@ window.demos['utilities-pad-start'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.value', {
@@ -23977,7 +26142,7 @@ animate('.value', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-pad-end">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-pad-end">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       padEnd()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -24015,6 +26180,7 @@ window.demos['utilities-pad-end'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.value', {
@@ -24043,7 +26209,7 @@ animate('.value', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-deg-to-rad">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-deg-to-rad">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       degToRad()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -24091,6 +26257,7 @@ window.demos['utilities-deg-to-rad'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const radAnimatable = createAnimatable('.rad', {
@@ -24128,7 +26295,7 @@ const degAnimation = animate($deg, {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-rad-to-deg">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-rad-to-deg">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       radToDeg()      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -24176,6 +26343,7 @@ window.demos['utilities-rad-to-deg'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const degAnimatable = createAnimatable('.deg', {
@@ -24213,7 +26381,7 @@ const degAnimation = animate($rad, {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-10" data-id="utilities-chain-able-utility-functions">
+<article class="docs-demo theme-color theme-color-11" data-id="utilities-chain-able-utility-functions">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Chain-able utility functions      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -24251,6 +26419,7 @@ window.demos['utilities-chain-able-utility-functions'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 animate('.value', {
@@ -24281,7 +26450,7 @@ animate('.value', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Web Animation API      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -24290,44 +26459,18 @@ animate('.value', {
   <div id="web-animation-api" class="docs-demo-content">
     <style async class="docs-demo-css">
     #web-animation-api .text-xl {
-  color: currentColor;
   font-size: 1.5rem;
+  color: currentColor;
   letter-spacing: 0.06em;
-  margin-left: .07em;
-  margin-top: -.2em;
-}
-
-#web-animation-api .text-xl span {
-  margin-top: calc(.25rem + 1px);
 }    </style>
     <div class="docs-demo-html docs-demo-live demo">
-    <h2 class="large grid centered square-grid text-xl">
-  <span>H</span>
-  <span>E</span>
-  <span>L</span>
-  <span>L</span>
-  <span>O</span>
-  <span>&nbsp;</span>
-  <span>W</span>
-  <span>A</span>
-  <span>A</span>
-  <span>P</span>
-  <span>I</span>
-</h2>        </div>
+    <div class="large grid centered square-grid">
+  <h2 class="text-xl">HELLO WAAPI</h2>
+</div>        </div>
     <div class="docs-demo-html docs-demo-template">
-    <h2 class="large grid centered square-grid text-xl">
-  <span>H</span>
-  <span>E</span>
-  <span>L</span>
-  <span>L</span>
-  <span>O</span>
-  <span>&nbsp;</span>
-  <span>W</span>
-  <span>A</span>
-  <span>A</span>
-  <span>P</span>
-  <span>I</span>
-</h2>        </div>
+    <div class="large grid centered square-grid">
+  <h2 class="text-xl">HELLO WAAPI</h2>
+</div>        </div>
     <script class="docs-demo-js">
 window.demos['web-animation-api'] = function(
   ctx,
@@ -24345,9 +26488,12 @@ window.demos['web-animation-api'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
-waapi.animate('span', {
+const { chars } = text.split('h2', { words: false, chars: true });
+
+waapi.animate(chars, {
   translate: `0 -2rem`,
   delay: stagger(100),
   duration: 600,
@@ -24375,7 +26521,7 @@ waapi.animate('span', {
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-when-to-use-waapi">
+  <article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-when-to-use-waapi">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       When to use WAAPI      <!--  -->
@@ -24417,6 +26563,7 @@ window.demos['web-animation-api-when-to-use-waapi'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 // WAAPI Animation
@@ -24461,7 +26608,7 @@ animate(data, {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-hardware-accelerated-animations">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-hardware-accelerated-animations">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Hardware-accelerated animations      <!--  -->
@@ -24515,6 +26662,7 @@ window.demos['web-animation-api-hardware-accelerated-animations'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $block ] = utils.$('.button');
@@ -24576,7 +26724,7 @@ $block.removeEventListener('click', toggleCPU);}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Improvements to the Web Animation API      <!--  -->
@@ -24606,6 +26754,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api'] = functi
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -24622,7 +26771,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api'] = functi
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-sensible-defaults">
+  <article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-sensible-defaults">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Sensible defaults      <!--  -->
@@ -24656,6 +26805,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-sensible-d
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.circle', { translate: '16rem' });
@@ -24679,7 +26829,7 @@ waapi.animate('.circle', { translate: '16rem' });
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-multi-targets-animation">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-multi-targets-animation">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Multi-targets animation      <!--  -->
@@ -24725,6 +26875,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-multi-targ
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.circle', {
@@ -24753,7 +26904,7 @@ waapi.animate('.circle', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-default-units">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-default-units">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Default units      <!--  -->
@@ -24805,6 +26956,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-default-un
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -24834,7 +26986,7 @@ waapi.animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-function-based-values">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-function-based-values">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Function based values      <!--  -->
@@ -24886,6 +27038,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-function-b
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -24915,7 +27068,7 @@ waapi.animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-individual-css-transforms">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-individual-css-transforms">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Individual CSS transforms      <!--  -->
@@ -24967,6 +27120,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-individual
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const $squares = utils.$('.square');
@@ -25002,7 +27156,7 @@ animateSquares();
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-individual-property-parameters">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-individual-property-parameters">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Individual property parameters      <!--  -->
@@ -25046,6 +27200,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-individual
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -25080,7 +27235,7 @@ waapi.animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-improvements-to-the-web-animation-api-spring-and-custom-easings">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-improvements-to-the-web-animation-api-spring-and-custom-easings">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Spring and custom easings      <!--  -->
@@ -25124,6 +27279,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-spring-and
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.circle', {
@@ -25152,7 +27308,7 @@ waapi.animate('.circle', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-api-differences-with-native-waapi">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-api-differences-with-native-waapi">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       API differences with native WAAPI      <!--  -->
@@ -25182,6 +27338,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -25198,7 +27355,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi'] = function(
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-api-differences-with-native-waapi-iterations">
+  <article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-api-differences-with-native-waapi-iterations">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       iterations      <!--  -->
@@ -25244,6 +27401,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-iterations'] =
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -25272,7 +27430,7 @@ waapi.animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-api-differences-with-native-waapi-direction">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-api-differences-with-native-waapi-direction">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       direction      <!--  -->
@@ -25318,6 +27476,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-direction'] = 
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -25345,7 +27504,7 @@ waapi.animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-api-differences-with-native-waapi-easing">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-api-differences-with-native-waapi-easing">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       easing      <!--  -->
@@ -25391,6 +27550,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-easing'] = fun
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -25418,7 +27578,7 @@ waapi.animate('.square', {
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-api-differences-with-native-waapi-finished">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-api-differences-with-native-waapi-finished">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       finished      <!--  -->
@@ -25460,6 +27620,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-finished'] = f
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -25491,7 +27652,7 @@ animation.then(() => $value.textContent = 'fulfilled');
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-11" data-id="web-animation-api-waapi-convertease">
+<article class="docs-demo theme-color theme-color-12" data-id="web-animation-api-waapi-convertease">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       waapi.convertEase()      <!--  -->
@@ -25543,6 +27704,7 @@ window.demos['web-animation-api-waapi-convertease'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const springs = [
@@ -25582,7 +27744,7 @@ document.querySelectorAll('#web-animation-api-waapi-convertease .demo .square').
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine">
+<article class="docs-demo theme-color theme-color-13" data-id="engine">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Engine      <!-- <span title="Is new in V4" class="badge">V4</span> -->
@@ -25612,6 +27774,7 @@ window.demos['engine'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -25628,7 +27791,7 @@ window.demos['engine'] = function(
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-12" data-id="engine-engine-parameters">
+  <article class="docs-demo theme-color theme-color-13" data-id="engine-engine-parameters">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Engine parameters      <!--  -->
@@ -25658,6 +27821,7 @@ window.demos['engine-engine-parameters'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -25674,7 +27838,7 @@ window.demos['engine-engine-parameters'] = function(
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-12" data-id="engine-engine-parameters-timeunit-seconds-milliseconds">
+  <article class="docs-demo theme-color theme-color-13" data-id="engine-engine-parameters-timeunit-seconds-milliseconds">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       timeUnit (seconds / milliseconds)      <!--  -->
@@ -25742,6 +27906,7 @@ window.demos['engine-engine-parameters-timeunit-seconds-milliseconds'] = functio
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $timeS ] = utils.$('.time-s');
@@ -25793,7 +27958,7 @@ engine.timeUnit = 'ms';}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-parameters-speed">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-parameters-speed">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       speed      <!--  -->
@@ -25833,6 +27998,7 @@ window.demos['engine-engine-parameters-speed'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -25879,7 +28045,7 @@ engine.speed = 1;}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-parameters-fps">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-parameters-fps">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       fps      <!--  -->
@@ -25919,6 +28085,7 @@ window.demos['engine-engine-parameters-fps'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -25965,7 +28132,7 @@ engine.fps = 120;}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-parameters-precision">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-parameters-precision">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       precision      <!--  -->
@@ -26005,6 +28172,7 @@ window.demos['engine-engine-parameters-precision'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -26051,7 +28219,7 @@ engine.precision = 4;}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-parameters-pauseondocumenthidden">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-parameters-pauseondocumenthidden">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       pauseOnDocumentHidden      <!--  -->
@@ -26117,6 +28285,7 @@ window.demos['engine-engine-parameters-pauseondocumenthidden'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $globalTime ] = utils.$('.global-time');
@@ -26171,7 +28340,7 @@ clearInterval(globalTimer);}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-methods">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-methods">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Engine methods      <!--  -->
@@ -26201,6 +28370,7 @@ window.demos['engine-engine-methods'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -26217,7 +28387,7 @@ window.demos['engine-engine-methods'] = function(
     </button>
   </div>
 </article>
-  <article class="docs-demo theme-color theme-color-12" data-id="engine-engine-methods-update">
+  <article class="docs-demo theme-color theme-color-13" data-id="engine-engine-methods-update">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       update()      <!--  -->
@@ -26247,6 +28417,7 @@ window.demos['engine-engine-methods-update'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 // Prevents Anime.js from using its own loop
@@ -26319,7 +28490,7 @@ engine.useDefaultMainLoop = true;}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-methods-pause">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-methods-pause">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       pause()      <!--  -->
@@ -26361,6 +28532,7 @@ window.demos['engine-engine-methods-pause'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -26425,7 +28597,7 @@ engine.resume();}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-methods-resume">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-methods-resume">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       resume()      <!--  -->
@@ -26467,6 +28639,7 @@ window.demos['engine-engine-methods-resume'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -26516,7 +28689,7 @@ engine.resume();}
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-properties">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-properties">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Engine properties      <!--  -->
@@ -26546,6 +28719,7 @@ window.demos['engine-engine-properties'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
@@ -26562,7 +28736,7 @@ window.demos['engine-engine-properties'] = function(
     </button>
   </div>
 </article>
-<article class="docs-demo theme-color theme-color-12" data-id="engine-engine-defaults">
+<article class="docs-demo theme-color theme-color-13" data-id="engine-engine-defaults">
   <header class="docs-demo-header">
     <h2 class="text-ui">
       Engine defaults      <!--  -->
@@ -26592,6 +28766,7 @@ window.demos['engine-engine-defaults'] = function(
   utils,
   svg,
   waapi,
+  text,
   createViewer,
 ) {
 
