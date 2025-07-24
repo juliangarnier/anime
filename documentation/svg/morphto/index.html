@@ -2007,9 +2007,9 @@
           <a class="docs-info-header" title="morphTo()" href="/documentation/svg/morphto">
             morphTo()                                              </a>
         </h1>
-        <p>Creates a morphing animation from one SVG shape to another by passing the <code>morphTo()</code> function to the <code>d</code> property of a <code>SVGPathElement</code> or to the <code>points</code> property of a <code>SVGPolylineElement</code> or a <code>SVGPolygonElement</code>.</p>
-<p>An optional <code>precision</code> parameter can be set to configure the amount of points generated to morph the two shapes.<br>
-If the precision parameter is set <code>0</code>, now points extrapolation is generated.</p>
+        <p>Creates a morphing animation from one SVG shape to another by passing the <code>d</code> property of a <code>SVGPathElement</code> or to the <code>points</code> property of a <code>SVGPolylineElement</code> or a <code>SVGPolygonElement</code> to <code>svg.morphTo()</code>.</p>
+<p>An optional <code>precision</code> parameter can be set to configure the amount of points generated to morph between the two shapes.<br>
+If the precision parameter is set <code>0</code>, no point extrapolation takes place.</p>
 <pre><code class="language-js">svg.morphTo(shapeTarget, precision);</code></pre>
 <h2>Parameters</h2>
 <table>
