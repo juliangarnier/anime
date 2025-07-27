@@ -15,7 +15,7 @@
   <meta name="twitter:description" content="A fast and versatile JavaScript animation library">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://animejs.com/media/site/5e9b48763d-1744100039/anime-js-sharing-image.png">
-  <link href="/assets/css/styles.css?v=5" rel="stylesheet"></head>
+  <link href="/assets/css/styles.css?v=4.1.2" rel="stylesheet"></head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
 <script>
   window.paths = {
@@ -2048,15 +2048,28 @@
 </table>
 <h2>Default</h2>
 <p><code>'replace'</code> if the animation targets count is below <code>1000</code>; otherwise, the default composition is set to <code>'none'</code> on the <span class="badge">JS</span> version if no composition mode is defined.</p>
+<h2>Additive animations</h2>
+<p>The <code>'blend'</code> mode lets you create <em>additive animations</em>. This type of animation allows you to smoothly blend two animations of the same property on the same target together. This mode works best on properties that visually <em>move</em> on the screen, like <code>'translate'</code>, <code>'scale'</code>, and <code>'rotation'</code>.</p>
+<div class="block info">
+<h2><code>'blend'</code> mode gotchas</h2>
+<p>Blending only works by playing <strong>forward</strong> two or more animations with composition <code>'blend'</code> simultaneously.</p>
+<div class="block warning">
+<p>It is not currently possible to use composition <code>'blend'</code> with:</p>
+<ul>
+<li>multiple <a href="/documentation/animation/keyframes">keyframes</a></li>
+<li><a href="/documentation/animation/tween-value-types/color-value">color</a> values</li>
+<li>the <a href="/documentation/animation/animation-methods/reverse"><code>reverse()</code></a> method</li>
+<li>the <a href="/documentation/animation/animation-playback-settings/loop"><code>loop</code></a> parameter</li>
+<li>the <a href="/documentation/animation/animation-playback-settings/reversed"><code>reversed</code></a> parameter</li>
+<li>the <a href="/documentation/animation/animation-playback-settings/alternate"><code>alternate</code></a> parameter</li>
+</ul>
+</div>
+<p>Blended animations should be treated differently and should only be used when you actually need to mix multiple animations together.</p>
+</div>
 <div class="block info">
 <p>To change the default value globally, update the <code>engine.defaults</code> object.</p>
 <pre><code class="language-js">import { engine } from 'animejs';
 engine.defaults.composition = 'blend';</code></pre>
-</div>
-<h2>Additive animations</h2>
-<p>The <code>'blend'</code> mode lets you create <em>additive animations</em>. This type of animation allows you to smoothly blend two animations of the same property on the same target together. This mode works best on properties that visually <em>move</em> on the screen, like <code>'translate'</code>, <code>'scale'</code>, and <code>'rotation'</code>.</p>
-<div class="block warning">
-It is not currently possible to use the additive mode when using keyframes or with color values.
 </div>      </div>
                   <section class="code-preview theme-color theme-color-2">
         <div class="code-preview-content">
@@ -2237,5 +2250,5 @@ $blend.addEventListener(&#039;mouseleave&#039;, leaveBlend);</code></pre>
 
 <!-- !DEMOS -->
   </div>
-<script src="/assets/js/scripts.js?v=5"></script></body>
+<script src="/assets/js/scripts.js?v=4.1.2"></script></body>
 </html>
