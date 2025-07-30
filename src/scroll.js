@@ -210,8 +210,8 @@ class ScrollContainer {
       height = this.winHeight;
     } else {
       const elRect = $el.getBoundingClientRect();
-      width = elRect.width;
-      height = elRect.height;
+      width = $el.clientWidth;
+      height = $el.clientHeight;
       this.top = elRect.top;
       this.left = elRect.left;
     }
