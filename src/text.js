@@ -28,7 +28,7 @@ import {
   setValue,
 } from './values.js';
 
-const segmenter = !isUnd(Intl) && Intl.Segmenter;
+const segmenter = (typeof Intl !== undefined) && Intl.Segmenter;
 const valueRgx = /\{value\}/g;
 const indexRgx = /\{i\}/g;
 const whiteSpaceGroupRgx = /(\s+)/;
