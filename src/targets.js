@@ -45,6 +45,7 @@ export function getNodeList(v) {
  */
 export function parseTargets(targets) {
   if (isNil(targets)) return /** @type {TargetsArray} */([]);
+  if (!isBrowser) return /** @type {JSTargetsArray} */(isArr(targets) && targets.flat(Infinity) || [targets]);
   if (isArr(targets)) {
     const flattened = targets.flat(Infinity);
     /** @type {TargetsArray} */
@@ -85,7 +86,6 @@ export function parseTargets(targets) {
     }
     return parsed;
   }
-  if (!isBrowser) return /** @type {JSTargetsArray} */([targets]);
   const nodeList = getNodeList(targets);
   if (nodeList) return /** @type {DOMTargetsArray} */(Array.from(nodeList));
   return /** @type {TargetsArray} */([targets]);
