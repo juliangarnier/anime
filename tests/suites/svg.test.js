@@ -162,4 +162,37 @@ suite('SVG', () => {
     expect(feTurbulenceEl.hasAttribute('base-frequency')).to.equal(false);
   });
 
+  test('svg.createMotionPath with offset', resolve => {
+    const squareEl = document.querySelector('#square');
+    const [pathEl] = utils.$('#tests path');
+    const pathSelector = 'motion-path-offset-test';
+    pathEl.id = pathSelector;
+
+    const motionPath = svg.createMotionPath(`#${pathSelector}`);
+    const anim = animate(squareEl, {
+      ...motionPath,
+      duration: 10,
+      autoplay: false,
+    });
+    anim.seek(0);
+
+    const initialTransform = squareEl.style.transform;
+    const offset = 0.5;
+    const motionPathWithOffset = svg.createMotionPath(`#${pathSelector}`, offset);
+    const animWithOffset = animate(squareEl, {
+      ...motionPathWithOffset,
+      duration: 10,
+      autoplay: false,
+    });
+    animWithOffset.seek(0);
+    
+    const offsetTransform = squareEl.style.transform;
+    expect(initialTransform).to.not.equal(offsetTransform);
+    animWithOffset.seek(animWithOffset.duration);
+    const finalOffsetTransform = squareEl.style.transform;
+    expect(finalOffsetTransform).to.equal(offsetTransform);
+
+    resolve();
+  });
+
 });
