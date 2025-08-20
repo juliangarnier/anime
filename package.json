@@ -41,6 +41,7 @@
   ],
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^24.3.0",
     "browser-sync": "^2.29.3",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
