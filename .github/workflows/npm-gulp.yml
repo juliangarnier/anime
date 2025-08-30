@@ -1,3 +1,9 @@
+
+- name: Install dependencies
+  run: npm install
+
+- name: Install Gulp
+  run: npm install --save-dev gulp
 name: NodeJS with Gulp
 
 on:
