@@ -37,8 +37,19 @@ const getPath = path => {
  * @return {FunctionValue}
  */
 const morphTo = (path2, precision = .33) => ($path1) => {
+  const tagName1 = ($path1.tagName || '').toLowerCase();
+  if (!tagName1.match(/^(path|polygon|polyline)$/)) {
+    throw new Error(`Can't morph a <${$path1.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
+  }
   const $path2 = /** @type {SVGGeometryElement} */(getPath(path2));
-  if (!$path2) return;
+
+  if (!$path2) {
+    throw new Error("Can't morph to an invalid target. 'path2' must resolve to an existing <path>, <polygon> or <polyline> SVG element.");
+  }
+  const tagName2 = ($path2.tagName || '').toLowerCase();
+  if (!tagName2.match(/^(path|polygon|polyline)$/)) {
+    throw new Error(`Can't morph a <${$path2.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
+  }
   const isPath = $path1.tagName === 'path';
   const separator = isPath ? ' ' : ',';
   const previousPoints = $path1[morphPointsSymbol];
