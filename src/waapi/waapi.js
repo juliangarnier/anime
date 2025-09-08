@@ -475,21 +475,26 @@ export class WAAPIAnimation {
   }
 
   /**
-   * @param  {WAAPICallback} [callback]
-   * @return {Promise}
+   * @param  {(value?: any) => any} [callback]
+   * @return {PromiseLike<any>}
    */
   then(callback = noop) {
-    const then = this.then;
-    const onResolve = () => {
-      this.then = null;
-      callback(this);
-      this.then = then;
-      this._resolve = noop;
-    }
-    return new Promise(r => {
-      this._resolve = () => r(onResolve());
+    return new Promise(resolve => {
+      this._resolve = () => {
+        // Temporarily disable then to prevent infinite recursion if returned by an async function
+        // https://github.com/juliangarnierorg/anime-beta/issues/26
+        const currentThen = this.then;
+        this.then = null;
+        try {
+          callback(this);
+        } finally {
+          // Restore the then method
+          this.then = currentThen;
+          this._resolve = noop;
+        }
+        resolve(this);
+      };
       if (this.completed) this._resolve();
-      return this;
     });
   }
 }
