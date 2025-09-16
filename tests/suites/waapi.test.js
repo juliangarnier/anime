@@ -198,6 +198,38 @@ suite('WAAPI', () => {
     });
   });
 
+  test("seek(0) an from-to stagger animation", (resolve) => {
+    const targets = utils.$(".target-class");
+
+    const anim = {
+      backgroundColor: { from: "rgb(255, 0, 0)", to: "rgb(0, 0, 255)" },
+      opacity: { from: "0.5", to: "1" },
+    };
+
+    const animation = waapi.animate(targets, {
+      ...anim,
+      delay: stagger(2),
+      duration: 10,
+      ease: "linear",
+      onComplete: () => {
+        targets.forEach(($el) => {
+          expect(utils.get($el, "opacity")).to.equal(anim.opacity.to);
+          expect(utils.get($el, "backgroundColor")).to.equal(
+            anim.backgroundColor.to
+          );
+        });
+        animation.seek(0);
+        targets.forEach(($el) => {
+          expect(utils.get($el, "opacity")).to.equal(anim.opacity.from);
+          expect(utils.get($el, "backgroundColor")).to.equal(
+            anim.backgroundColor.from
+          );
+        });
+        resolve();
+      },
+    });
+  });
+
   test('utils.remove() a single target', resolve => {
     const targets = utils.$('.target-class');
     waapi.animate(targets, {
