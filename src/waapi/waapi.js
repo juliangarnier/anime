@@ -313,6 +313,8 @@ export class WAAPIAnimation {
           tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, targetsLength) * timeScale;
           /** @type {CompositeOperation} */
           tweenParams.composite = /** @type {CompositeOperation} */(setValue(tweenOptions.composition, composite));
+          /** @type {FillMode} */
+          tweenParams.fill = !isUnd(tweenOptions.from) ? /** @type {FillMode} */'both' : fill;
           /** @type {String} */
           tweenParams.easing = parseWAAPIEasing(tweenOptionsEase);
           parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
@@ -392,13 +394,6 @@ export class WAAPIAnimation {
     const t = time * (globals.timeScale === 1 ? 1 : K);
 
     this.forEach((anim) => {
-      // Any time lower than the delay will not render any styles (inside the delay phase waapi does not compute styles),
-      //  so let's do it manually to go to first frame to get them.
-      if (t <= anim.effect.getComputedTiming().delay) {
-        anim.currentTime = anim.effect.getComputedTiming().delay;
-        anim.commitStyles();
-      }
-
       // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
       // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
       // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event

@@ -274,7 +274,7 @@ const shuffle = items => {
  * @param  {Number} v
  * @return {Number}
  */
-const clampInfinity = v => v === Infinity ? maxValue : v === -Infinity ? -1e12 : v;
+const clampInfinity = v => v === Infinity ? maxValue : v === -Infinity ? -maxValue : v;
 /**
  * @param  {Number} v
  * @return {Number}
@@ -1215,7 +1215,7 @@ const createDrawableProxy = ($el, start, end) => {
                         // const v1 = round(+value.slice(0, spaceIndex), precision);
                         // const v2 = round(+value.slice(spaceIndex + 1), precision);
                         const scaleFactor = getScaleFactor($scalled);
-                        const os = v1 * -1e3 * scaleFactor;
+                        const os = v1 * -pathLength * scaleFactor;
                         const d1 = (v2 * pathLength * scaleFactor) + os;
                         const d2 = (pathLength * scaleFactor +
                             ((v1 === 0 && v2 === 1) || (v1 === 1 && v2 === 0) ? 0 : 10 * scaleFactor) - d1);
@@ -3489,6 +3489,8 @@ class WAAPIAnimation {
                     tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, targetsLength) * timeScale;
                     /** @type {CompositeOperation} */
                     tweenParams.composite = /** @type {CompositeOperation} */ (setValue(tweenOptions.composition, composite));
+                    /** @type {FillMode} */
+                    tweenParams.fill = !isUnd(tweenOptions.from) ? /** @type {FillMode} */ 'both' : fill;
                     /** @type {String} */
                     tweenParams.easing = parseWAAPIEasing(tweenOptionsEase);
                     parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
@@ -3565,7 +3567,7 @@ class WAAPIAnimation {
     /** @param {Number} time */
     set currentTime(time) {
         const t = time * (globals.timeScale === 1 ? 1 : K);
-        this.forEach(anim => {
+        this.forEach((anim) => {
             // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
             // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
             // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event
@@ -4504,7 +4506,7 @@ class Spring {
         this.m = clamp(setValue(parameters.mass, 1), 0, maxSpringParamValue);
         this.s = clamp(setValue(parameters.stiffness, 100), 1, maxSpringParamValue);
         this.d = clamp(setValue(parameters.damping, 10), .1, maxSpringParamValue);
-        this.v = clamp(setValue(parameters.velocity, 0), -1e4, maxSpringParamValue);
+        this.v = clamp(setValue(parameters.velocity, 0), -maxSpringParamValue, maxSpringParamValue);
         this.w0 = 0;
         this.zeta = 0;
         this.wd = 0;
@@ -4574,7 +4576,7 @@ class Spring {
         return this.v;
     }
     set velocity(v) {
-        this.v = clamp(setValue(v, 0), -1e4, maxSpringParamValue);
+        this.v = clamp(setValue(v, 0), -maxSpringParamValue, maxSpringParamValue);
         this.compute();
     }
 }
@@ -4846,7 +4848,7 @@ class Draggable {
         /** @type {[Number, Number, Number, Number]} */
         this.dragArea = [0, 0, 0, 0]; // x, y, w, h
         /** @type {[Number, Number, Number, Number]} */
-        this.containerBounds = [-1e12, maxValue, maxValue, -1e12]; // t, r, b, l
+        this.containerBounds = [-maxValue, maxValue, maxValue, -maxValue]; // t, r, b, l
         /** @type {[Number, Number, Number, Number]} */
         this.scrollBounds = [0, 0, 0, 0]; // t, r, b, l
         /** @type {[Number, Number, Number, Number]} */
@@ -5305,10 +5307,10 @@ class Draggable {
         const canScroll = this.canScroll;
         if (!this.containerArray && this.isOutOfBounds(scrollBounds, x, y)) {
             const [st, sr, sb, sl] = scrollBounds;
-            const t = round(clamp(y - st, -1e12, 0), 0);
+            const t = round(clamp(y - st, -maxValue, 0), 0);
             const r = round(clamp(x - sr, 0, maxValue), 0);
             const b = round(clamp(y - sb, 0, maxValue), 0);
-            const l = round(clamp(x - sl, -1e12, 0), 0);
+            const l = round(clamp(x - sl, -maxValue, 0), 0);
             new JSAnimation(scroll, {
                 x: round(scroll.x + (l ? l - gap : r ? r + gap : 0), 0),
                 y: round(scroll.y + (t ? t - gap : b ? b + gap : 0), 0),
@@ -6716,7 +6718,7 @@ class ScrollObserver {
             if (syncSmooth && isNum(syncSmooth)) {
                 if ( /** @type {Number} */(syncSmooth) < 1) {
                     const step = 0.0001;
-                    const snap = lp < p && p === 1 ? step : lp > p && !p ? -1e-4 : 0;
+                    const snap = lp < p && p === 1 ? step : lp > p && !p ? -step : 0;
                     p = round(lerp(lp, p, interpolate(.01, .2, /** @type {Number} */ (syncSmooth)), false) + snap, 6);
                 }
             }
