@@ -32,6 +32,7 @@ export const defaults = {
   autoplay: true,
   duration: K,
   delay: 0,
+  fill: 'forwards',
   loopDelay: 0,
   ease: 'out(2)',
   composition: compositionTypes.replace,

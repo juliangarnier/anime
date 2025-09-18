@@ -35,6 +35,7 @@ export {}
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number|FunctionValue} [duration]
  * @property {Number|FunctionValue} [delay]
+ * @property {String} [fill]
  * @property {Number} [loopDelay]
  * @property {EasingParam} [ease]
  * @property {'none'|'replace'|'blend'|compositionTypes} [composition]
