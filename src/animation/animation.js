@@ -697,8 +697,8 @@ export class JSAnimation extends Timer {
   }
 
   /**
-   * @param  {Callback<this>} [callback]
-   * @return {Promise}
+   * @param  {(value?: any) => any} [callback]
+   * @return {PromiseLike<any>}
    */
   then(callback) {
     return super.then(callback);
