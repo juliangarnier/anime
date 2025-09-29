@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="darkreader-lock">
   <link rel="icon" href="/assets/images/favicon.png">
-  <title>set() | Anime.js | JavaScript Animation Engine</title>
+  <title>set() | Utilities | Documentation | Anime.js | JavaScript Animation Engine</title>
   <meta name="description" content="A fast and versatile JavaScript animation library">
   <meta property="og:title" content="set()">
   <meta property="og:url" content="/documentation/utilities/set">
@@ -20,6 +20,7 @@
 <script>
   window.paths = {
     demos: '/documentation-demos',
+    'easings': '/assets/json/easings.json',
     'github-sponsors': '/github-sponsors',
     'platinum-sponsors': '/platinum-sponsors',
     'gold-sponsors': '/gold-sponsors',
@@ -50,17 +51,16 @@
     </h1>
     <nav id="site-menu">
       <ul>
-                                <li><a class="main-nav-link docs-link is-active" data-id="docs" href="/documentation" title="Documentation"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                                        <li><a class="main-nav-link docs-link is-active" data-id="docs" href="/documentation" title="Documentation"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="sidebar" fill="none" fill-rule="evenodd">
     <path id="rectangle" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125H7.833A3.375 3.375 0 0 0 4.458 9.5v5a3.375 3.375 0 0 0 3.375 3.375h8.334a3.375 3.375 0 0 0 3.375-3.375v-5a3.375 3.375 0 0 0-3.375-3.375zm-8.334 1.75h8.334c.897 0 1.625.728 1.625 1.625v5c0 .897-.728 1.625-1.625 1.625H7.833A1.625 1.625 0 0 1 6.208 14.5v-5c0-.897.728-1.625 1.625-1.625z"/>
     <polyline id="Path-42" stroke="#FFFFFF" stroke-width="1.75" points="9.5 7.75 9.5 12 9.5 16.25" data-points="13.5 8.75 10.5 12 13.5 15.25"/>
   </g>
 </svg>
 <span>Docs</span></a></li>
-        <li><a class="main-nav-link" href="/learn" title="Learn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <path fill="currentColor" fill-rule="nonzero" d="M16.1666667,6.125 L7.83333333,6.125 C5.9693723,6.125 4.45833333,7.63603897 4.45833333,9.5 L4.45833333,14.5 C4.45833333,16.363961 5.9693723,17.875 7.83333333,17.875 L16.1666667,17.875 C18.0306277,17.875 19.5416667,16.363961 19.5416667,14.5 L19.5416667,9.5 C19.5416667,7.63603897 18.0306277,6.125 16.1666667,6.125 Z M7.83333333,7.875 L16.1666667,7.875 C17.0641294,7.875 17.7916667,8.60253728 17.7916667,9.5 L17.7916667,14.5 C17.7916667,15.3974627 17.0641294,16.125 16.1666667,16.125 L7.83333333,16.125 C6.93587061,16.125 6.20833333,15.3974627 6.20833333,14.5 L6.20833333,9.5 C6.20833333,8.60253728 6.93587061,7.875 7.83333333,7.875 Z"/><path fill="currentColor" d="M10.35,10.5001095 L10.35,13.8820755 C10.35,14.1582179 10.5738576,14.3820755 10.85,14.3820755 C10.9276225,14.3820755 11.0041791,14.364003 11.0736068,14.3292891 L14.4555728,12.6383061 C14.7025621,12.5148115 14.8026742,12.214475 14.6791796,11.9674857 C14.6307978,11.870722 14.5523365,11.7922608 14.4555728,11.7438789 L11.0736068,10.0528959 C10.8266175,9.92940131 10.526281,10.0295135 10.4027864,10.2765027 C10.3796438,10.3227879 10.3638974,10.3722414 10.3559712,10.4230669 L10.35,10.5001095 Z"/>
-  </g>
+        <li><a class="main-nav-link" href="/easing-editor" title="Easing functions editor"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon"><path fill="none" stroke="currentColor" stroke-width="1.75" d="M4.5,17 C14.5967876,17 8.37571813,7 19.5,7"/></svg><span>Easing editor</span></a></li>
+        <li><a class="main-nav-link" href="/learn" title="Learn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
+  <g fill="none"><path fill="currentColor" d="M16.1666667,6.125 L7.83333333,6.125 C5.9693723,6.125 4.45833333,7.63603897 4.45833333,9.5 L4.45833333,14.5 C4.45833333,16.363961 5.9693723,17.875 7.83333333,17.875 L16.1666667,17.875 C18.0306277,17.875 19.5416667,16.363961 19.5416667,14.5 L19.5416667,9.5 C19.5416667,7.63603897 18.0306277,6.125 16.1666667,6.125 Z M7.83333333,7.875 L16.1666667,7.875 C17.0641294,7.875 17.7916667,8.60253728 17.7916667,9.5 L17.7916667,14.5 C17.7916667,15.3974627 17.0641294,16.125 16.1666667,16.125 L7.83333333,16.125 C6.93587061,16.125 6.20833333,15.3974627 6.20833333,14.5 L6.20833333,9.5 C6.20833333,8.60253728 6.93587061,7.875 7.83333333,7.875 Z"/><path fill="currentColor" fill-rule="evenodd" d="M10,10.0706309 L10,13.9294941 C10,14.2445758 10.2554242,14.5 10.5705059,14.5 C10.6590742,14.5 10.7464261,14.479379 10.8256439,14.4397701 L14.6845071,12.5103385 C14.9663248,12.3694297 15.0805539,12.0267421 14.9396451,11.7449245 C14.8844409,11.634516 14.7949156,11.5449908 14.6845071,11.4897865 L10.8256439,9.56035488 C10.5438263,9.41944606 10.2011387,9.53367523 10.0602299,9.81549288 C10.033824,9.86830478 10.0158571,9.92473182 10.0068132,9.9827243 L10,10.0706309 Z"/></g>
 </svg><span>Learn</span></a></li>
         <li><a class="main-nav-link nav-link-retractable" href="https://codepen.io/collection/Poerqa?cursor=eyJwYWdlIjoxfQ==/" target="_blank" title="CodePen"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="codepen" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
@@ -94,8 +94,8 @@
     </nav>
     <button id="toggle-site-menu" class="ui-input trigger-pane" title="Toggle site menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="menu" fill="none" fill-rule="evenodd">
-    <rect id="Rectangle" width="16" height="1.75" x="4" y="8" fill="#FFFFFF"/>
-    <rect id="Rectangle-Copy" width="16" height="1.75" x="4" y="14" fill="#FFFFFF"/>
+    <rect id="Rectangle" width="16" height="1.75" x="4" y="8" fill="currentColor"/>
+    <rect id="Rectangle-Copy" width="16" height="1.75" x="4" y="14" fill="currentColor"/>
   </g>
 </svg>
 </button>
@@ -154,8 +154,8 @@
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-0">
-      <a class="docs-link" title="Imports" href="/documentation/getting-started/imports" data-id="getting-started-imports">
-        Imports        <!-- <span title="Is new in V4" class="notif">•</span> -->
+      <a class="docs-link" title="Module imports" href="/documentation/getting-started/module-imports" data-id="getting-started-module-imports">
+        Module imports        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-0">
@@ -435,7 +435,7 @@
           <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="CSS variable" href="/documentation/animation/tween-value-types/css-variable" data-id="animation-tween-value-types-css-variable">
         CSS variable        <!--  -->
-        <span title="Only available on the WAAPI version" class="badge">WAAPI</span>              </a>
+                      </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="Function based value" href="/documentation/animation/tween-value-types/function-based" data-id="animation-tween-value-types-function-based">
@@ -567,6 +567,11 @@
       <a class="docs-link" title="playbackEase" href="/documentation/animation/animation-playback-settings/playbackease" data-id="animation-animation-playback-settings-playbackease">
         playbackEase        <!-- <span title="Is new in V4" class="notif">•</span> -->
                 <span title="Only available on the JS version" class="badge">JS</span>      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-2">
+      <a class="docs-link" title="persist" href="/documentation/animation/animation-playback-settings/persist" data-id="animation-animation-playback-settings-persist">
+        persist        <!-- <span title="Is new in V4" class="notif">•</span> -->
+        <span title="Only available on the WAAPI version" class="badge">WAAPI</span>              </a>
                 </li>
   </ul>
           </li>
@@ -1236,332 +1241,471 @@
   </ul>
           </li>
           <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver" href="/documentation/scroll" data-id="scroll">
-        Scroll        <!-- <span title="Is new in V4" class="notif">•</span> -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver settings" href="/documentation/scroll/scrollobserver-settings" data-id="scroll-scrollobserver-settings">
-        Settings        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="container" href="/documentation/scroll/scrollobserver-settings/container" data-id="scroll-scrollobserver-settings-container">
-        container        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="target" href="/documentation/scroll/scrollobserver-settings/target" data-id="scroll-scrollobserver-settings-target">
-        target        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="debug" href="/documentation/scroll/scrollobserver-settings/debug" data-id="scroll-scrollobserver-settings-debug">
-        debug        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="axis" href="/documentation/scroll/scrollobserver-settings/axis" data-id="scroll-scrollobserver-settings-axis">
-        axis        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="repeat" href="/documentation/scroll/scrollobserver-settings/repeat" data-id="scroll-scrollobserver-settings-repeat">
-        repeat        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver thresholds" href="/documentation/scroll/scrollobserver-thresholds" data-id="scroll-scrollobserver-thresholds">
-        Thresholds        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Numeric values" href="/documentation/scroll/scrollobserver-thresholds/numeric-values" data-id="scroll-scrollobserver-thresholds-numeric-values">
-        Numeric values        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Positions shorthands" href="/documentation/scroll/scrollobserver-thresholds/positions-shorthands" data-id="scroll-scrollobserver-thresholds-positions-shorthands">
-        Positions shorthands        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Relative position values" href="/documentation/scroll/scrollobserver-thresholds/relative-position-values" data-id="scroll-scrollobserver-thresholds-relative-position-values">
-        Relative position values        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Min max" href="/documentation/scroll/scrollobserver-thresholds/min-max" data-id="scroll-scrollobserver-thresholds-min-max">
-        Min max        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver synchronisation modes" href="/documentation/scroll/scrollobserver-synchronisation-modes" data-id="scroll-scrollobserver-synchronisation-modes">
-        Synchronisation modes        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Method names" href="/documentation/scroll/scrollobserver-synchronisation-modes/method-names" data-id="scroll-scrollobserver-synchronisation-modes-method-names">
-        Method names        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Playback progress" href="/documentation/scroll/scrollobserver-synchronisation-modes/playback-progress" data-id="scroll-scrollobserver-synchronisation-modes-playback-progress">
-        Playback progress        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Smooth scroll" href="/documentation/scroll/scrollobserver-synchronisation-modes/smooth-scroll" data-id="scroll-scrollobserver-synchronisation-modes-smooth-scroll">
-        Smooth scroll        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="Eased scroll" href="/documentation/scroll/scrollobserver-synchronisation-modes/eased-scroll" data-id="scroll-scrollobserver-synchronisation-modes-eased-scroll">
-        Eased scroll        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver callbacks" href="/documentation/scroll/scrollobserver-callbacks" data-id="scroll-scrollobserver-callbacks">
-        Callbacks        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onEnter" href="/documentation/scroll/scrollobserver-callbacks/onenter" data-id="scroll-scrollobserver-callbacks-onenter">
-        onEnter        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onEnterForward" href="/documentation/scroll/scrollobserver-callbacks/onenterforward" data-id="scroll-scrollobserver-callbacks-onenterforward">
-        onEnterForward        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onEnterBackward" href="/documentation/scroll/scrollobserver-callbacks/onenterbackward" data-id="scroll-scrollobserver-callbacks-onenterbackward">
-        onEnterBackward        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onLeave" href="/documentation/scroll/scrollobserver-callbacks/onleave" data-id="scroll-scrollobserver-callbacks-onleave">
-        onLeave        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onLeaveForward" href="/documentation/scroll/scrollobserver-callbacks/onleaveforward" data-id="scroll-scrollobserver-callbacks-onleaveforward">
-        onLeaveForward        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onLeaveBackward" href="/documentation/scroll/scrollobserver-callbacks/onleavebackward" data-id="scroll-scrollobserver-callbacks-onleavebackward">
-        onLeaveBackward        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onUpdate" href="/documentation/scroll/scrollobserver-callbacks/onupdate" data-id="scroll-scrollobserver-callbacks-onupdate">
-        onUpdate        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="onSyncComplete" href="/documentation/scroll/scrollobserver-callbacks/onsynccomplete" data-id="scroll-scrollobserver-callbacks-onsynccomplete">
-        onSyncComplete        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver methods" href="/documentation/scroll/scrollobserver-methods" data-id="scroll-scrollobserver-methods">
-        Methods        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="link()" href="/documentation/scroll/scrollobserver-methods/link" data-id="scroll-scrollobserver-methods-link">
-        link()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="refresh()" href="/documentation/scroll/scrollobserver-methods/refresh" data-id="scroll-scrollobserver-methods-refresh">
-        refresh()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="revert()" href="/documentation/scroll/scrollobserver-methods/revert" data-id="scroll-scrollobserver-methods-revert">
-        revert()        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-6">
-      <a class="docs-link" title="ScrollObserver properties" href="/documentation/scroll/scrollobserver-properties" data-id="scroll-scrollobserver-properties">
-        Properties        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-7">
       <a class="docs-link" title="Scope" href="/documentation/scope" data-id="scope">
         Scope        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                   <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="Add constructor function" href="/documentation/scope/add-constructor-function" data-id="scope-add-constructor-function">
         Add constructor function        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="Register method function" href="/documentation/scope/register-method-function" data-id="scope-register-method-function">
         Register method function        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="Scope parameters" href="/documentation/scope/scope-parameters" data-id="scope-scope-parameters">
         Parameters        <!--  -->
                       </a>
                   <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="root" href="/documentation/scope/scope-parameters/root" data-id="scope-scope-parameters-root">
         root        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="defaults" href="/documentation/scope/scope-parameters/defaults" data-id="scope-scope-parameters-defaults">
         defaults        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="mediaQueries" href="/documentation/scope/scope-parameters/mediaqueries" data-id="scope-scope-parameters-mediaqueries">
         mediaQueries        <!--  -->
                       </a>
                 </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="Scope methods" href="/documentation/scope/scope-methods" data-id="scope-scope-methods">
         Methods        <!--  -->
                       </a>
                   <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="add()" href="/documentation/scope/scope-methods/add" data-id="scope-scope-methods-add">
         add()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="addOnce()" href="/documentation/scope/scope-methods/addonce" data-id="scope-scope-methods-addonce">
         addOnce()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="keepTime()" href="/documentation/scope/scope-methods/keeptime" data-id="scope-scope-methods-keeptime">
         keepTime()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="revert()" href="/documentation/scope/scope-methods/revert" data-id="scope-scope-methods-revert">
         revert()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="refresh()" href="/documentation/scope/scope-methods/refresh" data-id="scope-scope-methods-refresh">
         refresh()        <!--  -->
                       </a>
                 </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-7">
+          <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="Scope properties" href="/documentation/scope/scope-properties" data-id="scope-scope-properties">
         Properties        <!--  -->
                       </a>
                 </li>
   </ul>
           </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Events" href="/documentation/events" data-id="events">
+        Events        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onScroll" href="/documentation/events/onscroll" data-id="events-onscroll">
+        onScroll        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="ScrollObserver settings" href="/documentation/events/onscroll/scrollobserver-settings" data-id="events-onscroll-scrollobserver-settings">
+        Settings        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="container" href="/documentation/events/onscroll/scrollobserver-settings/container" data-id="events-onscroll-scrollobserver-settings-container">
+        container        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="target" href="/documentation/events/onscroll/scrollobserver-settings/target" data-id="events-onscroll-scrollobserver-settings-target">
+        target        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="debug" href="/documentation/events/onscroll/scrollobserver-settings/debug" data-id="events-onscroll-scrollobserver-settings-debug">
+        debug        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="axis" href="/documentation/events/onscroll/scrollobserver-settings/axis" data-id="events-onscroll-scrollobserver-settings-axis">
+        axis        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="repeat" href="/documentation/events/onscroll/scrollobserver-settings/repeat" data-id="events-onscroll-scrollobserver-settings-repeat">
+        repeat        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="ScrollObserver thresholds" href="/documentation/events/onscroll/scrollobserver-thresholds" data-id="events-onscroll-scrollobserver-thresholds">
+        Thresholds        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Numeric values" href="/documentation/events/onscroll/scrollobserver-thresholds/numeric-values" data-id="events-onscroll-scrollobserver-thresholds-numeric-values">
+        Numeric values        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Positions shorthands" href="/documentation/events/onscroll/scrollobserver-thresholds/positions-shorthands" data-id="events-onscroll-scrollobserver-thresholds-positions-shorthands">
+        Positions shorthands        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Relative position values" href="/documentation/events/onscroll/scrollobserver-thresholds/relative-position-values" data-id="events-onscroll-scrollobserver-thresholds-relative-position-values">
+        Relative position values        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Min max" href="/documentation/events/onscroll/scrollobserver-thresholds/min-max" data-id="events-onscroll-scrollobserver-thresholds-min-max">
+        Min max        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="ScrollObserver synchronisation modes" href="/documentation/events/onscroll/scrollobserver-synchronisation-modes" data-id="events-onscroll-scrollobserver-synchronisation-modes">
+        Synchronisation modes        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Method names" href="/documentation/events/onscroll/scrollobserver-synchronisation-modes/method-names" data-id="events-onscroll-scrollobserver-synchronisation-modes-method-names">
+        Method names        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Playback progress" href="/documentation/events/onscroll/scrollobserver-synchronisation-modes/playback-progress" data-id="events-onscroll-scrollobserver-synchronisation-modes-playback-progress">
+        Playback progress        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Smooth scroll" href="/documentation/events/onscroll/scrollobserver-synchronisation-modes/smooth-scroll" data-id="events-onscroll-scrollobserver-synchronisation-modes-smooth-scroll">
+        Smooth scroll        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="Eased scroll" href="/documentation/events/onscroll/scrollobserver-synchronisation-modes/eased-scroll" data-id="events-onscroll-scrollobserver-synchronisation-modes-eased-scroll">
+        Eased scroll        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="ScrollObserver callbacks" href="/documentation/events/onscroll/scrollobserver-callbacks" data-id="events-onscroll-scrollobserver-callbacks">
+        Callbacks        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onEnter" href="/documentation/events/onscroll/scrollobserver-callbacks/onenter" data-id="events-onscroll-scrollobserver-callbacks-onenter">
+        onEnter        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onEnterForward" href="/documentation/events/onscroll/scrollobserver-callbacks/onenterforward" data-id="events-onscroll-scrollobserver-callbacks-onenterforward">
+        onEnterForward        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onEnterBackward" href="/documentation/events/onscroll/scrollobserver-callbacks/onenterbackward" data-id="events-onscroll-scrollobserver-callbacks-onenterbackward">
+        onEnterBackward        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onLeave" href="/documentation/events/onscroll/scrollobserver-callbacks/onleave" data-id="events-onscroll-scrollobserver-callbacks-onleave">
+        onLeave        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onLeaveForward" href="/documentation/events/onscroll/scrollobserver-callbacks/onleaveforward" data-id="events-onscroll-scrollobserver-callbacks-onleaveforward">
+        onLeaveForward        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onLeaveBackward" href="/documentation/events/onscroll/scrollobserver-callbacks/onleavebackward" data-id="events-onscroll-scrollobserver-callbacks-onleavebackward">
+        onLeaveBackward        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onUpdate" href="/documentation/events/onscroll/scrollobserver-callbacks/onupdate" data-id="events-onscroll-scrollobserver-callbacks-onupdate">
+        onUpdate        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="onSyncComplete" href="/documentation/events/onscroll/scrollobserver-callbacks/onsynccomplete" data-id="events-onscroll-scrollobserver-callbacks-onsynccomplete">
+        onSyncComplete        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="ScrollObserver methods" href="/documentation/events/onscroll/scrollobserver-methods" data-id="events-onscroll-scrollobserver-methods">
+        Methods        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="link()" href="/documentation/events/onscroll/scrollobserver-methods/link" data-id="events-onscroll-scrollobserver-methods-link">
+        link()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="refresh()" href="/documentation/events/onscroll/scrollobserver-methods/refresh" data-id="events-onscroll-scrollobserver-methods-refresh">
+        refresh()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="revert()" href="/documentation/events/onscroll/scrollobserver-methods/revert" data-id="events-onscroll-scrollobserver-methods-revert">
+        revert()        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-7">
+      <a class="docs-link" title="ScrollObserver properties" href="/documentation/events/onscroll/scrollobserver-properties" data-id="events-onscroll-scrollobserver-properties">
+        Properties        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+  </ul>
+          </li>
           <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger" href="/documentation/stagger" data-id="stagger">
-        Stagger        <!--  -->
+      <a class="docs-link" title="SVG" href="/documentation/svg" data-id="svg">
+        SVG        <!--  -->
                       </a>
                   <ul class="docs-nav-item">
           <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Time staggering" href="/documentation/stagger/time-staggering" data-id="stagger-time-staggering">
+      <a class="docs-link" title="morphTo()" href="/documentation/svg/morphto" data-id="svg-morphto">
+        morphTo()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-8">
+      <a class="docs-link" title="createDrawable()" href="/documentation/svg/createdrawable" data-id="svg-createdrawable">
+        createDrawable()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-8">
+      <a class="docs-link" title="createMotionPath()" href="/documentation/svg/createmotionpath" data-id="svg-createmotionpath">
+        createMotionPath()        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="Text" href="/documentation/text" data-id="text">
+        Text        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="splitText()" href="/documentation/text/splittext" data-id="text-splittext">
+        splitText()        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="TextSplitter settings" href="/documentation/text/splittext/textsplitter-settings" data-id="text-splittext-textsplitter-settings">
+        Settings        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="lines" href="/documentation/text/splittext/textsplitter-settings/lines" data-id="text-splittext-textsplitter-settings-lines">
+        lines        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="words" href="/documentation/text/splittext/textsplitter-settings/words" data-id="text-splittext-textsplitter-settings-words">
+        words        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="chars" href="/documentation/text/splittext/textsplitter-settings/chars" data-id="text-splittext-textsplitter-settings-chars">
+        chars        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="debug" href="/documentation/text/splittext/textsplitter-settings/debug" data-id="text-splittext-textsplitter-settings-debug">
+        debug        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="includeSpaces" href="/documentation/text/splittext/textsplitter-settings/includespaces" data-id="text-splittext-textsplitter-settings-includespaces">
+        includeSpaces        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="accessible" href="/documentation/text/splittext/textsplitter-settings/accessible" data-id="text-splittext-textsplitter-settings-accessible">
+        accessible        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="Split parameters" href="/documentation/text/splittext/split-parameters" data-id="text-splittext-split-parameters">
+        Split parameters        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="class" href="/documentation/text/splittext/split-parameters/class" data-id="text-splittext-split-parameters-class">
+        class        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="wrap" href="/documentation/text/splittext/split-parameters/wrap" data-id="text-splittext-split-parameters-wrap">
+        wrap        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="clone" href="/documentation/text/splittext/split-parameters/clone" data-id="text-splittext-split-parameters-clone">
+        clone        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="HTML template" href="/documentation/text/splittext/html-template" data-id="text-splittext-html-template">
+        HTML template        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="TextSplitter methods" href="/documentation/text/splittext/textsplitter-methods" data-id="text-splittext-textsplitter-methods">
+        Methods        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="addEffect()" href="/documentation/text/splittext/textsplitter-methods/addeffect" data-id="text-splittext-textsplitter-methods-addeffect">
+        addEffect()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="revert()" href="/documentation/text/splittext/textsplitter-methods/revert" data-id="text-splittext-textsplitter-methods-revert">
+        revert()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="refresh()" href="/documentation/text/splittext/textsplitter-methods/refresh" data-id="text-splittext-textsplitter-methods-refresh">
+        refresh()        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-9">
+      <a class="docs-link" title="TextSplitter properties" href="/documentation/text/splittext/textsplitter-properties" data-id="text-splittext-textsplitter-properties">
+        Properties        <!--  -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-10 is-active">
+      <a class="docs-link" title="Utilities" href="/documentation/utilities" data-id="utilities">
+        Utilities        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item is-active">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="stagger()" href="/documentation/utilities/stagger" data-id="utilities-stagger">
+        stagger()        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Time staggering" href="/documentation/utilities/stagger/time-staggering" data-id="utilities-stagger-time-staggering">
         Time staggering        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Values staggering" href="/documentation/stagger/values-staggering" data-id="stagger-values-staggering">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Values staggering" href="/documentation/utilities/stagger/values-staggering" data-id="utilities-stagger-values-staggering">
         Values staggering        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Timeline positions staggering" href="/documentation/stagger/timeline-positions-staggering" data-id="stagger-timeline-positions-staggering">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Timeline positions staggering" href="/documentation/utilities/stagger/timeline-positions-staggering" data-id="utilities-stagger-timeline-positions-staggering">
         Timeline staggering        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger value types" href="/documentation/stagger/stagger-value-types" data-id="stagger-stagger-value-types">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger value types" href="/documentation/utilities/stagger/stagger-value-types" data-id="utilities-stagger-stagger-value-types">
         Value types        <!--  -->
                       </a>
                   <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Numerical value" href="/documentation/stagger/stagger-value-types/numerical-value" data-id="stagger-stagger-value-types-numerical-value">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Numerical value" href="/documentation/utilities/stagger/stagger-value-types/numerical-value" data-id="utilities-stagger-stagger-value-types-numerical-value">
         Numerical        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Range value" href="/documentation/stagger/stagger-value-types/range-value" data-id="stagger-stagger-value-types-range-value">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Range value" href="/documentation/utilities/stagger/stagger-value-types/range-value" data-id="utilities-stagger-stagger-value-types-range-value">
         Range        <!--  -->
                       </a>
                 </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger parameters" href="/documentation/stagger/stagger-parameters" data-id="stagger-stagger-parameters">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger parameters" href="/documentation/utilities/stagger/stagger-parameters" data-id="utilities-stagger-stagger-parameters">
         Parameters        <!--  -->
                       </a>
                   <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger start" href="/documentation/stagger/stagger-parameters/stagger-start" data-id="stagger-stagger-parameters-stagger-start">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger start" href="/documentation/utilities/stagger/stagger-parameters/stagger-start" data-id="utilities-stagger-stagger-parameters-stagger-start">
         start        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger from" href="/documentation/stagger/stagger-parameters/stagger-from" data-id="stagger-stagger-parameters-stagger-from">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger from" href="/documentation/utilities/stagger/stagger-parameters/stagger-from" data-id="utilities-stagger-stagger-parameters-stagger-from">
         from        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger reversed" href="/documentation/stagger/stagger-parameters/stagger-reversed" data-id="stagger-stagger-parameters-stagger-reversed">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger reversed" href="/documentation/utilities/stagger/stagger-parameters/stagger-reversed" data-id="utilities-stagger-stagger-parameters-stagger-reversed">
         reversed        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger ease" href="/documentation/stagger/stagger-parameters/stagger-ease" data-id="stagger-stagger-parameters-stagger-ease">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger ease" href="/documentation/utilities/stagger/stagger-parameters/stagger-ease" data-id="utilities-stagger-stagger-parameters-stagger-ease">
         ease        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger grid" href="/documentation/stagger/stagger-parameters/stagger-grid" data-id="stagger-stagger-parameters-stagger-grid">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger grid" href="/documentation/utilities/stagger/stagger-parameters/stagger-grid" data-id="utilities-stagger-stagger-parameters-stagger-grid">
         grid        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger grid axis" href="/documentation/stagger/stagger-parameters/stagger-grid-axis" data-id="stagger-stagger-parameters-stagger-grid-axis">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger grid axis" href="/documentation/utilities/stagger/stagger-parameters/stagger-grid-axis" data-id="utilities-stagger-stagger-parameters-stagger-grid-axis">
         axis        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger modifier" href="/documentation/stagger/stagger-parameters/stagger-modifier" data-id="stagger-stagger-parameters-stagger-modifier">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger modifier" href="/documentation/utilities/stagger/stagger-parameters/stagger-modifier" data-id="utilities-stagger-stagger-parameters-stagger-modifier">
         modifier        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger use" href="/documentation/stagger/stagger-parameters/stagger-use" data-id="stagger-stagger-parameters-stagger-use">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger use" href="/documentation/utilities/stagger/stagger-parameters/stagger-use" data-id="utilities-stagger-stagger-parameters-stagger-use">
         use        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-8">
-      <a class="docs-link" title="Stagger total" href="/documentation/stagger/stagger-parameters/stagger-total" data-id="stagger-stagger-parameters-stagger-total">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="Stagger total" href="/documentation/utilities/stagger/stagger-parameters/stagger-total" data-id="utilities-stagger-stagger-parameters-stagger-total">
         total        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
@@ -1569,251 +1713,161 @@
           </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-9">
-      <a class="docs-link" title="SVG" href="/documentation/svg" data-id="svg">
-        SVG        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-9">
-      <a class="docs-link" title="morphTo()" href="/documentation/svg/morphto" data-id="svg-morphto">
-        morphTo()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-9">
-      <a class="docs-link" title="createDrawable()" href="/documentation/svg/createdrawable" data-id="svg-createdrawable">
-        createDrawable()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-9">
-      <a class="docs-link" title="createMotionPath()" href="/documentation/svg/createmotionpath" data-id="svg-createmotionpath">
-        createMotionPath()        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
           <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="Text" href="/documentation/text" data-id="text">
-        Text        <!-- <span title="Is new in V4" class="notif">•</span> -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="split()" href="/documentation/text/split" data-id="text-split">
-        split()        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="TextSplitter settings" href="/documentation/text/split/textsplitter-settings" data-id="text-split-textsplitter-settings">
-        Settings        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="lines" href="/documentation/text/split/textsplitter-settings/lines" data-id="text-split-textsplitter-settings-lines">
-        lines        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="words" href="/documentation/text/split/textsplitter-settings/words" data-id="text-split-textsplitter-settings-words">
-        words        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="chars" href="/documentation/text/split/textsplitter-settings/chars" data-id="text-split-textsplitter-settings-chars">
-        chars        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="debug" href="/documentation/text/split/textsplitter-settings/debug" data-id="text-split-textsplitter-settings-debug">
-        debug        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="includeSpaces" href="/documentation/text/split/textsplitter-settings/includespaces" data-id="text-split-textsplitter-settings-includespaces">
-        includeSpaces        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="accessible" href="/documentation/text/split/textsplitter-settings/accessible" data-id="text-split-textsplitter-settings-accessible">
-        accessible        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="Split parameters" href="/documentation/text/split/split-parameters" data-id="text-split-split-parameters">
-        Split parameters        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="class" href="/documentation/text/split/split-parameters/class" data-id="text-split-split-parameters-class">
-        class        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="wrap" href="/documentation/text/split/split-parameters/wrap" data-id="text-split-split-parameters-wrap">
-        wrap        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="clone" href="/documentation/text/split/split-parameters/clone" data-id="text-split-split-parameters-clone">
-        clone        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="HTML template" href="/documentation/text/split/html-template" data-id="text-split-html-template">
-        HTML template        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="TextSplitter methods" href="/documentation/text/split/textsplitter-methods" data-id="text-split-textsplitter-methods">
-        Methods        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item">
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="addEffect()" href="/documentation/text/split/textsplitter-methods/addeffect" data-id="text-split-textsplitter-methods-addeffect">
-        addEffect()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="revert()" href="/documentation/text/split/textsplitter-methods/revert" data-id="text-split-textsplitter-methods-revert">
-        revert()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="refresh()" href="/documentation/text/split/textsplitter-methods/refresh" data-id="text-split-textsplitter-methods-refresh">
-        refresh()        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-10">
-      <a class="docs-link" title="TextSplitter properties" href="/documentation/text/split/textsplitter-properties" data-id="text-split-textsplitter-properties">
-        Properties        <!--  -->
-                      </a>
-                </li>
-  </ul>
-          </li>
-  </ul>
-          </li>
-          <li class="docs-nav-item theme-color theme-color-11 is-active">
-      <a class="docs-link" title="Utilities" href="/documentation/utilities" data-id="utilities">
-        Utilities        <!--  -->
-                      </a>
-                  <ul class="docs-nav-item is-active">
-          <li class="docs-nav-item theme-color theme-color-11">
       <a class="docs-link" title="$()" href="/documentation/utilities/dollar-sign" data-id="utilities-dollar-sign">
         $()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="get()" href="/documentation/utilities/get" data-id="utilities-get">
         get()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11 is-active">
+          <li class="docs-nav-item theme-color theme-color-10 is-active">
       <a class="docs-link" title="set()" href="/documentation/utilities/set" data-id="utilities-set">
         set()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="remove()" href="/documentation/utilities/remove" data-id="utilities-remove">
-        remove()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="cleanInlineStyles()" href="/documentation/utilities/clean-inline-styles" data-id="utilities-clean-inline-styles">
         cleanInlineStyles()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="keepTime()" href="/documentation/utilities/createtimekeeper" data-id="utilities-createtimekeeper">
-        keepTime()        <!-- <span title="Is new in V4" class="notif">•</span> -->
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="remove()" href="/documentation/utilities/remove" data-id="utilities-remove">
+        remove()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="random()" href="/documentation/utilities/random" data-id="utilities-random">
-        random()        <!--  -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="randomPick()" href="/documentation/utilities/random-pick" data-id="utilities-random-pick">
-        randomPick()        <!-- <span title="Is new in V4" class="notif">•</span> -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="shuffle()" href="/documentation/utilities/shuffle" data-id="utilities-shuffle">
-        shuffle()        <!-- <span title="Is new in V4" class="notif">•</span> -->
-                      </a>
-                </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="sync()" href="/documentation/utilities/sync" data-id="utilities-sync">
         sync()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="lerp()" href="/documentation/utilities/lerp" data-id="utilities-lerp">
-        lerp()        <!-- <span title="Is new in V4" class="notif">•</span> -->
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="keepTime()" href="/documentation/utilities/createtimekeeper" data-id="utilities-createtimekeeper">
+        keepTime()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="random()" href="/documentation/utilities/random" data-id="utilities-random">
+        random()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="createSeededRandom()" href="/documentation/utilities/createseededrandom" data-id="utilities-createseededrandom">
+        createSeededRandom()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="randomPick()" href="/documentation/utilities/random-pick" data-id="utilities-random-pick">
+        randomPick()        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="shuffle()" href="/documentation/utilities/shuffle" data-id="utilities-shuffle">
+        shuffle()        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="round()" href="/documentation/utilities/round" data-id="utilities-round">
         round()        <!--  -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="clamp()" href="/documentation/utilities/clamp" data-id="utilities-clamp">
         clamp()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="snap()" href="/documentation/utilities/snap" data-id="utilities-snap">
         snap()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="wrap()" href="/documentation/utilities/wrap" data-id="utilities-wrap">
         wrap()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="mapRange()" href="/documentation/utilities/map-range" data-id="utilities-map-range">
         mapRange()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
-      <a class="docs-link" title="interpolate()" href="/documentation/utilities/interpolate" data-id="utilities-interpolate">
-        interpolate()        <!-- <span title="Is new in V4" class="notif">•</span> -->
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="lerp()" href="/documentation/utilities/lerp" data-id="utilities-lerp">
+        lerp()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
+      <a class="docs-link" title="damp()" href="/documentation/utilities/damp" data-id="utilities-damp">
+        damp()        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="roundPad()" href="/documentation/utilities/round-pad" data-id="utilities-round-pad">
         roundPad()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="padStart()" href="/documentation/utilities/pad-start" data-id="utilities-pad-start">
         padStart()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="padEnd()" href="/documentation/utilities/pad-end" data-id="utilities-pad-end">
         padEnd()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="degToRad()" href="/documentation/utilities/deg-to-rad" data-id="utilities-deg-to-rad">
         degToRad()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="radToDeg()" href="/documentation/utilities/rad-to-deg" data-id="utilities-rad-to-deg">
         radToDeg()        <!-- <span title="Is new in V4" class="notif">•</span> -->
                       </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-11">
+          <li class="docs-nav-item theme-color theme-color-10">
       <a class="docs-link" title="Chain-able utility functions" href="/documentation/utilities/chain-able-utility-functions" data-id="utilities-chain-able-utility-functions">
         Chain-able utilities        <!-- <span title="Is new in V4" class="notif">•</span> -->
+                      </a>
+                </li>
+  </ul>
+          </li>
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Easings" href="/documentation/easings" data-id="easings">
+        Easings        <!--  -->
+                      </a>
+                  <ul class="docs-nav-item">
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Built-in eases" href="/documentation/easings/built-in-eases" data-id="easings-built-in-eases">
+        Built-in eases        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Cubic Bézier easing" href="/documentation/easings/cubic-bezier-easing" data-id="easings-cubic-bezier-easing">
+        Cubic Bézier        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Linear easing" href="/documentation/easings/linear-easing" data-id="easings-linear-easing">
+        Linear        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Steps easing" href="/documentation/easings/steps-easing" data-id="easings-steps-easing">
+        Steps        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Irregular easing" href="/documentation/easings/irregular-easing" data-id="easings-irregular-easing">
+        Irregular        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-11">
+      <a class="docs-link" title="Spring" href="/documentation/easings/spring" data-id="easings-spring">
+        Spring        <!--  -->
                       </a>
                 </li>
   </ul>
@@ -1991,9 +2045,9 @@
   <article id="docs-info">
 
                     
-    <div class="docs-info is-active theme-color theme-color-11" data-id="utilities-set">
+    <div class="docs-info is-active theme-color theme-color-10" data-id="utilities-set">
       <div class="docs-info-content text-layout">
-                    <div class="docs-breadcrumb theme-color theme-color-11">
+                    <div class="docs-breadcrumb theme-color theme-color-10">
             <p>
               <a title="Utilities" href="/documentation/utilities">Utilities</a>
 
@@ -2003,13 +2057,13 @@
                             <a class="docs-breadcrumb-version" href="https://github.com/juliangarnier/anime/releases/tag/v2.0.0">Since 2.0.0</a>
                           </p>
           </div>
-                  <h1 class="theme-color theme-color-11">
+                  <h1 class="theme-color theme-color-10">
           <a class="docs-info-header" title="set()" href="/documentation/utilities/set">
             set()                                              </a>
         </h1>
         <p>Immediately sets one or multiple properties values to one or multiple targets.</p>
 <pre><code class="language-js">const setter = utils.set(targets, properties);</code></pre>
-<h2>Parameters</h2>
+<h2 id="parameters" class="heading-anchor"><a href="#parameters">Parameters</a></h2>
 <table>
 <thead>
 <tr>
@@ -2031,7 +2085,7 @@
 </tr>
 </tbody>
 </table>
-<h2>Returns</h2>
+<h2 id="returns" class="heading-anchor"><a href="#returns">Returns</a></h2>
 <p><a href="/documentation/animation" title="Animation">Animation</a></p>
 <div class="block info">
 <p><code>utils.set()</code> is useful for setting complex values, but for repeatedly updating the same properties on the same targets, using an <a href="/documentation/animatable">Animatable</a> is recommended for better performances.</p>
@@ -2039,7 +2093,7 @@
 <div class="block info">
 <p><code>utils.set()</code> won't work if you try to set an attribute on a DOM or SVG element not already defined on the element. </p>
 </div>      </div>
-                  <section class="code-preview theme-color theme-color-11">
+                  <section class="code-preview theme-color theme-color-10">
         <div class="code-preview-content">
           <header>
             <div class="code-preview-title">
@@ -2101,7 +2155,7 @@ $revert.addEventListener(&#039;click&#039;, revertStyles);</code></pre>
       </div>
       <ul class="docs-info-links prev-next-links">
         <li class="prev-link">
-                    <a class="docs-info-link text-ui theme-color theme-color-11" data-id="utilities-get" title="get()" href="/documentation/utilities/get">get()<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                    <a class="docs-info-link text-ui theme-color theme-color-10" data-id="utilities-get" title="get()" href="/documentation/utilities/get">get()<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="arrow-left" fill="none" fill-rule="evenodd">
     <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="6.5 11.987 11.737 17.225 12.975 15.987 9.849 12.862 17.737 12.862 17.737 11.112 9.849 11.112 12.975 7.987 11.737 6.75"/>
   </g>
@@ -2109,12 +2163,12 @@ $revert.addEventListener(&#039;click&#039;, revertStyles);</code></pre>
 </span></a>
                   </li>
         <li class="next-link">
-                    <a class="docs-info-link text-ui theme-color theme-color-11" data-id="utilities-remove" title="remove()" href="/documentation/utilities/remove"><span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                    <a class="docs-info-link text-ui theme-color theme-color-10" data-id="utilities-clean-inline-styles" title="cleanInlineStyles()" href="/documentation/utilities/clean-inline-styles"><span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
-</span>remove()</a>
+</span>cleanInlineStyles()</a>
                   </li>
       </ul>
 

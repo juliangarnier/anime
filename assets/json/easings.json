@@ -1,0 +1,329 @@
+{
+  "Spring": {
+    "import": "spring",
+    "prefix": "spring",
+    "color": 2,
+    "curves": {
+      "default": {
+        "bounce": ["default", -1, 1, 0.01],
+        "duration": ["default", 10, 2000, 1],
+        "stiffness": ["default", 0, 1000, 0.1],
+        "damping": ["default", 0, 100, 0.1],
+        "mass": ["default", 1, 10, 0.1],
+        "velocity": ["default", -30, 30, 0.1]
+      },
+      "snappy": {
+        "bounce": ["snappy", -1, 1, 0.01],
+        "duration": ["snappy", 10, 2000, 1],
+        "stiffness": ["snappy", 0, 1000, 0.1],
+        "damping": ["snappy", 0, 100, 0.1],
+        "mass": ["snappy", 1, 10, 0.1],
+        "velocity": ["snappy", -30, 30, 0.1]
+      },
+      "bouncy": {
+        "bounce": ["bouncy", -1, 1, 0.01],
+        "duration": ["bouncy", 10, 2000, 1],
+        "stiffness": ["bouncy", 0, 1000, 0.1],
+        "damping": ["bouncy", 0, 100, 0.1],
+        "mass": ["bouncy", 1, 10, 0.1],
+        "velocity": ["bouncy", -30, 30, 0.1]
+      },
+      "strong": {
+        "bounce": ["strong", -1, 1, 0.01],
+        "duration": ["strong", 10, 2000, 1],
+        "stiffness": ["strong", 0, 1000, 0.1],
+        "damping": ["strong", 0, 100, 0.1],
+        "mass": ["strong", 1, 10, 0.1],
+        "velocity": ["strong", -30, 30, 0.1]
+      }
+    },
+    "presets": {
+      "default": {
+        "bounce": 0.5,
+        "duration": 628,
+        "stiffness": 100,
+        "damping": 10,
+        "mass": 1,
+        "velocity": 0
+      },
+      "snappy": {
+        "bounce": 0.15,
+        "duration": 300,
+        "stiffness": 438,
+        "damping": 35,
+        "mass": 1,
+        "velocity": 0
+      },
+      "bouncy": {
+        "bounce": 0.4,
+        "duration": 500,
+        "stiffness": 158,
+        "damping": 15,
+        "mass": 1,
+        "velocity": 0
+      },
+      "strong": {
+        "bounce": 0.65,
+        "duration": 400,
+        "stiffness": 246,
+        "damping": 11,
+        "mass": 1,
+        "velocity": 0
+      }
+    }
+  },
+  "Cubic Bezier": {
+    "import": "cubicBezier",
+    "prefix": "bezier",
+    "color": 4,
+    "curves": {
+      "in": {
+        "x1": ["in", 0, 1],
+        "y1": ["in", -1, 2],
+        "x2": ["in", 0, 1],
+        "y2": ["in", -1, 2]
+      },
+      "out": {
+        "x1": ["out", 0, 1],
+        "y1": ["out", -1, 2],
+        "x2": ["out", 0, 1],
+        "y2": ["out", -1, 2]
+      },
+      "inOut": {
+        "x1": ["inOut", 0, 1],
+        "y1": ["inOut", -1, 2],
+        "x2": ["inOut", 0, 1],
+        "y2": ["inOut", -1, 2]
+      },
+      "outIn": {
+        "x1": ["outIn", 0, 1],
+        "y1": ["outIn", -1, 2],
+        "x2": ["outIn", 0, 1],
+        "y2": ["outIn", -1, 2]
+      }
+    },
+    "presets": {
+      "in": {
+        "x1": 0.5,
+        "y1": 0.0,
+        "x2": 0.9,
+        "y2": 0.3
+      },
+      "out": {
+        "x1": 0.1,
+        "y1": 0.7,
+        "x2": 0.5,
+        "y2": 1.0
+      },
+      "inOut": {
+        "x1": 0.7,
+        "y1": 0.1,
+        "x2": 0.5,
+        "y2": 0.9
+      },
+      "outIn": {
+        "x1": 0.1,
+        "y1": 0.7,
+        "x2": 0.9,
+        "y2": 0.5
+      }
+    }
+  },
+  "Power": {
+    "import": "eases",
+    "prefix": "power",
+    "color": 5,
+    "curves": {
+      "in": {
+        "power": ["default", 1, 10, 0.01]
+      },
+      "out": {
+        "power": ["default", 1, 10, 0.01]
+      },
+      "inOut": {
+        "power": ["default", 1, 10, 0.01]
+      },
+      "outIn": {
+        "power": ["default", 1, 10, 0.01]
+      }
+    },
+    "presets": {
+      "default": {
+        "power": 1.68
+      },
+      "quad": {
+        "power": 2
+      },
+      "cubic": {
+        "power": 3
+      },
+      "quart": {
+        "power": 4
+      },
+      "quint": {
+        "power": 5
+      }
+    }
+  },
+  "Sine": {
+    "import": "eases",
+    "prefix": "",
+    "color": 7,
+    "curves": {
+      "inSine": {},
+      "outSine": {},
+      "inOutSine": {},
+      "outInSine": {}
+    }
+  },
+  "Exponential": {
+    "import": "eases",
+    "prefix": "",
+    "color": 8,
+    "curves": {
+      "inExpo": {},
+      "outExpo": {},
+      "inOutExpo": {},
+      "outInExpo": {}
+    }
+  },
+  "Circular": {
+    "import": "eases",
+    "prefix": "",
+    "color": 9,
+    "curves": {
+      "inCirc": {},
+      "outCirc": {},
+      "inOutCirc": {},
+      "outInCirc": {}
+    }
+  },
+  "Back": {
+    "import": "eases",
+    "prefix": "",
+    "color": 10,
+    "curves": {
+      "inBack": {
+        "overshoot": ["default", 0, 5, 0.01]
+      },
+      "outBack": {
+        "overshoot": ["default", 0, 5, 0.01]
+      },
+      "inOutBack": {
+        "overshoot": ["default", 0, 5, 0.01]
+      },
+      "outInBack": {
+        "overshoot": ["default", 0, 5, 0.01]
+      }
+    },
+    "presets": {
+      "default": {
+        "overshoot": 1.7
+      },
+      "light": {
+        "overshoot": 0.75
+      },
+      "strong": {
+        "overshoot": 2.0
+      }
+    }
+  },
+  "Elastic": {
+    "import": "eases",
+    "prefix": "",
+    "color": 11,
+    "curves": {
+      "inElastic": {
+        "amplitude": ["default", 1, 2, 0.01],
+        "period": ["default", 0.15, 2, 0.01]
+      },
+      "outElastic": {
+        "amplitude": ["default", 1, 2, 0.01],
+        "period": ["default", 0.15, 2, 0.01]
+      },
+      "inOutElastic": {
+        "amplitude": ["default", 1, 2, 0.01],
+        "period": ["default", 0.15, 2, 0.01]
+      },
+      "outInElastic": {
+        "amplitude": ["default", 1, 2, 0.01],
+        "period": ["default", 0.15, 2, 0.01]
+      }
+    },
+    "presets": {
+      "default": {
+        "amplitude": 1,
+        "period": 0.3
+      },
+      "light": {
+        "amplitude": 1,
+        "period": 1.2
+      },
+      "strong": {
+        "amplitude": 2,
+        "period": 0.5
+      }
+    }
+  },
+  "Bounce": {
+    "import": "eases",
+    "prefix": "",
+    "color": 12,
+    "curves": {
+      "inBounce": {},
+      "outBounce": {},
+      "inOutBounce": {},
+      "outInBounce": {}
+    }
+  },
+  "Irregular": {
+    "import": "irregular",
+    "prefix": "irregular",
+    "color": 13,
+    "curves": {
+      "light": {
+        "steps": ["light", 0, 100, 1],
+        "intensity": ["light", 0, 4]
+      },
+      "heavy": {
+        "steps": ["heavy", 0, 100, 1],
+        "intensity": ["heavy", 0, 10]
+      }
+    },
+    "presets": {
+      "light": {
+        "steps": 10,
+        "intensity": 0.5
+      },
+      "heavy": {
+        "steps": 40,
+        "intensity": 4
+      }
+    }
+  },
+  "Steps": {
+    "import": "steps",
+    "prefix": "steps",
+    "color": 13,
+    "curves": {
+      "start": {
+        "steps": ["start", 1, 11, 1],
+        "fromStart": ["start"]
+      },
+      "end": {
+        "steps": ["end", 1, 11, 1],
+        "fromStart": ["end"]
+      }
+    },
+    "presets": {
+      "start": {
+        "steps": 5,
+        "fromStart": true
+      },
+      "end": {
+        "steps": 5,
+        "fromStart": false
+      }
+    }
+  }
+}

@@ -20,6 +20,7 @@
 <script>
   window.paths = {
     demos: '/documentation-demos',
+    'easings': '/assets/json/easings.json',
     'github-sponsors': '/github-sponsors',
     'platinum-sponsors': '/platinum-sponsors',
     'gold-sponsors': '/gold-sponsors',
@@ -50,17 +51,16 @@
     </h1>
     <nav id="site-menu">
       <ul>
-                                <li><a class="main-nav-link docs-link" data-id="docs" href="/documentation" title="Documentation"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                                        <li><a class="main-nav-link docs-link" data-id="docs" href="/documentation" title="Documentation"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="sidebar" fill="none" fill-rule="evenodd">
     <path id="rectangle" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125H7.833A3.375 3.375 0 0 0 4.458 9.5v5a3.375 3.375 0 0 0 3.375 3.375h8.334a3.375 3.375 0 0 0 3.375-3.375v-5a3.375 3.375 0 0 0-3.375-3.375zm-8.334 1.75h8.334c.897 0 1.625.728 1.625 1.625v5c0 .897-.728 1.625-1.625 1.625H7.833A1.625 1.625 0 0 1 6.208 14.5v-5c0-.897.728-1.625 1.625-1.625z"/>
     <polyline id="Path-42" stroke="#FFFFFF" stroke-width="1.75" points="9.5 7.75 9.5 12 9.5 16.25" data-points="13.5 8.75 10.5 12 13.5 15.25"/>
   </g>
 </svg>
 <span>Docs</span></a></li>
-        <li><a class="main-nav-link" href="/learn" title="Learn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <path fill="currentColor" fill-rule="nonzero" d="M16.1666667,6.125 L7.83333333,6.125 C5.9693723,6.125 4.45833333,7.63603897 4.45833333,9.5 L4.45833333,14.5 C4.45833333,16.363961 5.9693723,17.875 7.83333333,17.875 L16.1666667,17.875 C18.0306277,17.875 19.5416667,16.363961 19.5416667,14.5 L19.5416667,9.5 C19.5416667,7.63603897 18.0306277,6.125 16.1666667,6.125 Z M7.83333333,7.875 L16.1666667,7.875 C17.0641294,7.875 17.7916667,8.60253728 17.7916667,9.5 L17.7916667,14.5 C17.7916667,15.3974627 17.0641294,16.125 16.1666667,16.125 L7.83333333,16.125 C6.93587061,16.125 6.20833333,15.3974627 6.20833333,14.5 L6.20833333,9.5 C6.20833333,8.60253728 6.93587061,7.875 7.83333333,7.875 Z"/><path fill="currentColor" d="M10.35,10.5001095 L10.35,13.8820755 C10.35,14.1582179 10.5738576,14.3820755 10.85,14.3820755 C10.9276225,14.3820755 11.0041791,14.364003 11.0736068,14.3292891 L14.4555728,12.6383061 C14.7025621,12.5148115 14.8026742,12.214475 14.6791796,11.9674857 C14.6307978,11.870722 14.5523365,11.7922608 14.4555728,11.7438789 L11.0736068,10.0528959 C10.8266175,9.92940131 10.526281,10.0295135 10.4027864,10.2765027 C10.3796438,10.3227879 10.3638974,10.3722414 10.3559712,10.4230669 L10.35,10.5001095 Z"/>
-  </g>
+        <li><a class="main-nav-link" href="/easing-editor" title="Easing functions editor"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon"><path fill="none" stroke="currentColor" stroke-width="1.75" d="M4.5,17 C14.5967876,17 8.37571813,7 19.5,7"/></svg><span>Easing editor</span></a></li>
+        <li><a class="main-nav-link" href="/learn" title="Learn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
+  <g fill="none"><path fill="currentColor" d="M16.1666667,6.125 L7.83333333,6.125 C5.9693723,6.125 4.45833333,7.63603897 4.45833333,9.5 L4.45833333,14.5 C4.45833333,16.363961 5.9693723,17.875 7.83333333,17.875 L16.1666667,17.875 C18.0306277,17.875 19.5416667,16.363961 19.5416667,14.5 L19.5416667,9.5 C19.5416667,7.63603897 18.0306277,6.125 16.1666667,6.125 Z M7.83333333,7.875 L16.1666667,7.875 C17.0641294,7.875 17.7916667,8.60253728 17.7916667,9.5 L17.7916667,14.5 C17.7916667,15.3974627 17.0641294,16.125 16.1666667,16.125 L7.83333333,16.125 C6.93587061,16.125 6.20833333,15.3974627 6.20833333,14.5 L6.20833333,9.5 C6.20833333,8.60253728 6.93587061,7.875 7.83333333,7.875 Z"/><path fill="currentColor" fill-rule="evenodd" d="M10,10.0706309 L10,13.9294941 C10,14.2445758 10.2554242,14.5 10.5705059,14.5 C10.6590742,14.5 10.7464261,14.479379 10.8256439,14.4397701 L14.6845071,12.5103385 C14.9663248,12.3694297 15.0805539,12.0267421 14.9396451,11.7449245 C14.8844409,11.634516 14.7949156,11.5449908 14.6845071,11.4897865 L10.8256439,9.56035488 C10.5438263,9.41944606 10.2011387,9.53367523 10.0602299,9.81549288 C10.033824,9.86830478 10.0158571,9.92473182 10.0068132,9.9827243 L10,10.0706309 Z"/></g>
 </svg><span>Learn</span></a></li>
         <li><a class="main-nav-link nav-link-retractable" href="https://codepen.io/collection/Poerqa?cursor=eyJwYWdlIjoxfQ==/" target="_blank" title="CodePen"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="codepen" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
@@ -94,8 +94,8 @@
     </nav>
     <button id="toggle-site-menu" class="ui-input trigger-pane" title="Toggle site menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="menu" fill="none" fill-rule="evenodd">
-    <rect id="Rectangle" width="16" height="1.75" x="4" y="8" fill="#FFFFFF"/>
-    <rect id="Rectangle-Copy" width="16" height="1.75" x="4" y="14" fill="#FFFFFF"/>
+    <rect id="Rectangle" width="16" height="1.75" x="4" y="8" fill="currentColor"/>
+    <rect id="Rectangle-Copy" width="16" height="1.75" x="4" y="14" fill="currentColor"/>
   </g>
 </svg>
 </button>
@@ -160,7 +160,7 @@
   </section>
 
   <section id="features-gallery" data-label="FEATURES">
-    <section id="intuitive" class="home-section feature-section text-layout theme-color-0" data-chapter="intuitive" data-demo="intuitive">
+    <section id="intuitive" class="home-section feature-section text-layout theme-color-getting-started" data-chapter="intuitive" data-demo="intuitive">
       <div class="home-section-content">
           <div class="home-section-text">
             <div class="home-section-text-heading">
@@ -194,7 +194,7 @@ Built-in easings</a></li>
       </div>
     </section>
 
-    <section id="composition" class="home-section feature-section text-layout theme-color-2" data-chapter="composition" data-demo="composition">
+    <section id="composition" class="home-section feature-section text-layout theme-color-animation" data-chapter="composition" data-demo="composition">
       <div class="home-section-content">
           <div class="home-section-text">
             <div class="home-section-text-heading">
@@ -228,41 +228,7 @@ Blend composition</a></li>
       </div>
     </section>
 
-    <section id="svgUtils" class="home-section feature-section text-layout theme-color-9" data-chapter="svgUtils" data-demo="svgUtils">
-      <div class="home-section-content">
-          <div class="home-section-text">
-            <div class="home-section-text-heading">
-              <h2>SVG toolset</h2>
-              <p>Morph shapes, follow motion paths, and draw lines easily with the built-in SVG utilities.</p>
-            </div>
-            <ul class="links-list">
-              <li><a class="text-ui" href="documentation/svg/morphto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-Shape morphing</a></li>
-              <li><a class="text-ui" href="documentation/svg/createdrawable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-Line drawing</a></li>
-              <li><a class="text-ui" href="documentation/svg/createmotionpath"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-Motion path</a></li>
-            </ul>
-          </div>
-          <div class="feature-section-demo-wrapper">
-            <div class="feature-section-demo fixed-section"></div>
-          </div>
-      </div>
-    </section>
-
-    <section id="scroll" class="home-section feature-section text-layout theme-color-6" data-chapter="scroll" data-demo="scroll">
+    <section id="scroll" class="home-section feature-section text-layout theme-color-events" data-chapter="scroll" data-demo="scroll">
       <div class="home-section-content">
           <div class="home-section-text">
             <div class="home-section-text-heading">
@@ -270,19 +236,19 @@ Motion path</a></li>
               <p>Synchronise and trigger animations on scroll with the Scroll Observer API.</p>
             </div>
             <ul class="links-list">
-              <li><a class="text-ui" href="documentation/scroll/scrollobserver-synchronisation-modes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+              <li><a class="text-ui" href="documentation/events/onscroll/scrollobserver-synchronisation-modes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
 Multiple synchronisation modes</a></li>
-              <li><a class="text-ui" href="documentation/scroll/scrollobserver-thresholds"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+              <li><a class="text-ui" href="documentation/events/onscroll/scrollobserver-thresholds"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
 Advanced thresholds</a></li>
-              <li><a class="text-ui" href="documentation/scroll/scrollobserver-callbacks"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+              <li><a class="text-ui" href="documentation/events/onscroll/scrollobserver-callbacks"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
@@ -296,7 +262,7 @@ Complete set of callbacks</a></li>
       </div>
     </section>
 
-    <section id="staggering" class="home-section feature-section text-layout theme-color-8" data-chapter="staggering" data-demo="staggering">
+    <section id="staggering" class="home-section feature-section text-layout theme-color-utils" data-chapter="staggering" data-demo="staggering">
       <div class="home-section-content">
           <div class="home-section-text">
             <div class="home-section-text-heading">
@@ -322,6 +288,40 @@ Values staggering</a></li>
   </g>
 </svg>
 Timeline positions staggering</a></li>
+            </ul>
+          </div>
+          <div class="feature-section-demo-wrapper">
+            <div class="feature-section-demo fixed-section"></div>
+          </div>
+      </div>
+    </section>
+
+    <section id="svgUtils" class="home-section feature-section text-layout theme-color-svg" data-chapter="svgUtils" data-demo="svgUtils">
+      <div class="home-section-content">
+          <div class="home-section-text">
+            <div class="home-section-text-heading">
+              <h2>SVG toolset</h2>
+              <p>Morph shapes, follow motion paths, and draw lines easily with the built-in SVG utilities.</p>
+            </div>
+            <ul class="links-list">
+              <li><a class="text-ui" href="documentation/svg/morphto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Shape morphing</a></li>
+              <li><a class="text-ui" href="documentation/svg/createdrawable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Line drawing</a></li>
+              <li><a class="text-ui" href="documentation/svg/createmotionpath"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+Motion path</a></li>
             </ul>
           </div>
           <div class="feature-section-demo-wrapper">
@@ -368,7 +368,7 @@ Useful methods</a></li>
       </div>
     </section>
 
-    <section id="clockwork" class="home-section feature-section text-layout theme-color-3" data-chapter="clockwork" data-demo="clockwork">
+    <section id="clockwork" class="home-section feature-section text-layout theme-color-timeline" data-chapter="clockwork" data-demo="clockwork">
       <div class="home-section-content">
           <div class="home-section-text">
             <div class="home-section-text-heading">
@@ -402,7 +402,7 @@ Playback settings</a></li>
       </div>
     </section>
 
-    <section id="responsive" class="home-section feature-section text-layout theme-color-7" data-chapter="responsive" data-demo="responsive">
+    <section id="responsive" class="home-section feature-section text-layout theme-color-scope" data-chapter="responsive" data-demo="responsive">
       <div class="home-section-content">
           <div class="home-section-text">
             <div class="home-section-text-heading">
@@ -522,19 +522,13 @@ Become a sponsor</a></li>
   </g>
 </svg>
 </span></span></a></li>
-          <li><a class="text-ui docs-info-link" href="documentation/scroll"><span class="label-dot"></span><span class="label-text">Scroll<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</span></span></a></li>
           <li><a class="text-ui docs-info-link" href="documentation/scope"><span class="label-dot"></span><span class="label-text">Scope<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
 </span></span></a></li>
-          <li><a class="text-ui docs-info-link" href="documentation/stagger"><span class="label-dot"></span><span class="label-text">Stagger<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+          <li><a class="text-ui docs-info-link" href="documentation/events/onscroll"><span class="label-dot"></span><span class="label-text">Scroll<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
@@ -547,6 +541,12 @@ Become a sponsor</a></li>
 </svg>
 </span></span></a></li>
           <li><a class="text-ui docs-info-link" href="documentation/utilities"><span class="label-dot"></span><span class="label-text">Utils<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</span></span></a></li>
+          <li><a class="text-ui docs-info-link" href="documentation/easings"><span class="label-dot"></span><span class="label-text">Easings<span class="link-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
@@ -656,29 +656,29 @@ createTimeline()
         <div class="modules-bundle-size"><span class="size">24.50</span> KB</div>
       </div>
       <div class="modules-sizes-chart chart">
-        <div data-size="3.50" class="chart-bar module-waapi theme-color-11"></div>
-        <div data-size="0.55" class="chart-bar module-timeline theme-color-3"></div>
-        <div data-size="0.48" class="chart-bar module-stagger theme-color-8"></div>
-        <div data-size="0.35" class="chart-bar module-svg theme-color-9"></div>
-        <div data-size="0.52" class="chart-bar module-spring theme-color-10"></div>
-        <div data-size="5.60" class="chart-bar module-timer theme-color-1"></div>
-        <div data-size="4.30" class="chart-bar module-scroll theme-color-6"></div>
-        <div data-size="5.20" class="chart-bar module-animation theme-color-2"></div>
-        <div data-size="6.41" class="chart-bar module-draggable theme-color-5"></div>
-        <div data-size="0.22" class="chart-bar module-scope theme-color-7"></div>
+        <div data-size="3.50" class="chart-bar module-waapi theme-color-waapi"></div>
+        <div data-size="0.55" class="chart-bar module-timeline theme-color-timeline"></div>
+        <div data-size="0.48" class="chart-bar module-stagger theme-color-utils"></div>
+        <div data-size="0.35" class="chart-bar module-svg theme-color-svg"></div>
+        <div data-size="0.52" class="chart-bar module-spring theme-color-easings"></div>
+        <div data-size="5.60" class="chart-bar module-timer theme-color-timer"></div>
+        <div data-size="4.30" class="chart-bar module-scroll theme-color-events"></div>
+        <div data-size="5.20" class="chart-bar module-animation theme-color-animation"></div>
+        <div data-size="6.41" class="chart-bar module-draggable theme-color-draggable"></div>
+        <div data-size="0.22" class="chart-bar module-scope theme-color-scope"></div>
       </div>
       <ul class="modules-list">
-        <li><span class="label-dot theme-color-1"></span>Timer <span class="size">5.60 KB</span></li>
-        <li><span class="label-dot theme-color-2"></span>Animation <span class="size">+5.20 KB</span></li>
-        <li><span class="label-dot theme-color-3"></span>Timeline <span class="size">+0.55 KB</span></li>
-        <li><span class="label-dot theme-color-4"></span>Animatable <span class="size">+0.40 KB</span></li>
-        <li><span class="label-dot theme-color-5"></span>Draggable <span class="size">+6.41 KB</span></li>
-        <li><span class="label-dot theme-color-6"></span>Scroll <span class="size">+4.30 KB</span></li>
-        <li><span class="label-dot theme-color-7"></span>Scope <span class="size">+0.22 KB</span></li>
-        <li><span class="label-dot theme-color-8"></span>Stagger <span class="size">+0.48 KB</span></li>
-        <li><span class="label-dot theme-color-9"></span>SVG <span class="size">0.35 KB</span></li>
-        <li><span class="label-dot theme-color-10"></span>Spring <span class="size">0.52 KB</span></li>
-        <li><span class="label-dot theme-color-11"></span>WAAPI <span class="size">3.50 KB</span></li>
+        <li><span class="label-dot theme-color-timer"></span>Timer <span class="size">5.60 KB</span></li>
+        <li><span class="label-dot theme-color-animation"></span>Animation <span class="size">+5.20 KB</span></li>
+        <li><span class="label-dot theme-color-timeline"></span>Timeline <span class="size">+0.55 KB</span></li>
+        <li><span class="label-dot theme-color-animatable"></span>Animatable <span class="size">+0.40 KB</span></li>
+        <li><span class="label-dot theme-color-draggable"></span>Draggable <span class="size">+6.41 KB</span></li>
+        <li><span class="label-dot theme-color-events"></span>Scroll <span class="size">+4.30 KB</span></li>
+        <li><span class="label-dot theme-color-scope"></span>Scope <span class="size">+0.22 KB</span></li>
+        <li><span class="label-dot theme-color-svg"></span>SVG <span class="size">0.35 KB</span></li>
+        <li><span class="label-dot theme-color-utils"></span>Stagger <span class="size">+0.48 KB</span></li>
+        <li><span class="label-dot theme-color-easings"></span>Spring <span class="size">0.52 KB</span></li>
+        <li><span class="label-dot theme-color-waapi"></span>WAAPI <span class="size">3.50 KB</span></li>
       </ul>
     </div>
     <div class="funding-level-box home-section-card text-layout" data-card="sponsors" data-enter-offset="-=50lvh" data-leave-offset="-=50lvh">
@@ -706,7 +706,7 @@ createTimeline()
 </form>      </email-signup>
     </div>
     <div class="footer-block">
-      <h3 class="footer-heading text-xs">Follow us</h3>
+      <h3 class="footer-heading text-xs">Follow</h3>
       <ul class="links-list">
         <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
         <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
