@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="darkreader-lock">
+  <link rel="icon" href="/assets/images/favicon.png">
+  <title>InOutExpo easing visualizer | Exponential easing configurator | Easing editor | Anime.js | JavaScript Animation Engine</title>
+  <meta name="description" content="Visualize, configure and generate JavaScript and CSS spring and easing functions with the official Anime.js Easing Editor">
+  <meta property="og:title" content="InOutExpo easing visualizer">
+  <meta property="og:url" content="/easing-editor/exponential/inoutexpo">
+  <meta property="og:description" content="Visualize, configure and generate JavaScript and CSS spring and easing functions with the official Anime.js Easing Editor">
+  <meta property="og:image" content="/media/site/5e9b48763d-1744100039/anime-js-sharing-image.png">
+  <meta name="twitter:title" content="InOutExpo easing visualizer">
+  <meta name="twitter:description" content="Visualize, configure and generate JavaScript and CSS spring and easing functions with the official Anime.js Easing Editor">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://animejs.com/media/site/5e9b48763d-1744100039/anime-js-sharing-image.png">
+  <link href="/assets/css/styles.css?v=4.1.2" rel="stylesheet"></head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
+<script>
+  window.paths = {
+    demos: '/documentation-demos',
+    'easings': '/assets/json/easings.json',
+    'github-sponsors': '/github-sponsors',
+    'platinum-sponsors': '/platinum-sponsors',
+    'gold-sponsors': '/gold-sponsors',
+    'silver-sponsors': '/silver-sponsors',
+  };
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-16LTPBS8QC');
+</script>
+<body data-template="easing-curve">
+  <div class="page">
+    <header id="site-header" class="layout-container text-ui ui-overlay">
+  <div id="site-header-content">
+    <h1 class="heading-logo header-logo">
+      <a href="/">
+        <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
+        <span>Anime.js | JavaScript Animation Engine</span>
+      </a>
+      <label id="docs-versions" class="ui-select ui-input docs-info-version">
+        <select class="ui-input" name="docs-versions" aria-label="Anime.js versions">
+          <option value="/documentation">4.0.0</option>
+          <option value="/v3/documentation">3.2.2</option>
+          <option value="/v2/documentation">2.1.0</option>
+        </select>
+      </label>
+    </h1>
+    <nav id="site-menu">
+      <ul>
+                                        <li><a class="main-nav-link docs-link" data-id="docs" href="/documentation" title="Documentation"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="sidebar" fill="none" fill-rule="evenodd">
+    <path id="rectangle" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125H7.833A3.375 3.375 0 0 0 4.458 9.5v5a3.375 3.375 0 0 0 3.375 3.375h8.334a3.375 3.375 0 0 0 3.375-3.375v-5a3.375 3.375 0 0 0-3.375-3.375zm-8.334 1.75h8.334c.897 0 1.625.728 1.625 1.625v5c0 .897-.728 1.625-1.625 1.625H7.833A1.625 1.625 0 0 1 6.208 14.5v-5c0-.897.728-1.625 1.625-1.625z"/>
+    <polyline id="Path-42" stroke="#FFFFFF" stroke-width="1.75" points="9.5 7.75 9.5 12 9.5 16.25" data-points="13.5 8.75 10.5 12 13.5 15.25"/>
+  </g>
+</svg>
+<span>Docs</span></a></li>
+        <li><a class="main-nav-link is-active" href="/easing-editor" title="Easing functions editor"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon"><path fill="none" stroke="currentColor" stroke-width="1.75" d="M4.5,17 C14.5967876,17 8.37571813,7 19.5,7"/></svg><span>Easing editor</span></a></li>
+        <li><a class="main-nav-link" href="/learn" title="Learn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
+  <g fill="none"><path fill="currentColor" d="M16.1666667,6.125 L7.83333333,6.125 C5.9693723,6.125 4.45833333,7.63603897 4.45833333,9.5 L4.45833333,14.5 C4.45833333,16.363961 5.9693723,17.875 7.83333333,17.875 L16.1666667,17.875 C18.0306277,17.875 19.5416667,16.363961 19.5416667,14.5 L19.5416667,9.5 C19.5416667,7.63603897 18.0306277,6.125 16.1666667,6.125 Z M7.83333333,7.875 L16.1666667,7.875 C17.0641294,7.875 17.7916667,8.60253728 17.7916667,9.5 L17.7916667,14.5 C17.7916667,15.3974627 17.0641294,16.125 16.1666667,16.125 L7.83333333,16.125 C6.93587061,16.125 6.20833333,15.3974627 6.20833333,14.5 L6.20833333,9.5 C6.20833333,8.60253728 6.93587061,7.875 7.83333333,7.875 Z"/><path fill="currentColor" fill-rule="evenodd" d="M10,10.0706309 L10,13.9294941 C10,14.2445758 10.2554242,14.5 10.5705059,14.5 C10.6590742,14.5 10.7464261,14.479379 10.8256439,14.4397701 L14.6845071,12.5103385 C14.9663248,12.3694297 15.0805539,12.0267421 14.9396451,11.7449245 C14.8844409,11.634516 14.7949156,11.5449908 14.6845071,11.4897865 L10.8256439,9.56035488 C10.5438263,9.41944606 10.2011387,9.53367523 10.0602299,9.81549288 C10.033824,9.86830478 10.0158571,9.92473182 10.0068132,9.9827243 L10,10.0706309 Z"/></g>
+</svg><span>Learn</span></a></li>
+        <li><a class="main-nav-link nav-link-retractable" href="https://codepen.io/collection/Poerqa?cursor=eyJwYWdlIjoxfQ==/" target="_blank" title="CodePen"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="codepen" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <path id="Shape" stroke="#FFFFFF" stroke-width="1.75" d="M5 14.355L12 19l7-4.645v-4.71L12 5 5 9.645v4.71zm14 0l-7-4.71-7 4.71m0-4.71l7 4.646 7-4.646M12 5v4.645m0 4.71V19"/>
+  </g>
+</svg>
+<span>Examples</span></a></li>
+        <li><a class="main-nav-link nav-link-retractable" href="https://github.com/juliangarnier/anime" target="_blank" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" d="M12.007 4C7.579 4 4 7.606 4 12.066a8.06 8.06 0 0 0 5.475 7.652c.397.08.543-.173.543-.387 0-.187-.013-.828-.013-1.496-2.227.481-2.691-.961-2.691-.961-.358-.935-.888-1.175-.888-1.175-.73-.495.053-.495.053-.495.808.054 1.233.828 1.233.828.715 1.229 1.869.882 2.333.668.066-.52.278-.881.504-1.082-1.777-.187-3.646-.881-3.646-3.98 0-.88.318-1.602.822-2.163-.08-.2-.358-1.028.08-2.136 0 0 .676-.214 2.2.828a7.698 7.698 0 0 1 2.002-.268 7.7 7.7 0 0 1 2.001.268c1.525-1.042 2.2-.828 2.2-.828.438 1.108.16 1.936.08 2.136.517.561.822 1.282.822 2.164 0 3.098-1.869 3.779-3.659 3.98.292.253.544.734.544 1.495 0 1.082-.013 1.95-.013 2.217 0 .214.146.467.543.387A8.06 8.06 0 0 0 20 12.066C20.013 7.606 16.42 4 12.007 4z"/>
+  </g>
+</svg>
+<span>GitHub</span></a></li>
+        <!-- <li><a class="main-nav-link nav-link-retractable" href="https://github.com/sponsors/juliangarnier" target="_blank" title="Discord"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <path fill="currentColor" d="M17.5446757,7.01094204 C16.5248898,6.54302092 15.4313236,6.19827727 14.2879321,6.00082826 C14.2671096,5.99701756 14.2463096,6.00654094 14.2355828,6.0255877 C14.0949406,6.27573079 13.9391547,6.60206318 13.8300617,6.85855894 C12.6002702,6.67444627 11.3767885,6.67444627 10.1722139,6.85855894 C10.0630984,6.59636177 9.90165617,6.27573079 9.76038294,6.0255877 C9.74965618,6.00717643 9.72885618,5.99765305 9.70803364,6.00082826 C8.56527311,6.19764628 7.47170693,6.54238994 6.45129006,7.01094204 C6.44245625,7.01475049 6.43488442,7.02110542 6.42985907,7.02935331 C4.35559433,10.1282603 3.78736652,13.1509982 4.06612009,16.1362601 C4.06738138,16.1508629 4.07557992,16.1648348 4.08693203,16.1737137 C5.45547262,17.178739 6.78113794,17.7888798 8.08218579,18.1932967 C8.10300833,18.1996516 8.1250703,18.1920347 8.138321,18.1748854 C8.44608438,17.7546038 8.72042803,17.3114488 8.95565056,16.8454207 C8.96953225,16.8181305 8.95628155,16.7857474 8.92790972,16.7749531 C8.4927548,16.6098827 8.07839988,16.4086207 7.67981961,16.1800686 C7.64829285,16.1616573 7.6457689,16.1165644 7.67477172,16.0949756 C7.75864777,16.0321249 7.84254636,15.9667277 7.9226365,15.9006996 C7.93712664,15.8886432 7.95731819,15.8860968 7.97435481,15.8937137 C10.5928562,17.0892291 13.4276955,17.0892291 16.0153011,15.8937137 C16.0323377,15.8854658 16.0525293,15.8880122 16.0676504,15.9000686 C16.1477631,15.9660968 16.2316391,16.0321249 16.3161462,16.0949756 C16.345149,16.1165644 16.343256,16.1616573 16.3117293,16.1800686 C15.913149,16.4130601 15.4987941,16.6098827 15.0630082,16.7743221 C15.0346363,16.7851165 15.0220166,16.8181305 15.0358983,16.8454207 C15.2761687,17.3107953 15.5505124,17.7539502 15.8525969,18.1742544 C15.8652166,18.1920347 15.8879096,18.1996516 15.9087321,18.1932967 C17.2160898,17.7888798 18.5417461,17.178739 19.9102869,16.1737137 C19.9222757,16.1648348 19.9298475,16.1514939 19.9311095,16.1368911 C20.2647207,12.6856011 19.3723264,9.68765183 17.5654757,7.02998429 C17.5610588,7.02110542 17.5535095,7.01475049 17.5446757,7.01094204 Z M9.34668154,14.3185475 C8.55833226,14.3185475 7.90875481,13.5947841 7.90875481,12.7059278 C7.90875481,11.8170715 8.54573508,11.0933081 9.34668154,11.0933081 C10.1539153,11.0933081 10.7972054,11.8234264 10.7845857,12.7059278 C10.7845857,13.5947841 10.1476055,14.3185475 9.34668154,14.3185475 Z M14.6631659,14.3185475 C13.8748392,14.3185475 13.2252617,13.5947841 13.2252617,12.7059278 C13.2252617,11.8170715 13.8622195,11.0933081 14.6631659,11.0933081 C15.4704222,11.0933081 16.1136898,11.8234264 16.1010926,12.7059278 C16.1010926,13.5947841 15.4704222,14.3185475 14.6631659,14.3185475 Z"/>
+</svg>
+<span>Discord</span></a></li> -->
+        <li>
+          <sponsor-button>
+          <a href="https://github.com/sponsors/juliangarnier" class="main-nav-link sponsor-button" target="_blank" title="Sponsor Julian Garnier on GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="currentColor" fill-rule="nonzero" d="M12 18.445a.778.778 0 0 1-.34-.078C11.39 18.235 5 15.077 5 9.889a3.889 3.889 0 0 1 6.638-2.75L12 7.5l.362-.361A3.889 3.889 0 0 1 19 9.889c0 5.17-6.387 8.344-6.66 8.478a.778.778 0 0 1-.34.078z"/>
+  </g>
+</svg>
+            <span>Sponsor</span>
+          </a>
+          </sponsor-button>
+        </li>
+      </ul>
+    </nav>
+    <button id="toggle-site-menu" class="ui-input trigger-pane" title="Toggle site menu"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="menu" fill="none" fill-rule="evenodd">
+    <rect id="Rectangle" width="16" height="1.75" x="4" y="8" fill="currentColor"/>
+    <rect id="Rectangle-Copy" width="16" height="1.75" x="4" y="14" fill="currentColor"/>
+  </g>
+</svg>
+</button>
+  </div>
+  </header>
+
+<main id="easing-editor" class="layout-container">
+  <nav id="easings-navigation">
+    <ul class="easing-curve-items">
+                  <li class="easing-curve-nav-item">
+          <a data-curve="spring default" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="2"
+            data-category="Spring"
+            title="Default spring easing configurator"
+            href="/easing-editor/spring/default          ">
+            <span>spring default</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="spring snappy" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="2"
+            data-category="Spring"
+            title="Snappy spring easing configurator"
+            href="/easing-editor/spring/snappy          ">
+            <span>spring snappy</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="spring bouncy" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="2"
+            data-category="Spring"
+            title="Bouncy spring easing configurator"
+            href="/easing-editor/spring/bouncy          ">
+            <span>spring bouncy</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="spring strong" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="2"
+            data-category="Spring"
+            title="Strong spring easing configurator"
+            href="/easing-editor/spring/strong          ">
+            <span>spring strong</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="bezier in" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="4"
+            data-category="Cubic Bezier"
+            title="In bezier easing configurator"
+            href="/easing-editor/cubic-bezier/in          ">
+            <span>bezier in</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="bezier out" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="4"
+            data-category="Cubic Bezier"
+            title="Out bezier easing configurator"
+            href="/easing-editor/cubic-bezier/out          ">
+            <span>bezier out</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="bezier inOut" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="4"
+            data-category="Cubic Bezier"
+            title="InOut bezier easing configurator"
+            href="/easing-editor/cubic-bezier/inout          ">
+            <span>bezier inOut</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="bezier outIn" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="4"
+            data-category="Cubic Bezier"
+            title="OutIn bezier easing configurator"
+            href="/easing-editor/cubic-bezier/outin          ">
+            <span>bezier outIn</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="power in" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="5"
+            data-category="Power"
+            title="In power easing configurator"
+            href="/easing-editor/power/in          ">
+            <span>power in</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="power out" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="5"
+            data-category="Power"
+            title="Out power easing configurator"
+            href="/easing-editor/power/out          ">
+            <span>power out</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="power inOut" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="5"
+            data-category="Power"
+            title="InOut power easing configurator"
+            href="/easing-editor/power/inout          ">
+            <span>power inOut</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="power outIn" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="5"
+            data-category="Power"
+            title="OutIn power easing configurator"
+            href="/easing-editor/power/outin          ">
+            <span>power outIn</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="inSine" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="7"
+            data-category="Sine"
+            title="InSine easing visualizer"
+            href="/easing-editor/sine/insine          ">
+            <span>inSine</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outSine" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="7"
+            data-category="Sine"
+            title="OutSine easing visualizer"
+            href="/easing-editor/sine/outsine          ">
+            <span>outSine</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="inOutSine" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="7"
+            data-category="Sine"
+            title="InOutSine easing visualizer"
+            href="/easing-editor/sine/inoutsine          ">
+            <span>inOutSine</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outInSine" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="7"
+            data-category="Sine"
+            title="OutInSine easing visualizer"
+            href="/easing-editor/sine/outinsine          ">
+            <span>outInSine</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="inExpo" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="8"
+            data-category="Exponential"
+            title="InExpo easing visualizer"
+            href="/easing-editor/exponential/inexpo          ">
+            <span>inExpo</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outExpo" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="8"
+            data-category="Exponential"
+            title="OutExpo easing visualizer"
+            href="/easing-editor/exponential/outexpo          ">
+            <span>outExpo</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="inOutExpo" class="
+            easing-curve-link ui-selectable
+             is-active            "
+            data-theme-color="8"
+            data-category="Exponential"
+            title="InOutExpo easing visualizer"
+            href="/easing-editor/exponential/inoutexpo          ">
+            <span>inOutExpo</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outInExpo" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="8"
+            data-category="Exponential"
+            title="OutInExpo easing visualizer"
+            href="/easing-editor/exponential/outinexpo          ">
+            <span>outInExpo</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="inCirc" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="9"
+            data-category="Circular"
+            title="InCirc easing visualizer"
+            href="/easing-editor/circular/incirc          ">
+            <span>inCirc</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outCirc" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="9"
+            data-category="Circular"
+            title="OutCirc easing visualizer"
+            href="/easing-editor/circular/outcirc          ">
+            <span>outCirc</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="inOutCirc" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="9"
+            data-category="Circular"
+            title="InOutCirc easing visualizer"
+            href="/easing-editor/circular/inoutcirc          ">
+            <span>inOutCirc</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outInCirc" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="9"
+            data-category="Circular"
+            title="OutInCirc easing visualizer"
+            href="/easing-editor/circular/outincirc          ">
+            <span>outInCirc</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="inBack" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="10"
+            data-category="Back"
+            title="InBack easing configurator"
+            href="/easing-editor/back/inback          ">
+            <span>inBack</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outBack" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="10"
+            data-category="Back"
+            title="OutBack easing configurator"
+            href="/easing-editor/back/outback          ">
+            <span>outBack</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="inOutBack" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="10"
+            data-category="Back"
+            title="InOutBack easing configurator"
+            href="/easing-editor/back/inoutback          ">
+            <span>inOutBack</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outInBack" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="10"
+            data-category="Back"
+            title="OutInBack easing configurator"
+            href="/easing-editor/back/outinback          ">
+            <span>outInBack</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="inElastic" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="11"
+            data-category="Elastic"
+            title="InElastic easing configurator"
+            href="/easing-editor/elastic/inelastic          ">
+            <span>inElastic</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outElastic" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="11"
+            data-category="Elastic"
+            title="OutElastic easing configurator"
+            href="/easing-editor/elastic/outelastic          ">
+            <span>outElastic</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="inOutElastic" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="11"
+            data-category="Elastic"
+            title="InOutElastic easing configurator"
+            href="/easing-editor/elastic/inoutelastic          ">
+            <span>inOutElastic</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outInElastic" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="11"
+            data-category="Elastic"
+            title="OutInElastic easing configurator"
+            href="/easing-editor/elastic/outinelastic          ">
+            <span>outInElastic</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="inBounce" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="12"
+            data-category="Bounce"
+            title="InBounce easing visualizer"
+            href="/easing-editor/bounce/inbounce          ">
+            <span>inBounce</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outBounce" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="12"
+            data-category="Bounce"
+            title="OutBounce easing visualizer"
+            href="/easing-editor/bounce/outbounce          ">
+            <span>outBounce</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="inOutBounce" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="12"
+            data-category="Bounce"
+            title="InOutBounce easing visualizer"
+            href="/easing-editor/bounce/inoutbounce          ">
+            <span>inOutBounce</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="outInBounce" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="12"
+            data-category="Bounce"
+            title="OutInBounce easing visualizer"
+            href="/easing-editor/bounce/outinbounce          ">
+            <span>outInBounce</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="irregular light" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="13"
+            data-category="Irregular"
+            title="Light irregular easing configurator"
+            href="/easing-editor/irregular/light          ">
+            <span>irregular light</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="irregular heavy" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="13"
+            data-category="Irregular"
+            title="Heavy irregular easing configurator"
+            href="/easing-editor/irregular/heavy          ">
+            <span>irregular heavy</span>
+          </a>
+        </li>
+                        <li class="easing-curve-nav-item">
+          <a data-curve="steps start" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="13"
+            data-category="Steps"
+            title="Start steps easing configurator"
+            href="/easing-editor/steps/start          ">
+            <span>steps start</span>
+          </a>
+        </li>
+              <li class="easing-curve-nav-item">
+          <a data-curve="steps end" class="
+            easing-curve-link ui-selectable
+                        "
+            data-theme-color="13"
+            data-category="Steps"
+            title="End steps easing configurator"
+            href="/easing-editor/steps/end          ">
+            <span>steps end</span>
+          </a>
+        </li>
+              </ul>
+  </nav>
+  <div class="easing-pane">
+    <div class="easing-pane-group">
+    <div class="easing-pane-header easing-pane-block">
+            <h1 id="easing-editor-title" class="text-ui">
+      InOutExpo easing visualizer      </h1>
+            <div id="easing-editor-controls" class="ui-group easing-pane-controls">
+        <button title="Reset to default preset" id="reset-easing-editor" class="ui-input" disabled value="reset"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+      </div>
+    </div>
+    <div id="easing-editor-container" class="easing-pane-block"></div>
+    <div id="easing-onion" class="easing-pane-block"></div>
+    </div>
+  </div>
+  <div class="easing-pane">
+    <div class="easing-pane-group">
+      <div class="easing-pane-header easing-pane-block">
+        <h2 class="text-ui">Preview</h2>
+        <div id="easing-animations-controls" class="ui-group easing-pane-controls">
+          <button title="Play" class="ui-input" value="play"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="currentColor" fill-rule="evenodd" d="M7,6.82167316 L7,17.1783268 C7,17.7306116 7.44771525,18.1783268 8,18.1783268 C8.19018402,18.1783268 8.37642456,18.1240935 8.53687549,18.0219883 L16.6742462,12.8436615 C17.1401876,12.5471533 17.2775404,11.9290659 16.9810322,11.4631245 C16.9024535,11.3396437 16.797727,11.2349172 16.6742462,11.1563385 L8.53687549,5.97801168 C8.07093412,5.68150353 7.45284666,5.8188563 7.15633851,6.28479767 C7.05423337,6.44524861 7,6.63148914 7,6.82167316 Z"/>
+</svg></button>
+          <button title="Pause" class="ui-input" value="pause"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="4" height="12" x="7" y="6" fill="currentColor" rx="1"/>
+    <rect width="4" height="12" x="13" y="6" fill="currentColor" rx="1"/>
+  </g>
+</svg></button>
+          <button title="Restart forward" class="ui-input" value="restart"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14,4.5 L19,7.999 L14,11.498 L14,8.75 L9,8.75 C8.30964406,8.75 7.75,9.30964406 7.75,10 L7.75,14 C7.75,14.6903559 8.30964406,15.25 9,15.25 L15,15.25 C15.6903559,15.25 16.25,14.6903559 16.25,14 L16.25,11.924 L18,10.699 L18,14 C18,15.6568542 16.6568542,17 15,17 L9,17 C7.34314575,17 6,15.6568542 6,14 L6,10 C6,8.34314575 7.34314575,7 9,7 L14,7 L14,4.5 Z"/></svg></button>
+          <button title="Restart backward" class="ui-input" value="reverse"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10,4.5 L5,7.999 L10,11.498 L10,8.75 L15,8.75 C15.6903559,8.75 16.25,9.30964406 16.25,10 L16.25,14 C16.25,14.6903559 15.6903559,15.25 15,15.25 L9,15.25 C8.30964406,15.25 7.75,14.6903559 7.75,14 L7.75,11.924 L6,10.699 L6,14 C6,15.6568542 7.34314575,17 9,17 L15,17 C16.6568542,17 18,15.6568542 18,14 L18,10 C18,8.34314575 16.6568542,7 15,7 L10,7 L10,4.5 Z"/></svg></button>
+          <!-- <button id="reset-easing-animations" class="ui-input" disabled value="reset"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button> -->
+        </div>
+      </div>
+      <div id="easing-animations"></div>
+      <div id="easing-animations-settings" class="easing-pane-block"></div>
+    </div>
+    <div class="easing-pane-group">
+      <div class="code-preview-content">
+        <header>
+          <div class="code-preview-title">
+            <h2 class="text-ui">Export</h2>
+          </div>
+          <nav>
+            <button class="code-preview-button text-ui is-active" data-language="js" data-id="timer">J<span>ava</span>S<span>cript</span></button>
+            <button class="code-preview-button text-ui" data-language="css" data-id="timer">CSS</button>
+          </nav>
+        </header>
+        <div class="code-editor">
+          <div class="easing-code-output is-active" data-language="js"></div>
+          <div class="easing-code-output" data-language="css"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer id="site-footer" class="layout-container text-layout">
+  <div id="site-footer-content">
+    <div class="footer-block email-signup-block">
+      <h3 class="footer-heading text-xs">Stay in the loop</h3>
+      <email-signup url="https://buttondown.com/api/emails/embed-subscribe/juliangarnier?tag=footer" class="email-signup-form">
+        <form>
+  <div id="form-fields" class="email-signup-fields is-active">
+    <input class="email-signup-field email-signup-input" type="email" name="email" placeholder="Enter your email" required />
+    <input class="email-signup-field email-signup-submit" type="submit" value="Subscribe" />
+  </div>
+
+  <div id="success-message" class="email-signup-alert email-signup-success">
+    <p>Thanks! Check your inbox to confirm your subscription.</p>
+  </div>
+
+  <div id="error-message" class="email-signup-alert email-signup-error">
+    <p>Something went wrong. Please try again later or email me directly at <a href="&#x6D;&#x61;&#x69;&#x6C;&#x74;&#x6F;&#x3A;&#x6A;&#x75;&#x6C;&#x69;&#x61;&#x6E;&#x40;&#x61;&#x6E;&#x69;&#x6D;&#x65;&#x6A;&#x73;&#x2E;&#x63;&#x6F;&#x6D;">&#x6A;&#x75;&#x6C;&#x69;&#x61;&#x6E;&#x40;&#x61;&#x6E;&#x69;&#x6D;&#x65;&#x6A;&#x73;&#x2E;&#x63;&#x6F;&#x6D;</a></p>
+  </div>
+</form>      </email-signup>
+    </div>
+    <div class="footer-block">
+      <h3 class="footer-heading text-xs">Follow</h3>
+      <ul class="links-list">
+        <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
+        <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
+      </ul>
+    </div>
+    <div class="footer-block">
+      <h3 class="footer-heading text-xs">Explore</h3>
+      <ul class="links-list">
+        <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
+        <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen</a></li>
+      </ul>
+    </div>
+    <div class="footer-block footer-logo-block">
+      <div class="heading-logo footer-logo">
+        <a href="/">
+          <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
+          <span>Anime.js | JavaScript Animation Engine</span>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2025 <a href="https://juliangarnier.com" target="_blank">Julian Garnier</a>
+      </div>
+    </div>
+  </div>
+</footer>
+  </div>
+<script src="/assets/js/scripts.js?v=4.1.2"></script></body>
+</html>
