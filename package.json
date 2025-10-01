@@ -175,7 +175,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.3.0",
-    "browser-sync": "^2.29.3",
+    "browser-sync": "^3.0.4",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
     "nodemon": "^3.1.10",
