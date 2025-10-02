@@ -574,6 +574,12 @@ export {}
  */
 
 /**
+ * @typedef {Object} DraggableDragThresholdParams
+ * @property {Number} [mouse]
+ * @property {Number} [touch]
+ */
+
+/**
  * @typedef {Object} DraggableParams
  * @property {DOMTargetSelector} [trigger]
  * @property {DOMTargetSelector|Array<Number>|((draggable: Draggable) => DOMTargetSelector|Array<Number>)} [container]
@@ -585,6 +591,7 @@ export {}
  * @property {Number|((draggable: Draggable) => Number)} [containerFriction]
  * @property {Number|((draggable: Draggable) => Number)} [releaseContainerFriction]
  * @property {Number|((draggable: Draggable) => Number)} [dragSpeed]
+ * @property {Number|DraggableDragThresholdParams|((draggable: Draggable) => Number|DraggableDragThresholdParams)} [dragThreshold]
  * @property {Number|((draggable: Draggable) => Number)} [scrollSpeed]
  * @property {Number|((draggable: Draggable) => Number)} [scrollThreshold]
  * @property {Number|((draggable: Draggable) => Number)} [minVelocity]
