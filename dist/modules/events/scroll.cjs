@@ -731,8 +731,10 @@ class ScrollObserver {
       }
     }
     const rect = $target.getBoundingClientRect();
-    const offset = isHori ? rect.left + container.scrollX - container.left : rect.top + container.scrollY - container.top;
-    const targetSize = isHori ? rect.width : rect.height;
+    const offsetUnscaled = isHori ? rect.left + container.scrollX - container.left : rect.top + container.scrollY - container.top;
+    const scale = rect.width ? $target.clientWidth / rect.width : (rect.height ? $target.clientHeight / rect.height : 1);
+    const offset = offsetUnscaled * scale;
+    const targetSize = isHori ? rect.width * scale : rect.height * scale;
     const containerSize = isHori ? container.width : container.height;
     const scrollSize = isHori ? container.scrollWidth : container.scrollHeight;
     const maxScroll = scrollSize - containerSize;
