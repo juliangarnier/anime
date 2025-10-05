@@ -305,6 +305,11 @@
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-1">
+      <a class="docs-link" title="reset()" href="/documentation/timer/timer-methods/reset" data-id="timer-timer-methods-reset">
+        reset()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-1">
       <a class="docs-link" title="cancel()" href="/documentation/timer/timer-methods/cancel" data-id="timer-timer-methods-cancel">
         cancel()        <!--  -->
                       </a>
@@ -673,6 +678,11 @@
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-2">
+      <a class="docs-link" title="reset()" href="/documentation/animation/animation-methods/reset" data-id="animation-animation-methods-reset">
+        reset()        <!--  -->
+                <span title="Only available on the JS version" class="badge">JS</span>      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="seek()" href="/documentation/animation/animation-methods/seek" data-id="animation-animation-methods-seek">
         seek()        <!--  -->
                       </a>
@@ -878,6 +888,11 @@
           <li class="docs-nav-item theme-color theme-color-3">
       <a class="docs-link" title="play()" href="/documentation/timeline/timeline-methods/play" data-id="timeline-timeline-methods-play">
         play()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-3">
+      <a class="docs-link" title="reset()" href="/documentation/timeline/timeline-methods/reset" data-id="timeline-timeline-methods-reset">
+        reset()        <!--  -->
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-3">
@@ -1110,6 +1125,11 @@
           <li class="docs-nav-item theme-color theme-color-5">
       <a class="docs-link" title="dragSpeed" href="/documentation/draggable/draggable-settings/dragspeed" data-id="draggable-draggable-settings-dragspeed">
         dragSpeed        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-5">
+      <a class="docs-link" title="dragThreshold" href="/documentation/draggable/draggable-settings/dragthreshold" data-id="draggable-draggable-settings-dragthreshold">
+        dragThreshold        <!--  -->
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-5">
@@ -2046,6 +2066,7 @@
 
                     
     <div class="docs-info is-active theme-color theme-color-12" data-id="web-animation-api-api-differences-with-native-waapi-easing">
+
       <div class="docs-info-content text-layout">
                     <div class="docs-breadcrumb theme-color theme-color-12">
             <p>
@@ -2064,40 +2085,14 @@
           <a class="docs-info-header" title="easing" href="/documentation/web-animation-api/api-differences-with-native-waapi/easing">
             easing                                              </a>
         </h1>
-        <p>The <code>easing</code> parameter is replaced by the <code>ease</code> parameter and accepts any easing <code>Function</code>.<br>
-The default easing is <code>'out(2)'</code> instead of <code>'linear'</code>.</p>
-<p>On top of all the built-in WAAPI easing values, Anime.js offers a shorter syntax, and allow configuring the power of the <code>'out'</code>, <code>'in'</code> and <code>'inOut'</code> eases.</p>
-<table>
-<thead>
-<tr>
-<th><code>easing</code></th>
-<th><code>ease</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>'ease-out'</code></td>
-<td><code>'out'</code> | <code>'out(power)'</code></td>
-</tr>
-<tr>
-<td><code>'ease-in'</code></td>
-<td><code>'in'</code> | <code>'in(power)'</code></td>
-</tr>
-<tr>
-<td><code>'ease-in-out'</code></td>
-<td><code>'inOut'</code> | <code>'inOut(power)'</code></td>
-</tr>
-<tr>
-<td><code>'cubic-bezier(x1, y1, x2, y2)'</code></td>
-<td><code>'cubicBezier(x1, y1, x2, y2)'</code></td>
-</tr>
-</tbody>
-</table>
+          <!-- <a href="/panel/pages/documentation+web-animation-api+api-differences-with-native-waapi+easing" target="_blank">Edit Page</a> -->
+        <p>The <code>easing</code> parameter is replaced by the <code>ease</code> parameter and accepts any type of easing <code>Function</code> on top of all the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function" rel="noreferrer" target="_blank">native WAAPI easing functions</a>.</p>
+<p>The default easing is <code>'out(2)'</code> instead of <code>'linear'</code>.</p>
 <h2 id="syntax-comparison" class="heading-anchor"><a href="#syntax-comparison">Syntax comparison</a></h2>
 <h3>Anime.js</h3>
 <pre><code class="language-js">waapi.animate('.square', {
   x: 100,
-  ease: eases.outElastic(1.25, .1)
+  ease: 'outElastic(1.25, .1)'
 });</code></pre>
 <h3>WAAPI equivalent</h3>
 <pre><code class="language-js">const targets = document.querySelectorAll('.square');
@@ -2113,9 +2108,11 @@ targets.forEach(($el, i) =&gt; {
 });</code></pre>
 <h2 id="accepts" class="heading-anchor"><a href="#accepts">Accepts</a></h2>
 <ul>
-<li>Any valid <a href="/documentation/animation/tween-parameters/ease" title="ease">easing</a> <code>String</code> name or <code>Function</code></li>
+<li>Any valid <a href="/documentation/easings">easing</a> <code>String</code> name or <code>Function</code></li>
+<li>Any valid <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timing-function" rel="noreferrer" target="_blank">native WAAPI easing functions</a> <code>String</code> name</li>
 </ul>      </div>
-                  <section class="code-preview theme-color theme-color-12">
+                  <!-- <a href="/panel/pages/documentation+web-animation-api+api-differences-with-native-waapi+easing" target="_blank">Edit Page</a> -->
+      <section class="code-preview theme-color theme-color-12">
         <div class="code-preview-content">
           <header>
             <div class="code-preview-title">
@@ -2124,7 +2121,8 @@ targets.forEach(($el, i) =&gt; {
             <nav>
               <button class="code-preview-button text-ui is-active" data-language="js" data-id="web-animation-api-api-differences-with-native-waapi-easing">J<span>ava</span>S<span>cript</span></button>
               <button class="code-preview-button text-ui" data-language="html" data-id="web-animation-api-api-differences-with-native-waapi-easing">HTML</button>
-                          </nav>
+                            <button class="ui-input code-edit-button text-ui" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+            </nav>
           </header>
           <div class="code-editor">
             <pre class="is-active" data-language="js"><code class="hljs language-javascript">import { waapi, stagger } from 'animejs';

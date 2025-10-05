@@ -305,6 +305,11 @@
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-1">
+      <a class="docs-link" title="reset()" href="/documentation/timer/timer-methods/reset" data-id="timer-timer-methods-reset">
+        reset()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-1">
       <a class="docs-link" title="cancel()" href="/documentation/timer/timer-methods/cancel" data-id="timer-timer-methods-cancel">
         cancel()        <!--  -->
                       </a>
@@ -673,6 +678,11 @@
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-2">
+      <a class="docs-link" title="reset()" href="/documentation/animation/animation-methods/reset" data-id="animation-animation-methods-reset">
+        reset()        <!--  -->
+                <span title="Only available on the JS version" class="badge">JS</span>      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="seek()" href="/documentation/animation/animation-methods/seek" data-id="animation-animation-methods-seek">
         seek()        <!--  -->
                       </a>
@@ -878,6 +888,11 @@
           <li class="docs-nav-item theme-color theme-color-3">
       <a class="docs-link" title="play()" href="/documentation/timeline/timeline-methods/play" data-id="timeline-timeline-methods-play">
         play()        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-3">
+      <a class="docs-link" title="reset()" href="/documentation/timeline/timeline-methods/reset" data-id="timeline-timeline-methods-reset">
+        reset()        <!--  -->
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-3">
@@ -1110,6 +1125,11 @@
           <li class="docs-nav-item theme-color theme-color-5">
       <a class="docs-link" title="dragSpeed" href="/documentation/draggable/draggable-settings/dragspeed" data-id="draggable-draggable-settings-dragspeed">
         dragSpeed        <!--  -->
+                      </a>
+                </li>
+          <li class="docs-nav-item theme-color theme-color-5">
+      <a class="docs-link" title="dragThreshold" href="/documentation/draggable/draggable-settings/dragthreshold" data-id="draggable-draggable-settings-dragthreshold">
+        dragThreshold        <!--  -->
                       </a>
                 </li>
           <li class="docs-nav-item theme-color theme-color-5">
@@ -2046,6 +2066,7 @@
 
                     
     <div class="docs-info is-active theme-color theme-color-2" data-id="animation-animation-callbacks-onloop">
+
       <div class="docs-info-content text-layout">
                     <div class="docs-breadcrumb theme-color theme-color-2">
             <p>
@@ -2064,6 +2085,7 @@
           <a class="docs-info-header" title="onLoop" href="/documentation/animation/animation-callbacks/onloop">
             onLoop            <span title="Is new in V4" class="badge">V4</span>                        <span title="Only available on the JS version" class="badge">JS</span>          </a>
         </h1>
+          <!-- <a href="/panel/pages/documentation+animation+animation-callbacks+onloop" target="_blank">Edit Page</a> -->
         <p>Executes a function every time an animation iteration (<a href="/documentation/animation/animation-playback-settings/loop" title="loop">loop</a>) completes.</p>
 <h2 id="accepts" class="heading-anchor"><a href="#accepts">Accepts</a></h2>
 <p>A <code>Function</code> whose first argument is the animation itself</p>
@@ -2074,7 +2096,8 @@
 <pre><code class="language-js">import { engine } from 'animejs';
 engine.defaults.onLoop = self =&gt; console.log(self.id);</code></pre>
 </div>      </div>
-                  <section class="code-preview theme-color theme-color-2">
+                  <!-- <a href="/panel/pages/documentation+animation+animation-callbacks+onloop" target="_blank">Edit Page</a> -->
+      <section class="code-preview theme-color theme-color-2">
         <div class="code-preview-content">
           <header>
             <div class="code-preview-title">
@@ -2083,7 +2106,8 @@ engine.defaults.onLoop = self =&gt; console.log(self.id);</code></pre>
             <nav>
               <button class="code-preview-button text-ui is-active" data-language="js" data-id="animation-animation-callbacks-onloop">J<span>ava</span>S<span>cript</span></button>
               <button class="code-preview-button text-ui" data-language="html" data-id="animation-animation-callbacks-onloop">HTML</button>
-                          </nav>
+                            <button class="ui-input code-edit-button text-ui" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+            </nav>
           </header>
           <div class="code-editor">
             <pre class="is-active" data-language="js"><code class="hljs language-javascript">import { animate, utils } from 'animejs';
