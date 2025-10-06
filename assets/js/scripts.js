@@ -5829,7 +5829,6 @@ animate('.square', {
     align-items: flex-start;
     flex-direction: column;
     min-width: 19rem;
-    min-height: 100lvh;
   }
   #docs-demos .iframe-content {
     box-shadow: none;
@@ -5844,6 +5843,7 @@ animate('.square', {
   #docs-demos .docs-demo-html:has(.scroll-container) {
     position: absolute;
     width: 100%;
+    min-height: 100lvh;
   }
   #docs-demos .scroll-container {
     top: 0!important;
