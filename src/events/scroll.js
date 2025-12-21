@@ -4,12 +4,9 @@ import {
   noop,
   isDomSymbol,
   relativeValuesExecRgx,
-} from '../core/consts.js';
+} from "../core/consts.js";
 
-import {
-  scope,
-  globals,
-} from '../core/globals.js';
+import { scope, globals } from "../core/globals.js";
 
 import {
   addChild,
@@ -23,43 +20,28 @@ import {
   isObj,
   isStr,
   isUnd,
-} from '../core/helpers.js';
+} from "../core/helpers.js";
 
-import {
-  parseTargets,
-} from '../core/targets.js';
+import { parseTargets } from "../core/targets.js";
 
 import {
   decomposeRawValue,
   decomposedOriginalValue,
   getRelativeValue,
   setValue,
-} from '../core/values.js';
+} from "../core/values.js";
 
-import {
-  convertValueUnit,
-} from '../core/units.js';
+import { convertValueUnit } from "../core/units.js";
 
-import {
-  Timer,
-} from '../timer/timer.js';
+import { Timer } from "../timer/timer.js";
 
-import {
-  get,
-  set,
-} from '../utils/target.js';
+import { get, set } from "../utils/target.js";
 
-import {
-  sync,
-} from '../utils/time.js';
+import { sync } from "../utils/time.js";
 
-import {
-  none,
-} from '../easings/none.js';
+import { none } from "../easings/none.js";
 
-import {
-  parseEase,
-} from '../easings/eases/parser.js';
+import { parseEase } from "../easings/eases/parser.js";
 
 /**
  * @import {
@@ -73,37 +55,37 @@ import {
  *   ScrollThresholdParam,
  *   ScrollThresholdCallback,
  * } from '../types/index.js'
-*/
+ */
 
 /**
  * @import {
  *   JSAnimation,
  * } from '../animation/animation.js'
-*/
+ */
 
 /**
  * @import {
  *   WAAPIAnimation,
  * } from '../waapi/waapi.js'
-*/
+ */
 
 /**
  * @import {
  *   Timeline,
  * } from '../timeline/timeline.js'
-*/
+ */
 
 /**
  * @return {Number}
  */
 const getMaxViewHeight = () => {
-  const $el = doc.createElement('div');
+  const $el = doc.createElement("div");
   doc.body.appendChild($el);
-  $el.style.height = '100lvh';
+  $el.style.height = "100lvh";
   const height = $el.offsetHeight;
   doc.body.removeChild($el);
   return height;
-}
+};
 
 /**
  * @template {ScrollThresholdValue|String|Number|Boolean|Function|Object} T
@@ -111,7 +93,10 @@ const getMaxViewHeight = () => {
  * @param {ScrollObserver} scroller
  * @return {T}
  */
-const parseScrollObserverFunctionParameter = (value, scroller) => value && isFnc(value) ? /** @type {Function} */(value)(scroller) : /** @type {T} */(value);
+const parseScrollObserverFunctionParameter = (value, scroller) =>
+  value && isFnc(value)
+    ? /** @type {Function} */ (value)(scroller)
+    : /** @type {T} */ (value);
 
 export const scrollContainers = new Map();
 
@@ -164,15 +149,19 @@ class ScrollContainer {
       onBegin: () => this.dataTimer.resume(),
       onUpdate: () => {
         const backwards = this.backwardX || this.backwardY;
-        forEachChildren(this, (/** @type {ScrollObserver} */child) => child.handleScroll(), backwards);
+        forEachChildren(
+          this,
+          (/** @type {ScrollObserver} */ child) => child.handleScroll(),
+          backwards
+        );
       },
-      onComplete: () => this.dataTimer.pause()
+      onComplete: () => this.dataTimer.pause(),
     }).init();
     /** @type {Timer} */
     this.dataTimer = new Timer({
       autoplay: false,
       frameRate: 30,
-      onUpdate: (/** @type {Timer} */self) => {
+      onUpdate: (/** @type {Timer} */ self) => {
         const dt = self.deltaTime;
         const px = this.prevScrollX;
         const py = this.prevScrollY;
@@ -184,8 +173,11 @@ class ScrollContainer {
         this.prevScrollY = ny;
         if (dx) this.backwardX = px > nx;
         if (dy) this.backwardY = py > ny;
-        this.velocity = round(dt > 0 ? Math.sqrt(dx * dx + dy * dy) / dt : 0, 5);
-      }
+        this.velocity = round(
+          dt > 0 ? Math.sqrt(dx * dx + dy * dy) / dt : 0,
+          5
+        );
+      },
     }).init();
     /** @type {Timer} */
     this.resizeTicker = new Timer({
@@ -195,7 +187,7 @@ class ScrollContainer {
         this.updateWindowBounds();
         this.refreshScrollObservers();
         this.handleScroll();
-      }
+      },
     }).init();
     /** @type {Timer} */
     this.wakeTicker = new Timer({
@@ -206,7 +198,7 @@ class ScrollContainer {
       },
       onComplete: () => {
         this.scrollTicker.pause();
-      }
+      },
     }).init();
     /** @type {ScrollObserver} */
     this._head = null;
@@ -219,7 +211,7 @@ class ScrollContainer {
     this.handleScroll();
     this.resizeObserver = new ResizeObserver(() => this.resizeTicker.restart());
     this.resizeObserver.observe(this.element);
-    (this.useWin ? win : this.element).addEventListener('scroll', this, false);
+    (this.useWin ? win : this.element).addEventListener("scroll", this, false);
   }
 
   updateScrollCoords() {
@@ -237,8 +229,14 @@ class ScrollContainer {
   updateBounds() {
     const style = getComputedStyle(this.element);
     const $el = this.element;
-    this.scrollWidth = $el.scrollWidth + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
-    this.scrollHeight = $el.scrollHeight + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+    this.scrollWidth =
+      $el.scrollWidth +
+      parseFloat(style.marginLeft) +
+      parseFloat(style.marginRight);
+    this.scrollHeight =
+      $el.scrollHeight +
+      parseFloat(style.marginTop) +
+      parseFloat(style.marginBottom);
     this.updateWindowBounds();
     let width, height;
     if (this.useWin) {
@@ -250,20 +248,24 @@ class ScrollContainer {
       height = $el.clientHeight;
       this.top = elRect.top;
       this.left = elRect.left;
-      this.scale = elRect.width ? width / elRect.width : (elRect.height ? height / elRect.height : 1);
+      this.scale = elRect.width
+        ? width / elRect.width
+        : elRect.height
+        ? height / elRect.height
+        : 1;
     }
     this.width = width;
     this.height = height;
   }
 
   refreshScrollObservers() {
-    forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+    forEachChildren(this, (/** @type {ScrollObserver} */ child) => {
       if (child._debug) {
         child.removeDebug();
       }
     });
     this.updateBounds();
-    forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+    forEachChildren(this, (/** @type {ScrollObserver} */ child) => {
       child.refresh();
       if (child._debug) {
         child.debug();
@@ -288,7 +290,7 @@ class ScrollContainer {
    */
   handleEvent(e) {
     switch (e.type) {
-      case 'scroll':
+      case "scroll":
         this.handleScroll();
         break;
     }
@@ -300,7 +302,7 @@ class ScrollContainer {
     this.resizeTicker.cancel();
     this.wakeTicker.cancel();
     this.resizeObserver.disconnect();
-    (this.useWin ? win : this.element).removeEventListener('scroll', this);
+    (this.useWin ? win : this.element).removeEventListener("scroll", this);
     scrollContainers.delete(this.element);
   }
 }
@@ -309,15 +311,17 @@ class ScrollContainer {
  * @param {TargetsParam} target
  * @return {ScrollContainer}
  */
-const registerAndGetScrollContainer = target => {
-  const $el = /** @type {HTMLElement} */(target ? parseTargets(target)[0] || doc.body : doc.body);
+const registerAndGetScrollContainer = (target) => {
+  const $el = /** @type {HTMLElement} */ (
+    target ? parseTargets(target)[0] || doc.body : doc.body
+  );
   let scrollContainer = scrollContainers.get($el);
   if (!scrollContainer) {
     scrollContainer = new ScrollContainer($el);
     scrollContainers.set($el, scrollContainer);
   }
   return scrollContainer;
-}
+};
 
 /**
  * @param {HTMLElement} $el
@@ -328,23 +332,27 @@ const registerAndGetScrollContainer = target => {
  * @return {Number}
  */
 const convertValueToPx = ($el, v, size, under, over) => {
-  const clampMin = v === 'min';
-  const clampMax = v === 'max';
-  const value = v === 'top' || v === 'left' || v === 'start' || clampMin ? 0 :
-                v === 'bottom' || v === 'right' || v === 'end' || clampMax ? '100%' :
-                v === 'center' ? '50%' :
-                v;
+  const clampMin = v === "min";
+  const clampMax = v === "max";
+  const value =
+    v === "top" || v === "left" || v === "start" || clampMin
+      ? 0
+      : v === "bottom" || v === "right" || v === "end" || clampMax
+      ? "100%"
+      : v === "center"
+      ? "50%"
+      : v;
   const { n, u } = decomposeRawValue(value, decomposedOriginalValue);
   let px = n;
-  if (u === '%') {
+  if (u === "%") {
     px = (n / 100) * size;
   } else if (u) {
-    px = convertValueUnit($el, decomposedOriginalValue, 'px', true).n;
+    px = convertValueUnit($el, decomposedOriginalValue, "px", true).n;
   }
   if (clampMax && under < 0) px += under;
   if (clampMin && over > 0) px += over;
   return px;
-}
+};
 
 /**
  * @param {HTMLElement} $el
@@ -358,20 +366,30 @@ const parseBoundValue = ($el, v, size, under, over) => {
   /** @type {Number} */
   let value;
   if (isStr(v)) {
-    const matchedOperator = relativeValuesExecRgx.exec(/** @type {String} */(v));
+    const matchedOperator = relativeValuesExecRgx.exec(
+      /** @type {String} */ (v)
+    );
     if (matchedOperator) {
       const splitter = matchedOperator[0];
       const operator = splitter[0];
-      const splitted = /** @type {String} */(v).split(splitter);
-      const clampMin = splitted[0] === 'min';
-      const clampMax = splitted[0] === 'max';
+      const splitted = /** @type {String} */ (v).split(splitter);
+      const clampMin = splitted[0] === "min";
+      const clampMax = splitted[0] === "max";
       const valueAPx = convertValueToPx($el, splitted[0], size, under, over);
       const valueBPx = convertValueToPx($el, splitted[1], size, under, over);
       if (clampMin) {
-        const min = getRelativeValue(convertValueToPx($el, 'min', size), valueBPx, operator);
+        const min = getRelativeValue(
+          convertValueToPx($el, "min", size),
+          valueBPx,
+          operator
+        );
         value = min < valueAPx ? valueAPx : min;
       } else if (clampMax) {
-        const max = getRelativeValue(convertValueToPx($el, 'max', size), valueBPx, operator);
+        const max = getRelativeValue(
+          convertValueToPx($el, "max", size),
+          valueBPx,
+          operator
+        );
         value = max > valueAPx ? valueAPx : max;
       } else {
         value = getRelativeValue(valueAPx, valueBPx, operator);
@@ -380,31 +398,46 @@ const parseBoundValue = ($el, v, size, under, over) => {
       value = convertValueToPx($el, v, size, under, over);
     }
   } else {
-    value = /** @type {Number} */(v);
+    value = /** @type {Number} */ (v);
   }
   return round(value, 0);
-}
+};
 
 /**
  * @param {JSAnimation} linked
  * @return {HTMLElement}
  */
-const getAnimationDomTarget = linked => {
+const getAnimationDomTarget = (linked) => {
   let $linkedTarget;
   const linkedTargets = linked.targets;
   for (let i = 0, l = linkedTargets.length; i < l; i++) {
     const target = linkedTargets[i];
     if (target[isDomSymbol]) {
-      $linkedTarget = /** @type {HTMLElement} */(target);
+      $linkedTarget = /** @type {HTMLElement} */ (target);
       break;
     }
   }
   return $linkedTarget;
-}
+};
 
 let scrollerIndex = 0;
 
-const debugColors = ['#FF4B4B','#FF971B','#FFC730','#F9F640','#7AFF5A','#18FF74','#17E09B','#3CFFEC','#05DBE9','#33B3F1','#638CF9','#C563FE','#FF4FCF','#F93F8A'];
+const debugColors = [
+  "#FF4B4B",
+  "#FF971B",
+  "#FFC730",
+  "#F9F640",
+  "#7AFF5A",
+  "#18FF74",
+  "#17E09B",
+  "#3CFFEC",
+  "#05DBE9",
+  "#33B3F1",
+  "#638CF9",
+  "#C563FE",
+  "#FF4FCF",
+  "#F93F8A",
+];
 
 export class ScrollObserver {
   /**
@@ -412,18 +445,23 @@ export class ScrollObserver {
    */
   constructor(parameters = {}) {
     if (scope.current) scope.current.register(this);
-    const syncMode = setValue(parameters.sync, 'play pause');
-    const ease = syncMode ? parseEase(/** @type {EasingParam} */(syncMode)) : null;
-    const isLinear = syncMode && (syncMode === 'linear' || syncMode === none);
+    const syncMode = setValue(parameters.sync, "play pause");
+    const ease = syncMode
+      ? parseEase(/** @type {EasingParam} */ (syncMode))
+      : null;
+    const isLinear = syncMode && (syncMode === "linear" || syncMode === none);
     const isEase = syncMode && !(ease === none && !isLinear);
-    const isSmooth = syncMode && (isNum(syncMode) || syncMode === true || isLinear);
-    const isMethods = syncMode && (isStr(syncMode) && !isEase && !isSmooth);
-    const syncMethods = isMethods ? /** @type {String} */(syncMode).split(' ').map(
-      (/** @type {String} */m) => () => {
-        const linked = this.linked;
-        return linked && linked[m] ? linked[m]() : null;
-      }
-    ) : null;
+    const isSmooth =
+      syncMode && (isNum(syncMode) || syncMode === true || isLinear);
+    const isMethods = syncMode && isStr(syncMode) && !isEase && !isSmooth;
+    const syncMethods = isMethods
+      ? /** @type {String} */ (syncMode)
+          .split(" ")
+          .map((/** @type {String} */ m) => () => {
+            const linked = this.linked;
+            return linked && linked[m] ? linked[m]() : null;
+          })
+      : null;
     const biDirSync = isMethods && syncMethods.length > 2;
     /** @type {Number} */
     this.index = scrollerIndex++;
@@ -448,19 +486,29 @@ export class ScrollObserver {
     /** @type {EasingFunction} */
     this.syncEase = isEase ? ease : null;
     /** @type {Number} */
-    this.syncSmooth = isSmooth ? syncMode === true || isLinear ? 1 : /** @type {Number} */(syncMode) : null;
+    this.syncSmooth = isSmooth
+      ? syncMode === true || isLinear
+        ? 1
+        : /** @type {Number} */ (syncMode)
+      : null;
     /** @type {Callback<ScrollObserver>} */
-    this.onSyncEnter = syncMethods && !biDirSync && syncMethods[0] ? syncMethods[0] : noop;
+    this.onSyncEnter =
+      syncMethods && !biDirSync && syncMethods[0] ? syncMethods[0] : noop;
     /** @type {Callback<ScrollObserver>} */
-    this.onSyncLeave = syncMethods && !biDirSync && syncMethods[1] ? syncMethods[1] : noop;
+    this.onSyncLeave =
+      syncMethods && !biDirSync && syncMethods[1] ? syncMethods[1] : noop;
     /** @type {Callback<ScrollObserver>} */
-    this.onSyncEnterForward = syncMethods && biDirSync && syncMethods[0] ? syncMethods[0] : noop;
+    this.onSyncEnterForward =
+      syncMethods && biDirSync && syncMethods[0] ? syncMethods[0] : noop;
     /** @type {Callback<ScrollObserver>} */
-    this.onSyncLeaveForward = syncMethods && biDirSync && syncMethods[1] ? syncMethods[1] : noop;
+    this.onSyncLeaveForward =
+      syncMethods && biDirSync && syncMethods[1] ? syncMethods[1] : noop;
     /** @type {Callback<ScrollObserver>} */
-    this.onSyncEnterBackward = syncMethods && biDirSync && syncMethods[2] ? syncMethods[2] : noop;
+    this.onSyncEnterBackward =
+      syncMethods && biDirSync && syncMethods[2] ? syncMethods[2] : noop;
     /** @type {Callback<ScrollObserver>} */
-    this.onSyncLeaveBackward = syncMethods && biDirSync && syncMethods[3] ? syncMethods[3] : noop;
+    this.onSyncLeaveBackward =
+      syncMethods && biDirSync && syncMethods[3] ? syncMethods[3] : noop;
     /** @type {Callback<ScrollObserver>} */
     this.onEnter = parameters.onEnter || noop;
     /** @type {Callback<ScrollObserver>} */
@@ -502,7 +550,7 @@ export class ScrollObserver {
     /** @type {Number} */
     this.prevProgress = 0;
     /** @type {Array} */
-    this.thresholds = ['start', 'end', 'end', 'start'];
+    this.thresholds = ["start", "end", "end", "start"];
     /** @type {[Number, Number, Number, Number]} */
     this.coords = [0, 0, 0, 0];
     /** @type {JSAnimation} */
@@ -522,7 +570,9 @@ export class ScrollObserver {
     sync(() => {
       if (this.reverted) return;
       if (!this.target) {
-        const target = /** @type {HTMLElement} */(parseTargets(parameters.target)[0]);
+        const target = /** @type {HTMLElement} */ (
+          parseTargets(parameters.target)[0]
+        );
         this.target = target || doc.body;
         this.refresh();
       }
@@ -539,19 +589,27 @@ export class ScrollObserver {
       linked.pause();
       this.linked = linked;
       // Forces WAAPI Animation to persist; otherwise, they will stop syncing on finish.
-      if (!isUnd(/** @type {WAAPIAnimation} */(linked))) /** @type {WAAPIAnimation} */(linked).persist = true;
+      if (!isUnd(/** @type {WAAPIAnimation} */ (linked)))
+        /** @type {WAAPIAnimation} */ (linked).persist = true;
       // Try to use a target of the linked object if no target parameters specified
       if (!this._params.target) {
         /** @type {HTMLElement} */
         let $linkedTarget;
-        if (!isUnd(/** @type {JSAnimation} */(linked).targets)) {
-          $linkedTarget = getAnimationDomTarget(/** @type {JSAnimation} */(linked));
+        if (!isUnd(/** @type {JSAnimation} */ (linked).targets)) {
+          $linkedTarget = getAnimationDomTarget(
+            /** @type {JSAnimation} */ (linked)
+          );
         } else {
-          forEachChildren(/** @type {Timeline} */(linked), (/** @type {JSAnimation} */child) => {
-            if (child.targets && !$linkedTarget) {
-              $linkedTarget = getAnimationDomTarget(/** @type {JSAnimation} */(child));
+          forEachChildren(
+            /** @type {Timeline} */ (linked),
+            (/** @type {JSAnimation} */ child) => {
+              if (child.targets && !$linkedTarget) {
+                $linkedTarget = getAnimationDomTarget(
+                  /** @type {JSAnimation} */ (child)
+                );
+              }
             }
-          });
+          );
         }
         // Fallback to body if no target found
         this.target = $linkedTarget || doc.body;
@@ -566,7 +624,9 @@ export class ScrollObserver {
   }
 
   get backward() {
-    return this.horizontal ? this.container.backwardX : this.container.backwardY;
+    return this.horizontal
+      ? this.container.backwardX
+      : this.container.backwardY;
   }
 
   get scroll() {
@@ -583,10 +643,21 @@ export class ScrollObserver {
     this.ready = true;
     this.reverted = false;
     const params = this._params;
-    this.repeat = setValue(parseScrollObserverFunctionParameter(params.repeat, this), true);
-    this.horizontal = setValue(parseScrollObserverFunctionParameter(params.axis, this), 'y') === 'x';
-    this.enter = setValue(parseScrollObserverFunctionParameter(params.enter, this), 'end start');
-    this.leave = setValue(parseScrollObserverFunctionParameter(params.leave, this), 'start end');
+    this.repeat = setValue(
+      parseScrollObserverFunctionParameter(params.repeat, this),
+      true
+    );
+    this.horizontal =
+      setValue(parseScrollObserverFunctionParameter(params.axis, this), "y") ===
+      "x";
+    this.enter = setValue(
+      parseScrollObserverFunctionParameter(params.enter, this),
+      "end start"
+    );
+    this.leave = setValue(
+      parseScrollObserverFunctionParameter(params.leave, this),
+      "start end"
+    );
     this.updateBounds();
     this.handleScroll();
     return this;
@@ -608,10 +679,12 @@ export class ScrollObserver {
     this.removeDebug();
     const container = this.container;
     const isHori = this.horizontal;
-    const $existingDebug = container.element.querySelector(':scope > .animejs-onscroll-debug');
-    const $debug = doc.createElement('div');
-    const $thresholds = doc.createElement('div');
-    const $triggers = doc.createElement('div');
+    const $existingDebug = container.element.querySelector(
+      ":scope > .animejs-onscroll-debug"
+    );
+    const $debug = doc.createElement("div");
+    const $thresholds = doc.createElement("div");
+    const $triggers = doc.createElement("div");
     const color = debugColors[this.index % debugColors.length];
     const useWin = container.useWin;
     const containerWidth = useWin ? container.winWidth : container.width;
@@ -625,17 +698,19 @@ export class ScrollObserver {
     const labelHeight = isHori ? half : 15;
     const labelWidth = isHori ? 60 : half;
     const labelSize = isHori ? labelWidth : labelHeight;
-    const repeat = isHori ? 'repeat-x' : 'repeat-y';
+    const repeat = isHori ? "repeat-x" : "repeat-y";
     /**
      * @param {Number} v
      * @return {String}
      */
-    const gradientOffset = v => isHori ? '0px '+(v)+'px' : (v)+'px'+' 2px';
+    const gradientOffset = (v) =>
+      isHori ? "0px " + v + "px" : v + "px" + " 2px";
     /**
      * @param {String} c
      * @return {String}
      */
-    const lineCSS = (c) => `linear-gradient(${isHori ? 90 : 0}deg, ${c} 2px, transparent 1px)`;
+    const lineCSS = (c) =>
+      `linear-gradient(${isHori ? 90 : 0}deg, ${c} 2px, transparent 1px)`;
     /**
      * @param {String} p
      * @param {Number} l
@@ -644,72 +719,150 @@ export class ScrollObserver {
      * @param {Number} h
      * @return {String}
      */
-    const baseCSS = (p, l, t, w, h) => `position:${p};left:${l}px;top:${t}px;width:${w}px;height:${h}px;`;
-    $debug.style.cssText = `${baseCSS('absolute', offLeft, offTop, isHori ? scrollWidth : size, isHori ? size : scrollHeight)}
+    const baseCSS = (p, l, t, w, h) =>
+      `position:${p};left:${l}px;top:${t}px;width:${w}px;height:${h}px;`;
+    $debug.style.cssText = `${baseCSS(
+      "absolute",
+      offLeft,
+      offTop,
+      isHori ? scrollWidth : size,
+      isHori ? size : scrollHeight
+    )}
       pointer-events: none;
       z-index: ${this.container.zIndex++};
       display: flex;
-      flex-direction: ${isHori ? 'column' : 'row'};
+      flex-direction: ${isHori ? "column" : "row"};
       filter: drop-shadow(0px 1px 0px rgba(0,0,0,.75));
     `;
-    $thresholds.style.cssText = `${baseCSS('sticky', 0, 0, isHori ? containerWidth : half, isHori ? half : containerHeight)}`;
+    $thresholds.style.cssText = `${baseCSS(
+      "sticky",
+      0,
+      0,
+      isHori ? containerWidth : half,
+      isHori ? half : containerHeight
+    )}`;
     if (!$existingDebug) {
       $thresholds.style.cssText += `background:
-        ${lineCSS('#FFFF')}${gradientOffset(half-10)} / ${isHori ? '100px 100px' : '100px 100px'} ${repeat},
-        ${lineCSS('#FFF8')}${gradientOffset(half-10)} / ${isHori ? '10px 10px' : '10px 10px'} ${repeat};
+        ${lineCSS("#FFFF")}${gradientOffset(half - 10)} / ${
+        isHori ? "100px 100px" : "100px 100px"
+      } ${repeat},
+        ${lineCSS("#FFF8")}${gradientOffset(half - 10)} / ${
+        isHori ? "10px 10px" : "10px 10px"
+      } ${repeat};
       `;
     }
-    $triggers.style.cssText = `${baseCSS('relative', 0, 0, isHori ? scrollWidth : half, isHori ? half : scrollHeight)}`;
+    $triggers.style.cssText = `${baseCSS(
+      "relative",
+      0,
+      0,
+      isHori ? scrollWidth : half,
+      isHori ? half : scrollHeight
+    )}`;
     if (!$existingDebug) {
       $triggers.style.cssText += `background:
-        ${lineCSS('#FFFF')}${gradientOffset(0)} / ${isHori ? '100px 10px' : '10px 100px'} ${repeat},
-        ${lineCSS('#FFF8')}${gradientOffset(0)} / ${isHori ? '10px 0px' : '0px 10px'} ${repeat};
+        ${lineCSS("#FFFF")}${gradientOffset(0)} / ${
+        isHori ? "100px 10px" : "10px 100px"
+      } ${repeat},
+        ${lineCSS("#FFF8")}${gradientOffset(0)} / ${
+        isHori ? "10px 0px" : "0px 10px"
+      } ${repeat};
       `;
     }
-    const labels = [' enter: ', ' leave: '];
+    const labels = [" enter: ", " leave: "];
     this.coords.forEach((v, i) => {
       const isView = i > 1;
       const value = (isView ? 0 : this.offset) + v;
       const isTail = i % 2;
       const isFirst = value < labelSize;
-      const isOver = value > (isView ? isHori ? containerWidth : containerHeight : isHori ? scrollWidth : scrollHeight) - labelSize;
-      const isFlip = (isView ? isTail && !isFirst : !isTail && !isFirst) || isOver;
-      const $label = doc.createElement('div');
-      const $text = doc.createElement('div');
-      const dirProp = isHori ? isFlip ? 'right' : 'left' : isFlip ? 'bottom' : 'top';
-      const flipOffset = isFlip ? (isHori ? labelWidth : labelHeight) + (!isView ? isHori ? -1 : -2 : isHori ? -1 : isOver ? 0 : -2) : !isView ? isHori ? 1 : 0 : isHori ? 1 : 0;
+      const isOver =
+        value >
+        (isView
+          ? isHori
+            ? containerWidth
+            : containerHeight
+          : isHori
+          ? scrollWidth
+          : scrollHeight) -
+          labelSize;
+      const isFlip =
+        (isView ? isTail && !isFirst : !isTail && !isFirst) || isOver;
+      const $label = doc.createElement("div");
+      const $text = doc.createElement("div");
+      const dirProp = isHori
+        ? isFlip
+          ? "right"
+          : "left"
+        : isFlip
+        ? "bottom"
+        : "top";
+      const flipOffset = isFlip
+        ? (isHori ? labelWidth : labelHeight) +
+          (!isView ? (isHori ? -1 : -2) : isHori ? -1 : isOver ? 0 : -2)
+        : !isView
+        ? isHori
+          ? 1
+          : 0
+        : isHori
+        ? 1
+        : 0;
       // $text.innerHTML = `${!isView ? '' : labels[isTail] + ' '}${this.id}: ${this.thresholds[i]} ${isView ? '' : labels[isTail]}`;
       $text.innerHTML = `${this.id}${labels[isTail]}${this.thresholds[i]}`;
-      $label.style.cssText = `${baseCSS('absolute', 0, 0, labelWidth, labelHeight)}
+      $label.style.cssText = `${baseCSS(
+        "absolute",
+        0,
+        0,
+        labelWidth,
+        labelHeight
+      )}
         display: flex;
-        flex-direction: ${isHori ? 'column' : 'row'};
-        justify-content: flex-${isView ? 'start' : 'end'};
-        align-items: flex-${isFlip ? 'end' : 'start'};
-        border-${dirProp}: 2px ${isTail ? 'solid' : 'solid'} ${color};
+        flex-direction: ${isHori ? "column" : "row"};
+        justify-content: flex-${isView ? "start" : "end"};
+        align-items: flex-${isFlip ? "end" : "start"};
+        border-${dirProp}: 2px ${isTail ? "solid" : "solid"} ${color};
       `;
       $text.style.cssText = `
         overflow: hidden;
-        max-width: ${(size / 2) - 10}px;
+        max-width: ${size / 2 - 10}px;
         height: ${labelHeight};
-        margin-${isHori ? isFlip ? 'right' : 'left' : isFlip ? 'bottom' : 'top'}: -2px;
+        margin-${
+          isHori ? (isFlip ? "right" : "left") : isFlip ? "bottom" : "top"
+        }: -2px;
         padding: 1px;
         font-family: ui-monospace, monospace;
         font-size: 10px;
         letter-spacing: -.025em;
         line-height: 9px;
         font-weight: 600;
-        text-align: ${isHori && isFlip || !isHori && !isView ? 'right' : 'left'};
+        text-align: ${
+          (isHori && isFlip) || (!isHori && !isView) ? "right" : "left"
+        };
         white-space: pre;
         text-overflow: ellipsis;
-        color: ${isTail ? color : 'rgba(0,0,0,.75)'};
-        background-color: ${isTail ? 'rgba(0,0,0,.65)' : color};
-        border: 2px solid ${isTail ? color : 'transparent'};
-        border-${isHori ? isFlip ? 'top-left' : 'top-right' : isFlip ? 'top-left' : 'bottom-left'}-radius: 5px;
-        border-${isHori ? isFlip ? 'bottom-left' : 'bottom-right' : isFlip ? 'top-right' : 'bottom-right'}-radius: 5px;
+        color: ${isTail ? color : "rgba(0,0,0,.75)"};
+        background-color: ${isTail ? "rgba(0,0,0,.65)" : color};
+        border: 2px solid ${isTail ? color : "transparent"};
+        border-${
+          isHori
+            ? isFlip
+              ? "top-left"
+              : "top-right"
+            : isFlip
+            ? "top-left"
+            : "bottom-left"
+        }-radius: 5px;
+        border-${
+          isHori
+            ? isFlip
+              ? "bottom-left"
+              : "bottom-right"
+            : isFlip
+            ? "top-right"
+            : "bottom-right"
+        }-radius: 5px;
       `;
       $label.appendChild($text);
       let position = value - flipOffset + (isHori ? 1 : 0);
-      $label.style[isHori ? 'left' : 'top'] = `${position}px`;
+      $label.style[isHori ? "left" : "top"] = `${position}px`;
       // $label.style[isHori ? 'left' : 'top'] = value - flipOffset + (!isFlip && isFirst && !isView ? 1 : isFlip ? 0 : -2) + 'px';
       (isView ? $thresholds : $triggers).appendChild($label);
     });
@@ -718,13 +871,12 @@ export class ScrollObserver {
     $debug.appendChild($triggers);
     container.element.appendChild($debug);
 
-    if (!$existingDebug) $debug.classList.add('animejs-onscroll-debug');
+    if (!$existingDebug) $debug.classList.add("animejs-onscroll-debug");
     this.$debug = $debug;
-    const containerPosition = get(container.element, 'position');
-    if (containerPosition === 'static') {
-      this.debugStyles = set(container.element, { position: 'relative '});
+    const containerPosition = get(container.element, "position");
+    if (containerPosition === "static") {
+      this.debugStyles = set(container.element, { position: "relative " });
     }
-
   }
 
   updateBounds() {
@@ -746,7 +898,7 @@ export class ScrollObserver {
       linkedTime = linked.currentTime;
       linked.seek(0, true);
     }
-    /* Old implementation to get offset and targetSize before fixing https://github.com/juliangarnier/anime/issues/1021
+    // Old implementation to get offset and targetSize before fixing https://github.com/juliangarnier/anime/issues/1021
     // const isContainerStatic = get(container.element, 'position') === 'static' ? set(container.element, { position: 'relative '}) : false;
     // while ($el && $el !== container.element && $el !== doc.body) {
     //   const isSticky = get($el, 'position') === 'sticky' ?
@@ -757,7 +909,7 @@ export class ScrollObserver {
     //     offsetY += $el.offsetTop || 0;
     //     $offsetParent = $el.offsetParent;
     //   }
-    //   $el = /** @type {HTMLElement} */($el.parentElement);
+    //   $el = /** @type {HTMLElement} */ $el.parentElement;
     //   if (isSticky) {
     //     if (!stickys) stickys = [];
     //     stickys.push(isSticky);
@@ -768,7 +920,10 @@ export class ScrollObserver {
     // const targetSize = isHori ? $target.offsetWidth : $target.offsetHeight;
 
     while ($el && $el !== container.element && $el !== doc.body) {
-      const isSticky = get($el, 'position') === 'sticky' ? set($el, { position: 'static' }) : false;
+      const isSticky =
+        get($el, "position") === "sticky"
+          ? set($el, { position: "static" })
+          : false;
       $el = $el.parentElement;
       if (isSticky) {
         if (!stickys) stickys = [];
@@ -777,7 +932,10 @@ export class ScrollObserver {
     }
     const rect = $target.getBoundingClientRect();
     const scale = container.scale;
-    const offset = (isHori ? rect.left + container.scrollX - container.left : rect.top + container.scrollY - container.top) * scale;
+    const offset =
+      (isHori
+        ? rect.left + container.scrollX - container.left
+        : rect.top + container.scrollY - container.top) * scale;
     const targetSize = (isHori ? rect.width : rect.height) * scale;
     const containerSize = isHori ? container.width : container.height;
     const scrollSize = isHori ? container.scrollWidth : container.scrollHeight;
@@ -786,44 +944,56 @@ export class ScrollObserver {
     const leave = this.leave;
 
     /** @type {ScrollThresholdValue} */
-    let enterTarget = 'start';
+    let enterTarget = "start";
     /** @type {ScrollThresholdValue} */
-    let leaveTarget = 'end';
+    let leaveTarget = "end";
     /** @type {ScrollThresholdValue} */
-    let enterContainer = 'end';
+    let enterContainer = "end";
     /** @type {ScrollThresholdValue} */
-    let leaveContainer = 'start';
+    let leaveContainer = "start";
 
     if (isStr(enter)) {
-      const splitted = /** @type {String} */(enter).split(' ');
+      const splitted = /** @type {String} */ (enter).split(" ");
       enterContainer = splitted[0];
       enterTarget = splitted.length > 1 ? splitted[1] : enterTarget;
     } else if (isObj(enter)) {
-      const e = /** @type {ScrollThresholdParam} */(enter);
+      const e = /** @type {ScrollThresholdParam} */ (enter);
       if (!isUnd(e.container)) enterContainer = e.container;
       if (!isUnd(e.target)) enterTarget = e.target;
     } else if (isNum(enter)) {
-      enterContainer = /** @type {Number} */(enter);
+      enterContainer = /** @type {Number} */ (enter);
     }
 
     if (isStr(leave)) {
-      const splitted = /** @type {String} */(leave).split(' ');
+      const splitted = /** @type {String} */ (leave).split(" ");
       leaveContainer = splitted[0];
       leaveTarget = splitted.length > 1 ? splitted[1] : leaveTarget;
     } else if (isObj(leave)) {
-      const t = /** @type {ScrollThresholdParam} */(leave);
+      const t = /** @type {ScrollThresholdParam} */ (leave);
       if (!isUnd(t.container)) leaveContainer = t.container;
       if (!isUnd(t.target)) leaveTarget = t.target;
     } else if (isNum(leave)) {
-      leaveContainer = /** @type {Number} */(leave);
+      leaveContainer = /** @type {Number} */ (leave);
     }
 
     const parsedEnterTarget = parseBoundValue($target, enterTarget, targetSize);
     const parsedLeaveTarget = parseBoundValue($target, leaveTarget, targetSize);
-    const under = (parsedEnterTarget + offset) - containerSize;
-    const over = (parsedLeaveTarget + offset) - maxScroll;
-    const parsedEnterContainer = parseBoundValue($target, enterContainer, containerSize, under, over);
-    const parsedLeaveContainer = parseBoundValue($target, leaveContainer, containerSize, under, over);
+    const under = parsedEnterTarget + offset - containerSize;
+    const over = parsedLeaveTarget + offset - maxScroll;
+    const parsedEnterContainer = parseBoundValue(
+      $target,
+      enterContainer,
+      containerSize,
+      under,
+      over
+    );
+    const parsedLeaveContainer = parseBoundValue(
+      $target,
+      leaveContainer,
+      containerSize,
+      under,
+      over
+    );
     const offsetStart = parsedEnterTarget + offset - parsedEnterContainer;
     const offsetEnd = parsedLeaveTarget + offset - parsedLeaveContainer;
     const scrollDelta = offsetEnd - offsetStart;
@@ -831,10 +1001,20 @@ export class ScrollObserver {
     this.offsetStart = offsetStart;
     this.offsetEnd = offsetEnd;
     this.distance = scrollDelta <= 0 ? 0 : scrollDelta;
-    this.thresholds = [enterTarget, leaveTarget, enterContainer, leaveContainer];
-    this.coords = [parsedEnterTarget, parsedLeaveTarget, parsedEnterContainer, parsedLeaveContainer];
+    this.thresholds = [
+      enterTarget,
+      leaveTarget,
+      enterContainer,
+      leaveContainer,
+    ];
+    this.coords = [
+      parsedEnterTarget,
+      parsedLeaveTarget,
+      parsedEnterContainer,
+      parsedLeaveContainer,
+    ];
     if (stickys) {
-      stickys.forEach(sticky => sticky.revert());
+      stickys.forEach((sticky) => sticky.revert());
     }
     if (linked) {
       linked.seek(linkedTime, true);
@@ -857,7 +1037,8 @@ export class ScrollObserver {
     const isBefore = scroll <= this.offsetStart;
     const isAfter = scroll >= this.offsetEnd;
     const isInView = !isBefore && !isAfter;
-    const isOnTheEdge = scroll === this.offsetStart || scroll === this.offsetEnd;
+    const isOnTheEdge =
+      scroll === this.offsetStart || scroll === this.offsetEnd;
     const forceEnter = !this.hasEntered && isOnTheEdge;
     const $debug = this._debug && this.$debug;
     let hasUpdated = false;
@@ -875,31 +1056,39 @@ export class ScrollObserver {
     if (shouldSeek) {
       const lp = linked.progress;
       if (syncSmooth && isNum(syncSmooth)) {
-        if (/** @type {Number} */(syncSmooth) < 1) {
+        if (/** @type {Number} */ (syncSmooth) < 1) {
           const step = 0.0001;
           const snap = lp < p && p === 1 ? step : lp > p && !p ? -step : 0;
-          p = round(lerp(lp, p, lerp(.01, .2, /** @type {Number} */(syncSmooth))) + snap, 6);
+          p = round(
+            lerp(lp, p, lerp(0.01, 0.2, /** @type {Number} */ (syncSmooth))) +
+              snap,
+            6
+          );
         }
       } else if (syncEase) {
         p = syncEase(p);
       }
       hasUpdated = p !== this.prevProgress;
       syncCompleted = lp === 1;
-      if (hasUpdated && !syncCompleted && (syncSmooth && lp)) {
+      if (hasUpdated && !syncCompleted && syncSmooth && lp) {
         container.wakeTicker.restart();
       }
     }
 
     if ($debug) {
       const sticky = isHori ? container.scrollY : container.scrollX;
-      $debug.style[isHori ? 'top' : 'left'] = sticky + 10 + 'px';
+      $debug.style[isHori ? "top" : "left"] = sticky + 10 + "px";
     }
 
     // Trigger enter callbacks if already in view or when entering the view
-    if ((isInView && !this.isInView) || (forceEnter && !this.forceEnter && !this.hasEntered)) {
+    if (
+      (isInView && !this.isInView) ||
+      (forceEnter && !this.forceEnter && !this.hasEntered)
+    ) {
       if (isInView) this.isInView = true;
       if (!this.forceEnter || !this.hasEntered) {
-        if ($debug && isInView) $debug.style.zIndex = `${this.container.zIndex++}`;
+        if ($debug && isInView)
+          $debug.style.zIndex = `${this.container.zIndex++}`;
         this.onSyncEnter(this);
         this.onEnter(this);
         if (this.backward) {
@@ -916,7 +1105,7 @@ export class ScrollObserver {
       }
     }
 
-    if (isInView || !isInView && this.isInView) {
+    if (isInView || (!isInView && this.isInView)) {
       hasUpdated = true;
     }
 
@@ -941,12 +1130,20 @@ export class ScrollObserver {
       }
     }
 
-    if (p >= 1 && this.began && !this.completed && (sync && syncCompleted || !sync)) {
+    if (
+      p >= 1 &&
+      this.began &&
+      !this.completed &&
+      ((sync && syncCompleted) || !sync)
+    ) {
       if (sync) {
         this.onSyncComplete(this);
       }
       this.completed = true;
-      if ((!this.repeat && !linked) || (!this.repeat && linked && linked.completed)) {
+      if (
+        (!this.repeat && !linked) ||
+        (!this.repeat && linked && linked.completed)
+      ) {
         this.revert();
       }
     }
@@ -972,7 +1169,6 @@ export class ScrollObserver {
     this.ready = false;
     return this;
   }
-
 }
 
 /**
