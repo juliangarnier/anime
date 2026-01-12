@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="darkreader-lock">
   <link rel="icon" href="/assets/images/favicon.png">
-  <title>InOut power easing configurator | Power easing configurator | Easing editor | Anime.js | JavaScript Animation Engine</title>
+  <title>InOut power easing configurator | Power easing configurator | Easings | Anime.js | JavaScript Animation Engine</title>
   <meta name="description" content="Visualize, configure and generate JavaScript and CSS spring and easing functions with the official Anime.js Easing Editor">
   <meta property="og:title" content="InOut power easing configurator">
   <meta property="og:url" content="/easing-editor/power/inout">
@@ -15,16 +15,16 @@
   <meta name="twitter:description" content="Visualize, configure and generate JavaScript and CSS spring and easing functions with the official Anime.js Easing Editor">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://animejs.com/media/site/5e9b48763d-1744100039/anime-js-sharing-image.png">
-  <link href="/assets/css/styles.css?v=4.1.2" rel="stylesheet"></head>
+  <link href="/assets/css/styles.css?v=4.3.0" rel="stylesheet"></head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
 <script>
   window.paths = {
     demos: '/documentation-demos',
     'easings': '/assets/json/easings.json',
-    'github-sponsors': '/github-sponsors',
-    'platinum-sponsors': '/platinum-sponsors',
-    'gold-sponsors': '/gold-sponsors',
-    'silver-sponsors': '/silver-sponsors',
+    'github-sponsors': '/sponsors/github-sponsors',
+    'platinum-sponsors': '/sponsors/platinum-sponsors',
+    'gold-sponsors': '/sponsors/gold-sponsors',
+    'silver-sponsors': '/sponsors/silver-sponsors',
   };
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -57,8 +57,8 @@
     <polyline id="Path-42" stroke="#FFFFFF" stroke-width="1.75" points="9.5 7.75 9.5 12 9.5 16.25" data-points="13.5 8.75 10.5 12 13.5 15.25"/>
   </g>
 </svg>
-<span>Docs</span></a></li>
-        <li><a class="main-nav-link is-active" href="/easing-editor" title="Easing functions editor"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon"><path fill="none" stroke="currentColor" stroke-width="1.75" d="M4.5,17 C14.5967876,17 8.37571813,7 19.5,7"/></svg><span>Easing editor</span></a></li>
+<span>Documentation</span></a></li>
+        <li><a class="main-nav-link is-active" href="/easing-editor" title="Easing functions editor"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon"><path fill="none" stroke="currentColor" stroke-width="1.75" d="M4.5,17 C14.5967876,17 8.37571813,7 19.5,7"/></svg><span>Easings</span></a></li>
         <li><a class="main-nav-link" href="/learn" title="Learn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
   <g fill="none"><path fill="currentColor" d="M16.1666667,6.125 L7.83333333,6.125 C5.9693723,6.125 4.45833333,7.63603897 4.45833333,9.5 L4.45833333,14.5 C4.45833333,16.363961 5.9693723,17.875 7.83333333,17.875 L16.1666667,17.875 C18.0306277,17.875 19.5416667,16.363961 19.5416667,14.5 L19.5416667,9.5 C19.5416667,7.63603897 18.0306277,6.125 16.1666667,6.125 Z M7.83333333,7.875 L16.1666667,7.875 C17.0641294,7.875 17.7916667,8.60253728 17.7916667,9.5 L17.7916667,14.5 C17.7916667,15.3974627 17.0641294,16.125 16.1666667,16.125 L7.83333333,16.125 C6.93587061,16.125 6.20833333,15.3974627 6.20833333,14.5 L6.20833333,9.5 C6.20833333,8.60253728 6.93587061,7.875 7.83333333,7.875 Z"/><path fill="currentColor" fill-rule="evenodd" d="M10,10.0706309 L10,13.9294941 C10,14.2445758 10.2554242,14.5 10.5705059,14.5 C10.6590742,14.5 10.7464261,14.479379 10.8256439,14.4397701 L14.6845071,12.5103385 C14.9663248,12.3694297 15.0805539,12.0267421 14.9396451,11.7449245 C14.8844409,11.634516 14.7949156,11.5449908 14.6845071,11.4897865 L10.8256439,9.56035488 C10.5438263,9.41944606 10.2011387,9.53367523 10.0602299,9.81549288 C10.033824,9.86830478 10.0158571,9.92473182 10.0068132,9.9827243 L10,10.0706309 Z"/></g>
 </svg><span>Learn</span></a></li>
@@ -601,12 +601,180 @@
     </div>
   </div>
 </main>
-<footer id="site-footer" class="layout-container text-layout">
+<footer id="site-footer" class="layout-container text-layout theme-color theme-color-fg">
   <div id="site-footer-content">
-    <div class="footer-block email-signup-block">
-      <h3 class="footer-heading text-xs">Stay in the loop</h3>
-      <email-signup url="https://buttondown.com/api/emails/embed-subscribe/juliangarnier?tag=footer" class="email-signup-form">
-        <form>
+    <div class="footer-row">
+      <div class="footer-block">
+        <ul class="docs-info-links">
+          <li>
+            <sponsor-button data-theme-color="3"><a target="_blank" class="footer-notice-link" href="https://www.awwwards.com/annual-awards/site/1b35266d-5533-48f9-b1ed-ba87b70e8149">We're nominated for Site of the Year on Awwwards. A quick vote would mean a lot! <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></sponsor-button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-row">
+      <div class="footer-block footer-block-sponsors">
+        <strong class="docs-info-links-heading">Platinum sponsors</strong>
+                  <ul class="docs-info-links">
+                                                            <li>  <a
+    class="sponsor"
+    href="https://ice.io/"
+    target="_blank"
+    title="Ice Open Network"
+    data-url-params=""
+    data-url-params-docs=""
+  >
+          <img
+        src="/media/pages/sponsors/gold-sponsors/9f579f6344-1768229906/ice-open-network-logomark.svg"
+        alt="Ice Open Network"
+        width="100"
+        height="100"
+        loading="lazy"
+      >
+        <span>Ice Open Network</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+  </a>
+</li>
+                                  <li>  <a
+    class="sponsor"
+    href="https://go.warp.dev/anime"
+    target="_blank"
+    title="Warp"
+    data-url-params=""
+    data-url-params-docs=""
+  >
+          <img
+        src="/media/pages/sponsors/platinum-sponsors/b26ae32f03-1768229906/warp-logomark.svg"
+        alt="Warp"
+        width="100"
+        height="100"
+        loading="lazy"
+      >
+        <span>Warp</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+  </a>
+</li>
+                                  <li>  <a
+    class="sponsor"
+    href="http://hyperswitch.io/"
+    target="_blank"
+    title="Juspay"
+    data-url-params="&utm_source=julian&utm_medium=website_homepage&utm_campaign=animejs_sponsorship"
+    data-url-params-docs="&utm_source=julian&utm_medium=documentation&utm_campaign=animejs_sponsorship"
+  >
+          <img
+        src="/media/pages/sponsors/platinum-sponsors/58f576ba1c-1768229906/juspay-logomark.svg"
+        alt="Juspay"
+        width="100"
+        height="100"
+        loading="lazy"
+      >
+        <span>Juspay</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+  </a>
+</li>
+                                                      <li><sponsor-button><a href="https://github.com/sponsors/juliangarnier" target="_blank">Become a sponsor <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></sponsor-button></li>
+          </ul>
+              </div>
+      <div class="footer-block footer-block-links">
+        <div class="footer-block">
+          <strong class="docs-info-links-heading">Site</strong>
+          <ul class="docs-info-links">
+            <li><a href="/" title="Documentation">Home<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+            <li><a href="/documentation" title="Documentation">Documentation<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+            <li><a href="/easing-editor" title="Easing functions editor">Easings<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+            <li><a href="/learn" title="Learn">Learn<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+          </ul>
+        </div>
+        <div class="footer-block">
+          <strong class="docs-info-links-heading">Socials</strong>
+          <ul class="docs-info-links">
+            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
+  </g>
+</svg>
+</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-row">
+      <div class="footer-block footer-logo-block">
+        <div class="heading-logo footer-logo">
+          <a href="/">
+            <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
+            <span>Anime.js | JavaScript Animation Engine</span>
+          </a>
+        </div>
+        <div class="footer-copyright">
+          &copy; 2026 <a href="https://juliangarnier.com" target="_blank">Julian Garnier</a>
+        </div>
+      </div>
+      <div class="footer-block">
+        <h3 class="footer-heading">Stay in the loop</h3>
+        <email-signup url="https://buttondown.com/api/emails/embed-subscribe/juliangarnier?tag=footer" class="email-signup-form">
+          <form>
   <div id="form-fields" class="email-signup-fields is-active">
     <input class="email-signup-field email-signup-input" type="email" name="email" placeholder="Enter your email" required />
     <input class="email-signup-field email-signup-submit" type="submit" value="Subscribe" />
@@ -619,31 +787,7 @@
   <div id="error-message" class="email-signup-alert email-signup-error">
     <p>Something went wrong. Please try again later or email me directly at <a href="&#x6D;&#x61;&#x69;&#x6C;&#x74;&#x6F;&#x3A;&#x6A;&#x75;&#x6C;&#x69;&#x61;&#x6E;&#x40;&#x61;&#x6E;&#x69;&#x6D;&#x65;&#x6A;&#x73;&#x2E;&#x63;&#x6F;&#x6D;">&#x6A;&#x75;&#x6C;&#x69;&#x61;&#x6E;&#x40;&#x61;&#x6E;&#x69;&#x6D;&#x65;&#x6A;&#x73;&#x2E;&#x63;&#x6F;&#x6D;</a></p>
   </div>
-</form>      </email-signup>
-    </div>
-    <div class="footer-block">
-      <h3 class="footer-heading text-xs">Follow</h3>
-      <ul class="links-list">
-        <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
-        <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
-      </ul>
-    </div>
-    <div class="footer-block">
-      <h3 class="footer-heading text-xs">Explore</h3>
-      <ul class="links-list">
-        <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
-        <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen</a></li>
-      </ul>
-    </div>
-    <div class="footer-block footer-logo-block">
-      <div class="heading-logo footer-logo">
-        <a href="/">
-          <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
-          <span>Anime.js | JavaScript Animation Engine</span>
-        </a>
-      </div>
-      <div class="footer-copyright">
-        &copy; 2025 <a href="https://juliangarnier.com" target="_blank">Julian Garnier</a>
+</form>        </email-signup>
       </div>
     </div>
   </div>
