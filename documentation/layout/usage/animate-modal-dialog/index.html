@@ -1167,6 +1167,10 @@
       <a class="docs-link" title="Layout properties" href="/documentation/layout/layout-properties" data-id="layout-layout-properties">
         Properties                              </a>
                 </li>
+          <li class="docs-nav-item theme-color theme-color-6">
+      <a class="docs-link" title="Common gotchas" href="/documentation/layout/common-gotchas" data-id="layout-common-gotchas">
+        Common gotchas                              </a>
+                </li>
   </ul>
           </li>
           <li class="docs-nav-item theme-color theme-color-7">
@@ -1913,17 +1917,17 @@ $dialog.addEventListener(&#039;click&#039;, closeModal);</code></pre>
     &lt;button data-layout-id=&quot;A&quot; data-duration=&quot;500&quot; class=&quot;button item col&quot;&gt;
       &lt;h2 data-layout-id=&quot;A-title&quot;&gt;Item A&lt;/h2&gt;
       &lt;h3 data-layout-id=&quot;A-duration&quot;&gt;(500ms)&lt;/h3&gt;
-      &lt;p data-layout-id=&quot;A-description&quot;&gt;This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.&lt;/p&gt;
+      &lt;p&gt;This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.&lt;/p&gt;
     &lt;/button&gt;
     &lt;button data-layout-id=&quot;B&quot; data-duration=&quot;1000&quot; class=&quot;button item col&quot;&gt;
       &lt;h2 data-layout-id=&quot;B-title&quot;&gt;Item B&lt;/h2&gt;
       &lt;h3 data-layout-id=&quot;B-duration&quot;&gt;(1000ms)&lt;/h3&gt;
-      &lt;p data-layout-id=&quot;B-description&quot;&gt;This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.&lt;/p&gt;
+      &lt;p&gt;This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.&lt;/p&gt;
     &lt;/button&gt;
     &lt;button data-layout-id=&quot;C&quot; data-duration=&quot;2000&quot; class=&quot;button item col&quot;&gt;
       &lt;h2 data-layout-id=&quot;C-title&quot;&gt;Item C&lt;/h2&gt;
       &lt;h3 data-layout-id=&quot;B-duration&quot;&gt;(2000ms)&lt;/h3&gt;
-      &lt;p data-layout-id=&quot;C-description&quot;&gt;This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.&lt;/p&gt;
+      &lt;p&gt;This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.&lt;/p&gt;
     &lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
@@ -1982,11 +1986,12 @@ $dialog.addEventListener(&#039;click&#039;, closeModal);</code></pre>
   font-size: 2rem;
   margin-bottom: 1rem;
   will-change: font-size;
+  text-wrap: nowrap;
 }
 
 #layout-dialog .item h3 {
   position: absolute;
-  top: 2.75rem;
+  top: 2.9rem;
   right: 2rem;
 }
 

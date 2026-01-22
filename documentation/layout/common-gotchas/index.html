@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="darkreader-lock">
   <link rel="icon" href="/assets/images/favicon.png">
-  <title>Tween parameters | Animation | Docs | Anime.js | JavaScript Animation Engine</title>
+  <title>Common gotchas | Layout | Docs | Anime.js | JavaScript Animation Engine</title>
   <meta name="description" content="A fast and versatile JavaScript animation library">
-  <meta property="og:title" content="Tween parameters">
-  <meta property="og:url" content="/documentation/animation/tween-parameters">
+  <meta property="og:title" content="Common gotchas">
+  <meta property="og:url" content="/documentation/layout/common-gotchas">
   <meta property="og:description" content="A fast and versatile JavaScript animation library">
   <meta property="og:image" content="/media/site/5e9b48763d-1744100039/anime-js-sharing-image.png">
-  <meta name="twitter:title" content="Tween parameters">
+  <meta name="twitter:title" content="Common gotchas">
   <meta name="twitter:description" content="A fast and versatile JavaScript animation library">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://animejs.com/media/site/5e9b48763d-1744100039/anime-js-sharing-image.png">
@@ -110,7 +110,7 @@
     <polyline id="Path-42" stroke="#FFFFFF" stroke-width="1.75" points="9.5 7.75 9.5 12 9.5 16.25" data-points="13.5 8.75 10.5 12 13.5 15.25"/>
   </g>
 </svg>
-<span>Tween parameters</button>
+<span>Common gotchas</button>
     <div id="search-nav" class="ui-group">
       <button id="toggle-search" class="ui-input" title="Search (⌘ + K)" disabled><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="search" fill="none" fill-rule="evenodd">
@@ -301,10 +301,10 @@
                 </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-2 is-active">
+          <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="Animation" href="/documentation/animation" data-id="animation">
         Animation                              </a>
-                  <ul class="docs-nav-item is-active">
+                  <ul class="docs-nav-item">
           <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="Targets" href="/documentation/animation/targets" data-id="animation-targets">
         Targets                              </a>
@@ -391,10 +391,10 @@
                 </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-2 is-active">
+          <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="Tween parameters" href="/documentation/animation/tween-parameters" data-id="animation-tween-parameters">
         Tween parameters                              </a>
-                  <ul class="docs-nav-item is-active">
+                  <ul class="docs-nav-item">
           <li class="docs-nav-item theme-color theme-color-2">
       <a class="docs-link" title="to" href="/documentation/animation/tween-parameters/to" data-id="animation-tween-parameters-to">
         to                              </a>
@@ -1047,10 +1047,10 @@
                 </li>
   </ul>
           </li>
-          <li class="docs-nav-item theme-color theme-color-6">
+          <li class="docs-nav-item theme-color theme-color-6 is-active">
       <a class="docs-link" title="Layout" href="/documentation/layout" data-id="layout">
         Layout                        <span class="badge">NEW</span>      </a>
-                  <ul class="docs-nav-item">
+                  <ul class="docs-nav-item is-active">
           <li class="docs-nav-item theme-color theme-color-6">
       <a class="docs-link" title="Usage" href="/documentation/layout/usage" data-id="layout-usage">
         Usage                              </a>
@@ -1167,7 +1167,7 @@
       <a class="docs-link" title="Layout properties" href="/documentation/layout/layout-properties" data-id="layout-layout-properties">
         Properties                              </a>
                 </li>
-          <li class="docs-nav-item theme-color theme-color-6">
+          <li class="docs-nav-item theme-color theme-color-6 is-active">
       <a class="docs-link" title="Common gotchas" href="/documentation/layout/common-gotchas" data-id="layout-common-gotchas">
         Common gotchas                              </a>
                 </li>
@@ -1830,114 +1830,84 @@
   <article id="docs-info">
 
                     
-    <div class="docs-info text-layout is-active theme-color theme-color-2" data-id="animation-tween-parameters">
+    <div class="docs-info text-layout is-active theme-color theme-color-6" data-id="layout-common-gotchas">
 
       <div class="docs-info-content">
-                    <div class="docs-breadcrumb theme-color theme-color-2">
+                    <div class="docs-breadcrumb theme-color theme-color-6">
             <p>
-              <a title="Animation" href="/documentation/animation">Animation</a>
+              <a title="Layout" href="/documentation/layout">Layout</a>
 
                           </p>
 
             <p>
-                            <a class="docs-breadcrumb-version" href="https://github.com/juliangarnier/anime/releases/tag/v1.0.0">Since 1.0.0</a>
+                            <a class="docs-breadcrumb-version" href="https://github.com/juliangarnier/anime/releases/tag/v4.3.0">Since 4.3.0</a>
                           </p>
           </div>
-                  <h1 class="theme-color theme-color-2">
-          <a class="docs-info-header" title="Tween parameters" href="/documentation/animation/tween-parameters">
-            Tween parameters                                              </a>
+                  <h1 class="theme-color theme-color-6">
+          <a class="docs-info-header" title="Common gotchas" href="/documentation/layout/common-gotchas">
+            Common gotchas                                              </a>
         </h1>
-          <!-- <a href="/panel/pages/documentation+animation+tween-parameters" target="_blank">Edit Page</a> -->
-        <p>Configure values, timings, and behaviors of animated properties.<br>
-Tween parameters can be specified <em>globally</em> for all properties directly with the other animation parameters, or <em>locally</em> for a specific property using an <code>Object</code>.<br>
-All animatable properties inherit the <em>global</em> parameters, which can be overridden <em>locally</em> for a specific tween.</p>
-<pre><code class="language-js">animate('.square', {
-  x: {
-┌───────────────────┐
-│   to: 100,        │
-│   delay: 0,       ├─ Local Tween Parameters
-│   ease: 'inOut(4)'│
-└───────────────────┘
-  },
-  scale: 1,
-  opacity: .5,
-┌───────────────────┐
-│ duration: 400,    │
-│ delay: 250,       ├─ Global Tween Parameters
-│ ease: 'out(3)',   │
-└───────────────────┘
-  loop: 3,
-  alternate: true,
-});</code></pre>      </div>
+          <!-- <a href="/panel/pages/documentation+layout+common-gotchas" target="_blank">Edit Page</a> -->
+        <p>While the layout API handles most animation scenarios automatically, some edge cases may produce unexpected results. Here's what to watch out for.</p>
+<h2 id="some-elements-are-fading-out-unexpectedly" class="heading-anchor"><a href="#some-elements-are-fading-out-unexpectedly">Some elements are fading out unexpectedly</a></h2>
+<p>When using a <code>children</code> selector, elements that are descendants of matched children (but not targets themselves) will only get their state updated at 50% of the transition progress. To avoid hard cut between the two states, these elements are fading to opacity 0 then back to 1 under these conditions:</p>
+<ul>
+<li>The element is not explicitly targeted by the <code>children</code> selector</li>
+<li>The element's size has changed</li>
+<li>Its parent is a target and the parent's size has also changed</li>
+</ul>
+<div class="block info">
+<h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
+<p>Either add the elements you want to keep visible to the <code>children</code> selectors array.<br>
+Or change the <code>swapAt</code> parameter to <code>opacity: 1</code>.</p>
+<pre><code class="language-js">const layout = createLayout('#root', {
+  children: '.card', // Only .card elements are targets
+  swapAt: { opacity: 1 } // This will make sure all descendants of .card are always visible during the transition.
+});</code></pre>
+</div>
+<h2 id="my-text-is-jumping-during-a-layout-transition" class="heading-anchor"><a href="#my-text-is-jumping-during-a-layout-transition">My text is jumping during a layout transition</a></h2>
+<p>Animating <code>fontSize</code> alongside <code>width</code> or <code>height</code> can cause text to reflow mid-animation, especially in Firefox. Even if the start and end states have identical line breaks, intermediate frames may have a width/font-size ratio that triggers wrapping.</p>
+<div class="block info">
+<h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
+<p>Use <code>white-space: nowrap</code> on the element if text wrapping isn't needed.</p>
+</div>
+<h2 id="my-inline-elements-are-not-animated" class="heading-anchor"><a href="#my-inline-elements-are-not-animated">My inline elements are not animated</a></h2>
+<p>Elements adjacent to text nodes are excluded from the animations. This prevents breaking text flow when elements like <code>&lt;span&gt;</code> or <code>&lt;a&gt;</code> are mixed with text content.</p>
+<pre><code class="language-html">&lt;!-- This span won't animate position/size --&gt;
+&lt;p&gt;Some text &lt;span class="highlight"&gt;inline element&lt;/span&gt; more text&lt;/p&gt;
+
+&lt;!-- This div will animate normally --&gt;
+&lt;div class="container"&gt;
+  &lt;div class="child"&gt;No adjacent text&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<div class="block info">
+<h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
+<p>Wrap text elements in span tags.</p>
+</div>
+<h2 id="transform-shorthands-are-not-working" class="heading-anchor"><a href="#transform-shorthands-are-not-working">Transform shorthands are not working</a></h2>
+<p>The <code>enterFrom</code>, <code>leaveTo</code>, and <code>swapAt</code> parameters do not support CSS transform shorthands like <code>scale</code>, <code>rotate</code>, <code>x</code>, <code>y</code> etc.</p>
+<pre><code class="language-js">// Won't work
+createLayout('#root', {
+  enterFrom: { scale: 0 }
+});</code></pre>
+<div class="block info">
+<h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
+<p>Use the <code>transform</code> property with a full transform string:</p>
+<pre><code class="language-js">// Use transform string
+createLayout('#root', {
+  enterFrom: { transform: 'scale(0)' }
+});</code></pre>
+</div>
+<h2 id="svg-elements-are-not-animated" class="heading-anchor"><a href="#svg-elements-are-not-animated">SVG elements are not animated</a></h2>
+<p>SVG elements and their descendants are excluded from layout animations. Only HTML elements are tracked and animated.</p>      </div>
       
-                <div class="docs-info-links-heading">
-          <strong class="text-ui">In this section</strong>
-        </div>
-        <ul class="docs-info-links">
-                          <li>
-            <a class="text-ui" title="to" href="/documentation/animation/tween-parameters/to" data-id="animation-tween-parameters-to">to<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                          <li>
-            <a class="text-ui" title="from" href="/documentation/animation/tween-parameters/from" data-id="animation-tween-parameters-from">from<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                          <li>
-            <a class="text-ui" title="delay" href="/documentation/animation/tween-parameters/delay" data-id="animation-tween-parameters-delay">delay<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                          <li>
-            <a class="text-ui" title="duration" href="/documentation/animation/tween-parameters/duration" data-id="animation-tween-parameters-duration">duration<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                          <li>
-            <a class="text-ui" title="ease" href="/documentation/animation/tween-parameters/ease" data-id="animation-tween-parameters-ease">ease<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                          <li>
-            <a class="text-ui" title="composition" href="/documentation/animation/tween-parameters/composition" data-id="animation-tween-parameters-composition">composition<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                          <li>
-            <a class="text-ui" title="modifier" href="/documentation/animation/tween-parameters/modifier" data-id="animation-tween-parameters-modifier">modifier<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a>
-          </li>
-                </ul>
                         <div class="docs-info-links-heading prev-next-heading">
           <strong class="text-ui">Previous</strong>
           <strong class="text-ui">Next</strong>
         </div>
         <ul class="docs-info-links prev-next-links">
           <li class="prev-link">
-                        <a class="text-ui theme-color theme-color-2" data-id="animation-tween-value-types-function-based" title="Function based value" href="/documentation/animation/tween-value-types/function-based">Function based value<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui theme-color theme-color-6" data-id="layout-layout-properties" title="Layout properties" href="/documentation/layout/layout-properties">Layout properties<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="arrow-left" fill="none" fill-rule="evenodd">
     <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="6.5 11.987 11.737 17.225 12.975 15.987 9.849 12.862 17.737 12.862 17.737 11.112 9.849 11.112 12.975 7.987 11.737 6.75"/>
   </g>
@@ -1945,12 +1915,12 @@ All animatable properties inherit the <em>global</em> parameters, which can be o
 </a>
                       </li>
           <li class="next-link">
-                        <a class="text-ui theme-color theme-color-2" data-id="animation-tween-parameters-to" title="to" href="/documentation/animation/tween-parameters/to"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui theme-color theme-color-7" data-id="scope" title="Scope" href="/documentation/scope"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
-to</a>
+Scope</a>
                       </li>
         </ul>
 

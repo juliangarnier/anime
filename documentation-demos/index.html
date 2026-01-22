@@ -18096,11 +18096,12 @@ $button.removeEventListener('click', animateLayout);}
   font-size: 2rem;
   margin-bottom: 1rem;
   will-change: font-size;
+  text-wrap: nowrap;
 }
 
 #layout-dialog .item h3 {
   position: absolute;
-  top: 2.75rem;
+  top: 2.9rem;
   right: 2rem;
 }
 
@@ -18131,17 +18132,17 @@ $button.removeEventListener('click', animateLayout);}
     <button data-layout-id="A" data-duration="500" class="button item col">
       <h2 data-layout-id="A-title">Item A</h2>
       <h3 data-layout-id="A-duration">(500ms)</h3>
-      <p data-layout-id="A-description">This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
+      <p>This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
     </button>
     <button data-layout-id="B" data-duration="1000" class="button item col">
       <h2 data-layout-id="B-title">Item B</h2>
       <h3 data-layout-id="B-duration">(1000ms)</h3>
-      <p data-layout-id="B-description">This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
+      <p>This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
     </button>
     <button data-layout-id="C" data-duration="2000" class="button item col">
       <h2 data-layout-id="C-title">Item C</h2>
       <h3 data-layout-id="B-duration">(2000ms)</h3>
-      <p data-layout-id="C-description">This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
+      <p>This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
     </button>
   </div>
 </div>        </div>
@@ -18151,17 +18152,17 @@ $button.removeEventListener('click', animateLayout);}
     <button data-layout-id="A" data-duration="500" class="button item col">
       <h2 data-layout-id="A-title">Item A</h2>
       <h3 data-layout-id="A-duration">(500ms)</h3>
-      <p data-layout-id="A-description">This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
+      <p>This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
     </button>
     <button data-layout-id="B" data-duration="1000" class="button item col">
       <h2 data-layout-id="B-title">Item B</h2>
       <h3 data-layout-id="B-duration">(1000ms)</h3>
-      <p data-layout-id="B-description">This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
+      <p>This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
     </button>
     <button data-layout-id="C" data-duration="2000" class="button item col">
       <h2 data-layout-id="C-title">Item C</h2>
       <h3 data-layout-id="B-duration">(2000ms)</h3>
-      <p data-layout-id="C-description">This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
+      <p>This p tag is hidden by default and only visible when appended inside the dialog element. Its position and opacity are automatically animated.</p>
     </button>
   </div>
 </div>        </div>
@@ -19729,6 +19730,57 @@ window.demos['layout-layout-callbacks'] = function(
             </div>
     <script class="docs-demo-js">
 window.demos['layout-layout-properties'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo theme-color theme-color-6" data-id="layout-common-gotchas">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      Common gotchas                      </h2>
+  </header>
+  <div id="layout-common-gotchas" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['layout-common-gotchas'] = function(
   ctx,
   animate,
   createTimeline,
