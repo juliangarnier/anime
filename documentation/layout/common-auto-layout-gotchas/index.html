@@ -9,15 +9,15 @@
   <meta name="description" content="A fast, multipurpose and lightweight JavaScript animation library">
   <meta property="og:title" content="Common auto layout gotchas | Layout | Documentation | Anime.js | JavaScript Animation Engine">
   <meta property="og:url" content="/documentation/layout/common-auto-layout-gotchas">
-  <meta property="og:image" content="https://animejs.com/media/pages/documentation/layout/common-auto-layout-gotchas/b8a7f914a0-1769368463/generated-og-image.en.png">
+  <meta property="og:image" content="https://animejs.com/media/pages/documentation/layout/common-auto-layout-gotchas/b8a7f914a0-1769417440/generated-og-image.en.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="600">
   <meta property="og:description" content="A fast, multipurpose and lightweight JavaScript animation library">
   <meta name="twitter:title" content="Common auto layout gotchas | Layout | Documentation | Anime.js | JavaScript Animation Engine">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://animejs.com/media/pages/documentation/layout/common-auto-layout-gotchas/b8a7f914a0-1769368463/generated-og-image.en.png">
+  <meta name="twitter:image" content="https://animejs.com/media/pages/documentation/layout/common-auto-layout-gotchas/b8a7f914a0-1769417440/generated-og-image.en.png">
   <meta name="twitter:description" content="A fast, multipurpose and lightweight JavaScript animation library">
-  <link href="/assets/css/styles.css?v=4.3.5" rel="stylesheet"></head>
+  <link href="/assets/css/styles.css?v=4.3.5-2" rel="stylesheet"></head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
 <script>
   window.paths = {
@@ -1862,7 +1862,7 @@
 <li>The element's size has changed</li>
 <li>Its parent is a target and the parent's size has also changed</li>
 </ul>
-<div class="block info">
+<div class="block success">
 <h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
 <p>Either add the elements you want to keep visible to the <code>children</code> selectors array.<br>
 Or change the <code>swapAt</code> parameter to <code>opacity: 1</code>.</p>
@@ -1873,22 +1873,19 @@ Or change the <code>swapAt</code> parameter to <code>opacity: 1</code>.</p>
 </div>
 <h2 id="my-text-is-jumping-during-a-layout-transition" class="heading-anchor"><a href="#my-text-is-jumping-during-a-layout-transition">My text is jumping during a layout transition</a></h2>
 <p>Animating <code>fontSize</code> alongside <code>width</code> or <code>height</code> can cause text to reflow mid-animation, especially in Firefox. Even if the start and end states have identical line breaks, intermediate frames may have a width/font-size ratio that triggers wrapping.</p>
-<div class="block info">
+<div class="block success">
 <h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
 <p>Use <code>white-space: nowrap</code> on the element if text wrapping isn't needed.</p>
 </div>
-<h2 id="my-inline-elements-are-not-animated" class="heading-anchor"><a href="#my-inline-elements-are-not-animated">My inline elements are not animated</a></h2>
-<p>Elements adjacent to text nodes are excluded from the animations. This prevents breaking text flow when elements like <code>&lt;span&gt;</code> or <code>&lt;a&gt;</code> are mixed with text content.</p>
-<pre><code class="language-html">&lt;!-- This span won't animate position/size --&gt;
-&lt;p&gt;Some text &lt;span class="highlight"&gt;inline element&lt;/span&gt; more text&lt;/p&gt;
-
-&lt;!-- This div will animate normally --&gt;
-&lt;div class="container"&gt;
-  &lt;div class="child"&gt;No adjacent text&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-<div class="block info">
+<h2 id="some-elements-inlined-within-the-text-are-not-animated" class="heading-anchor"><a href="#some-elements-inlined-within-the-text-are-not-animated">Some elements inlined within the text are not animated</a></h2>
+<p>To prevents breaking text flow during a transition, elements adjacent to text nodes are excluded from position animations. </p>
+<pre><code class="language-html">&lt;!-- This span won't animate position --&gt;
+&lt;p&gt;Some text &lt;span class="highlight"&gt;inline element&lt;/span&gt; more text&lt;/p&gt;</code></pre>
+<div class="block success">
 <h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
-<p>Wrap text elements in span tags.</p>
+<p>Wrap text elements in span tags to allow text nodes to animate with the inlined elements.</p>
+<pre><code class="language-html">&lt;!-- This span won't animate position --&gt;
+&lt;p&gt;&lt;span&gt;Some text&lt;/span&gt; &lt;span class="highlight"&gt;inline element&lt;/span&gt; &lt;span&gt;more text&lt;/span&gt;&lt;/p&gt;</code></pre>
 </div>
 <h2 id="transform-shorthands-are-not-working" class="heading-anchor"><a href="#transform-shorthands-are-not-working">Transform shorthands are not working</a></h2>
 <p>The <code>enterFrom</code>, <code>leaveTo</code>, and <code>swapAt</code> parameters do not support CSS transform shorthands like <code>scale</code>, <code>rotate</code>, <code>x</code>, <code>y</code> etc.</p>
@@ -1896,7 +1893,7 @@ Or change the <code>swapAt</code> parameter to <code>opacity: 1</code>.</p>
 createLayout('#root', {
   enterFrom: { scale: 0 }
 });</code></pre>
-<div class="block info">
+<div class="block success">
 <h2 id="workaround" class="heading-anchor"><a href="#workaround">Workaround</a></h2>
 <p>Use the <code>transform</code> property with a full transform string:</p>
 <pre><code class="language-js">// Use transform string
@@ -2136,5 +2133,5 @@ Scope</a>
 
 <!-- !DEMOS -->
   </div>
-<script src="/assets/js/scripts.js?v=4.3.5"></script></body>
+<script src="/assets/js/scripts.js?v=4.3.5-2"></script></body>
 </html>
