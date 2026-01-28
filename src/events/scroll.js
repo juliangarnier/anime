@@ -781,7 +781,8 @@ export class ScrollObserver {
     }
     const rect = $target.getBoundingClientRect();
     const scale = container.scale;
-    const offset = (isHori ? rect.left + container.scrollX - container.left : rect.top + container.scrollY - container.top) * scale;
+    const containerScroll = isHori ? container.scrollX : container.scrollY
+    const offset = (isHori ? rect.left - container.left : rect.top - container.top) * scale + containerScroll;
     const targetSize = (isHori ? rect.width : rect.height) * scale;
     const containerSize = isHori ? container.width : container.height;
     const scrollSize = isHori ? container.scrollWidth : container.scrollHeight;
