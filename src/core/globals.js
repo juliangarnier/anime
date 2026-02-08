@@ -43,6 +43,7 @@ export const defaults = {
   onLoop: noop,
   onPause: noop,
   onComplete: noop,
+  onStop: noop,
   onRender: noop,
 }
 
