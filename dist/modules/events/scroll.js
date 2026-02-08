@@ -2,7 +2,7 @@
  * Anime.js - events - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { noop, doc, isDomSymbol, relativeValuesExecRgx, win } from '../core/consts.js';

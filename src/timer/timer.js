@@ -126,6 +126,7 @@ export class Timer extends Clock {
       onComplete,
       onLoop,
       onPause,
+      onStop,
       onBegin,
       onBeforeUpdate,
       onUpdate,
@@ -182,6 +183,8 @@ export class Timer extends Clock {
     this.onPause = onPause || timerDefaults.onPause;
     /** @type {Callback<this>} */
     this.onComplete = onComplete || timerDefaults.onComplete;
+    /** @type {Callback<this>} */
+    this.onStop = onStop || timerDefaults.onStop;
     /** @type {Number} */
     this.iterationDuration = timerDuration; // Duration of one loop
     /** @type {Number} */
@@ -445,6 +448,8 @@ export class Timer extends Clock {
       forEachChildren(this, removeTweenSliblings);
     }
     this._cancelled = 1;
+    // Call onStop callback when animation is cancelled/interrupted
+    this.onStop(this);
     // Pausing the timer removes it from the engine
     return this.pause();
   }

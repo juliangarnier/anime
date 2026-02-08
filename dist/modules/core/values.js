@@ -2,7 +2,7 @@
  * Anime.js - core - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { tweenTypes, isDomSymbol, isSvgSymbol, validTransforms, shortTransforms, valueTypes, unitsExecRgx, digitWithExponentRgx, proxyTargetSymbol, cssVarPrefix, cssVariableMatchRgx, emptyString } from './consts.js';

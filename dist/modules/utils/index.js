@@ -2,7 +2,7 @@
  * Anime.js - utils - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 export { clamp, damp, degToRad, lerp, mapRange, padEnd, padStart, radToDeg, round, roundPad, snap, wrap } from './chainable.js';

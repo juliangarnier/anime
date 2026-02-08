@@ -2,7 +2,7 @@
  * Anime.js - core - CJS
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 'use strict';
@@ -44,6 +44,7 @@ const defaults = {
   onLoop: consts.noop,
   onPause: consts.noop,
   onComplete: consts.noop,
+  onStop: consts.noop,
   onRender: consts.noop,
 };
 

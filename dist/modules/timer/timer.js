@@ -2,7 +2,7 @@
  * Anime.js - timer - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { minValue, noop, maxValue, compositionTypes, tickModes } from '../core/consts.js';
@@ -94,6 +94,7 @@ class Timer extends Clock {
       onComplete,
       onLoop,
       onPause,
+      onStop,
       onBegin,
       onBeforeUpdate,
       onUpdate,
@@ -150,6 +151,8 @@ class Timer extends Clock {
     this.onPause = onPause || timerDefaults.onPause;
     /** @type {Callback<this>} */
     this.onComplete = onComplete || timerDefaults.onComplete;
+    /** @type {Callback<this>} */
+    this.onStop = onStop || timerDefaults.onStop;
     /** @type {Number} */
     this.iterationDuration = timerDuration; // Duration of one loop
     /** @type {Number} */
@@ -413,6 +416,8 @@ class Timer extends Clock {
       forEachChildren(this, removeTweenSliblings);
     }
     this._cancelled = 1;
+    // Call onStop callback when animation is cancelled/interrupted
+    this.onStop(this);
     // Pausing the timer removes it from the engine
     return this.pause();
   }

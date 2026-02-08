@@ -2,7 +2,7 @@
  * Anime.js - core - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { globals } from './globals.js';
@@ -287,6 +287,7 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
       (isRunningBackwards && tickableAbsoluteTime <= minValue && completed)
     )) {
       tickable.onComplete(/** @type {CallbackArgument} */(tickable));
+      tickable.onStop(/** @type {CallbackArgument} */(tickable));
       tickable.completed = !isRunningBackwards;
     }
   // If currentTime is both above 0 and at least equals to duration, handles normal onComplete or infinite loops
@@ -302,6 +303,7 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
         tickable.completed = true;
         if (!muteCallbacks && !(parent && (isRunningBackwards || !parent.began))) {
           tickable.onComplete(/** @type {CallbackArgument} */(tickable));
+          tickable.onStop(/** @type {CallbackArgument} */(tickable));
           tickable._resolve(/** @type {CallbackArgument} */(tickable));
         }
       }
@@ -354,6 +356,7 @@ const tick = (tickable, time, muteCallbacks, internalRender, tickMode) => {
           // Triggers the onComplete callback on reverse for children on the edges of the timeline
           if (!muteCallbacks && childDuration <= minValue && (!childStartTime || childEndTime === tlIterationDuration)) {
             child.onComplete(child);
+            child.onStop(child);
           }
         }
       });
@@ -378,6 +381,7 @@ const tick = (tickable, time, muteCallbacks, internalRender, tickMode) => {
         tl.completed = true;
         if (!muteCallbacks) {
           tl.onComplete(/** @type {CallbackArgument} */(tl));
+          tl.onStop(/** @type {CallbackArgument} */(tl));
           tl._resolve(/** @type {CallbackArgument} */(tl));
         }
       }

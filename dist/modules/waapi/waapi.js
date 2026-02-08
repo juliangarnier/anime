@@ -2,7 +2,7 @@
  * Anime.js - waapi - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { isNil, isUnd, stringStartsWith, isKey, isObj, isArr, toLowerCase, round, isStr, isFnc, isNum } from '../core/helpers.js';

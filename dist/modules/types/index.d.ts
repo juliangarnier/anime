@@ -21,6 +21,7 @@ export type DefaultsParams = {
     onLoop?: Callback<Tickable>;
     onPause?: Callback<Tickable>;
     onComplete?: Callback<Tickable>;
+    onStop?: Callback<Tickable>;
     onRender?: Callback<Renderable>;
 };
 export type Renderable = JSAnimation | Timeline;
@@ -97,6 +98,7 @@ export type TickableCallbacks<T extends unknown> = {
     onLoop?: Callback<T>;
     onPause?: Callback<T>;
     onComplete?: Callback<T>;
+    onStop?: Callback<T>;
 };
 export type RenderableCallbacks<T extends unknown> = {
     onRender?: Callback<T>;

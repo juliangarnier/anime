@@ -2,7 +2,7 @@
  * Anime.js - core - ESM
  * @version v4.2.2
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { isBrowser, win, noop, maxFps, K, compositionTypes, doc } from './consts.js';
@@ -42,6 +42,7 @@ const defaults = {
   onLoop: noop,
   onPause: noop,
   onComplete: noop,
+  onStop: noop,
   onRender: noop,
 };
 

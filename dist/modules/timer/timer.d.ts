@@ -32,6 +32,8 @@ export class Timer extends Clock {
     onPause: Callback<this>;
     /** @type {Callback<this>} */
     onComplete: Callback<this>;
+    /** @type {Callback<this>} */
+    onStop: Callback<this>;
     /** @type {Number} */
     iterationDuration: number;
     /** @type {Number} */

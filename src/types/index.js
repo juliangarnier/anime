@@ -46,6 +46,7 @@ export {}
  * @property {Callback<Tickable>} [onLoop]
  * @property {Callback<Tickable>} [onPause]
  * @property {Callback<Tickable>} [onComplete]
+ * @property {Callback<Tickable>} [onStop]
  * @property {Callback<Renderable>} [onRender]
  */
 
@@ -167,6 +168,7 @@ export {}
  * @property {Callback<T>} [onLoop]
  * @property {Callback<T>} [onPause]
  * @property {Callback<T>} [onComplete]
+ * @property {Callback<T>} [onStop]
  */
 
 /**
