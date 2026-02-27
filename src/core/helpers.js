@@ -11,6 +11,10 @@ import {
   globals,
 } from './globals.js';
 
+import {
+  colorNames,
+} from './color-names.js';
+
 /**
  * @import {
  *   Target,
@@ -61,7 +65,7 @@ export const isRgb = a => stringStartsWith(a, 'rgb');
 /**@param {any} a @return {Boolean} */
 export const isHsl = a => stringStartsWith(a, 'hsl');
 /**@param {any} a @return {Boolean} */ // Make sure boxShadow syntax like 'rgb(255, 0, 0) 0px 0px 6px 0px' is not a valid color type
-export const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a)));
+export const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a))) || colorNames.hasOwnProperty(a);
 /**@param {any} a @return {Boolean} */
 export const isKey = a => !globals.defaults.hasOwnProperty(a);
 
@@ -184,7 +188,7 @@ export const normalizeTime = v => v <= minValue ? minValue : clampInfinity(round
  * @param    {T[]} a
  * @return   {T[]}
  */
-export const cloneArray = a => isArr(a) ? [ ...a ] : a;
+export const cloneArray = a => isArr(a) ? [...a] : a;
 
 // Objects
 

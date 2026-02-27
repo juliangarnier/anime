@@ -9,6 +9,7 @@
 
 var consts = require('./consts.cjs');
 var helpers = require('./helpers.cjs');
+var colorNames = require('./color-names.cjs');
 
 /**
  * @import {
@@ -58,9 +59,9 @@ const hue2rgb = (p, q, t) => {
   if (t < 0) t += 1;
   if (t > 1) t -= 1;
   return t < 1 / 6 ? p + (q - p) * 6 * t :
-         t < 1 / 2 ? q :
-         t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 :
-         p;
+    t < 1 / 2 ? q :
+      t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 :
+        p;
 };
 
 /**
@@ -87,6 +88,7 @@ const hslToRgba = hslValue => {
   return [r, g, b, a];
 };
 
+
 /**
  * All in one color converter that converts a color string value into an array of RGBA values
  * @param  {String} colorString
@@ -94,9 +96,9 @@ const hslToRgba = hslValue => {
  */
 const convertColorStringValuesToRgbaArray = colorString => {
   return helpers.isRgb(colorString) ? rgbToRgba(colorString) :
-         helpers.isHex(colorString) ? hexToRgba(colorString) :
-         helpers.isHsl(colorString) ? hslToRgba(colorString) :
-         [0, 0, 0, 1];
+    helpers.isHex(colorString) ? hexToRgba(colorString) :
+      helpers.isHsl(colorString) ? hslToRgba(colorString) :
+        /** @type {ColorArray} */(colorNames.colorNames[colorString]) || [0, 0, 0, 1];
 };
 
 exports.convertColorStringValuesToRgbaArray = convertColorStringValuesToRgbaArray;
