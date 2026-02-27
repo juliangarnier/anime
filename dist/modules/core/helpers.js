@@ -7,6 +7,7 @@
 
 import { isBrowser, maxValue, minValue, hexTestRgx, lowerCaseRgx, validRgbHslRgx } from './consts.js';
 import { globals } from './globals.js';
+import { colorNames } from './color-names.js';
 
 /**
  * @import {
@@ -58,7 +59,7 @@ const isRgb = a => stringStartsWith(a, 'rgb');
 /**@param {any} a @return {Boolean} */
 const isHsl = a => stringStartsWith(a, 'hsl');
 /**@param {any} a @return {Boolean} */ // Make sure boxShadow syntax like 'rgb(255, 0, 0) 0px 0px 6px 0px' is not a valid color type
-const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a)));
+const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a))) || colorNames.hasOwnProperty(a);
 /**@param {any} a @return {Boolean} */
 const isKey = a => !globals.defaults.hasOwnProperty(a);
 
@@ -181,7 +182,7 @@ const normalizeTime = v => v <= minValue ? minValue : clampInfinity(round(v, 11)
  * @param    {T[]} a
  * @return   {T[]}
  */
-const cloneArray = a => isArr(a) ? [ ...a ] : a;
+const cloneArray = a => isArr(a) ? [...a] : a;
 
 // Objects
 
