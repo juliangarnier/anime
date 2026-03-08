@@ -126,6 +126,39 @@ suite('WAAPI', () => {
     expect(utils.get(targets[0], 'translate')).to.equal('100px');
   });
 
+  test('reversed option should start at the target value', () => {
+    const [ target ] = utils.$('#target-id');
+    const animation = waapi.animate(target, {
+      translate: '100px',
+      reversed: true,
+      duration: 20,
+      autoplay: false,
+      ease: 'linear',
+    });
+    animation.seek(0).commitStyles();
+    expect(utils.get(target, 'translate')).to.equal('100px');
+    animation.seek(20).commitStyles();
+    expect(utils.get(target, 'translate')).to.equal('0px');
+    utils.remove(target, null, 'translate');
+  });
+
+  test('alternate option should reverse direction on even loops', () => {
+    const [ target ] = utils.$('#target-id');
+    const animation = waapi.animate(target, {
+      translate: '100px',
+      loop: 2,
+      alternate: true,
+      duration: 20,
+      autoplay: false,
+      ease: 'linear',
+    });
+    animation.seek(5).commitStyles();
+    expect(utils.get(target, 'translate')).to.equal('25px');
+    animation.seek(25).commitStyles();
+    expect(utils.get(target, 'translate')).to.equal('75px');
+    utils.remove(target, null, 'translate');
+  });
+
   test('Set and get progress on an animation', () => {
     const targets = utils.$('.target-class');
     const animation = waapi.animate(targets, {
