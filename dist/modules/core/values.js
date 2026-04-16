@@ -5,8 +5,8 @@
  * @copyright 2026 - Julian Garnier
  */
 
-import { tweenTypes, isDomSymbol, isSvgSymbol, validTransforms, shortTransforms, valueTypes, unitsExecRgx, digitWithExponentRgx, proxyTargetSymbol, cssVarPrefix, cssVariableMatchRgx, emptyString } from './consts.js';
-import { isUnd, isValidSVGAttribute, stringStartsWith, isCol, isFnc, isStr, cloneArray } from './helpers.js';
+import { cssVarPrefix, tweenTypes, isDomSymbol, isSvgSymbol, validTransforms, shortTransforms, valueTypes, unitsExecRgx, digitWithExponentRgx, proxyTargetSymbol, cssVariableMatchRgx, emptyString } from './consts.js';
+import { isUnd, isFnc, isStr, stringStartsWith, isValidSVGAttribute, isCol, cloneArray } from './helpers.js';
 import { parseInlineTransforms } from './transforms.js';
 import { convertColorStringValuesToRgbaArray } from './colors.js';
 

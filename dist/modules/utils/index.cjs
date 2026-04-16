@@ -12,8 +12,8 @@ var random = require('./random.cjs');
 var time = require('./time.cjs');
 var target = require('./target.cjs');
 var stagger = require('./stagger.cjs');
-var styles = require('../core/styles.cjs');
 var targets = require('../core/targets.cjs');
+var styles = require('../core/styles.cjs');
 
 
 
@@ -39,5 +39,5 @@ exports.get = target.get;
 exports.remove = target.remove;
 exports.set = target.set;
 exports.stagger = stagger.stagger;
-exports.cleanInlineStyles = styles.cleanInlineStyles;
 exports.$ = targets.registerTargets;
+exports.cleanInlineStyles = styles.cleanInlineStyles;

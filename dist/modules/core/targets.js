@@ -7,7 +7,7 @@
 
 import { scope } from './globals.js';
 import { isRegisteredTargetSymbol, isDomSymbol, isSvgSymbol, transformsSymbol, isBrowser } from './consts.js';
-import { isSvg, isNil, isArr, isStr } from './helpers.js';
+import { isNil, isArr, isSvg, isStr } from './helpers.js';
 
 /**
 * @import {

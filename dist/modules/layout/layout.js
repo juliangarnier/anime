@@ -11,7 +11,7 @@ import { parseEase } from '../easings/eases/parser.js';
 import { setValue, getFunctionValue } from '../core/values.js';
 import { createTimeline } from '../timeline/timeline.js';
 import { waapi } from '../waapi/waapi.js';
-import { scope, defaults } from '../core/globals.js';
+import { defaults, scope } from '../core/globals.js';
 
 /**
  * @import {

@@ -253,6 +253,14 @@ export const removeChild = (parent, child, prevProp = '_prev', nextProp = '_next
  * @return {void}
  */
 export const addChild = (parent, child, sortMethod, prevProp = '_prev', nextProp = '_next') => {
+  // Guard against re-adding an already-linked node. If the child is already
+  // present in this list its neighbour pointers are non-null (or it is the
+  // current head). Re-inserting without first removing causes the sorted-walk
+  // below to land on the child itself, producing a self-referential cycle
+  // (child[nextProp] === child) that freezes the update loop. (#1138)
+  if (parent._head === child || child[prevProp] != null) {
+    removeChild(parent, child, prevProp, nextProp);
+  }
   let prev = parent._tail;
   while (prev && sortMethod && sortMethod(prev, child)) prev = prev[prevProp];
   const next = prev ? prev[nextProp] : parent._head;

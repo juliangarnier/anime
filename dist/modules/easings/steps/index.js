@@ -5,7 +5,7 @@
  * @copyright 2026 - Julian Garnier
  */
 
-import { ceil, floor, clamp } from '../../core/helpers.js';
+import { clamp, ceil, floor } from '../../core/helpers.js';
 
 /**
  * @import {

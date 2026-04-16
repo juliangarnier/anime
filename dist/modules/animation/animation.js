@@ -9,7 +9,7 @@ import { K, compositionTypes, valueTypes, minValue, tweenTypes, isDomSymbol } fr
 import { mergeObjects, isUnd, isKey, isObj, round, cloneArray, isNil, addChild, forEachChildren, clampInfinity, normalizeTime, isArr, isFnc, isStr, isNum } from '../core/helpers.js';
 import { globals } from '../core/globals.js';
 import { registerTargets } from '../core/targets.js';
-import { setValue, getTweenType, getFunctionValue, decomposeRawValue, getOriginalAnimatableValue, createDecomposedValueTargetObject, decomposedOriginalValue, getRelativeValue, decomposeTweenValue } from '../core/values.js';
+import { setValue, getTweenType, getFunctionValue, decomposeRawValue, getOriginalAnimatableValue, decomposedOriginalValue, decomposeTweenValue, getRelativeValue, createDecomposedValueTargetObject } from '../core/values.js';
 import { sanitizePropertyName, cleanInlineStyles } from '../core/styles.js';
 import { convertValueUnit } from '../core/units.js';
 import { parseEase } from '../easings/eases/parser.js';

@@ -6,7 +6,7 @@
  */
 
 import { unitsExecRgx, emptyString } from '../core/consts.js';
-import { isUnd, parseNumber, isFnc, abs, floor, sqrt, round, isArr, isNum, isStr, max } from '../core/helpers.js';
+import { isUnd, parseNumber, isFnc, abs, floor, round, isArr, isNum, sqrt, isStr, max } from '../core/helpers.js';
 import { parseEase } from '../easings/eases/parser.js';
 import { parseTimelinePosition } from '../timeline/position.js';
 import { getOriginalAnimatableValue } from '../core/values.js';

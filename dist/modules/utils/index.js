@@ -10,5 +10,5 @@ export { createSeededRandom, random, randomPick, shuffle } from './random.js';
 export { keepTime, sync } from './time.js';
 export { get, remove, set } from './target.js';
 export { stagger } from './stagger.js';
-export { cleanInlineStyles } from '../core/styles.js';
 export { registerTargets as $ } from '../core/targets.js';
+export { cleanInlineStyles } from '../core/styles.js';

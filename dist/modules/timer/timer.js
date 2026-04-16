@@ -7,7 +7,7 @@
 
 import { minValue, noop, maxValue, compositionTypes, tickModes } from '../core/consts.js';
 import { isFnc, isUnd, now, clampInfinity, clamp, round, forEachChildren, addChild, normalizeTime, floor } from '../core/helpers.js';
-import { globals, devTools, scope } from '../core/globals.js';
+import { scope, globals, devTools } from '../core/globals.js';
 import { setValue } from '../core/values.js';
 import { tick } from '../core/render.js';
 import { removeTweenSliblings, composeTween, getTweenSiblings } from '../animation/composition.js';

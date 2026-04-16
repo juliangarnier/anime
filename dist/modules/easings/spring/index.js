@@ -5,7 +5,7 @@
  * @copyright 2026 - Julian Garnier
  */
 
-import { K, minValue, noop } from '../../core/consts.js';
+import { K, noop, minValue } from '../../core/consts.js';
 import { globals } from '../../core/globals.js';
 import { isUnd, clamp, pow, PI, round, sqrt, abs, exp, cos, sin } from '../../core/helpers.js';
 import { setValue } from '../../core/values.js';
