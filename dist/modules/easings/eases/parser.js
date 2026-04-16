@@ -6,7 +6,7 @@
  */
 
 import { emptyString, minValue } from '../../core/consts.js';
-import { pow, sin, sqrt, cos, isStr, stringStartsWith, isFnc, clamp, asin, PI } from '../../core/helpers.js';
+import { isStr, stringStartsWith, isFnc, pow, sin, sqrt, cos, clamp, asin, PI } from '../../core/helpers.js';
 import { none } from '../none.js';
 
 /**

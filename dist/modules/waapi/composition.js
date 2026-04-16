@@ -5,7 +5,7 @@
  * @copyright 2026 - Julian Garnier
  */
 
-import { removeChild, addChild } from '../core/helpers.js';
+import { addChild, removeChild } from '../core/helpers.js';
 
 /**
  * @import {

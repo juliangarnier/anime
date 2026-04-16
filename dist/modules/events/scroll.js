@@ -5,9 +5,9 @@
  * @copyright 2026 - Julian Garnier
  */
 
-import { noop, doc, isDomSymbol, relativeValuesExecRgx, win } from '../core/consts.js';
+import { noop, doc, isDomSymbol, win, relativeValuesExecRgx } from '../core/consts.js';
 import { scope, globals } from '../core/globals.js';
-import { isUnd, isNum, addChild, forEachChildren, round, isStr, isObj, removeChild, clamp, lerp, isFnc } from '../core/helpers.js';
+import { isUnd, addChild, forEachChildren, round, isStr, isObj, isNum, removeChild, clamp, lerp, isFnc } from '../core/helpers.js';
 import { parseTargets } from '../core/targets.js';
 import { setValue, getRelativeValue, decomposeRawValue, decomposedOriginalValue } from '../core/values.js';
 import { convertValueUnit } from '../core/units.js';

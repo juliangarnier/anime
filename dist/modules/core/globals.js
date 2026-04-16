@@ -5,7 +5,7 @@
  * @copyright 2026 - Julian Garnier
  */
 
-import { isBrowser, win, noop, maxFps, K, compositionTypes, doc } from './consts.js';
+import { isBrowser, win, noop, compositionTypes, K, maxFps, doc } from './consts.js';
 
 /**
  * @import {

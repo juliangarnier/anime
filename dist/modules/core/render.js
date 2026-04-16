@@ -7,7 +7,7 @@
 
 import { globals } from './globals.js';
 import { minValue, tickModes, valueTypes, compositionTypes, tweenTypes, transformsSymbol, transformsFragmentStrings, emptyString } from './consts.js';
-import { forEachChildren, round, now, clamp, lerp } from './helpers.js';
+import { forEachChildren, round, clamp, lerp, now } from './helpers.js';
 
 /**
  *   @import {
