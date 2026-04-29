@@ -76,7 +76,7 @@ Help the project become sustainable by sponsoring us on <a target="_blank" href=
           </picture>
         </a>
       </td>
-      </td>
+      <td>
         <a target="_blank" href="https://github.com/sponsors/juliangarnier">
           <picture>
             <img align="center" src="./assets/sponsors/placeholder-small.png?v=200126" width="141">
