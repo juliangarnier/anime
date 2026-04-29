@@ -34,6 +34,7 @@ window.demos['docs'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -85,6 +86,7 @@ window.demos['getting-started'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -144,6 +146,7 @@ window.demos['getting-started-installation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $caret ] = utils.$('.caret');
@@ -242,6 +245,7 @@ window.demos['getting-started-module-imports'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $caret ] = utils.$('.caret');
@@ -349,6 +353,7 @@ window.demos['getting-started-using-with-vanilla-js'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $logo ] = utils.$('.logo.js');
@@ -452,6 +457,7 @@ window.demos['getting-started-using-with-react'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $logo ] = utils.$('.logo');
@@ -564,6 +570,7 @@ window.demos['timer'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $time, $count ] = utils.$('.value');
@@ -625,6 +632,7 @@ window.demos['timer-timer-playback-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -690,6 +698,7 @@ window.demos['timer-timer-playback-settings-delay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -762,6 +771,7 @@ window.demos['timer-timer-playback-settings-duration'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -846,6 +856,7 @@ window.demos['timer-timer-playback-settings-loop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -935,6 +946,7 @@ window.demos['timer-timer-playback-settings-playback-loopdelay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -1025,6 +1037,7 @@ window.demos['timer-timer-playback-settings-alternate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -1115,6 +1128,7 @@ window.demos['timer-timer-playback-settings-reversed'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $iterationTime ] = utils.$('.iteration-time');
@@ -1202,6 +1216,7 @@ window.demos['timer-timer-playback-settings-autoplay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -1304,6 +1319,7 @@ window.demos['timer-timer-playback-settings-framerate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -1410,6 +1426,7 @@ window.demos['timer-timer-playback-settings-playbackrate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -1480,6 +1497,7 @@ window.demos['timer-timer-callbacks'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -1557,6 +1575,7 @@ window.demos['timer-timer-callbacks-onbegin'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $status ] = utils.$('.status');
@@ -1648,6 +1667,7 @@ window.demos['timer-timer-callbacks-oncomplete'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $status ] = utils.$('.status');
@@ -1734,6 +1754,7 @@ window.demos['timer-timer-callbacks-onupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $updates ] = utils.$('.updates');
@@ -1823,6 +1844,7 @@ window.demos['timer-timer-callbacks-onloop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -1924,6 +1946,7 @@ window.demos['timer-timer-callbacks-onpause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $resumeButton, $pauseButton ] = utils.$('.button');
@@ -2021,6 +2044,7 @@ window.demos['timer-timer-callbacks-then'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $status ] = utils.$('.status');
@@ -2081,6 +2105,7 @@ window.demos['timer-timer-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -2156,6 +2181,7 @@ window.demos['timer-timer-methods-play'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -2246,6 +2272,7 @@ window.demos['timer-timer-methods-reverse'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $reverseButton ] = utils.$('.reverse');
@@ -2335,6 +2362,7 @@ window.demos['timer-timer-methods-pause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $pauseButton ] = utils.$('.pause');
@@ -2423,6 +2451,7 @@ window.demos['timer-timer-methods-restart'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $restartButton ] = utils.$('.restart');
@@ -2511,6 +2540,7 @@ window.demos['timer-timer-methods-alternate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $alternateButton ] = utils.$('.button');
@@ -2607,6 +2637,7 @@ window.demos['timer-timer-methods-resume'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $resumeButton, $pauseButton, $alternateButton ] = utils.$('.button');
@@ -2703,6 +2734,7 @@ window.demos['timer-timer-methods-complete'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $completeButton ] = utils.$('.complete');
@@ -2792,6 +2824,7 @@ window.demos['timer-timer-methods-reset'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -2885,6 +2918,7 @@ window.demos['timer-timer-methods-cancel'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -2977,6 +3011,7 @@ window.demos['timer-timer-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -3070,6 +3105,7 @@ window.demos['timer-timer-methods-seek'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -3196,6 +3232,7 @@ window.demos['timer-timer-methods-stretch'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -3266,6 +3303,7 @@ window.demos['timer-timer-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -3325,6 +3363,7 @@ window.demos['animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { chars } = splitText('h2', { words: false, chars: true });
@@ -3395,6 +3434,7 @@ window.demos['animation-targets'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -3462,6 +3502,7 @@ window.demos['animation-targets-css-selector'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', { x: '17rem' });
@@ -3537,6 +3578,7 @@ window.demos['animation-targets-dom-elements'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demo = document.querySelector('#selector-demo');
@@ -3598,6 +3640,7 @@ window.demos['animation-targets-javascript-objects'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $log ] = utils.$('code');
@@ -3670,6 +3713,7 @@ window.demos['animation-targets-array-of-targets'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $log ] = utils.$('code');
@@ -3731,6 +3775,7 @@ window.demos['animation-animatable-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -3786,6 +3831,7 @@ window.demos['animation-animatable-properties-css-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -3858,6 +3904,7 @@ window.demos['animation-animatable-properties-css-transforms'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -3949,6 +3996,7 @@ window.demos['animation-animatable-properties-css-variables'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 // Assign the CSS variables to the properties of the animated elements
@@ -4021,6 +4069,7 @@ window.demos['animation-animatable-properties-javascript-object-properties'] = f
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const myObject = {
@@ -4094,6 +4143,7 @@ window.demos['animation-animatable-properties-html-attributes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('input', {
@@ -4174,6 +4224,7 @@ window.demos['animation-animatable-properties-svg-attributes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate(['feTurbulence', 'feDisplacementMap'], {
@@ -4238,6 +4289,7 @@ window.demos['animation-tween-value-types'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -4293,6 +4345,7 @@ window.demos['animation-tween-value-types-numerical-value'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -4354,6 +4407,7 @@ window.demos['animation-tween-value-types-unit-conversion-value'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -4429,6 +4483,7 @@ window.demos['animation-tween-value-types-relative-value'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $clock ] = utils.$('.clock');
@@ -4512,6 +4567,7 @@ window.demos['animation-tween-value-types-color-value'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.hex',  {
@@ -4602,6 +4658,7 @@ window.demos['animation-tween-value-types-color-function-value'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.circle',  {
@@ -4670,6 +4727,7 @@ window.demos['animation-tween-value-types-css-variable'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square',  {
@@ -4754,12 +4812,13 @@ window.demos['animation-tween-value-types-function-based'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
   x: $el => /** @type {HTMLElement} */($el).getAttribute('data-x'),
   y: (_, i) => 50 + (-50 * i),
-  scale: (_, i, l) => (l - i) * .75,
+  scale: (_, i, t) => (t.length - i) * .75,
   rotate: () => utils.random(-360, 360),
   borderRadius: () => `+=${utils.random(0, 8)}`,
   duration: () => utils.random(1200, 1800),
@@ -4816,6 +4875,7 @@ window.demos['animation-tween-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -4871,6 +4931,7 @@ window.demos['animation-tween-parameters-to'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -4937,6 +4998,7 @@ window.demos['animation-tween-parameters-from'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -5001,6 +5063,7 @@ window.demos['animation-tween-parameters-delay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -5067,6 +5130,7 @@ window.demos['animation-tween-parameters-duration'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -5151,6 +5215,7 @@ window.demos['animation-tween-parameters-ease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -5269,6 +5334,7 @@ window.demos['animation-tween-parameters-composition'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const squares = utils.$('.square');
@@ -5410,6 +5476,7 @@ window.demos['animation-tween-parameters-modifier'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -5482,6 +5549,7 @@ window.demos['animation-keyframes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -5537,6 +5605,7 @@ window.demos['animation-keyframes-tween-values-keyframes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -5603,6 +5672,7 @@ window.demos['animation-keyframes-tween-parameters-keyframes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -5679,6 +5749,7 @@ window.demos['animation-keyframes-duration-based-keyframes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -5749,6 +5820,7 @@ window.demos['animation-keyframes-percentage-based-keyframes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -5816,6 +5888,7 @@ window.demos['animation-animation-playback-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -5871,6 +5944,7 @@ window.demos['animation-animation-playback-settings-delay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const playbackDelay = animate('.delay', {
@@ -5952,6 +6026,7 @@ window.demos['animation-animation-playback-settings-duration'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.dur-0', {
@@ -6048,6 +6123,7 @@ window.demos['animation-animation-playback-settings-loop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.loop', {
@@ -6125,6 +6201,7 @@ window.demos['animation-animation-playback-settings-playback-loopdelay'] = funct
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const loopDelayAnimation = animate('.circle', {
@@ -6210,6 +6287,7 @@ window.demos['animation-animation-playback-settings-alternate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.dir-normal', {
@@ -6294,6 +6372,7 @@ window.demos['animation-animation-playback-settings-reversed'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.dir-normal', {
@@ -6371,6 +6450,7 @@ window.demos['animation-animation-playback-settings-autoplay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.autoplay-true', {
@@ -6454,6 +6534,7 @@ window.demos['animation-animation-playback-settings-framerate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -6547,6 +6628,7 @@ window.demos['animation-animation-playback-settings-playbackrate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -6622,6 +6704,7 @@ window.demos['animation-animation-playback-settings-playbackease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -6710,6 +6793,7 @@ window.demos['animation-animation-playback-settings-persist'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.button');
@@ -6782,6 +6866,7 @@ window.demos['animation-animation-callbacks'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -6845,6 +6930,7 @@ window.demos['animation-animation-callbacks-onbegin'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -6916,6 +7002,7 @@ window.demos['animation-animation-callbacks-oncomplete'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -6989,6 +7076,7 @@ window.demos['animation-animation-callbacks-onbeforeupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -7070,6 +7158,7 @@ window.demos['animation-animation-callbacks-onupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -7145,6 +7234,7 @@ window.demos['animation-animation-callbacks-onrender'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $rendersLog ] = utils.$('.value');
@@ -7220,6 +7310,7 @@ window.demos['animation-animation-callbacks-onloop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -7309,6 +7400,7 @@ window.demos['animation-animation-callbacks-onpause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $animateButton, $pauseButton, $removeButton ] = utils.$('.button');
@@ -7407,6 +7499,7 @@ window.demos['animation-animation-callbacks-then'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -7467,6 +7560,7 @@ window.demos['animation-animation-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -7538,6 +7632,7 @@ window.demos['animation-animation-methods-play'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -7624,6 +7719,7 @@ window.demos['animation-animation-methods-reverse'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $reverseButton ] = utils.$('.reverse');
@@ -7709,6 +7805,7 @@ window.demos['animation-animation-methods-pause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $pauseButton ] = utils.$('.pause');
@@ -7796,6 +7893,7 @@ window.demos['animation-animation-methods-restart'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $restartButton ] = utils.$('.restart');
@@ -7883,6 +7981,7 @@ window.demos['animation-animation-methods-alternate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $alternateButton ] = utils.$('.button');
@@ -7973,6 +8072,7 @@ window.demos['animation-animation-methods-resume'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $pauseButton, $alternateButton, $resumeButton ] = utils.$('.button');
@@ -8065,6 +8165,7 @@ window.demos['animation-animation-methods-complete'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $completeButton ] = utils.$('.complete');
@@ -8154,6 +8255,7 @@ window.demos['animation-animation-methods-cancel'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $cancelButton ] = utils.$('.cancel');
@@ -8247,6 +8349,7 @@ window.demos['animation-animation-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -8343,6 +8446,7 @@ window.demos['animation-animation-methods-reset'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $hardReset, $softReset ] = utils.$('.button');
@@ -8435,6 +8539,7 @@ window.demos['animation-animation-methods-seek'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -8551,6 +8656,7 @@ window.demos['animation-animation-methods-stretch'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -8645,6 +8751,7 @@ window.demos['animation-animation-methods-refresh'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $refreshButton ] = utils.$('.refresh');
@@ -8714,6 +8821,7 @@ window.demos['animation-animation-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -8777,6 +8885,7 @@ window.demos['timeline'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline({ defaults: { duration: 750 } });
@@ -8873,6 +8982,7 @@ window.demos['timeline-add-timers'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $timer01, $timer02, $timer03 ] = utils.$('.timer');
@@ -8954,6 +9064,7 @@ window.demos['timeline-add-animations'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const circleAnimation = animate('.circle', {
@@ -9034,6 +9145,7 @@ window.demos['timeline-sync-waapi-animations'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const circle = waapi.animate('.circle', {
@@ -9119,6 +9231,7 @@ window.demos['timeline-sync-timelines'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const circleAnimation = animate('.circle', {
@@ -9234,6 +9347,7 @@ window.demos['timeline-call-functions'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $functionA ] = utils.$('.function-A');
@@ -9306,6 +9420,7 @@ window.demos['timeline-time-position'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -9373,6 +9488,7 @@ window.demos['timeline-timeline-playback-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -9436,6 +9552,7 @@ window.demos['timeline-timeline-playback-settings-defaults'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -9520,6 +9637,7 @@ window.demos['timeline-timeline-playback-settings-delay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -9607,6 +9725,7 @@ window.demos['timeline-timeline-playback-settings-loop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -9690,6 +9809,7 @@ window.demos['timeline-timeline-playback-settings-playback-loopdelay'] = functio
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -9772,6 +9892,7 @@ window.demos['timeline-timeline-playback-settings-alternate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $loops ] = utils.$('.loops');
@@ -9856,6 +9977,7 @@ window.demos['timeline-timeline-playback-settings-reversed'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $time ] = utils.$('.time');
@@ -9951,6 +10073,7 @@ window.demos['timeline-timeline-playback-settings-autoplay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $paused ] = utils.$('.paused');
@@ -10048,6 +10171,7 @@ window.demos['timeline-timeline-playback-settings-framerate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -10150,6 +10274,7 @@ window.demos['timeline-timeline-playback-settings-playbackrate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -10234,6 +10359,7 @@ window.demos['timeline-timeline-playback-settings-playbackease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -10292,6 +10418,7 @@ window.demos['timeline-timeline-callbacks'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -10363,6 +10490,7 @@ window.demos['timeline-timeline-callbacks-onbegin'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10444,6 +10572,7 @@ window.demos['timeline-timeline-callbacks-oncomplete'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10526,6 +10655,7 @@ window.demos['timeline-timeline-callbacks-onbeforeupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10611,6 +10741,7 @@ window.demos['timeline-timeline-callbacks-onupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10696,6 +10827,7 @@ window.demos['timeline-timeline-callbacks-onrender'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10781,6 +10913,7 @@ window.demos['timeline-timeline-callbacks-onloop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -10880,6 +11013,7 @@ window.demos['timeline-timeline-callbacks-onpause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $animateButton, $pauseButton, $removeButton ] = utils.$('.button');
@@ -10992,6 +11126,7 @@ window.demos['timeline-timeline-callbacks-then'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -11055,6 +11190,7 @@ window.demos['timeline-timeline-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -11118,6 +11254,7 @@ window.demos['timeline-timeline-methods-add'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -11204,6 +11341,7 @@ window.demos['timeline-timeline-methods-set'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -11272,6 +11410,7 @@ window.demos['timeline-timeline-methods-sync'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const circleAnimation = waapi.animate('.circle', {
@@ -11361,6 +11500,7 @@ window.demos['timeline-timeline-methods-label'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -11456,6 +11596,7 @@ window.demos['timeline-timeline-methods-remove'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $removeA, $removeB, $removeC ] = utils.$('.button');
@@ -11566,6 +11707,7 @@ window.demos['timeline-timeline-methods-call'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $functionA ] = utils.$('.function-A');
@@ -11638,6 +11780,7 @@ window.demos['timeline-timeline-methods-init'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline()
@@ -11717,6 +11860,7 @@ window.demos['timeline-timeline-methods-play'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $playButton ] = utils.$('.play');
@@ -11805,6 +11949,7 @@ window.demos['timeline-timeline-methods-reset'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $reset ] = utils.$('.button');
@@ -11897,6 +12042,7 @@ window.demos['timeline-timeline-methods-reverse'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $reverseButton ] = utils.$('.reverse');
@@ -11983,6 +12129,7 @@ window.demos['timeline-timeline-methods-pause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $pauseButton ] = utils.$('.pause');
@@ -12072,6 +12219,7 @@ window.demos['timeline-timeline-methods-restart'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $restartButton ] = utils.$('.restart');
@@ -12161,6 +12309,7 @@ window.demos['timeline-timeline-methods-alternate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $alternateButton ] = utils.$('.button');
@@ -12253,6 +12402,7 @@ window.demos['timeline-timeline-methods-resume'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $pauseButton, $alternateButton, $resumeButton ] = utils.$('.button');
@@ -12345,6 +12495,7 @@ window.demos['timeline-timeline-methods-complete'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $completeButton ] = utils.$('.complete');
@@ -12435,6 +12586,7 @@ window.demos['timeline-timeline-methods-cancel'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $cancelButton ] = utils.$('.cancel');
@@ -12530,6 +12682,7 @@ window.demos['timeline-timeline-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -12628,6 +12781,7 @@ window.demos['timeline-timeline-methods-seek'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -12745,6 +12899,7 @@ window.demos['timeline-timeline-methods-stretch'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -12841,6 +12996,7 @@ window.demos['timeline-timeline-methods-refresh'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $refreshButton ] = utils.$('.refresh');
@@ -12908,6 +13064,7 @@ window.demos['timeline-timeline-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -12973,6 +13130,7 @@ window.demos['animatable'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13052,6 +13210,7 @@ window.demos['animatable-animatable-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -13117,6 +13276,7 @@ window.demos['animatable-animatable-settings-unit'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13217,6 +13377,7 @@ window.demos['animatable-animatable-settings-duration'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13312,6 +13473,7 @@ window.demos['animatable-animatable-settings-ease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const clock1 = createAnimatable('.clock-1', {
@@ -13420,6 +13582,7 @@ window.demos['animatable-animatable-settings-modifier'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const PI = Math.PI;
@@ -13507,6 +13670,7 @@ window.demos['animatable-animatable-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -13608,6 +13772,7 @@ window.demos['animatable-animatable-methods-getters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13704,6 +13869,7 @@ window.demos['animatable-animatable-methods-setters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13813,6 +13979,7 @@ window.demos['animatable-animatable-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $demos = document.querySelector('#docs-demos');
@@ -13898,6 +14065,7 @@ window.demos['animatable-animatable-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -13953,6 +14121,7 @@ window.demos['draggable'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square');
@@ -14006,6 +14175,7 @@ window.demos['draggable-draggable-axes-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -14071,6 +14241,7 @@ window.demos['draggable-draggable-axes-parameters-x'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square.enabled', {
@@ -14144,6 +14315,7 @@ window.demos['draggable-draggable-axes-parameters-y'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square.enabled', {
@@ -14236,6 +14408,7 @@ window.demos['draggable-draggable-axes-parameters-snap'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14297,6 +14470,7 @@ window.demos['draggable-draggable-axes-parameters-modifier'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14357,6 +14531,7 @@ window.demos['draggable-draggable-axes-parameters-mapto'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 utils.set('.square', { z: 100 });
@@ -14415,6 +14590,7 @@ window.demos['draggable-draggable-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -14474,6 +14650,7 @@ window.demos['draggable-draggable-settings-trigger'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.row', {
@@ -14543,6 +14720,7 @@ window.demos['draggable-draggable-settings-container'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14614,6 +14792,7 @@ window.demos['draggable-draggable-settings-containerpadding'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14677,6 +14856,7 @@ window.demos['draggable-draggable-settings-containerfriction'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14744,6 +14924,7 @@ window.demos['draggable-draggable-settings-releasecontainerfriction'] = function
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14811,6 +14992,7 @@ window.demos['draggable-draggable-settings-releasemass'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14878,6 +15060,7 @@ window.demos['draggable-draggable-settings-releasestiffness'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -14945,6 +15128,7 @@ window.demos['draggable-draggable-settings-releasedamping'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15012,6 +15196,7 @@ window.demos['draggable-draggable-settings-velocitymultiplier'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15079,6 +15264,7 @@ window.demos['draggable-draggable-settings-minvelocity'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15146,6 +15332,7 @@ window.demos['draggable-draggable-settings-maxvelocity'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15213,6 +15400,7 @@ window.demos['draggable-draggable-settings-releaseease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15283,6 +15471,7 @@ window.demos['draggable-draggable-settings-dragspeed'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15350,6 +15539,7 @@ window.demos['draggable-draggable-settings-dragthreshold'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15438,6 +15628,7 @@ window.demos['draggable-draggable-settings-scrollthreshold'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15506,6 +15697,7 @@ window.demos['draggable-draggable-settings-scrollspeed'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15568,6 +15760,7 @@ window.demos['draggable-draggable-settings-cursor'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createDraggable('.square', {
@@ -15630,6 +15823,7 @@ window.demos['draggable-draggable-callbacks'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -15693,6 +15887,7 @@ window.demos['draggable-draggable-callbacks-ongrab'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15765,6 +15960,7 @@ window.demos['draggable-draggable-callbacks-ondrag'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15837,6 +16033,7 @@ window.demos['draggable-draggable-callbacks-onupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15909,6 +16106,7 @@ window.demos['draggable-draggable-callbacks-onrelease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -15981,6 +16179,7 @@ window.demos['draggable-draggable-callbacks-onsnap'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -16055,6 +16254,7 @@ window.demos['draggable-draggable-callbacks-onsettle'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -16130,6 +16330,7 @@ createDraggable('.square', {
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const [ $value ] = utils.$('.value');
 
@@ -16204,6 +16405,7 @@ createDraggable('.square', {
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const [ $value ] = utils.$('.value');
 
@@ -16264,6 +16466,7 @@ window.demos['draggable-draggable-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -16329,6 +16532,7 @@ window.demos['draggable-draggable-methods-disable'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $disableButton ] = utils.$('.disable');
@@ -16404,6 +16608,7 @@ window.demos['draggable-draggable-methods-enable'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $enableButton ] = utils.$('.enable');
@@ -16481,6 +16686,7 @@ window.demos['draggable-draggable-methods-setx'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $setButton ] = utils.$('.set');
@@ -16556,6 +16762,7 @@ window.demos['draggable-draggable-methods-sety'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $setButton ] = utils.$('.set');
@@ -16639,6 +16846,7 @@ window.demos['draggable-draggable-methods-animateinview'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $animateInView ] = utils.$('.animate-button');
@@ -16726,6 +16934,7 @@ window.demos['draggable-draggable-methods-scrollinview'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $scrollInView ] = utils.$('.button');
@@ -16809,6 +17018,7 @@ window.demos['draggable-draggable-methods-stop'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $stopButton ] = utils.$('.stop');
@@ -16890,6 +17100,7 @@ window.demos['draggable-draggable-methods-reset'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $resetButton ] = utils.$('.reset');
@@ -16965,6 +17176,7 @@ window.demos['draggable-draggable-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $revertButton ] = utils.$('.revert');
@@ -17043,6 +17255,7 @@ window.demos['draggable-draggable-methods-refresh'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $refreshButton ] = utils.$('.refresh');
@@ -17107,6 +17320,7 @@ window.demos['draggable-draggable-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -17125,7 +17339,7 @@ window.demos['draggable-draggable-properties'] = function(
 <article class="docs-demo" data-id="layout" data-color="6">
   <header class="docs-demo-header">
     <h2 class="text-ui">
-      Layout      <span class="badge">NEW</span>                </h2>
+      Layout                      </h2>
   </header>
   <div id="layout" class="docs-demo-content">
     <style async class="docs-demo-css">
@@ -17197,6 +17411,7 @@ window.demos['layout'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const layout = createLayout('.layout-container');
@@ -17266,6 +17481,7 @@ window.demos['layout-usage'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -17347,6 +17563,7 @@ window.demos['layout-usage-specifying-a-root'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $rootA, $rootB ] = utils.$('.layout-container');
@@ -17475,6 +17692,7 @@ window.demos['layout-usage-css-display-property-animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -17595,6 +17813,7 @@ window.demos['layout-usage-staggered-layout-animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -17695,6 +17914,7 @@ window.demos['layout-usage-dom-order-change-animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -17779,6 +17999,7 @@ window.demos['layout-usage-enter-layout-animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -17897,6 +18118,7 @@ window.demos['layout-usage-exit-layout-animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -18000,6 +18222,7 @@ window.demos['layout-usage-swap-parent-animation'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -18190,6 +18413,7 @@ window.demos['layout-usage-animate-modal-dialog'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const buttons = utils.$('button');
@@ -18289,6 +18513,7 @@ window.demos['layout-layout-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -18362,6 +18587,7 @@ window.demos['layout-layout-settings-children'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $buttonA, $buttonB ] = utils.$('.controls button');
@@ -18457,6 +18683,7 @@ window.demos['layout-layout-settings-delay'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $buttonA, $buttonB ] = utils.$('.controls button');
@@ -18558,6 +18785,7 @@ window.demos['layout-layout-settings-duration'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $rootA, $rootB ] = utils.$('.layout-container');
@@ -18651,6 +18879,7 @@ window.demos['layout-layout-settings-ease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $buttonA, $buttonB ] = utils.$('.controls button');
@@ -18750,6 +18979,7 @@ window.demos['layout-layout-settings-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -18816,6 +19046,7 @@ window.demos['layout-states-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -18885,6 +19116,7 @@ window.demos['layout-states-parameters-enterFrom'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -19003,6 +19235,7 @@ window.demos['layout-states-parameters-leaveTo'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -19104,6 +19337,7 @@ window.demos['layout-states-parameters-swapAt'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $buttonA, $buttonB ] = utils.$('.controls button');
@@ -19175,6 +19409,7 @@ window.demos['layout-layout-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -19248,6 +19483,7 @@ window.demos['layout-layout-methods-record'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -19339,6 +19575,7 @@ window.demos['layout-layout-methods-animate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -19433,6 +19670,7 @@ window.demos['layout-layout-methods-update'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -19527,6 +19765,7 @@ window.demos['layout-layout-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $animate, $revert ] = utils.$('.controls button');
@@ -19626,6 +19865,7 @@ window.demos['layout-layout-id-attribute'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('.controls button');
@@ -19701,6 +19941,7 @@ window.demos['layout-layout-callbacks'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -19752,6 +19993,7 @@ window.demos['layout-layout-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -19803,6 +20045,7 @@ window.demos['layout-common-auto-layout-gotchas'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -19865,6 +20108,7 @@ window.demos['layout-common-auto-layout-gotchas'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       createScope({
   mediaQueries: {
@@ -19948,6 +20192,7 @@ window.demos['layout-common-auto-layout-gotchas'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       createScope({
   mediaQueries: { isSmall: '(max-width: 200px)' },
@@ -20039,6 +20284,7 @@ window.demos['layout-common-auto-layout-gotchas'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const scope = createScope({
   mediaQueries: { isSmall: '(max-width: 200px)' },
@@ -20116,6 +20362,7 @@ window.demos['scope-scope-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -20189,6 +20436,7 @@ window.demos['scope-scope-parameters-root'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 createScope({ root: '.row:nth-child(2)' })
@@ -20271,6 +20519,7 @@ window.demos['scope-scope-parameters-defaults'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const rows = utils.$('.row');
@@ -20349,6 +20598,7 @@ rows.forEach(($row, i) => {
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       createScope({
   mediaQueries: {
@@ -20422,6 +20672,7 @@ window.demos['scope-scope-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -20484,6 +20735,7 @@ window.demos['scope-scope-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const scope = createScope({
   mediaQueries: {
@@ -20602,6 +20854,7 @@ document.addEventListener('pointerdown', scope.methods.onPointerDown);    " />
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const scope = createScope({
   mediaQueries: {
@@ -20692,6 +20945,7 @@ document.addEventListener('pointerdown', scope.methods.onPointerDown);    " />
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const scope = createScope({
   mediaQueries: {
@@ -20823,6 +21077,7 @@ window.demos['scope-scope-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button1, $button2 ] = utils.$('.revert');
@@ -20971,6 +21226,7 @@ window.demos['scope-scope-methods-refresh'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button1, $button2 ] = utils.$('.refresh');
@@ -21054,6 +21310,7 @@ window.demos['scope-scope-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -21105,6 +21362,7 @@ window.demos['events'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -21219,6 +21477,7 @@ window.demos['events-onscroll'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ container ] = utils.$('.scroll-container');
@@ -21319,6 +21578,7 @@ window.demos['events-onscroll-scrollobserver-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -21396,6 +21656,7 @@ window.demos['events-onscroll-scrollobserver-settings-container'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -21494,6 +21755,7 @@ window.demos['events-onscroll-scrollobserver-settings-target'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $timer ] = utils.$('.timer');
@@ -21596,6 +21858,7 @@ window.demos['events-onscroll-scrollobserver-settings-debug'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -21689,6 +21952,7 @@ window.demos['events-onscroll-scrollobserver-settings-axis'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -21811,6 +22075,7 @@ window.demos['events-onscroll-scrollobserver-settings-repeat'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $repeat ] = utils.$('.repeat .value');
@@ -21894,6 +22159,7 @@ window.demos['events-onscroll-scrollobserver-thresholds'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -21975,6 +22241,7 @@ window.demos['events-onscroll-scrollobserver-thresholds-numeric-values'] = funct
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22073,6 +22340,7 @@ window.demos['events-onscroll-scrollobserver-thresholds-positions-shorthands'] =
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22169,6 +22437,7 @@ window.demos['events-onscroll-scrollobserver-thresholds-relative-position-values
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22271,6 +22540,7 @@ window.demos['events-onscroll-scrollobserver-thresholds-min-max'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 utils.$('.square').forEach($square => {
@@ -22339,6 +22609,7 @@ window.demos['events-onscroll-scrollobserver-synchronisation-modes'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -22420,6 +22691,7 @@ window.demos['events-onscroll-scrollobserver-synchronisation-modes-method-names'
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22514,6 +22786,7 @@ window.demos['events-onscroll-scrollobserver-synchronisation-modes-playback-prog
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22608,6 +22881,7 @@ window.demos['events-onscroll-scrollobserver-synchronisation-modes-smooth-scroll
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22704,6 +22978,7 @@ window.demos['events-onscroll-scrollobserver-synchronisation-modes-eased-scroll'
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -22769,6 +23044,7 @@ window.demos['events-onscroll-scrollobserver-callbacks'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -22856,6 +23132,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onenter'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -22961,6 +23238,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onenterforward'] = functi
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23066,6 +23344,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onenterbackward'] = funct
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23171,6 +23450,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onleave'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23276,6 +23556,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onleaveforward'] = functi
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23381,6 +23662,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onleavebackward'] = funct
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23486,6 +23768,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onupdate'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23589,6 +23872,7 @@ window.demos['events-onscroll-scrollobserver-callbacks-onsynccomplete'] = functi
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -23695,6 +23979,7 @@ animate('.square', {
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const [ $value ] = utils.$('.value');
 
@@ -23760,6 +24045,7 @@ window.demos['events-onscroll-scrollobserver-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -23841,6 +24127,7 @@ window.demos['events-onscroll-scrollobserver-methods-link'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -23938,6 +24225,7 @@ window.demos['events-onscroll-scrollobserver-methods-refresh'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const scrollSettings = {
@@ -24046,6 +24334,7 @@ window.demos['events-onscroll-scrollobserver-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -24111,6 +24400,7 @@ window.demos['events-onscroll-scrollobserver-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -24162,6 +24452,7 @@ window.demos['svg'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -24223,6 +24514,7 @@ window.demos['svg-morphto'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $path1, $path2 ] = utils.$('polygon');
@@ -24337,6 +24629,7 @@ window.demos['svg-createdrawable'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate(svg.createDrawable('.line'), {
@@ -24423,6 +24716,7 @@ window.demos['svg-createmotionpath'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 // Animate the transforms properties of .car the motion path values
@@ -24458,7 +24752,7 @@ animate(svg.createDrawable('path'), {
 <article class="docs-demo" data-id="text" data-color="10">
   <header class="docs-demo-header">
     <h2 class="text-ui">
-      Text                      </h2>
+      Text      <span class="badge">NEW</span>                </h2>
   </header>
   <div id="text" class="docs-demo-content dotted-grid">
     <style async class="docs-demo-css">
@@ -24491,6 +24785,7 @@ window.demos['text'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -24557,6 +24852,7 @@ window.demos['text-splittext'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { words, chars } = splitText('p', {
@@ -24625,6 +24921,7 @@ window.demos['text-splittext-textsplitter-settings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -24682,6 +24979,7 @@ window.demos['text-splittext-textsplitter-settings-lines'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 splitText('p', {
@@ -24754,6 +25052,7 @@ window.demos['text-splittext-textsplitter-settings-words'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { words } = splitText('p', {
@@ -24826,6 +25125,7 @@ window.demos['text-splittext-textsplitter-settings-chars'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { chars } = splitText('p', {
@@ -24906,6 +25206,7 @@ window.demos['text-splittext-textsplitter-settings-debug'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('button');
@@ -24994,6 +25295,7 @@ window.demos['text-splittext-textsplitter-settings-includespaces'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('button');
@@ -25090,6 +25392,7 @@ window.demos['text-splittext-textsplitter-settings-accessible'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('button');
@@ -25184,6 +25487,7 @@ window.demos['text-splittext-split-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -25246,6 +25550,7 @@ window.demos['text-splittext-split-parameters-class'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 splitText('p', {
@@ -25313,6 +25618,7 @@ window.demos['text-splittext-split-parameters-wrap'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { chars } = splitText('p', {
@@ -25383,6 +25689,7 @@ window.demos['text-splittext-split-parameters-clone'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { chars } = splitText('p', {
@@ -25475,6 +25782,7 @@ window.demos['text-splittext-html-template'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 splitText('p', {
@@ -25542,6 +25850,7 @@ window.demos['text-splittext-textsplitter-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -25600,6 +25909,7 @@ window.demos['text-splittext-textsplitter-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
 } from '/assets/js/anime.esm.js';
       const colors = [];
 
@@ -25693,6 +26003,7 @@ window.demos['text-splittext-textsplitter-methods-revert'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('button');
@@ -25786,6 +26097,7 @@ window.demos['text-splittext-textsplitter-methods-refresh'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $add, $remove ] = utils.$('button');
@@ -25872,6 +26184,7 @@ window.demos['text-splittext-textsplitter-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -25879,6 +26192,1521 @@ window.demos['text-splittext-textsplitter-properties'] = function(
 </script>
       </div>
   <div class="docs-nav-menu ui-group">
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      scrambleText      <span class="badge">NEW</span>                </h2>
+  </header>
+  <div id="text-scrambletext" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">scrambleText() allows you to reveal a text via a smooth randomized character scramble transition effect.</p>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">scrambleText() allows you to reveal a text via a smooth randomized character scramble transition effect.</p>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+animate('p', {
+  innerHTML: scrambleText(),
+  loop: true,
+  loopDelay: 1000,
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+  <article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      scrambleText parameters                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+  <article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-text" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      text                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-text" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row centered">
+  <p class="text-l text-mono">Transition between different text.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Change text</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row centered">
+  <p class="text-l text-mono">Transition between different text.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Change text</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-text'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const [ $button ] = utils.$('button');
+
+const texts = ['Transition between different text.', 'Hello World!', 'Anime.js 4.4 scrambleText()'];
+let i = 0;
+
+function play() {
+  i = (i + 1) % texts.length;
+  animate($p, {
+    innerHTML: scrambleText({ text: texts[i] }),
+  });
+}
+
+play();
+
+$button.addEventListener('click', play);return function() {
+$button.removeEventListener('click', play);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-text" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-chars" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      chars                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-chars" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Define which characters appear during the scramble animation.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>braille</button>
+    <button>blocks</button>
+    <button>numbers</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Define which characters appear during the scramble animation.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>braille</button>
+    <button>blocks</button>
+    <button>numbers</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-chars'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const charSets = ['braille', 'blocks', 'numbers'];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ chars: charSets[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-chars" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-override" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      override                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-override" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Controls the starting appearance of the text before the scramble animation begins.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>false</button>
+    <button>'uppercase'</button>
+    <button>'_'</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Controls the starting appearance of the text before the scramble animation begins.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>false</button>
+    <button>'uppercase'</button>
+    <button>'_'</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-override'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const overrides = [false, 'uppercase', '_'];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ override: overrides[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-override" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-ease" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      ease                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-ease" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Apply easing functions to control the acceleration and deceleration of the scramble reveal wave.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>linear</button>
+    <button>inOut</button>
+    <button>outExpo</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Apply easing functions to control the acceleration and deceleration of the scramble reveal wave.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>linear</button>
+    <button>inOut</button>
+    <button>outExpo</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-ease'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+const easeCurves = ['linear', 'inOut(3)', 'outExpo'];
+
+function play(ease) {
+  animate($p, { innerHTML: scrambleText({ ease, override: false }) });
+}
+
+play(easeCurves[0]);
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(easeCurves[i])));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-ease" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-cursor" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      cursor                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-cursor" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Display a cursor character at the leading edge of the reveal wave as it moves through each character.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>_____</button>
+    <button>░▒▓█</button>
+    <button>😀</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Display a cursor character at the leading edge of the reveal wave as it moves through each character.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>_____</button>
+    <button>░▒▓█</button>
+    <button>😀</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-cursor'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const cursors = ['_____', '░▒▓█', '😀'];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ cursor: cursors[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-cursor" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-revealrate" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      revealRate                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-revealrate" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Higher values make the reveal wave move faster.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>20</button>
+    <button>60</button>
+    <button>120</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Higher values make the reveal wave move faster.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>20</button>
+    <button>60</button>
+    <button>120</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-revealrate'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [20, 60, 120];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ revealRate: values[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-revealrate" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-revealdelay" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      revealDelay                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-revealdelay" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Add a delay in milliseconds before the reveal wave starts within the scramble animation.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>500</button>
+    <button>2000</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Add a delay in milliseconds before the reveal wave starts within the scramble animation.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>500</button>
+    <button>2000</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-revealdelay'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [0, 500, 2000];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ revealDelay: values[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-revealdelay" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-settlerate" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      settleRate                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-settlerate" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Control how many times per second characters cycle through random values during the scramble phase.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>5</button>
+    <button>30</button>
+    <button>60</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Control how many times per second characters cycle through random values during the scramble phase.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>5</button>
+    <button>30</button>
+    <button>60</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-settlerate'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [5, 30, 60];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ settleRate: values[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-settlerate" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-settleduration" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      settleDuration                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-settleduration" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Define how long each character spends scrambling before settling into its final settled value.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>100</button>
+    <button>300</button>
+    <button>1000</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Define how long each character spends scrambling before settling into its final settled value.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>100</button>
+    <button>300</button>
+    <button>1000</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-settleduration'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [100, 300, 1000];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ settleDuration: values[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-settleduration" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-delay" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      delay                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-delay" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Add a delay in milliseconds before the scramble animation starts.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>500</button>
+    <button>1500</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Add a delay in milliseconds before the scramble animation starts.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>500</button>
+    <button>1500</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-delay'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [0, 500, 1500];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ delay: values[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-delay" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-duration" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      duration                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-duration" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Override the auto-computed animation duration with a specific value in milliseconds for precise control.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>500</button>
+    <button>2000</button>
+    <button>5000</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Override the auto-computed animation duration with a specific value in milliseconds for precise control.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>500</button>
+    <button>2000</button>
+    <button>5000</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-duration'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [500, 2000, 5000];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ duration: values[i] }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-duration" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-perturbation" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      perturbation                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-perturbation" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Add random timing offsets to each character for a more organic and less uniform reveal effect.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>0.5</button>
+    <button>1</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Add random timing offsets to each character for a more organic and less uniform reveal effect.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>0.5</button>
+    <button>1</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-perturbation'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [0, 0.5, 1];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ perturbation: values[i], cursor: '_________' }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-perturbation" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-from" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      from                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-from" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Control where the reveal wave starts from, whether left, center, right, or a specific character index.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>right</button>
+    <button>center</button>
+    <button>random</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Control where the reveal wave starts from, whether left, center, right, or a specific character index.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>right</button>
+    <button>center</button>
+    <button>random</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-from'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const froms = ['right', 'center', 'random'];
+
+function play(from) {
+  animate($p, {
+    innerHTML: scrambleText({ from }),
+  });
+}
+
+play(froms[0]);
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(froms[i])));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-from" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-reversed" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      reversed                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-reversed" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">The animation flows in the opposite direction of the specified from value.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>reversed: false</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">The animation flows in the opposite direction of the specified from value.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>reversed: false</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-reversed'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const [ $button ] = utils.$('button');
+
+let reversed = false;
+
+function play() {
+  reversed = !reversed;
+  $button.textContent = `reversed: ${reversed}`;
+  animate($p, {
+    innerHTML: scrambleText({ from: 'center', reversed }),
+  });
+}
+
+play();
+
+$button.addEventListener('click', play);return function() {
+$button.removeEventListener('click', play);}
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-reversed" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-parameters-seed" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      seed                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-parameters-seed" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Set a seed value for the random number generator.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>42</button>
+    <button>99</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Set a seed value for the random number generator.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>0</button>
+    <button>42</button>
+    <button>99</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-parameters-seed'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const buttons = utils.$('button');
+
+const values = [0, 42, 99];
+
+function play(i) {
+  animate($p, {
+    innerHTML: scrambleText({ seed: values[i], revealRate: 2, settleRate: 2 }),
+  });
+}
+
+buttons.forEach(($btn, i) => $btn.addEventListener('click', () => play(i)));
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-parameters-seed" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+<article class="docs-demo" data-id="text-scrambletext-scrambletext-callbacks" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      scrambleText callbacks                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-callbacks" class="docs-demo-content dotted-grid">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+            </div>
+    <div class="docs-demo-html docs-demo-template">
+            </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-callbacks'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+        <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+  <g id="minimize" fill="none" fill-rule="evenodd">
+    <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
+  </g>
+</svg>
+</button>
+  </div>
+</article>
+  <article class="docs-demo" data-id="text-scrambletext-scrambletext-callbacks-onchange" data-color="10">
+  <header class="docs-demo-header">
+    <h2 class="text-ui">
+      onChange                      </h2>
+  </header>
+  <div id="text-scrambletext-scrambletext-callbacks-onchange" class="docs-demo-content">
+    <style async class="docs-demo-css">
+        </style>
+    <div class="docs-demo-html docs-demo-live demo">
+    <div class="large row">
+  <p class="text-s text-mono">Use the onChange callback to trigger a tick sound on every character update.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Sound OFF</button>
+  </fieldset>
+</div>        </div>
+    <div class="docs-demo-html docs-demo-template">
+    <div class="large row">
+  <p class="text-s text-mono">Use the onChange callback to trigger a tick sound on every character update.</p>
+</div>
+<div class="medium row">
+  <fieldset class="controls">
+    <button>Sound OFF</button>
+  </fieldset>
+</div>        </div>
+    <script class="docs-demo-js">
+window.demos['text-scrambletext-scrambletext-callbacks-onchange'] = function(
+  ctx,
+  animate,
+  createTimeline,
+  createTimer,
+  createAnimatable,
+  createDraggable,
+  createLayout,
+  createScope,
+  onScroll,
+  engine,
+  eases,
+  steps,
+  linear,
+  irregular,
+  spring,
+  cubicBezier,
+  stagger,
+  utils,
+  svg,
+  waapi,
+  text,
+  splitText,
+  scrambleText,
+  createViewer,
+) {
+const [ $p ] = utils.$('p');
+const [ $btn ] = utils.$('button');
+
+const audioCtx = new AudioContext();
+let soundEnabled = false;
+
+const tickSound = () => {
+  if (!soundEnabled) return;
+  const t = audioCtx.currentTime;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(4000 + Math.random() * 400, t);
+  g.gain.setValueAtTime(0.001, t);
+  g.gain.linearRampToValueAtTime(0.035, t + 0.001);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.003);
+  o.connect(g).connect(audioCtx.destination);
+  o.start(t);
+  o.stop(t + 0.003);
+};
+
+$btn.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  if (soundEnabled) audioCtx.resume();
+  $btn.textContent = soundEnabled ? 'Sound ON' : 'Sound OFF';
+});
+
+animate($p, {
+  innerHTML: scrambleText({ onChange: tickSound }),
+  loop: true,
+  loopDelay: 1500,
+});
+}
+</script>
+      </div>
+  <div class="docs-nav-menu ui-group">
+              <button class="ui-input code-edit-button" title="Edit example on CodePen"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke-width="1.75"><polygon stroke="currentColor" points="13.5 8.5 7.5 14.5 7.5 17.5 10.5 17.5 16.5 11.5"/><path stroke="currentColor" d="M18.0857864,7.08578644 L17.9142136,6.91421356 C17.133165,6.13316498 15.866835,6.13316498 15.0857864,6.91421356 L13.5,8.5 L13.5,8.5 L16.5,11.5 L18.0857864,9.91421356 C18.866835,9.13316498 18.866835,7.86683502 18.0857864,7.08578644 Z"/></g></svg></button>
+          <button class="ui-input demo-reload-button" data-id="text-scrambletext-scrambletext-callbacks-onchange" title="Refresh demo"><svg class="icon" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18.0104076,5.98959236 L18.0097074,10.8757002 L13.1243067,10.8749931 L14.9168155,9.08318453 C14.7588711,8.92524016 14.591305,8.78278169 14.416004,8.65580911 L14.2448263,8.53829933 L14.1371098,8.47076625 L13.9480605,8.36293733 L13.7659116,8.27106673 L13.6639309,8.22427402 L13.527,8.16859236 L13.3619515,8.10538106 L13.0709847,8.01574221 L12.8718507,7.96768109 L12.7151297,7.93698408 L12.5212881,7.90777003 L12.4261665,7.89693978 L12.2097893,7.88030511 L11.9960663,7.87500186 L11.7823517,7.88071033 L11.5786024,7.89645013 L11.2618565,7.94085619 L11.0866744,7.97645921 L10.7825793,8.05787657 L10.5824409,8.12517064 L10.3734129,8.20804866 L10.1970153,8.28864689 L10.1108524,8.33204891 C9.99719576,8.3907053 9.8866159,8.45448924 9.77941876,8.52309484 L9.59973855,8.64452049 L9.35092327,8.83790906 C9.18556048,8.97659012 9.03123567,9.12800249 8.88945733,9.29063767 L8.74812474,9.4614153 L8.68958969,9.53851461 L8.60105067,9.66146194 L8.47414064,9.85783057 L8.39504795,9.9934838 L8.32936425,10.1155307 L8.23929415,10.3023761 C8.15831703,10.4818452 8.09083992,10.6659201 8.0368628,10.8530651 C7.93143024,11.2167272 7.875,11.6017736 7.875,12 C7.875,14.2781746 9.72182541,16.125 12,16.125 C13.9333525,16.125 15.5560509,14.7949318 16.0029785,12.9999121 L17.7901334,13.0005982 C17.3151731,15.7686406 14.9035699,17.875 12,17.875 C8.75532709,17.875 6.125,15.2446729 6.125,12 C6.125,11.2278045 6.27397809,10.4904048 6.54476016,9.8149748 L6.66977806,9.52595215 L6.8191583,9.22642108 L6.94536978,9.00296435 L7.0375393,8.85370907 L7.11693936,8.73128812 L7.27481186,8.50749878 L7.48447137,8.24100422 L7.65875746,8.04139229 L7.84574766,7.84574766 L7.97056232,7.72450669 L8.22033943,7.50182263 L8.48683851,7.29064127 L8.53289754,7.2566322 C8.6990325,7.1345321 8.87017642,7.02246737 9.04549311,6.92030533 L9.38637864,6.73693467 L9.60279001,6.63472714 L9.70370878,6.59066027 L9.9093334,6.50787023 L10.1516638,6.42194344 L10.3754461,6.3529011 L10.559856,6.30280265 L10.8574265,6.2365504 L11.0895665,6.19555985 L11.3001989,6.16657685 L11.5356036,6.14327045 L11.7631086,6.12971107 L12,6.125 C12.1257143,6.125 12.2507365,6.12898444 12.3749241,6.13685601 L12.7168017,6.16862972 L13.0038549,6.21082943 L13.2075613,6.2497529 L13.4423976,6.30388598 L13.6921015,6.37276113 L14.0328644,6.48681143 L14.3072123,6.59536992 L14.591522,6.72568265 L14.6764297,6.7689309 L14.8635074,6.86845043 L15.0861432,6.99982731 L15.3048531,7.14170066 L15.5309991,7.30359276 L15.7300123,7.46012938 L15.9070204,7.61160776 L16.1542523,7.84574766 L18.0104076,5.98959236 Z"/></svg></button>
         <button class="ui-input minimise-demo-button" title="Minimize demo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="minimize" fill="none" fill-rule="evenodd">
     <path id="Shape" fill="#FFFFFF" fill-rule="nonzero" d="M16.167 6.125a3.375 3.375 0 0 1 3.37 3.19l.005.185v5a3.375 3.375 0 0 1-3.19 3.37l-.185.005H7.833a3.375 3.375 0 0 1-3.37-3.19l-.005-.185v-5a3.375 3.375 0 0 1 3.19-3.37l.185-.005h8.334zm0 1.75H7.833c-.85 0-1.548.653-1.619 1.485l-.006.14v5c0 .85.653 1.548 1.485 1.619l.14.006h8.334c.85 0 1.548-.653 1.619-1.485l.006-.14v-5c0-.85-.653-1.548-1.485-1.619l-.14-.006zM16 12.625v1.75h-6v-1.75h6z"/>
@@ -25923,6 +27751,7 @@ window.demos['utilities'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -25996,6 +27825,7 @@ window.demos['utilities-stagger'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -26083,6 +27913,7 @@ window.demos['utilities-stagger-time-staggering'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -26166,6 +27997,7 @@ window.demos['utilities-stagger-values-staggering'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const animation = animate('.square', {
@@ -26236,6 +28068,7 @@ window.demos['utilities-stagger-timeline-positions-staggering'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline();
@@ -26303,6 +28136,7 @@ window.demos['utilities-stagger-stagger-value-types'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -26384,6 +28218,7 @@ window.demos['utilities-stagger-stagger-value-types-numerical-value'] = function
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -26466,6 +28301,7 @@ window.demos['utilities-stagger-stagger-value-types-range-value'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -26522,6 +28358,7 @@ window.demos['utilities-stagger-stagger-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -26603,6 +28440,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-start'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -26761,6 +28599,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-from'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const tl = createTimeline({
@@ -26874,6 +28713,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-reversed'] = function
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -26954,6 +28794,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-ease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -27112,6 +28953,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-grid'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $squares = utils.$('.square');
@@ -27289,6 +29131,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-grid-axis'] = functio
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const grid = [11, 4];
@@ -27391,6 +29234,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-modifier'] = function
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -27485,6 +29329,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-use'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -27572,6 +29417,7 @@ window.demos['utilities-stagger-stagger-parameters-stagger-total'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.square', {
@@ -27687,6 +29533,7 @@ window.demos['utilities-dollar-sign'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 // Targets all the '.square' elements
@@ -27772,6 +29619,7 @@ window.demos['utilities-get'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $raw, $rem, $num ] = utils.$('.value');
@@ -27869,6 +29717,7 @@ window.demos['utilities-set'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $set, $revert ] = utils.$('button');
@@ -27963,6 +29812,7 @@ window.demos['utilities-clean-inline-styles'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 utils.set('.square', { scale: .75 });
@@ -28061,6 +29911,7 @@ window.demos['utilities-remove'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 let updates = 0;
@@ -28158,6 +30009,7 @@ window.demos['utilities-sync'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $range ] = utils.$('.range');
@@ -28259,6 +30111,7 @@ window.demos['utilities-createtimekeeper'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $button ] = utils.$('button');
@@ -28353,6 +30206,7 @@ window.demos['utilities-random'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 utils.set('.square', {
@@ -28432,6 +30286,7 @@ window.demos['utilities-createseededrandom'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const seededRandom = utils.createSeededRandom(12345);
@@ -28513,6 +30368,7 @@ window.demos['utilities-random-pick'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 utils.set('.letter', {
@@ -28607,6 +30463,7 @@ window.demos['utilities-shuffle'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $shuffle ] = utils.$('button');
@@ -28689,6 +30546,7 @@ window.demos['utilities-round'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.normal', {
@@ -28771,6 +30629,7 @@ window.demos['utilities-clamp'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.normal', {
@@ -28855,6 +30714,7 @@ window.demos['utilities-snap'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.normal', {
@@ -28939,6 +30799,7 @@ window.demos['utilities-wrap'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.normal', {
@@ -29023,6 +30884,7 @@ window.demos['utilities-map-range'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.normal', {
@@ -29107,6 +30969,7 @@ window.demos['utilities-lerp'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.normal', {
@@ -29199,6 +31062,7 @@ window.demos['utilities-damp'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $input ] = utils.$('.input');
@@ -29292,6 +31156,7 @@ window.demos['utilities-round-pad'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.value', {
@@ -29358,6 +31223,7 @@ window.demos['utilities-pad-start'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.value', {
@@ -29424,6 +31290,7 @@ window.demos['utilities-pad-end'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.value', {
@@ -29500,6 +31367,7 @@ window.demos['utilities-deg-to-rad'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const radAnimatable = createAnimatable('.rad', {
@@ -29585,6 +31453,7 @@ window.demos['utilities-rad-to-deg'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const degAnimatable = createAnimatable('.deg', {
@@ -29660,6 +31529,7 @@ window.demos['utilities-chain-able-utility-functions'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.value', {
@@ -29742,6 +31612,7 @@ window.demos['easings'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -29833,6 +31704,7 @@ window.demos['easings-built-in-eases'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -29924,6 +31796,7 @@ window.demos['easings-cubic-bezier-easing'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -30015,6 +31888,7 @@ window.demos['easings-linear-easing'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -30109,6 +31983,7 @@ window.demos['easings-steps-easing'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -30200,6 +32075,7 @@ window.demos['easings-irregular-easing'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 animate('.row:nth-child(1) .square', {
@@ -30294,6 +32170,7 @@ window.demos['easings-spring'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $square1, $square2, $square3 ] = utils.$('.square');
@@ -30390,6 +32267,7 @@ window.demos['web-animation-api'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const { chars } = splitText('h2', { words: false, chars: true });
@@ -30464,6 +32342,7 @@ window.demos['web-animation-api-when-to-use-waapi'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 // WAAPI Animation
@@ -30562,6 +32441,7 @@ window.demos['web-animation-api-hardware-accelerated-animations'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $block ] = utils.$('.button');
@@ -30653,6 +32533,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api'] = functi
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -30708,6 +32589,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-sensible-d
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.circle', { translate: '16rem' });
@@ -30777,6 +32659,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-multi-targ
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.circle', {
@@ -30857,6 +32740,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-default-un
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -30938,6 +32822,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-function-b
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -31019,6 +32904,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-individual
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const $squares = utils.$('.square');
@@ -31098,6 +32984,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-individual
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -31176,6 +33063,7 @@ window.demos['web-animation-api-improvements-to-the-web-animation-api-spring-and
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.circle', {
@@ -31234,6 +33122,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -31301,6 +33190,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-iterations'] =
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -31375,6 +33265,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-direction'] = 
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -31448,6 +33339,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-easing'] = fun
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 waapi.animate('.square', {
@@ -31517,6 +33409,7 @@ window.demos['web-animation-api-api-differences-with-native-waapi-finished'] = f
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $value ] = utils.$('.value');
@@ -31600,6 +33493,7 @@ window.demos['web-animation-api-waapi-convertease'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const springs = [
@@ -31669,6 +33563,7 @@ window.demos['engine'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -31720,6 +33615,7 @@ window.demos['engine-engine-parameters'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -31809,6 +33705,7 @@ window.demos['engine-engine-parameters-timeunit-seconds-milliseconds'] = functio
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $timeS ] = utils.$('.time-s');
@@ -31900,6 +33797,7 @@ window.demos['engine-engine-parameters-speed'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -31986,6 +33884,7 @@ window.demos['engine-engine-parameters-fps'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -32072,6 +33971,7 @@ window.demos['engine-engine-parameters-precision'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -32184,6 +34084,7 @@ window.demos['engine-engine-parameters-pauseondocumenthidden'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $globalTime ] = utils.$('.global-time');
@@ -32268,6 +34169,7 @@ window.demos['engine-engine-methods'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -32319,6 +34221,7 @@ window.demos['engine-engine-methods-update'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 // Prevents Anime.js from using its own loop
@@ -32433,6 +34336,7 @@ window.demos['engine-engine-methods-pause'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -32539,6 +34443,7 @@ window.demos['engine-engine-methods-resume'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 const [ $container ] = utils.$('.container');
@@ -32618,6 +34523,7 @@ window.demos['engine-engine-properties'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
@@ -32669,6 +34575,7 @@ window.demos['engine-engine-defaults'] = function(
   waapi,
   text,
   splitText,
+  scrambleText,
   createViewer,
 ) {
 
