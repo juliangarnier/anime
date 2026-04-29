@@ -187,7 +187,7 @@
     "nodemon": "^3.1.10",
     "rollup": "^4.9.1",
     "three": "^0.160.0",
-    "tweaks": "^0.2.0",
+    "tweaks": "^0.3.4",
     "typescript": "^5.9.2"
   },
   "scripts": {
