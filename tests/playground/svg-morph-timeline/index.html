@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG morphTo Timeline / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 100vh;
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .test {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--bg-4);
+      padding: 2.5rem 1rem 1rem 1rem;
+    }
+    .test-header {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: .5rem;
+      font-size: .7rem;
+      color: var(--fg-4);
+    }
+    svg {
+      width: 200px;
+      height: 200px;
+    }
+    svg path, svg polygon {
+      fill: none;
+      stroke-width: 2;
+    }
+    .references {
+      display: flex;
+      gap: 1rem;
+      margin-top: .5rem;
+    }
+    .references svg {
+      width: 60px;
+      height: 60px;
+      opacity: .3;
+    }
+  </style>
+</head>
+<body>
+  <svg style="display:none">
+    <defs>
+      <path id="shape-a" d="M100 20 C145 20 180 55 180 100 C180 145 145 180 100 180 C55 180 20 145 20 100 C20 55 55 20 100 20 Z"/>
+      <path id="shape-b" d="M100 20 L120 75 L180 80 L135 120 L150 180 L100 148 L50 180 L65 120 L20 80 L80 75 Z"/>
+      <path id="shape-c" d="M100 10 L180 100 L100 190 L20 100 Z"/>
+      <path id="shape-d" d="M100 15 L185 175 L15 175 Z"/>
+      <polygon id="poly-a" points="100,20 180,100 100,180 20,100"/>
+      <polygon id="poly-b" points="100,10 130,70 190,80 145,125 155,185 100,155 45,185 55,125 10,80 70,70"/>
+      <polygon id="poly-c" points="100,15 185,175 15,175"/>
+    </defs>
+  </svg>
+
+  <div class="test" id="chain-2">
+    <div class="test-header"><span>Path: A -> B -> C</span></div>
+    <svg viewBox="0 0 200 200">
+      <path id="morph-2" stroke="#4E7EFC" d="M100 20 C145 20 180 55 180 100 C180 145 145 180 100 180 C55 180 20 145 20 100 C20 55 55 20 100 20 Z"/>
+    </svg>
+    <div class="references">
+      <svg viewBox="0 0 200 200"><use href="#shape-a" stroke="#4E7EFC"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-b" stroke="#4E7EFC"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-c" stroke="#4E7EFC"/></svg>
+    </div>
+  </div>
+
+  <div class="test" id="chain-3">
+    <div class="test-header"><span>Path: A -> B -> C -> D</span></div>
+    <svg viewBox="0 0 200 200">
+      <path id="morph-3" stroke="#31B495" d="M100 20 C145 20 180 55 180 100 C180 145 145 180 100 180 C55 180 20 145 20 100 C20 55 55 20 100 20 Z"/>
+    </svg>
+    <div class="references">
+      <svg viewBox="0 0 200 200"><use href="#shape-a" stroke="#31B495"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-b" stroke="#31B495"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-c" stroke="#31B495"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-d" stroke="#31B495"/></svg>
+    </div>
+  </div>
+
+  <div class="test" id="chain-loop">
+    <div class="test-header"><span>Path: A -> B -> C -> A (loop)</span></div>
+    <svg viewBox="0 0 200 200">
+      <path id="morph-loop" stroke="#DA5A98" d="M100 20 C145 20 180 55 180 100 C180 145 145 180 100 180 C55 180 20 145 20 100 C20 55 55 20 100 20 Z"/>
+    </svg>
+    <div class="references">
+      <svg viewBox="0 0 200 200"><use href="#shape-a" stroke="#DA5A98"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-b" stroke="#DA5A98"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-c" stroke="#DA5A98"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#shape-a" stroke="#DA5A98"/></svg>
+    </div>
+  </div>
+
+  <div class="test" id="chain-poly">
+    <div class="test-header"><span>Polygon: A -> B -> C</span></div>
+    <svg viewBox="0 0 200 200">
+      <polygon id="morph-poly" stroke="#F4D21F" points="100,20 180,100 100,180 20,100"/>
+    </svg>
+    <div class="references">
+      <svg viewBox="0 0 200 200"><use href="#poly-a" stroke="#F4D21F"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#poly-b" stroke="#F4D21F"/></svg>
+      <svg viewBox="0 0 200 200"><use href="#poly-c" stroke="#F4D21F"/></svg>
+    </div>
+  </div>
+
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

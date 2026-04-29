@@ -1,6 +1,6 @@
 /**
  * Anime.js - waapi - ESM
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */

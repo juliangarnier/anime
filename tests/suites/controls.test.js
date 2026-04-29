@@ -204,7 +204,7 @@ suite('Controls', () => {
     expect(tl.currentTime).to.equal(tl.duration);
     expect(getChildAtIndex(tl, 0).currentTime).to.equal(getChildAtIndex(tl, 0).duration);
     expect(getChildAtIndex(tl, 1).currentTime).to.equal(getChildAtIndex(tl, 1).duration);
-    expect($target.getAttribute('style')).to.equal('height: 400px; transform: translateY(200px) translateX(200px); width: 64px;');
+    expect($target.getAttribute('style')).to.equal('height: 400px; transform: translate(200px, 200px); width: 64px;');
   });
 
   test('Cancel a timer', () => {
@@ -251,7 +251,7 @@ suite('Controls', () => {
     expect(tl.paused).to.equal(true);
     expect(getChildAtIndex(tl, 0).paused).to.equal(true);
     expect(getChildAtIndex(tl, 1).paused).to.equal(true);
-    expect($target.getAttribute('style')).to.equal('height: 200px; transform: translateY(100px) translateX(0px); width: 32px;');
+    expect($target.getAttribute('style')).to.equal('height: 200px; transform: translate(0px, 100px); width: 32px;');
   });
 
   test('Revert a timeline', () => {

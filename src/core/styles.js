@@ -4,7 +4,6 @@ import {
   isDomSymbol,
   transformsSymbol,
   emptyString,
-  transformsFragmentStrings,
 } from './consts.js';
 
 import {
@@ -13,6 +12,10 @@ import {
   isSvg,
   toLowerCase,
 } from './helpers.js';
+
+import {
+  buildTransformString,
+} from './transforms.js';
 
 /**
  * @import {
@@ -63,56 +66,75 @@ export const sanitizePropertyName = (propertyName, target, tweenType) => {
 /**
  * @template {Renderable} T
  * @param {T} renderable
+ * @param {Boolean} [inlineStylesOnly]
  * @return {T}
  */
-export const cleanInlineStyles = renderable => {
-  // Allow cleanInlineStyles() to be called on timelines
+export const revertValues = (renderable, inlineStylesOnly = false) => {
+  // Allow revertValues() to be called on timelines
   if (renderable._hasChildren) {
-    forEachChildren(renderable, cleanInlineStyles, true);
+    forEachChildren(renderable, (/** @type {Renderable} */child) => revertValues(child, inlineStylesOnly), true);
   } else {
     const animation = /** @type {JSAnimation} */(renderable);
     animation.pause();
     forEachChildren(animation, (/** @type {Tween} */tween) => {
       const tweenProperty = tween.property;
       const tweenTarget = tween.target;
-      if (tweenTarget[isDomSymbol]) {
-        const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
-        const originalInlinedValue = tween._inlineValue;
-        const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
-        if (tween._tweenType === tweenTypes.TRANSFORM) {
-          const cachedTransforms = tweenTarget[transformsSymbol];
-          if (tweenHadNoInlineValue) {
-            delete cachedTransforms[tweenProperty];
-          } else {
-            cachedTransforms[tweenProperty] = originalInlinedValue;
-          }
-          if (tween._renderTransforms) {
-            if (!Object.keys(cachedTransforms).length) {
-              targetStyle.removeProperty('transform');
+      const tweenType = tween._tweenType;
+      const originalInlinedValue = tween._inlineValue;
+      const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
+      if (tweenType === tweenTypes.OBJECT) {
+        if (!inlineStylesOnly && !tweenHadNoInlineValue) {
+          tweenTarget[tweenProperty] = originalInlinedValue;
+        }
+      } else if (tweenTarget[isDomSymbol]) {
+        if (tweenType === tweenTypes.ATTRIBUTE) {
+          if (!inlineStylesOnly) {
+            if (tweenHadNoInlineValue) {
+              /** @type {DOMTarget} */(tweenTarget).removeAttribute(tweenProperty);
             } else {
-              let str = emptyString;
-              for (let key in cachedTransforms) {
-                str += transformsFragmentStrings[key] + cachedTransforms[key] + ') ';
-              }
-              targetStyle.transform = str;
+              /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(originalInlinedValue));
             }
           }
         } else {
-          if (tweenHadNoInlineValue) {
-            targetStyle.removeProperty(toLowerCase(tweenProperty));
+          const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
+          if (tweenType === tweenTypes.TRANSFORM) {
+            const cachedTransforms = tweenTarget[transformsSymbol];
+            if (tweenHadNoInlineValue) {
+              delete cachedTransforms[tweenProperty];
+            } else {
+              cachedTransforms[tweenProperty] = originalInlinedValue;
+            }
+            if (tween._renderTransforms) {
+              if (!Object.keys(cachedTransforms).length) {
+                targetStyle.removeProperty('transform');
+              } else {
+                targetStyle.transform = buildTransformString(cachedTransforms);
+              }
+            }
           } else {
-            targetStyle[tweenProperty] = originalInlinedValue;
+            if (tweenHadNoInlineValue) {
+              targetStyle.removeProperty(toLowerCase(tweenProperty));
+            } else {
+              targetStyle[tweenProperty] = originalInlinedValue;
+            }
           }
         }
-        if (animation._tail === tween) {
-          animation.targets.forEach(t => {
-            if (t.getAttribute && t.getAttribute('style') === emptyString) {
-              t.removeAttribute('style');
-            };
-          });
-        }
+      }
+      if (tweenTarget[isDomSymbol] && animation._tail === tween) {
+        animation.targets.forEach(t => {
+          if (t.getAttribute && t.getAttribute('style') === emptyString) {
+            t.removeAttribute('style');
+          };
+        });
       }
     })
   }
   return renderable;
 }
+
+/**
+ * @template {Renderable} T
+ * @param {T} renderable
+ * @return {T}
+ */
+export const cleanInlineStyles = renderable => revertValues(renderable, true);

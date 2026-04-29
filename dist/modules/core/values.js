@@ -1,12 +1,12 @@
 /**
  * Anime.js - core - ESM
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { tweenTypes, isDomSymbol, isSvgSymbol, validTransforms, shortTransforms, valueTypes, unitsExecRgx, digitWithExponentRgx, proxyTargetSymbol, cssVarPrefix, cssVariableMatchRgx, emptyString } from './consts.js';
-import { isUnd, isValidSVGAttribute, stringStartsWith, isCol, isFnc, isStr, cloneArray } from './helpers.js';
+import { tweenTypes, isDomSymbol, isSvgSymbol, validTransforms, shortTransforms, valueTypes, unitsExecRgx, digitWithExponentRgx, compositionTypes, proxyTargetSymbol, cssVarPrefix, cssVariableMatchRgx, emptyString } from './consts.js';
+import { isUnd, isValidSVGAttribute, stringStartsWith, isCol, isFnc, isStr, round, lerp, clamp, cloneArray } from './helpers.js';
 import { parseInlineTransforms } from './transforms.js';
 import { convertColorStringValuesToRgbaArray } from './colors.js';
 
@@ -17,6 +17,7 @@ import { convertColorStringValuesToRgbaArray } from './colors.js';
 *   Tween,
 *   TweenPropValue,
 *   TweenDecomposedValue,
+*   TargetsArray,
 * } from '../types/index.js'
 */
 
@@ -34,15 +35,16 @@ const setValue = (targetValue, defaultValue) => {
  * @param  {TweenPropValue} value
  * @param  {Target} target
  * @param  {Number} index
- * @param  {Number} total
- * @param  {Object} [store]
+ * @param  {TargetsArray} targets
+ * @param  {Object|null} store
+ * @param  {Tween|null} prevTween
  * @return {any}
  */
-const getFunctionValue = (value, target, index, total, store) => {
+const getFunctionValue = (value, target, index, targets, store, prevTween) => {
   let func;
   if (isFnc(value)) {
     func = () => {
-      const computed = /** @type {Function} */(value)(target, index, total);
+      const computed = /** @type {Function} */(value)(target, index, targets, prevTween);
       // Fallback to 0 if the function returns undefined / NaN / null / false / 0
       return !isNaN(+computed) ? +computed : computed || 0;
     };
@@ -109,9 +111,17 @@ const getCSSValue = (target, propName, animationInlineStyles) => {
  */
 const getOriginalAnimatableValue = (target, propName, tweenType, animationInlineStyles) => {
   const type = !isUnd(tweenType) ? tweenType : getTweenType(target, propName);
-  return type === tweenTypes.OBJECT ? target[propName] || 0 :
-         type === tweenTypes.ATTRIBUTE ? /** @type {DOMTarget} */(target).getAttribute(propName) :
-         type === tweenTypes.TRANSFORM ? parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
+  if (type === tweenTypes.OBJECT) {
+    const value = target[propName];
+    if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+    return value || 0;
+  }
+  if (type === tweenTypes.ATTRIBUTE) {
+    const value = /** @type {DOMTarget} */(target).getAttribute(propName);
+    if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+    return value;
+  }
+  return type === tweenTypes.TRANSFORM ? parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
          type === tweenTypes.CSS_VAR ? getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles).trimStart() :
          getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles);
 };
@@ -213,4 +223,52 @@ const decomposeTweenValue = (tween, targetObject) => {
 
 const decomposedOriginalValue = createDecomposedValueTargetObject();
 
-export { createDecomposedValueTargetObject, decomposeRawValue, decomposeTweenValue, decomposedOriginalValue, getFunctionValue, getOriginalAnimatableValue, getRelativeValue, getTweenType, setValue };
+/**
+ * @param  {Tween} tween
+ * @param  {Number} progress
+ * @param  {Number} precision
+ * @return {String}
+ */
+const composeColorValue = (tween, progress, precision) => {
+  const mod = tween._modifier;
+  const fn = tween._fromNumbers;
+  const tn = tween._toNumbers;
+  const r = round(clamp(/** @type {Number} */(mod(lerp(fn[0], tn[0], progress))), 0, 255), 0);
+  const g = round(clamp(/** @type {Number} */(mod(lerp(fn[1], tn[1], progress))), 0, 255), 0);
+  const b = round(clamp(/** @type {Number} */(mod(lerp(fn[2], tn[2], progress))), 0, 255), 0);
+  const a = clamp(/** @type {Number} */(mod(round(lerp(fn[3], tn[3], progress), precision))), 0, 1);
+  if (tween._composition !== compositionTypes.none) {
+    const ns = tween._numbers;
+    ns[0] = r;
+    ns[1] = g;
+    ns[2] = b;
+    ns[3] = a;
+  }
+  return `rgba(${r},${g},${b},${a})`;
+};
+
+/**
+ * @param  {Tween} tween
+ * @param  {Number} progress
+ * @param  {Number} precision
+ * @return {String}
+ */
+const composeComplexValue = (tween, progress, precision) => {
+  const mod = tween._modifier;
+  const fn = tween._fromNumbers;
+  const tn = tween._toNumbers;
+  const ts = tween._strings;
+  const hasComposition = tween._composition !== compositionTypes.none;
+  let v = ts[0];
+  for (let j = 0, l = tn.length; j < l; j++) {
+    const n = /** @type {Number} */(mod(round(lerp(fn[j], tn[j], progress), precision)));
+    const s = ts[j + 1];
+    v += `${s ? n + s : n}`;
+    if (hasComposition) {
+      tween._numbers[j] = n;
+    }
+  }
+  return v;
+};
+
+export { composeColorValue, composeComplexValue, createDecomposedValueTargetObject, decomposeRawValue, decomposeTweenValue, decomposedOriginalValue, getFunctionValue, getOriginalAnimatableValue, getRelativeValue, getTweenType, setValue };

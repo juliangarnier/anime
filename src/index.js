@@ -17,3 +17,4 @@ export * from './text/index.js';
 export * as text from './text/index.js';
 export * from './waapi/index.js';
 export * from './types/index.js';
+export { globals } from './core/globals.js';

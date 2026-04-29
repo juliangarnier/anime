@@ -1,13 +1,12 @@
 /**
  * Anime.js - svg - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 'use strict';
 
-var consts = require('../core/consts.cjs');
 var helpers$1 = require('../core/helpers.cjs');
 var helpers = require('./helpers.cjs');
 
@@ -23,7 +22,7 @@ var helpers = require('./helpers.cjs');
  * @param  {Number} [precision]
  * @return {FunctionValue}
  */
-const morphTo = (path2, precision = .33) => ($path1) => {
+const morphTo = (path2, precision = .33) => ($path1, index, total, prevTween) => {
   const tagName1 = ($path1.tagName || '').toLowerCase();
   if (!tagName1.match(/^(path|polygon|polyline)$/)) {
     throw new Error(`Can't morph a <${$path1.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
@@ -38,7 +37,7 @@ const morphTo = (path2, precision = .33) => ($path1) => {
   }
   const isPath = $path1.tagName === 'path';
   const separator = isPath ? ' ' : ',';
-  const previousPoints = $path1[consts.morphPointsSymbol];
+  const previousPoints = prevTween ? prevTween._value : null;
   if (previousPoints) $path1.setAttribute(isPath ? 'd' : 'points', previousPoints);
 
   let v1 = '', v2 = '';
@@ -59,8 +58,6 @@ const morphTo = (path2, precision = .33) => ($path1) => {
       v2 += prefix + helpers$1.round(pointOnPath2.x, 3) + separator + pointOnPath2.y + ' ';
     }
   }
-
-  $path1[consts.morphPointsSymbol] = v2;
 
   return [v1, v2];
 };

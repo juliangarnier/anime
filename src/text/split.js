@@ -211,7 +211,7 @@ const processHTMLTemplate = (htmlTemplate, store, node, $parentFragment, type, d
  */
 export class TextSplitter {
   /**
-   * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+   * @param  {Element|NodeList|String|Array<Element>} target
    * @param  {TextSplitterParams} [parameters]
    */
   constructor(target, parameters = {}) {
@@ -283,11 +283,11 @@ export class TextSplitter {
   }
 
   /**
-   * @param  {(...args: any[]) => Tickable | (() => void)} effect
+   * @param  {(...args: any[]) => Tickable | (() => void) | void} effect
    * @return this
    */
   addEffect(effect) {
-    if (!isFnc(effect)) return console.warn('Effect must return a function.');
+    if (!isFnc(effect)) { console.warn('Effect must return a function.'); return this; }
     const refreshableEffect = keepTime(effect);
     this.effects.push(refreshableEffect);
     if (this.ready) this.effectsCleanups[this.effects.length - 1] = refreshableEffect(this);
@@ -493,7 +493,7 @@ export class TextSplitter {
 }
 
 /**
- * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+ * @param  {Element|NodeList|String|Array<Element>} target
  * @param  {TextSplitterParams} [parameters]
  * @return {TextSplitter}
  */

@@ -25,7 +25,7 @@ for (let i = 1; i <= 12; i++) {
 }
 
 const layout = createLayout('#cards', {
-  duration: 500000
+  duration: 1000
 });
 
 document.querySelectorAll('nav button').forEach(btn => {

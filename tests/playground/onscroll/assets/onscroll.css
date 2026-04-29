@@ -4,8 +4,8 @@ section {
   align-items: center;
   width: 100%;
   min-height: 100lvh;
-  border-top: 1px dotted var(--red);
-  border-bottom: 1px dotted var(--red);
+  border-top: 1px dotted var(--red-1);
+  border-bottom: 1px dotted var(--red-1);
 }
 
 section.spacer {

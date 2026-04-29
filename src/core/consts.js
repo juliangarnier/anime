@@ -3,7 +3,7 @@
 // TODO: Do we need to check if we're running inside a worker ?
 export const isBrowser = typeof window !== 'undefined';
 
-/** @typedef {Window & {AnimeJS: Array} & {AnimeJSDevTools: any}|null} AnimeJSWindow
+/** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
 
 /** @type {AnimeJSWindow} */
 export const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
@@ -50,7 +50,6 @@ export const isRegisteredTargetSymbol = Symbol();
 export const isDomSymbol = Symbol();
 export const isSvgSymbol = Symbol();
 export const transformsSymbol = Symbol();
-export const morphPointsSymbol = Symbol();
 export const proxyTargetSymbol = Symbol();
 
 // Numbers
@@ -74,6 +73,7 @@ export const shortTransforms = /*#__PURE__*/ (() => {
 })();
 
 export const validTransforms = [
+  'perspective',
   'translateX',
   'translateY',
   'translateZ',
@@ -88,9 +88,6 @@ export const validTransforms = [
   'skew',
   'skewX',
   'skewY',
-  'matrix',
-  'matrix3d',
-  'perspective',
 ];
 
 export const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) => ({...a, [v]: v + '('}), {});
@@ -113,6 +110,5 @@ export const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
 export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)([a-z]+|%)$/i
 export const lowerCaseRgx = /([a-z])([A-Z])/g;
-export const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
 export const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 export const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;

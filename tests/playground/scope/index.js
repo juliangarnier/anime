@@ -42,8 +42,6 @@ const scope = createScope({
     alternate: true
   }));
 
-
-
   // Recreate the animation while keeping track of its current time between mediaquery changes
   // self.keepTime(() => animate('.square', {
   //   scale: self.matches.isSmall ? .5 : 1.5,
@@ -70,7 +68,7 @@ const scope = createScope({
   }
 
   self.keepTime(() => animate('.square', {
-    background: ($el) => utils.get($el, utils.randomPick(['--blue', '--lavender', '--pink'])),
+    background: ($el) => utils.get($el, utils.randomPick(['--cyan-1', '--lavender-1', '--pink-1'])),
     loop: true,
     ease: 'inOut(2)',
     alternate: true,
@@ -90,4 +88,4 @@ const scope = createScope({
 document.body.addEventListener('click', () => {
   console.log('REVERT');
   scope.revert();
-})
+});

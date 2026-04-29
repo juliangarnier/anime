@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -19,6 +19,7 @@ var colors = require('./colors.cjs');
 *   Tween,
 *   TweenPropValue,
 *   TweenDecomposedValue,
+*   TargetsArray,
 * } from '../types/index.js'
 */
 
@@ -36,15 +37,16 @@ const setValue = (targetValue, defaultValue) => {
  * @param  {TweenPropValue} value
  * @param  {Target} target
  * @param  {Number} index
- * @param  {Number} total
- * @param  {Object} [store]
+ * @param  {TargetsArray} targets
+ * @param  {Object|null} store
+ * @param  {Tween|null} prevTween
  * @return {any}
  */
-const getFunctionValue = (value, target, index, total, store) => {
+const getFunctionValue = (value, target, index, targets, store, prevTween) => {
   let func;
   if (helpers.isFnc(value)) {
     func = () => {
-      const computed = /** @type {Function} */(value)(target, index, total);
+      const computed = /** @type {Function} */(value)(target, index, targets, prevTween);
       // Fallback to 0 if the function returns undefined / NaN / null / false / 0
       return !isNaN(+computed) ? +computed : computed || 0;
     };
@@ -111,9 +113,17 @@ const getCSSValue = (target, propName, animationInlineStyles) => {
  */
 const getOriginalAnimatableValue = (target, propName, tweenType, animationInlineStyles) => {
   const type = !helpers.isUnd(tweenType) ? tweenType : getTweenType(target, propName);
-  return type === consts.tweenTypes.OBJECT ? target[propName] || 0 :
-         type === consts.tweenTypes.ATTRIBUTE ? /** @type {DOMTarget} */(target).getAttribute(propName) :
-         type === consts.tweenTypes.TRANSFORM ? transforms.parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
+  if (type === consts.tweenTypes.OBJECT) {
+    const value = target[propName];
+    if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+    return value || 0;
+  }
+  if (type === consts.tweenTypes.ATTRIBUTE) {
+    const value = /** @type {DOMTarget} */(target).getAttribute(propName);
+    if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+    return value;
+  }
+  return type === consts.tweenTypes.TRANSFORM ? transforms.parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
          type === consts.tweenTypes.CSS_VAR ? getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles).trimStart() :
          getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles);
 };
@@ -215,6 +225,56 @@ const decomposeTweenValue = (tween, targetObject) => {
 
 const decomposedOriginalValue = createDecomposedValueTargetObject();
 
+/**
+ * @param  {Tween} tween
+ * @param  {Number} progress
+ * @param  {Number} precision
+ * @return {String}
+ */
+const composeColorValue = (tween, progress, precision) => {
+  const mod = tween._modifier;
+  const fn = tween._fromNumbers;
+  const tn = tween._toNumbers;
+  const r = helpers.round(helpers.clamp(/** @type {Number} */(mod(helpers.lerp(fn[0], tn[0], progress))), 0, 255), 0);
+  const g = helpers.round(helpers.clamp(/** @type {Number} */(mod(helpers.lerp(fn[1], tn[1], progress))), 0, 255), 0);
+  const b = helpers.round(helpers.clamp(/** @type {Number} */(mod(helpers.lerp(fn[2], tn[2], progress))), 0, 255), 0);
+  const a = helpers.clamp(/** @type {Number} */(mod(helpers.round(helpers.lerp(fn[3], tn[3], progress), precision))), 0, 1);
+  if (tween._composition !== consts.compositionTypes.none) {
+    const ns = tween._numbers;
+    ns[0] = r;
+    ns[1] = g;
+    ns[2] = b;
+    ns[3] = a;
+  }
+  return `rgba(${r},${g},${b},${a})`;
+};
+
+/**
+ * @param  {Tween} tween
+ * @param  {Number} progress
+ * @param  {Number} precision
+ * @return {String}
+ */
+const composeComplexValue = (tween, progress, precision) => {
+  const mod = tween._modifier;
+  const fn = tween._fromNumbers;
+  const tn = tween._toNumbers;
+  const ts = tween._strings;
+  const hasComposition = tween._composition !== consts.compositionTypes.none;
+  let v = ts[0];
+  for (let j = 0, l = tn.length; j < l; j++) {
+    const n = /** @type {Number} */(mod(helpers.round(helpers.lerp(fn[j], tn[j], progress), precision)));
+    const s = ts[j + 1];
+    v += `${s ? n + s : n}`;
+    if (hasComposition) {
+      tween._numbers[j] = n;
+    }
+  }
+  return v;
+};
+
+exports.composeColorValue = composeColorValue;
+exports.composeComplexValue = composeComplexValue;
 exports.createDecomposedValueTargetObject = createDecomposedValueTargetObject;
 exports.decomposeRawValue = decomposeRawValue;
 exports.decomposeTweenValue = decomposeTweenValue;

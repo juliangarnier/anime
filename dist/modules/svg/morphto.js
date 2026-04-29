@@ -1,11 +1,10 @@
 /**
  * Anime.js - svg - ESM
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { morphPointsSymbol } from '../core/consts.js';
 import { round } from '../core/helpers.js';
 import { getPath } from './helpers.js';
 
@@ -21,7 +20,7 @@ import { getPath } from './helpers.js';
  * @param  {Number} [precision]
  * @return {FunctionValue}
  */
-const morphTo = (path2, precision = .33) => ($path1) => {
+const morphTo = (path2, precision = .33) => ($path1, index, total, prevTween) => {
   const tagName1 = ($path1.tagName || '').toLowerCase();
   if (!tagName1.match(/^(path|polygon|polyline)$/)) {
     throw new Error(`Can't morph a <${$path1.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
@@ -36,7 +35,7 @@ const morphTo = (path2, precision = .33) => ($path1) => {
   }
   const isPath = $path1.tagName === 'path';
   const separator = isPath ? ' ' : ',';
-  const previousPoints = $path1[morphPointsSymbol];
+  const previousPoints = prevTween ? prevTween._value : null;
   if (previousPoints) $path1.setAttribute(isPath ? 'd' : 'points', previousPoints);
 
   let v1 = '', v2 = '';
@@ -57,8 +56,6 @@ const morphTo = (path2, precision = .33) => ($path1) => {
       v2 += prefix + round(pointOnPath2.x, 3) + separator + pointOnPath2.y + ' ';
     }
   }
-
-  $path1[morphPointsSymbol] = v2;
 
   return [v1, v2];
 };

@@ -5,6 +5,7 @@ export {}
 // Private types
 
 /**
+ * @import { TweakRegister } from 'tweaks';
  * @import { ScrollObserver } from '../events/scroll.js';
  * @import { JSAnimation } from '../animation/animation.js';
  * @import { Animatable } from '../animatable/animatable.js';
@@ -62,7 +63,8 @@ export {}
  * @callback StaggerFunction
  * @param {Target} [target]
  * @param {Number} [index]
- * @param {Number} [length]
+ * @param {TargetsArray} [targets]
+ * @param {Tween|null} [prevTween]
  * @param {Timeline} [tl]
  * @return {T}
  */
@@ -70,9 +72,9 @@ export {}
 /**
  * @typedef  {Object} StaggerParams
  * @property {Number|String} [start]
- * @property {Number|'first'|'center'|'last'|'random'} [from]
+ * @property {Number|'first'|'center'|'last'|'random'|Array.<Number>} [from]
  * @property {Boolean} [reversed]
- * @property {Array.<Number>} [grid]
+ * @property {Array.<Number>|Boolean} [grid]
  * @property {('x'|'y')} [axis]
  * @property {String|((target: Target, i: Number, length: Number) => Number)} [use]
  * @property {Number} [total]
@@ -133,8 +135,8 @@ export {}
 
 // A hack to get both ease names suggestions AND allow any strings
 // https://github.com/microsoft/TypeScript/issues/29729#issuecomment-460346421
-/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring} EasingParam */
-/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring} WAAPIEasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring|TweakRegister} EasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring|TweakRegister} WAAPIEasingParam */
 
 // Spring types
 
@@ -190,6 +192,7 @@ export {}
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number} [frameRate]
  * @property {Number} [playbackRate]
+ * @property {Number} [priority]
  */
 
 /**
@@ -200,9 +203,10 @@ export {}
 
 /**
  * @callback FunctionValue
- * @param {Target} target - The animated target
- * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
+ * @param {Target} [target] - The animated target
+ * @param {Number} [index] - The target index
+ * @param {TargetsArray} [targets] - The array of all animated targets
+ * @param {Tween|null} [prevTween] - The previous sibling tween for the same target and property
  * @return {Number|String|TweenObjectValue|EasingParam|Array.<Number|String|TweenObjectValue>}
  */
 
@@ -371,7 +375,7 @@ export {}
  * - `'label'` - Label: Position animation at a named label position (e.g., `'My Label'`)<br>
  * - `stagger(String|Nummber)` - Stagger multi-elements animation positions (e.g., 10, 20, 30...)
  *
- * @typedef {TimelinePosition | StaggerFunction<Number|String>} TimelineAnimationPosition
+ * @typedef {TimelinePosition | StaggerFunction<Number|String> | TweakRegister} TimelineAnimationPosition
  */
 
 /**
@@ -395,7 +399,7 @@ export {}
  * @callback WAAPIFunctionValue
  * @param {DOMTarget} target - The animated target
  * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
+ * @param {DOMTargetsArray} targets - The array of all animated targets
  * @return {WAAPITweenValue|WAAPIEasingParam}
  */
 
@@ -640,6 +644,26 @@ export {}
  * @property {Boolean} [accessible]
  * @property {Boolean} [includeSpaces]
  * @property {Boolean} [debug]
+ */
+
+/**
+ * @typedef {Object} ScrambleTextParams
+ * @property {String|function(Target, Number, TargetsArray): String} [text] - the text to transition to, otherwise uses the original text
+ * @property {String|function(Target, Number, TargetsArray): String} [chars] - the characters used for scramble; named sets: 'lowercase', 'uppercase', 'numbers', 'symbols', 'braille', 'blocks', 'shades'; range syntax: 'A-Z', 'a-z0-9'; defaults to 'a-zA-Z0-9!%#_'
+ * @property {EasingParam} [ease] - the easing applied to the scramble animation
+ * @property {Number|'left'|'center'|'right'|'random'|'auto'} [from] - where the reveal wave starts from, 'auto' (default) uses 'left' when text grows and 'right' when it shrinks
+ * @property {Boolean} [reversed] - reverses the reveal order, so 'center' reveals from edges inward instead of center outward
+ * @property {Boolean|Number|String} [cursor] - characters displayed at the leading edge of the reveal wave; true uses '_', a number is a char code, a string is used directly
+ * @property {Number} [perturbation] - adds random timing offsets to each character's start and end, creating a more organic reveal
+ * @property {Number} [seed] - a seed for the random number generator to produce reproducible scramble sequences
+ * @property {Boolean|String} [override] - controls the starting appearance: false shows original text, true scrambles it (default), '' starts from blank, ' ' replaces characters with spaces, a custom string (supports range syntax like 'A-Z') uses its characters as scramble set
+ * @property {Number} [revealRate] - characters per second entering the active zone; higher values make the reveal wave move faster (default: 60)
+ * @property {Number} [settleDuration] - time in ms each character spends scrambling before settling into its final glyph (default: 300)
+ * @property {Number} [settleRate] - how many times per second scramble characters cycle in the active zone (default: 30)
+ * @property {Number|function(Target, Number, TargetsArray): Number} [duration] - if set to a value greater than 0, overrides the computed duration from interval and settle; if unset or 0, duration is calculated automatically from text length and timing parameters
+ * @property {Number|function(Target, Number, TargetsArray): Number} [revealDelay] - delay in ms before the reveal wave starts within the scramble animation
+ * @property {Number|function(Target, Number, TargetsArray): Number} [delay] - delay in ms before the entire scramble animation starts
+ * @property {function(String, Number): void} [onChange] - callback fired each time a character changes during scramble; receives the current scrambled text and the eased progress (0-1)
  */
 
 // SVG types

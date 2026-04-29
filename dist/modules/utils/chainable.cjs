@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -36,10 +36,13 @@ const chain = fn => {
     const result = fn(...args);
     return new Proxy(consts.noop, {
       apply: (_, __, [v]) => result(v),
-      get: (_, prop) => chain(/**@param {...Number|String} nextArgs */(...nextArgs) => {
-        const nextResult = chainables[prop](...nextArgs);
-        return (/**@type {Number|String} */v) => nextResult(result(v));
-      })
+      get: (_, prop) => {
+        if (!chainables[prop]) return undefined;
+        return chain(/**@param {...Number|String} nextArgs */(...nextArgs) => {
+          const nextResult = chainables[prop](...nextArgs);
+          return (/**@type {Number|String} */v) => nextResult(result(v));
+        })
+      }
     });
   }
 };

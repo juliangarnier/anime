@@ -29,7 +29,7 @@ utils.set(particuleEls, {
     modifier: v => `hsl(4, 70%, ${v}%)`,
   }),
   boxShadow: stagger([8, 1], { grid, from,
-    modifier: v => `0px 0px ${utils.round(v, 0)}em 0px var(--red)`,
+    modifier: v => `0px 0px ${utils.round(v, 0)}em 0px var(--red-1)`,
   }),
   zIndex: stagger([rows * rows, 1], { grid, from, modifier: utils.round(0) }),
 });

@@ -1,6 +1,6 @@
 /**
  * Anime.js - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -21,12 +21,14 @@ var index$1 = require('./utils/index.cjs');
 var index$2 = require('./svg/index.cjs');
 var index$3 = require('./text/index.cjs');
 var waapi = require('./waapi/waapi.cjs');
+var globals = require('./core/globals.cjs');
 var index$4 = require('./easings/cubic-bezier/index.cjs');
 var index$5 = require('./easings/steps/index.cjs');
 var index$6 = require('./easings/linear/index.cjs');
 var index$7 = require('./easings/irregular/index.cjs');
 var index$8 = require('./easings/spring/index.cjs');
 var parser = require('./easings/eases/parser.cjs');
+var helpers = require('./core/helpers.cjs');
 var chainable = require('./utils/chainable.cjs');
 var random = require('./utils/random.cjs');
 var time = require('./utils/time.cjs');
@@ -38,6 +40,7 @@ var motionpath = require('./svg/motionpath.cjs');
 var drawable = require('./svg/drawable.cjs');
 var morphto = require('./svg/morphto.cjs');
 var split = require('./text/split.cjs');
+var scramble = require('./text/scramble.cjs');
 
 
 
@@ -65,6 +68,7 @@ exports.svg = index$2;
 exports.text = index$3;
 exports.WAAPIAnimation = waapi.WAAPIAnimation;
 exports.waapi = waapi.waapi;
+exports.globals = globals.globals;
 exports.cubicBezier = index$4.cubicBezier;
 exports.steps = index$5.steps;
 exports.linear = index$6.linear;
@@ -73,6 +77,9 @@ exports.Spring = index$8.Spring;
 exports.createSpring = index$8.createSpring;
 exports.spring = index$8.spring;
 exports.eases = parser.eases;
+exports.addChild = helpers.addChild;
+exports.forEachChildren = helpers.forEachChildren;
+exports.removeChild = helpers.removeChild;
 exports.clamp = chainable.clamp;
 exports.damp = chainable.damp;
 exports.degToRad = chainable.degToRad;
@@ -103,3 +110,4 @@ exports.morphTo = morphto.morphTo;
 exports.TextSplitter = split.TextSplitter;
 exports.split = split.split;
 exports.splitText = split.splitText;
+exports.scrambleText = scramble.scrambleText;

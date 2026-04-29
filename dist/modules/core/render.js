@@ -1,16 +1,18 @@
 /**
  * Anime.js - core - ESM
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { globals } from './globals.js';
-import { minValue, tickModes, valueTypes, compositionTypes, tweenTypes, transformsSymbol, transformsFragmentStrings, emptyString } from './consts.js';
-import { forEachChildren, round, now, clamp, lerp } from './helpers.js';
+import { tickModes, valueTypes, compositionTypes, tweenTypes, transformsSymbol, minValue } from './consts.js';
+import { forEachChildren, clamp, round, lerp, now } from './helpers.js';
+import { buildTransformString } from './transforms.js';
+import { composeColorValue, composeComplexValue } from './values.js';
 
 /**
- *   @import {
+ * @import {
  *   Tickable,
  *   Renderable,
  *   CallbackArgument,
@@ -53,7 +55,6 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
   const _hasChildren = tickable._hasChildren;
   const tickableDelay = tickable._delay;
   const tickablePrevAbsoluteTime = tickable._currentTime; // TODO: rename ._currentTime to ._absoluteCurrentTime
-
   const tickableEndTime = tickableDelay + iterationDuration;
   const tickableAbsoluteTime = time - tickableDelay;
   const tickablePrevTime = clamp(tickablePrevAbsoluteTime, -tickableDelay, duration);
@@ -185,30 +186,9 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
             number = /** @type {Number} */(tweenModifier(round(lerp(tween._fromNumber, tween._toNumber,  tweenProgress), tweenPrecision)));
             value = `${number}${tween._unit}`;
           } else if (tweenValueType === valueTypes.COLOR) {
-            const fn = tween._fromNumbers;
-            const tn = tween._toNumbers;
-            const r = round(clamp(/** @type {Number} */(tweenModifier(lerp(fn[0], tn[0], tweenProgress))), 0, 255), 0);
-            const g = round(clamp(/** @type {Number} */(tweenModifier(lerp(fn[1], tn[1], tweenProgress))), 0, 255), 0);
-            const b = round(clamp(/** @type {Number} */(tweenModifier(lerp(fn[2], tn[2], tweenProgress))), 0, 255), 0);
-            const a = clamp(/** @type {Number} */(tweenModifier(round(lerp(fn[3], tn[3], tweenProgress), tweenPrecision))), 0, 1);
-            value = `rgba(${r},${g},${b},${a})`;
-            if (tweenHasComposition) {
-              const ns = tween._numbers;
-              ns[0] = r;
-              ns[1] = g;
-              ns[2] = b;
-              ns[3] = a;
-            }
+            value = composeColorValue(tween, tweenProgress, tweenPrecision);
           } else if (tweenValueType === valueTypes.COMPLEX) {
-            value = tween._strings[0];
-            for (let j = 0, l = tween._toNumbers.length; j < l; j++) {
-              const n = /** @type {Number} */(tweenModifier(round(lerp(tween._fromNumbers[j], tween._toNumbers[j], tweenProgress), tweenPrecision)));
-              const s = tween._strings[j + 1];
-              value += `${s ? n + s : n}`;
-              if (tweenHasComposition) {
-                tween._numbers[j] = n;
-              }
-            }
+            value = composeComplexValue(tween, tweenProgress, tweenPrecision);
           }
 
           // For additive tweens and Animatables
@@ -251,14 +231,8 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
 
         }
 
-        // NOTE: Possible improvement: Use translate(x,y) / translate3d(x,y,z) syntax
-        // to reduce memory usage on string composition
         if (tweenTransformsNeedUpdate && tween._renderTransforms) {
-          let str = emptyString;
-          for (let key in tweenTargetTransformsProperties) {
-            str += `${transformsFragmentStrings[key]}${tweenTargetTransformsProperties[key]}) `;
-          }
-          tweenStyle.transform = str;
+          tweenStyle.transform = buildTransformString(tweenTargetTransformsProperties);
           tweenTransformsNeedUpdate = 0;
         }
 
@@ -315,6 +289,50 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
   return hasRendered;
 };
 
+// Shared context for extracted forEachChildren callbacks in tick()
+// Avoids closure allocation every frame
+
+let renderCtxChildrenTime = 0;
+let renderCtxTlFps = 0;
+let renderCtxTickTime = 0;
+let renderCtxTickMode = 0;
+let renderCtxMuteCallbacks = 0;
+let renderCtxInternalRender = 0;
+let renderCtxChildrenHasRendered = 0;
+let renderCtxChildrenHaveCompleted = true;
+let loopCtxIsRunningBackwards = false;
+let loopCtxIterationDuration = 0;
+let loopCtxMuteCallbacks = 0;
+
+/** @param {JSAnimation} child */
+const tickLoopChild = (child) => {
+  if (!loopCtxIsRunningBackwards) {
+    // Force an internal render to trigger the callbacks if the child has not completed on loop
+    if (!child.completed && !child.backwards && child._currentTime < child.iterationDuration) {
+      render(child, loopCtxIterationDuration, loopCtxMuteCallbacks, 1, tickModes.FORCE);
+    }
+    // Reset their began and completed flags to allow retrigering callbacks on the next iteration
+    child.began = false;
+    child.completed = false;
+  } else {
+    const childDuration = child.duration;
+    const childStartTime = child._offset + child._delay;
+    const childEndTime = childStartTime + childDuration;
+    // Triggers the onComplete callback on reverse for children on the edges of the timeline
+    if (!loopCtxMuteCallbacks && childDuration <= minValue && (!childStartTime || childEndTime === loopCtxIterationDuration)) {
+      child.onComplete(child);
+    }
+  }
+};
+
+/** @param {JSAnimation} child */
+const tickRenderChild = (child) => {
+  const childTime = round((renderCtxChildrenTime - child._offset) * child._speed, 12); // Rounding is needed when using seconds
+  const childTickMode = child._fps < renderCtxTlFps ? child.requestTick(renderCtxTickTime) : renderCtxTickMode;
+  renderCtxChildrenHasRendered += render(child, childTime, renderCtxMuteCallbacks, renderCtxInternalRender, childTickMode);
+  if (!child.completed && renderCtxChildrenHaveCompleted) renderCtxChildrenHaveCompleted = false;
+};
+
 /**
  * @param  {Tickable} tickable
  * @param  {Number} time
@@ -331,45 +349,30 @@ const tick = (tickable, time, muteCallbacks, internalRender, tickMode) => {
     const tlIsRunningBackwards = tl.backwards;
     const tlChildrenTime = internalRender ? time : tl._iterationTime;
     const tlCildrenTickTime = now();
-
     let tlChildrenHasRendered = 0;
     let tlChildrenHaveCompleted = true;
-
     // If the timeline has looped forward, we need to manually triggers children skipped callbacks
     if (!internalRender && tl._currentIteration !== _currentIteration) {
       const tlIterationDuration = tl.iterationDuration;
-      forEachChildren(tl, (/** @type {JSAnimation} */child) => {
-        if (!tlIsRunningBackwards) {
-          // Force an internal render to trigger the callbacks if the child has not completed on loop
-          if (!child.completed && !child.backwards && child._currentTime < child.iterationDuration) {
-            render(child, tlIterationDuration, muteCallbacks, 1, tickModes.FORCE);
-          }
-          // Reset their began and completed flags to allow retrigering callbacks on the next iteration
-          child.began = false;
-          child.completed = false;
-        } else {
-          const childDuration = child.duration;
-          const childStartTime = child._offset + child._delay;
-          const childEndTime = childStartTime + childDuration;
-          // Triggers the onComplete callback on reverse for children on the edges of the timeline
-          if (!muteCallbacks && childDuration <= minValue && (!childStartTime || childEndTime === tlIterationDuration)) {
-            child.onComplete(child);
-          }
-        }
-      });
+      loopCtxIsRunningBackwards = tlIsRunningBackwards;
+      loopCtxIterationDuration = tlIterationDuration;
+      loopCtxMuteCallbacks = muteCallbacks;
+      forEachChildren(tl, tickLoopChild);
       if (!muteCallbacks) tl.onLoop(/** @type {CallbackArgument} */(tl));
     }
-
-    forEachChildren(tl, (/** @type {JSAnimation} */child) => {
-      const childTime = round((tlChildrenTime - child._offset) * child._speed, 12); // Rounding is needed when using seconds
-      const childTickMode = child._fps < tl._fps ? child.requestTick(tlCildrenTickTime) : tickMode;
-      tlChildrenHasRendered += render(child, childTime, muteCallbacks, internalRender, childTickMode);
-      if (!child.completed && tlChildrenHaveCompleted) tlChildrenHaveCompleted = false;
-    }, tlIsRunningBackwards);
-
+    renderCtxChildrenTime = tlChildrenTime;
+    renderCtxTlFps = tl._fps;
+    renderCtxTickTime = tlCildrenTickTime;
+    renderCtxTickMode = tickMode;
+    renderCtxMuteCallbacks = muteCallbacks;
+    renderCtxInternalRender = internalRender;
+    renderCtxChildrenHasRendered = 0;
+    renderCtxChildrenHaveCompleted = true;
+    forEachChildren(tl, tickRenderChild, tlIsRunningBackwards);
+    tlChildrenHasRendered = renderCtxChildrenHasRendered;
+    tlChildrenHaveCompleted = renderCtxChildrenHaveCompleted;
     // Renders on timeline are triggered by its children so it needs to be set after rendering the children
     if (!muteCallbacks && tlChildrenHasRendered) tl.onRender(/** @type {CallbackArgument} */(tl));
-
     // Triggers the timeline onComplete() once all chindren all completed and the current time has reached the end
     if ((tlChildrenHaveCompleted || tlIsRunningBackwards) && tl._currentTime >= tl.duration) {
       // Make sure the paused flag is false in case it has been skipped in the render function

@@ -65,6 +65,8 @@ export class Timer extends Clock {
     _prev: Renderable;
     /** @type {Renderable} */
     _next: Renderable;
+    /** @type {Number} */
+    _priority: number;
     set cancelled(cancelled: boolean);
     get cancelled(): boolean;
     set currentTime(time: number);

@@ -6,9 +6,9 @@ export class JSAnimation extends Timer {
      * @param {Number} [parentPosition]
      * @param {Boolean} [fastSet=false]
      * @param {Number} [index=0]
-     * @param {Number} [length=0]
+     * @param {TargetsArray} [allTargets]
      */
-    constructor(targets: TargetsParam, parameters: AnimationParams, parent?: Timeline, parentPosition?: number, fastSet?: boolean, index?: number, length?: number);
+    constructor(targets: TargetsParam, parameters: AnimationParams, parent?: Timeline, parentPosition?: number, fastSet?: boolean, index?: number, allTargets?: TargetsArray);
     /** @type {TargetsArray} */
     targets: TargetsArray;
     /** @type {Callback<this>} */

@@ -500,13 +500,13 @@ suite('Timelines', () => {
     }, '-=5')
 
     tl.seek(15)
-    expect($target.style.transform).to.equal('translateX(200px) translateY(100px)');
+    expect($target.style.transform).to.equal('translate(200px, 100px)');
     tl.seek(16)
-    expect($target.style.transform).to.equal('translateX(185px) translateY(90px)');
+    expect($target.style.transform).to.equal('translate(185px, 90px)');
     tl.seek(15)
-    expect($target.style.transform).to.equal('translateX(200px) translateY(100px)');
+    expect($target.style.transform).to.equal('translate(200px, 100px)');
     tl.seek(14)
-    expect($target.style.transform).to.equal('translateX(185px) translateY(90px)');
+    expect($target.style.transform).to.equal('translate(185px, 90px)');
   });
 
   test('Previous tween before last shouln\'t render on loop', resolve => {

@@ -1,6 +1,6 @@
 /**
  * Anime.js - text - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -197,7 +197,7 @@ const processHTMLTemplate = (htmlTemplate, store, node, $parentFragment, type, d
  */
 class TextSplitter {
   /**
-   * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+   * @param  {Element|NodeList|String|Array<Element>} target
    * @param  {TextSplitterParams} [parameters]
    */
   constructor(target, parameters = {}) {
@@ -269,11 +269,11 @@ class TextSplitter {
   }
 
   /**
-   * @param  {(...args: any[]) => Tickable | (() => void)} effect
+   * @param  {(...args: any[]) => Tickable | (() => void) | void} effect
    * @return this
    */
   addEffect(effect) {
-    if (!helpers.isFnc(effect)) return console.warn('Effect must return a function.');
+    if (!helpers.isFnc(effect)) { console.warn('Effect must return a function.'); return this; }
     const refreshableEffect = time.keepTime(effect);
     this.effects.push(refreshableEffect);
     if (this.ready) this.effectsCleanups[this.effects.length - 1] = refreshableEffect(this);
@@ -479,7 +479,7 @@ class TextSplitter {
 }
 
 /**
- * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+ * @param  {Element|NodeList|String|Array<Element>} target
  * @param  {TextSplitterParams} [parameters]
  * @return {TextSplitter}
  */

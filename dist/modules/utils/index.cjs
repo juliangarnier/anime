@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -12,6 +12,7 @@ var random = require('./random.cjs');
 var time = require('./time.cjs');
 var target = require('./target.cjs');
 var stagger = require('./stagger.cjs');
+var helpers = require('../core/helpers.cjs');
 var styles = require('../core/styles.cjs');
 var targets = require('../core/targets.cjs');
 
@@ -39,5 +40,8 @@ exports.get = target.get;
 exports.remove = target.remove;
 exports.set = target.set;
 exports.stagger = stagger.stagger;
+exports.addChild = helpers.addChild;
+exports.forEachChildren = helpers.forEachChildren;
+exports.removeChild = helpers.removeChild;
 exports.cleanInlineStyles = styles.cleanInlineStyles;
 exports.$ = targets.registerTargets;

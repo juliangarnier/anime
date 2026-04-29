@@ -19,6 +19,18 @@ import {
  * } from '../scope/index.js'
 */
 
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {boolean} synced
+ * @property {Function} addAnimation
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
+
 /** @type {DefaultsParams} */
 export const defaults = {
   id: null,
@@ -62,9 +74,9 @@ export const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 }
-
-export const devTools = isBrowser && win.AnimeJSDevTools;
 
 export const globalVersions = { version: '__packageVersion__', engine: null };
 

@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -19,6 +19,18 @@ var consts = require('./consts.cjs');
  *   Scope,
  * } from '../scope/index.js'
 */
+
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {boolean} synced
+ * @property {Function} addAnimation
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
 
 /** @type {DefaultsParams} */
 const defaults = {
@@ -63,11 +75,11 @@ const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 };
 
-const devTools = consts.isBrowser && consts.win.AnimeJSDevTools;
-
-const globalVersions = { version: '4.3.6', engine: null };
+const globalVersions = { version: '4.4.0', engine: null };
 
 if (consts.isBrowser) {
   if (!consts.win.AnimeJS) consts.win.AnimeJS = [];
@@ -75,7 +87,6 @@ if (consts.isBrowser) {
 }
 
 exports.defaults = defaults;
-exports.devTools = devTools;
 exports.globalVersions = globalVersions;
 exports.globals = globals;
 exports.scope = scope;

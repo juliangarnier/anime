@@ -18,16 +18,16 @@ suite('Function based values', () => {
     const $targets = document.querySelectorAll('.target-class');
     const animation = animate($targets, {
       autoplay: false,
-      translateX: (el, i, total) => {
+      translateX: (el, i, targets) => {
         return el.getAttribute('data-index');
       },
-      duration: (el, i, total) => {
+      duration: (el, i, targets) => {
         const index = parseFloat(el.dataset.index);
-        return total + ((i + index) * 100);
+        return targets.length + ((i + index) * 100);
       },
-      delay: (el, i, total) => {
+      delay: (el, i, targets) => {
         const index = parseFloat(el.dataset.index);
-        return total + ((i + index) * 100);
+        return targets.length + ((i + index) * 100);
       },
       ease: () => {
         return (/** @type {Number} */t) => t;
@@ -144,7 +144,7 @@ suite('Function based values', () => {
     const $targets = document.querySelectorAll('.target-class');
     const animation = animate($targets, {
       autoplay: false,
-      translateX: ($el, i, t) => [$el.dataset.index, (t - 1) - i],
+      translateX: ($el, i, targets) => [$el.dataset.index, (targets.length - 1) - i],
     });
 
     // From
@@ -165,8 +165,8 @@ suite('Function based values', () => {
     const animation = animate($targets, {
       autoplay: false,
       translateX: [
-        ($el, i, t) => $el.dataset.index,
-        ($el, i, t) => (t - 1) - i
+        ($el, i, targets) => $el.dataset.index,
+        ($el, i, targets) => (targets.length - 1) - i
       ],
     });
 
@@ -188,8 +188,8 @@ suite('Function based values', () => {
   //   const animation = animate($targets, {
   //     autoplay: false,
   //     translateX: [
-  //       ($el, i, t) => $el.dataset.index,
-  //       ($el, i, t) => utils.ran
+  //       ($el, i, targets) => $el.dataset.index,
+  //       ($el, i, targets) => utils.ran
   //     ],
   //   });
 

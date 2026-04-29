@@ -323,15 +323,15 @@ const tests = [
       delay: stagger(200),
       enterFrom: {
         opacity: 0,
-        innerHTML: (_, i, t) => `enter: ${i}, ${t}`,
+        innerHTML: (_, i, targets) => `enter: ${i}, ${targets.length}`,
       },
       leaveTo: {
         opacity: 0,
-        innerHTML: (_, i, t) => `leave: ${i}, ${t}`,
+        innerHTML: (_, i, targets) => `leave: ${i}, ${targets.length}`,
       },
       swapAt: {
         opacity: 0,
-        innerHTML: (_, i, t) => `swap: ${i}, ${t}`,
+        innerHTML: (_, i, targets) => `swap: ${i}, ${targets.length}`,
       }
     });
     data.$button.addEventListener('click', () => {

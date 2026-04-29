@@ -27,12 +27,12 @@ export type Renderable = JSAnimation | Timeline;
 export type Tickable = Timer | Renderable;
 export type CallbackArgument = Timer & JSAnimation & Timeline;
 export type Revertible = Animatable | Tickable | WAAPIAnimation | Draggable | ScrollObserver | TextSplitter | Scope | AutoLayout;
-export type StaggerFunction<T> = (target?: Target, index?: number, length?: number, tl?: Timeline) => T;
+export type StaggerFunction<T> = (target?: Target, index?: number, targets?: TargetsArray, prevTween?: Tween | null, tl?: Timeline) => T;
 export type StaggerParams = {
     start?: number | string;
-    from?: number | "first" | "center" | "last" | "random";
+    from?: number | "first" | "center" | "last" | "random" | Array<number>;
     reversed?: boolean;
-    grid?: Array<number>;
+    grid?: Array<number> | boolean;
     axis?: ("x" | "y");
     use?: string | ((target: Target, i: number, length: number) => number);
     total?: number;
@@ -57,8 +57,8 @@ export type PowerEasing = (power?: number | string) => EasingFunction;
 export type BackEasing = (overshoot?: number | string) => EasingFunction;
 export type ElasticEasing = (amplitude?: number | string, period?: number | string) => EasingFunction;
 export type EasingFunctionWithParams = PowerEasing | BackEasing | ElasticEasing;
-export type EasingParam = (string & {}) | EaseStringParamNames | EasingFunction | Spring;
-export type WAAPIEasingParam = (string & {}) | EaseStringParamNames | WAAPIEaseStringParamNames | EasingFunction | Spring;
+export type EasingParam = (string & {}) | EaseStringParamNames | EasingFunction | Spring | TweakRegister;
+export type WAAPIEasingParam = (string & {}) | EaseStringParamNames | WAAPIEaseStringParamNames | EasingFunction | Spring | TweakRegister;
 export type SpringParams = {
     /**
      * - Mass, default 1
@@ -112,9 +112,10 @@ export type TimerOptions = {
     autoplay?: boolean | ScrollObserver;
     frameRate?: number;
     playbackRate?: number;
+    priority?: number;
 };
 export type TimerParams = TimerOptions & TickableCallbacks<Timer>;
-export type FunctionValue = (target: Target, index: number, length: number) => number | string | TweenObjectValue | EasingParam | Array<number | string | TweenObjectValue>;
+export type FunctionValue = (target?: Target, index?: number, targets?: TargetsArray, prevTween?: Tween | null) => number | string | TweenObjectValue | EasingParam | Array<number | string | TweenObjectValue>;
 export type TweenModifier = (value: number) => number | string;
 export type ColorArray = [number, number, number, number];
 export type Tween = {
@@ -246,7 +247,7 @@ export type TimelinePosition = number | `+=${number}` | `-=${number}` | `*=${num
  * - `'label'` - Label: Position animation at a named label position (e.g., `'My Label'`)<br>
  * - `stagger(String|Nummber)` - Stagger multi-elements animation positions (e.g., 10, 20, 30...)
  */
-export type TimelineAnimationPosition = TimelinePosition | StaggerFunction<number | string>;
+export type TimelineAnimationPosition = TimelinePosition | StaggerFunction<number | string> | TweakRegister;
 export type TimelineOptions = {
     defaults?: DefaultsParams;
     playbackEase?: EasingParam;
@@ -254,7 +255,7 @@ export type TimelineOptions = {
 };
 export type TimelineParams = TimerOptions & TimelineOptions & TickableCallbacks<Timeline> & RenderableCallbacks<Timeline>;
 export type WAAPITweenValue = string | number | Array<string> | Array<number>;
-export type WAAPIFunctionValue = (target: DOMTarget, index: number, length: number) => WAAPITweenValue | WAAPIEasingParam;
+export type WAAPIFunctionValue = (target: DOMTarget, index: number, targets: DOMTargetsArray) => WAAPITweenValue | WAAPIEasingParam;
 export type WAAPIKeyframeValue = WAAPITweenValue | WAAPIFunctionValue | Array<string | number | WAAPIFunctionValue>;
 export type WAAPITweenOptions = {
     to?: WAAPIKeyframeValue;
@@ -392,6 +393,72 @@ export type TextSplitterParams = {
     includeSpaces?: boolean;
     debug?: boolean;
 };
+export type ScrambleTextParams = {
+    /**
+     * - the text to transition to, otherwise uses the original text
+     */
+    text?: string | ((arg0: Target, arg1: number, arg2: TargetsArray) => string);
+    /**
+     * - the characters used for scramble; named sets: 'lowercase', 'uppercase', 'numbers', 'symbols', 'braille', 'blocks', 'shades'; range syntax: 'A-Z', 'a-z0-9'; defaults to 'a-zA-Z0-9!%#_'
+     */
+    chars?: string | ((arg0: Target, arg1: number, arg2: TargetsArray) => string);
+    /**
+     * - the easing applied to the scramble animation
+     */
+    ease?: EasingParam;
+    /**
+     * - where the reveal wave starts from, 'auto' (default) uses 'left' when text grows and 'right' when it shrinks
+     */
+    from?: number | "left" | "center" | "right" | "random" | "auto";
+    /**
+     * - reverses the reveal order, so 'center' reveals from edges inward instead of center outward
+     */
+    reversed?: boolean;
+    /**
+     * - characters displayed at the leading edge of the reveal wave; true uses '_', a number is a char code, a string is used directly
+     */
+    cursor?: boolean | number | string;
+    /**
+     * - adds random timing offsets to each character's start and end, creating a more organic reveal
+     */
+    perturbation?: number;
+    /**
+     * - a seed for the random number generator to produce reproducible scramble sequences
+     */
+    seed?: number;
+    /**
+     * - controls the starting appearance: false shows original text, true scrambles it (default), '' starts from blank, ' ' replaces characters with spaces, a custom string (supports range syntax like 'A-Z') uses its characters as scramble set
+     */
+    override?: boolean | string;
+    /**
+     * - characters per second entering the active zone; higher values make the reveal wave move faster (default: 60)
+     */
+    revealRate?: number;
+    /**
+     * - time in ms each character spends scrambling before settling into its final glyph (default: 300)
+     */
+    settleDuration?: number;
+    /**
+     * - how many times per second scramble characters cycle in the active zone (default: 30)
+     */
+    settleRate?: number;
+    /**
+     * - if set to a value greater than 0, overrides the computed duration from interval and settle; if unset or 0, duration is calculated automatically from text length and timing parameters
+     */
+    duration?: number | ((arg0: Target, arg1: number, arg2: TargetsArray) => number);
+    /**
+     * - delay in ms before the reveal wave starts within the scramble animation
+     */
+    revealDelay?: number | ((arg0: Target, arg1: number, arg2: TargetsArray) => number);
+    /**
+     * - delay in ms before the entire scramble animation starts
+     */
+    delay?: number | ((arg0: Target, arg1: number, arg2: TargetsArray) => number);
+    /**
+     * - callback fired each time a character changes during scramble; receives the current scrambled text and the eased progress (0-1)
+     */
+    onChange?: (arg0: string, arg1: number) => void;
+};
 export type DrawableSVGGeometry = SVGGeometryElement & {
     setAttribute(name: "draw", value: `${number} ${number}`): void;
     draw: `${number} ${number}`;
@@ -408,5 +475,6 @@ import type { TextSplitter } from '../text/split.js';
 import type { Scope } from '../scope/scope.js';
 import type { AutoLayout } from '../layout/layout.js';
 import type { Spring } from '../easings/spring/index.js';
+import type { TweakRegister } from 'tweaks';
 import type { tweenTypes } from '../core/consts.js';
 import type { valueTypes } from '../core/consts.js';

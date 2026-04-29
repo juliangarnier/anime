@@ -1,5 +1,10 @@
 .DS_Store
-
 *.log
-
+*.sublime-project
+*.sublime-workspace
+.npmrc
+.prettierignore
+.pi/sandbox.json
+.pi/allowed-paths.json
 node_modules
+CLAUDE.md

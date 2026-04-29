@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -12,7 +12,7 @@
 // TODO: Do we need to check if we're running inside a worker ?
 const isBrowser = typeof window !== 'undefined';
 
-/** @typedef {Window & {AnimeJS: Array} & {AnimeJSDevTools: any}|null} AnimeJSWindow
+/** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
 
 /** @type {AnimeJSWindow} */
 const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
@@ -59,7 +59,6 @@ const isRegisteredTargetSymbol = Symbol();
 const isDomSymbol = Symbol();
 const isSvgSymbol = Symbol();
 const transformsSymbol = Symbol();
-const morphPointsSymbol = Symbol();
 const proxyTargetSymbol = Symbol();
 
 // Numbers
@@ -83,6 +82,7 @@ const shortTransforms = /*#__PURE__*/ (() => {
 })();
 
 const validTransforms = [
+  'perspective',
   'translateX',
   'translateY',
   'translateZ',
@@ -97,9 +97,6 @@ const validTransforms = [
   'skew',
   'skewX',
   'skewY',
-  'matrix',
-  'matrix3d',
-  'perspective',
 ];
 
 const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) => ({...a, [v]: v + '('}), {});
@@ -122,7 +119,6 @@ const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
 const unitsExecRgx = /^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)([a-z]+|%)$/i;
 const lowerCaseRgx = /([a-z])([A-Z])/g;
-const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
 const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
 
@@ -144,7 +140,6 @@ exports.lowerCaseRgx = lowerCaseRgx;
 exports.maxFps = maxFps;
 exports.maxValue = maxValue;
 exports.minValue = minValue;
-exports.morphPointsSymbol = morphPointsSymbol;
 exports.noop = noop;
 exports.proxyTargetSymbol = proxyTargetSymbol;
 exports.relativeValuesExecRgx = relativeValuesExecRgx;
@@ -152,7 +147,6 @@ exports.rgbExecRgx = rgbExecRgx;
 exports.rgbaExecRgx = rgbaExecRgx;
 exports.shortTransforms = shortTransforms;
 exports.tickModes = tickModes;
-exports.transformsExecRgx = transformsExecRgx;
 exports.transformsFragmentStrings = transformsFragmentStrings;
 exports.transformsSymbol = transformsSymbol;
 exports.tweenTypes = tweenTypes;

@@ -1,6 +1,6 @@
 /**
  * Anime.js - ESM
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -23,12 +23,14 @@ export { index$2 as svg };
 import * as index$3 from './text/index.js';
 export { index$3 as text };
 export { WAAPIAnimation, waapi } from './waapi/waapi.js';
+export { globals } from './core/globals.js';
 export { cubicBezier } from './easings/cubic-bezier/index.js';
 export { steps } from './easings/steps/index.js';
 export { linear } from './easings/linear/index.js';
 export { irregular } from './easings/irregular/index.js';
 export { Spring, createSpring, spring } from './easings/spring/index.js';
 export { eases } from './easings/eases/parser.js';
+export { addChild, forEachChildren, removeChild } from './core/helpers.js';
 export { clamp, damp, degToRad, lerp, mapRange, padEnd, padStart, radToDeg, round, roundPad, snap, wrap } from './utils/chainable.js';
 export { createSeededRandom, random, randomPick, shuffle } from './utils/random.js';
 export { keepTime, sync } from './utils/time.js';
@@ -40,3 +42,4 @@ export { createMotionPath } from './svg/motionpath.js';
 export { createDrawable } from './svg/drawable.js';
 export { morphTo } from './svg/morphto.js';
 export { TextSplitter, split, splitText } from './text/split.js';
+export { scrambleText } from './text/scramble.js';

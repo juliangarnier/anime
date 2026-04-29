@@ -76,6 +76,9 @@ mocha.setup({
           </p>
         </div>
       </div>
+      <div id="scramble-text-tests" class="test small-test">
+        <div id="scramble-text">Hello World</div>
+      </div>
       `;
       done();
     }

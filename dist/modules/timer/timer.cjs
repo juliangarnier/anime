@@ -1,6 +1,6 @@
 /**
  * Anime.js - timer - CJS
- * @version v4.3.6
+ * @version v4.4.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -69,6 +69,9 @@ const reviveTimer = timer => {
 
 let timerId = 0;
 
+/** @param {Timer} prev @param {Timer} child */
+const sortByPriority = (prev, child) => prev._priority > child._priority;
+
 /**
  * Base class used to create Timers, Animations and Timelines
  */
@@ -95,6 +98,7 @@ class Timer extends clock.Clock {
       autoplay,
       frameRate,
       playbackRate,
+      priority,
       onComplete,
       onLoop,
       onPause,
@@ -115,16 +119,6 @@ class Timer extends clock.Clock {
                               timerLoop === Infinity ||
                               /** @type {Number} */(timerLoop) < 0 ? Infinity :
                               /** @type {Number} */(timerLoop) + 1;
-
-    if (globals.devTools) {
-      const isInfinite = timerIterationCount === Infinity;
-      const registered = globals.devTools.register(this, parameters, isInfinite);
-      if (registered && isInfinite) {
-        const minIterations = alternate ? 2 : 1;
-        const iterations = parent ? globals.devTools.maxNestedInfiniteLoops : globals.devTools.maxInfiniteLoops;
-        timerIterationCount = Math.max(iterations, minIterations);
-      }
-    }
 
     let offsetPosition = 0;
 
@@ -209,6 +203,8 @@ class Timer extends clock.Clock {
     this._fps = values.setValue(frameRate, timerDefaults.frameRate);
     /** @type {Number} */
     this._speed = values.setValue(playbackRate, timerDefaults.playbackRate);
+    /** @type {Number} */
+    this._priority = +values.setValue(priority, 1);
   }
 
   get cancelled() {
@@ -353,7 +349,7 @@ class Timer extends clock.Clock {
       render.tick(this, consts.minValue, 0, 0, consts.tickModes.FORCE);
     } else {
       if (!this._running) {
-        helpers.addChild(engine.engine, this);
+        helpers.addChild(engine.engine, this, sortByPriority);
         engine.engine._hasChildren = true;
         this._running = true;
       }

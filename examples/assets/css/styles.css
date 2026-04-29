@@ -161,6 +161,9 @@
 [data-color="11"] { --color-1: var(--sky-1); --color-2: var(--sky-2); --color-3: var(--sky-3); --color-4: var(--sky-4); --color-5: var(--sky-5);}
 [data-color="12"] { --color-1: var(--indigo-1); --color-2: var(--indigo-2); --color-3: var(--indigo-3); --color-4: var(--indigo-4); --color-5: var(--indigo-5);}
 [data-color="13"] { --color-1: var(--lavender-1); --color-2: var(--lavender-2); --color-3: var(--lavender-3); --color-4: var(--lavender-4); --color-5: var(--lavender-5);}
+[data-color="14"] { --color-1: var(--purple-1); --color-2: var(--purple-2); --color-3: var(--purple-3); --color-4: var(--purple-4); --color-5: var(--purple-5);}
+[data-color="15"] { --color-1: var(--magenta-1); --color-2: var(--magenta-2); --color-3: var(--magenta-3); --color-4: var(--magenta-4); --color-5: var(--magenta-5);}
+[data-color="16"] { --color-1: var(--pink-1); --color-2: var(--pink-2); --color-3: var(--pink-3); --color-4: var(--pink-4); --color-5: var(--pink-5);}
 
 *, *:before, *:after {
   box-sizing: border-box;

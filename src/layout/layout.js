@@ -29,6 +29,7 @@ import {
 } from '../waapi/waapi.js';
 
 import {
+  globals,
   defaults,
   scope,
 } from '../core/globals.js';
@@ -97,6 +98,7 @@ import {
 
 /**
  * @typedef {Object} LayoutSpecificAnimationParams
+ * @property {Number|String} [id]
  * @property {Number|FunctionValue} [delay]
  * @property {Number|FunctionValue} [duration]
  * @property {EasingParam|FunctionValue} [ease]
@@ -139,7 +141,7 @@ import {
  * @property {String} id
  * @property {DOMTarget} $el
  * @property {Number} index
- * @property {Number} total
+ * @property {Array<DOMTarget>} targets
  * @property {Number} delay
  * @property {Number} duration
  * @property {EasingParam} ease
@@ -283,7 +285,7 @@ const createNode = ($el, parentNode, state, recycledNode) => {
   node.$measure = $el;
   node.id = dataId;
   node.index = 0;
-  node.total = 1;
+  node.targets = null;
   node.delay = 0;
   node.duration = 0;
   node.ease = null;
@@ -469,12 +471,12 @@ const updateNodeProperties = (node, props) => {
  * @param  {LayoutAnimationTimingsParams} params
  */
 const updateNodeTimingParams = (node, params) => {
-  const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.total);
+  const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.targets, null, null);
   const keyEasing = isFnc(easeFunctionResult) ? easeFunctionResult : params.ease;
   const hasSpring = !isUnd(keyEasing) && !isUnd(/** @type {Spring} */(keyEasing).ease);
   node.ease = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
-  node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.total);
-  node.delay = getFunctionValue(params.delay, node.$el, node.index, node.total);
+  node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.targets, null, null);
+  node.delay = getFunctionValue(params.delay, node.$el, node.index, node.targets, null, null);
 }
 
 /**
@@ -847,10 +849,12 @@ class LayoutSnapshot {
 
     const inRootNodeIds = new Set();
     // Update index and total for inital timing calculation
-    let index = 0, total = this.nodes.size;
+    let index = 0;
+    const allNodeTargets = [];
+    this.nodes.forEach((node) => { allNodeTargets.push(node.$el); });
     this.nodes.forEach((node, id) => {
       node.index = index++;
-      node.total = total;
+      node.targets = allNodeTargets;
       // Track ids of nodes that belong to the current root to filter detached matches
       if (node && node.measuredIsInsideRoot) {
         inRootNodeIds.add(id);
@@ -962,8 +966,8 @@ export class AutoLayout {
     this.params = params;
     /** @type {DOMTarget} */
     this.root = /** @type {DOMTarget} */(registerTargets(root)[0]);
-    /** @type {Number} */
-    this.id = layoutId++;
+    /** @type {Number|String} */
+    this.id = params.id || layoutId++;
     /** @type {LayoutChildrenParam} */
     this.children = params.children || '*';
     /** @type {Boolean} */
@@ -1086,7 +1090,9 @@ export class AutoLayout {
       duration: setValue(params.duration, this.params.duration),
     }
     /** @type {TimelineParams} */
-    const tlParams = {};
+    const tlParams = {
+      id: this.id
+    }
     const onComplete = setValue(params.onComplete, this.params.onComplete);
     const onPause = setValue(params.onPause, this.params.onPause);
     for (let name in defaults) {
@@ -1100,7 +1106,8 @@ export class AutoLayout {
     }
     tlParams.onComplete = () => {
       const ap = /** @type {ScrollObserver} */(params.autoplay);
-      const isScrollControled = ap && ap.linked;
+      const ed = globals.editor;
+      const isScrollControled = (ap && ap.linked) || (ed && ed.showPanel);
       if (isScrollControled) {
         if (onComplete) onComplete(this.timeline);
         return;
@@ -1299,41 +1306,39 @@ export class AutoLayout {
         animatedParent = animatedParent.parentNode;
       }
 
-      const animatingTotal = animating.length;
-
       // Root is always animated first in sync with the first child (animating.length is the total of children)
       if (node === rootNode) {
         node.index = 0;
-        node.total = animatingTotal;
+        node.targets = animating;
         updateNodeTimingParams(node, animationTimings);
       } else if (node.isEntering) {
         node.index = animatedParent ? animatedParent.index : enteringIndex;
-        node.total = animatedParent ? animatingTotal : entering.length;
+        node.targets = animatedParent ? animating : entering;
         updateNodeTimingParams(node, enterFromTimings);
         enteringIndex++;
       } else if (node.isLeaving) {
         node.index = animatedParent ? animatedParent.index : leavingIndex;
-        node.total = animatedParent ? animatingTotal : leaving.length;
+        node.targets = animatedParent ? animating : leaving;
         leavingIndex++;
         updateNodeTimingParams(node, leaveToTimings);
       } else if (node.isTarget) {
         node.index = animatingIndex++;
-        node.total = animatingTotal;
+        node.targets = animating;
         updateNodeTimingParams(node, animationTimings);
       } else {
         node.index = animatedParent ? animatedParent.index : 0;
-        node.total = animatingTotal;
+        node.targets = animating;
         updateNodeTimingParams(node, swapAtTimings);
       }
 
       // Make sure the old state node has its inex and total values up to date for valid "from" function values calculation
       oldStateNode.index = node.index;
-      oldStateNode.total = node.total;
+      oldStateNode.targets = node.targets;
 
       // Computes all values up front so we can check for changes and we don't have to re-compute them inside the animation props
       for (let prop in nodeProperties) {
-        nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.total);
-        oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.total);
+        nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.targets, null, null);
+        oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.targets, null, null);
       }
 
       // Use a 1px tolerance to detect dimensions changes to prevent width / height animations on barelly visible elements
@@ -1559,8 +1564,8 @@ export class AutoLayout {
         }
         $el.style.transform = oldState.getComputedValue($el, 'transform');
         if (animatedSwap.includes($el)) {
-          node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.total);
-          node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.total);
+          node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.targets, null, null);
+          node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.targets, null, null);
         }
       }
       this.transformAnimation = waapi.animate(transformed, {
@@ -1575,7 +1580,7 @@ export class AutoLayout {
           if (!animatedSwap.includes($el)) return newValue;
           const oldValue = oldState.getComputedValue($el, 'transform');
           const node = newState.getNode($el);
-          return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.total), newValue]
+          return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.targets, null, null), newValue]
         },
         autoplay: false,
         // persist: true,

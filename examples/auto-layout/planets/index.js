@@ -119,9 +119,9 @@ const closeModal = () => {
     $overlay.close();
     $card = utils.$('#root .card.is-open')[0];
     $card.classList.remove('is-open');
-    $card.focus();
+    $card.focus({ preventScroll: true });
   }).then(() => {
-    $card.focus();
+    $card.focus({ preventScroll: true });
   })
 };
 

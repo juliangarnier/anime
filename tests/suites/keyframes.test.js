@@ -284,11 +284,11 @@ suite('Keyframes', () => {
 
     // Easing should be continuous throughout the sequence
     animation.seek(250);
-    expect($target.style.transform).to.equal('translateY(-25px) translateX(0px)');
+    expect($target.style.transform).to.equal('translate(0px, -25px)');
     animation.seek(500);
-    expect($target.style.transform).to.equal('translateY(0px) translateX(250px)');
+    expect($target.style.transform).to.equal('translate(250px, 0px)');
     animation.seek(750);
-    expect($target.style.transform).to.equal('translateY(25px) translateX(0px)');
+    expect($target.style.transform).to.equal('translate(0px, 25px)');
   });
 
   test('Percentage based keyframes values', () => {
@@ -309,15 +309,15 @@ suite('Keyframes', () => {
 
     // Easing should be continuous throughout the sequence
     animation.seek(0);
-    expect($target.style.transform).to.equal('translateX(100px) translateY(100px)');
+    expect($target.style.transform).to.equal('translate(100px, 100px)');
     animation.seek(200);
-    expect($target.style.transform).to.equal('translateX(-100px) translateY(60px)');
+    expect($target.style.transform).to.equal('translate(-100px, 60px)');
     animation.seek(500);
-    expect($target.style.transform).to.equal('translateX(100px) translateY(0px)');
+    expect($target.style.transform).to.equal('translate(100px, 0px)');
     animation.seek(800);
-    expect($target.style.transform).to.equal('translateX(-100px) translateY(-60px)');
+    expect($target.style.transform).to.equal('translate(-100px, -60px)');
     animation.seek(1000);
-    expect($target.style.transform).to.equal('translateX(100px) translateY(-100px)');
+    expect($target.style.transform).to.equal('translate(100px, -100px)');
   });
 
   test('Percentage based keyframes with float percentage values', () => {

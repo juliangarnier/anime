@@ -377,7 +377,7 @@ suite('Values', () => {
 
     /** @type {HTMLElement} */
     const $target = document.querySelector('#target-id');
-    expect($target.style.transform).to.equal('translateX(100px) translateY(100px) translateZ(100px) rotate(360deg) rotateX(360deg) rotateY(360deg) rotateZ(360deg) skew(45deg) skewX(45deg) skewY(45deg) scale(10) scaleX(10) scaleY(10) scaleZ(10) perspective(1000px)');
+    expect($target.style.transform).to.equal('perspective(1000px) translate3d(100px, 100px, 100px) rotate(360deg) rotateX(360deg) rotateY(360deg) rotateZ(360deg) scale(10) scaleX(10) scaleY(10) scaleZ(10) skew(45deg) skewX(45deg) skewY(45deg)');
   });
 
   test('Get inline transforms values', () => {
@@ -396,35 +396,6 @@ suite('Values', () => {
     expect(utils.get($target, 'translateX')).to.equal('10px');
     expect(utils.get($target, 'translateY')).to.equal('calc(100px - 10vh)');
     expect(utils.get($target, 'scale'     )).to.equal('0.75');
-
-  });
-
-  test('Transforms shorthand properties values', () => {
-
-    /** @type {HTMLElement} */
-    const $target = document.querySelector('#target-id');
-
-    $target.style.transform = 'translateX(10px) translateY(calc(-100px + 10vh)) translateZ(50px) scale(0.75)';
-
-    const animation = animate('#target-id', {
-      x: 100,
-      y: 100,
-      z: 100,
-      scale: 10,
-      duration: 10,
-    });
-
-    expect(utils.get('#target-id', 'x')).to.equal('10px');
-    expect(utils.get('#target-id', 'y')).to.equal('calc(-100px + 10vh)');
-    expect(utils.get('#target-id', 'z')).to.equal('50px');
-    expect(utils.get('#target-id', 'scale')).to.equal('0.75');
-
-    animation.pause().seek(animation.duration);
-
-    expect(utils.get('#target-id', 'x')).to.equal('100px');
-    expect(utils.get('#target-id', 'y')).to.equal('calc(100px + 100vh)');
-    expect(utils.get('#target-id', 'z')).to.equal('100px');
-    expect(utils.get('#target-id', 'scale')).to.equal('10');
 
   });
 

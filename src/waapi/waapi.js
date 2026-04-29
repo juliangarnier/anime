@@ -149,12 +149,12 @@ let transformsPropertiesRegistered = null;
  * @param  {WAAPIKeyframeValue} value
  * @param  {DOMTarget} $el
  * @param  {Number} i
- * @param  {Number} targetsLength
+ * @param  {DOMTargetsArray} parsedTargets
  * @return {String}
  */
-const normalizeTweenValue = (propName, value, $el, i, targetsLength) => {
+const normalizeTweenValue = (propName, value, $el, i, parsedTargets) => {
   // Do not try to compute strings with getFunctionValue otherwise it will convert CSS variables
-  let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, targetsLength);
+  let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, parsedTargets, null, null);
   if (!isNum(v)) return v;
   if (commonDefaultPXProperties.includes(propName) || stringStartsWith(propName, 'translate')) return `${v}px`;
   if (stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew')) return `${v}deg`;
@@ -167,18 +167,18 @@ const normalizeTweenValue = (propName, value, $el, i, targetsLength) => {
  * @param  {WAAPIKeyframeValue} from
  * @param  {WAAPIKeyframeValue} to
  * @param  {Number} i
- * @param  {Number} targetsLength
+ * @param  {DOMTargetsArray} parsedTargets
  * @return {WAAPITweenValue}
  */
-const parseIndividualTweenValue = ($el, propName, from, to, i, targetsLength) => {
+const parseIndividualTweenValue = ($el, propName, from, to, i, parsedTargets) => {
   /** @type {WAAPITweenValue} */
   let tweenValue = '0';
-  const computedTo = !isUnd(to) ? normalizeTweenValue(propName, to, $el, i, targetsLength) : getComputedStyle($el)[propName];
+  const computedTo = !isUnd(to) ? normalizeTweenValue(propName, to, $el, i, parsedTargets) : getComputedStyle($el)[propName];
   if (!isUnd(from)) {
-    const computedFrom = normalizeTweenValue(propName, from, $el, i, targetsLength);
+    const computedFrom = normalizeTweenValue(propName, from, $el, i, parsedTargets);
     tweenValue = [computedFrom, computedTo];
   } else {
-    tweenValue = isArr(to) ? to.map((/** @type {any} */v) => normalizeTweenValue(propName, v, $el, i, targetsLength)) : computedTo;
+    tweenValue = isArr(to) ? to.map((/** @type {any} */v) => normalizeTweenValue(propName, v, $el, i, parsedTargets)) : computedTo;
   }
   return tweenValue;
 }
@@ -218,9 +218,8 @@ export class WAAPIAnimation {
     }
 
     const parsedTargets = registerTargets(targets);
-    const targetsLength = parsedTargets.length;
 
-    if (!targetsLength) {
+    if (!parsedTargets.length) {
       console.warn(`No target found. Make sure the element you're trying to animate is accessible before creating your animation.`);
     }
 
@@ -276,7 +275,7 @@ export class WAAPIAnimation {
 
       const easeToParse = setValue(params.ease, globals.defaults.ease);
 
-      const easeFunctionResult = getFunctionValue(easeToParse, $el, i, targetsLength);
+      const easeFunctionResult = getFunctionValue(easeToParse, $el, i, parsedTargets, null, null);
       const keyEasing = isFnc(easeFunctionResult) || isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
 
       const spring = /** @type {Spring} */(easeToParse).ease && easeToParse;
@@ -284,9 +283,9 @@ export class WAAPIAnimation {
       const easing = parseWAAPIEasing(keyEasing);
 
       /** @type {Number} */
-      const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, targetsLength)) * timeScale;
+      const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, parsedTargets, null, null)) * timeScale;
       /** @type {Number} */
-      const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, targetsLength) * timeScale;
+      const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, parsedTargets, null, null) * timeScale;
       /** @type {CompositeOperation} */
       const composite = /** @type {CompositeOperation} */(setValue(params.composition, 'replace'));
 
@@ -312,19 +311,19 @@ export class WAAPIAnimation {
           const to = /** @type {WAAPITweenOptions} */(tweenOptions).to;
           const from = /** @type {WAAPITweenOptions} */(tweenOptions).from;
           /** @type {Number} */
-          tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, targetsLength)) * timeScale;
+          tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, parsedTargets, null, null)) * timeScale;
           /** @type {Number} */
-          tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, targetsLength) * timeScale;
+          tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, parsedTargets, null, null) * timeScale;
           /** @type {CompositeOperation} */
           tweenParams.composite = /** @type {CompositeOperation} */(setValue(tweenOptions.composition, composite));
           /** @type {String} */
           tweenParams.easing = parseWAAPIEasing(tweenOptionsEase);
-          parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
+          parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, parsedTargets);
           if (individualTransformProperty) {
             keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
             cachedTransforms[individualTransformProperty] = parsedPropertyValue;
           } else {
-            keyframes[name] = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
+            keyframes[name] = parseIndividualTweenValue($el, name, from, to, i, parsedTargets);
           }
           addWAAPIAnimation(this, $el, name, keyframes, tweenParams);
           if (!isUnd(from)) {
@@ -337,8 +336,8 @@ export class WAAPIAnimation {
           }
         } else {
           parsedPropertyValue = isArr(propertyValue) ?
-                                propertyValue.map((/** @type {any} */v) => normalizeTweenValue(name, v, $el, i, targetsLength)) :
-                                normalizeTweenValue(name, /** @type {any} */(propertyValue), $el, i, targetsLength);
+                                propertyValue.map((/** @type {any} */v) => normalizeTweenValue(name, v, $el, i, parsedTargets)) :
+                                normalizeTweenValue(name, /** @type {any} */(propertyValue), $el, i, parsedTargets);
           if (individualTransformProperty) {
             keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
             cachedTransforms[individualTransformProperty] = parsedPropertyValue;
