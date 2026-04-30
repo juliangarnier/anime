@@ -946,5 +946,45 @@ suite('Timelines', () => {
     tl.remove(animation);
   });
 
+  test('Animating a child timeline progress should not corrupt parent render state via nested tick', () => {
+    const [ $target1, $target2 ] = utils.$('.target-class');
+
+    const innerTL = createTimeline({
+      autoplay: false,
+      defaults: { duration: 100, ease: 'linear' },
+    })
+    .add($target1, { translateX: 200 });
+
+    let call1Count = 0;
+    let call2Count = 0;
+
+    const parentTL = createTimeline({
+      autoplay: false,
+      defaults: { ease: 'linear' },
+    })
+    .call(() => { call1Count += 1; }, 0)
+    .add(innerTL, { progress: 1, duration: 200 })
+    .add($target2, { translateY: 200, duration: 200 }, 0)
+    .call(() => { call2Count += 1; }, 200);
+
+    parentTL.seek(100);
+    expect(call1Count).to.equal(1);
+    expect($target1.style.transform).to.equal('translateX(100px)');
+    expect($target2.style.transform).to.equal('translateY(100px)');
+
+    parentTL.seek(200);
+    expect(call2Count).to.equal(1);
+    expect($target1.style.transform).to.equal('translateX(200px)');
+    expect($target2.style.transform).to.equal('translateY(200px)');
+
+    parentTL.seek(100);
+    expect($target1.style.transform).to.equal('translateX(100px)');
+    expect($target2.style.transform).to.equal('translateY(100px)');
+    expect(call2Count).to.equal(2);
+
+    parentTL.seek(0);
+    expect(call1Count).to.equal(2);
+  });
+
 });
 

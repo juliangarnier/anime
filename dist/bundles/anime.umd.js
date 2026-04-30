@@ -1,6 +1,6 @@
 /**
  * Anime.js - UMD bundle
- * @version v4.4.0
+ * @version v4.4.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -841,7 +841,7 @@
     editor: null,
   };
 
-  const globalVersions = { version: '4.4.0', engine: null };
+  const globalVersions = { version: '4.4.1', engine: null };
 
   if (isBrowser) {
     if (!win.AnimeJS) win.AnimeJS = [];
@@ -1836,50 +1836,6 @@
     return hasRendered;
   };
 
-  // Shared context for extracted forEachChildren callbacks in tick()
-  // Avoids closure allocation every frame
-
-  let renderCtxChildrenTime = 0;
-  let renderCtxTlFps = 0;
-  let renderCtxTickTime = 0;
-  let renderCtxTickMode = 0;
-  let renderCtxMuteCallbacks = 0;
-  let renderCtxInternalRender = 0;
-  let renderCtxChildrenHasRendered = 0;
-  let renderCtxChildrenHaveCompleted = true;
-  let loopCtxIsRunningBackwards = false;
-  let loopCtxIterationDuration = 0;
-  let loopCtxMuteCallbacks = 0;
-
-  /** @param {JSAnimation} child */
-  const tickLoopChild = (child) => {
-    if (!loopCtxIsRunningBackwards) {
-      // Force an internal render to trigger the callbacks if the child has not completed on loop
-      if (!child.completed && !child.backwards && child._currentTime < child.iterationDuration) {
-        render(child, loopCtxIterationDuration, loopCtxMuteCallbacks, 1, tickModes.FORCE);
-      }
-      // Reset their began and completed flags to allow retrigering callbacks on the next iteration
-      child.began = false;
-      child.completed = false;
-    } else {
-      const childDuration = child.duration;
-      const childStartTime = child._offset + child._delay;
-      const childEndTime = childStartTime + childDuration;
-      // Triggers the onComplete callback on reverse for children on the edges of the timeline
-      if (!loopCtxMuteCallbacks && childDuration <= minValue && (!childStartTime || childEndTime === loopCtxIterationDuration)) {
-        child.onComplete(child);
-      }
-    }
-  };
-
-  /** @param {JSAnimation} child */
-  const tickRenderChild = (child) => {
-    const childTime = round$1((renderCtxChildrenTime - child._offset) * child._speed, 12); // Rounding is needed when using seconds
-    const childTickMode = child._fps < renderCtxTlFps ? child.requestTick(renderCtxTickTime) : renderCtxTickMode;
-    renderCtxChildrenHasRendered += render(child, childTime, renderCtxMuteCallbacks, renderCtxInternalRender, childTickMode);
-    if (!child.completed && renderCtxChildrenHaveCompleted) renderCtxChildrenHaveCompleted = false;
-  };
-
   /**
    * @param  {Tickable} tickable
    * @param  {Number} time
@@ -1896,28 +1852,42 @@
       const tlIsRunningBackwards = tl.backwards;
       const tlChildrenTime = internalRender ? time : tl._iterationTime;
       const tlCildrenTickTime = now();
+
       let tlChildrenHasRendered = 0;
       let tlChildrenHaveCompleted = true;
+
       // If the timeline has looped forward, we need to manually triggers children skipped callbacks
       if (!internalRender && tl._currentIteration !== _currentIteration) {
         const tlIterationDuration = tl.iterationDuration;
-        loopCtxIsRunningBackwards = tlIsRunningBackwards;
-        loopCtxIterationDuration = tlIterationDuration;
-        loopCtxMuteCallbacks = muteCallbacks;
-        forEachChildren(tl, tickLoopChild);
+        forEachChildren(tl, (/** @type {JSAnimation} */child) => {
+          if (!tlIsRunningBackwards) {
+            // Force an internal render to trigger the callbacks if the child has not completed on loop
+            if (!child.completed && !child.backwards && child._currentTime < child.iterationDuration) {
+              render(child, tlIterationDuration, muteCallbacks, 1, tickModes.FORCE);
+            }
+            // Reset their began and completed flags to allow retrigering callbacks on the next iteration
+            child.began = false;
+            child.completed = false;
+          } else {
+            const childDuration = child.duration;
+            const childStartTime = child._offset + child._delay;
+            const childEndTime = childStartTime + childDuration;
+            // Triggers the onComplete callback on reverse for children on the edges of the timeline
+            if (!muteCallbacks && childDuration <= minValue && (!childStartTime || childEndTime === tlIterationDuration)) {
+              child.onComplete(child);
+            }
+          }
+        });
         if (!muteCallbacks) tl.onLoop(/** @type {CallbackArgument} */(tl));
       }
-      renderCtxChildrenTime = tlChildrenTime;
-      renderCtxTlFps = tl._fps;
-      renderCtxTickTime = tlCildrenTickTime;
-      renderCtxTickMode = tickMode;
-      renderCtxMuteCallbacks = muteCallbacks;
-      renderCtxInternalRender = internalRender;
-      renderCtxChildrenHasRendered = 0;
-      renderCtxChildrenHaveCompleted = true;
-      forEachChildren(tl, tickRenderChild, tlIsRunningBackwards);
-      tlChildrenHasRendered = renderCtxChildrenHasRendered;
-      tlChildrenHaveCompleted = renderCtxChildrenHaveCompleted;
+
+      forEachChildren(tl, (/** @type {JSAnimation} */child) => {
+        const childTime = round$1((tlChildrenTime - child._offset) * child._speed, 12); // Rounding is needed when using seconds
+        const childTickMode = child._fps < tl._fps ? child.requestTick(tlCildrenTickTime) : tickMode;
+        tlChildrenHasRendered += render(child, childTime, muteCallbacks, internalRender, childTickMode);
+        if (!child.completed && tlChildrenHaveCompleted) tlChildrenHaveCompleted = false;
+      }, tlIsRunningBackwards);
+
       // Renders on timeline are triggered by its children so it needs to be set after rendering the children
       if (!muteCallbacks && tlChildrenHasRendered) tl.onRender(/** @type {CallbackArgument} */(tl));
       // Triggers the timeline onComplete() once all chindren all completed and the current time has reached the end
