@@ -9,7 +9,7 @@ export const isBrowser = typeof window !== 'undefined';
 export const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
 
 /** @type {Document|null} */
-export const doc = isBrowser ? document : null;
+export const doc = isBrowser && typeof document !== 'undefined' ? document : null;
 
 // Enums
 
