@@ -60,7 +60,7 @@ export const removeWAAPIAnimation = ($el, property, parent) => {
  * @param {String} property
  * @param {PropertyIndexedKeyframes} keyframes
  * @param {KeyframeAnimationOptions} params
- * @retun {globalThis.Animation}
+ * @return {globalThis.Animation}
  */
 export const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
   const animation = $el.animate(keyframes, params);
@@ -74,7 +74,7 @@ export const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
   parent.animations.push(animation);
   removeWAAPIAnimation($el, property);
   addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
-  const handleRemove = () => { removeWAAPIAnimation($el, property, parent); };
+  const handleRemove = () => removeWAAPIAnimation($el, property, parent);
   animation.oncancel = handleRemove;
   animation.onremove = handleRemove;
   if (!parent.persist) {
