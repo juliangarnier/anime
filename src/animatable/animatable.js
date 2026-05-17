@@ -54,7 +54,7 @@ export class Animatable {
       let paused = true;
       for (let name in this.animations) {
         const anim = this.animations[name];
-        if (!anim.paused && paused) {
+        if (!anim.paused) {
           paused = false;
           break;
         }
