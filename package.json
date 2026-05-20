@@ -1,8 +1,8 @@
 {
   "name": "animejs",
-  "version": "4.2.2",
-  "homepage": "https://animejs.com",
+  "version": "4.4.1",
   "description": "JavaScript animation engine",
+  "homepage": "https://animejs.com",
   "author": "Julian Garnier <julian@animejs.com>",
   "license": "MIT",
   "repository": {
@@ -104,6 +104,12 @@
       "import": "./dist/modules/events/index.js",
       "default": "./dist/modules/events/index.cjs"
     },
+    "./layout": {
+      "types": "./dist/modules/layout/index.d.ts",
+      "require": "./dist/modules/layout/index.cjs",
+      "import": "./dist/modules/layout/index.js",
+      "default": "./dist/modules/layout/index.cjs"
+    },
     "./easings": {
       "types": "./dist/modules/easings/index.d.ts",
       "require": "./dist/modules/easings/index.cjs",
@@ -181,6 +187,7 @@
     "nodemon": "^3.1.10",
     "rollup": "^4.9.1",
     "three": "^0.160.0",
+    "tweaks": "^0.3.4",
     "typescript": "^5.9.2"
   },
   "scripts": {

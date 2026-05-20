@@ -1,13 +1,13 @@
 /**
  * Anime.js - animatable - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { compositionTypes, noop } from '../core/consts.js';
 import { scope } from '../core/globals.js';
-import { isUnd, isKey, stringStartsWith, isObj, mergeObjects, forEachChildren, isStr, isArr } from '../core/helpers.js';
+import { isUnd, isKey, stringStartsWith, isObj, mergeObjects, forEachChildren, isArr, isStr } from '../core/helpers.js';
 import { JSAnimation } from '../animation/animation.js';
 import { parseEase } from '../easings/eases/parser.js';
 

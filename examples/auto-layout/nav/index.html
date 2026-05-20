@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / Nav / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 6rem 1rem;
+      min-height: 100lvh;
+    }
+    nav {
+      overflow-x: scroll;
+      display: flex;
+      width: 100%;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+      background-color: var(--bg-2);
+    }
+    nav ul {
+      position: relative;
+      display: flex;
+      flex-shrink: 0;
+      padding: 1rem;
+      list-style: none;
+    }
+    nav button {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      background: transparent;
+      color: var(--fg-2);
+    }
+    nav button:not(:disabled):focus-visible,
+    nav button:not(:disabled):hover,
+    nav button:has(.button-bg) {
+      z-index: 0;
+      color: var(--color-1);
+      background: transparent;
+      outline: none;
+    }
+    nav button .button-bg {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-4);
+      border-radius: .25rem;
+      border: 1px solid var(--color-2);
+    }
+    nav button .button-txt {
+      position: relative;
+      z-index: 1;
+    }
+    .container {
+      width: 100%;
+      max-width: 42rem;
+      border-radius: 1rem;
+      background: var(--bg-3);
+    }
+    .content {
+      width: 100%;
+      padding: 2rem;
+    }
+    .content h1 {
+      color: var(--color-1);
+      margin-bottom: 1em;
+    }
+    .content section {
+      display: none;
+    }
+    .content section.is-active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><button data-color="1" class="is-active"><span class="button-txt">Mercury</span><span class="button-bg"></span></button></li>
+        <li><button data-color="2"><span class="button-txt">Venus</span></button></li>
+        <li><button data-color="6"><span class="button-txt">Earth</span></button></li>
+        <li><button data-color="0"><span class="button-txt">Mars</span></button></li>
+        <li><button data-color="3"><span class="button-txt">Jupiter</span></button></li>
+        <li><button data-color="4"><span class="button-txt">Saturn</span></button></li>
+        <li><button data-color="8"><span class="button-txt">Uranus</span></button></li>
+        <li><button data-color="10"><span class="button-txt">Neptune</span></button></li>
+      </ul>
+    </nav>
+    <div class="content">
+      <section data-color="1" class="planet is-active">
+        <p>The smallest planet in our solar system and closest to the Sun, Mercury is only slightly larger than Earth's Moon. With extreme temperatures ranging from -290°F to 800°F, this rocky world has a cratered surface similar to our Moon.</p>
+      </section>
+      <section data-color="2" class="planet">
+        <p>Venus is the second planet from the Sun and is similar in size to Earth. Its thick atmosphere traps heat, making it the hottest planet in our solar system. The surface of Venus is a scorching 867°F.</p>
+      </section>
+      <section data-color="6" class="planet">
+        <p>Earth is the third planet from the Sun and the only known planet to harbor life. It has a diverse environment with oceans, continents, and a protective atmosphere. The average surface temperature is about 61°F.</p>
+      </section>
+      <section data-color="0" class="planet">
+        <p>Mars, the fourth planet from the Sun, is often called the "Red Planet" due to its rusty color. It has a thin atmosphere and a cold, desert-like surface with a temperature averaging -81°F.</p>
+      </section>
+      <section data-color="3" class="planet">
+        <p>Jupiter is the largest planet in our solar system, a gas giant with a powerful atmosphere. It's known for its Great Red Spot, a giant storm. The cloud-top temperature is around -234°F.</p>
+      </section>
+      <section data-color="4" class="planet">
+        <p>Saturn, the sixth planet from the Sun, is famous for its prominent rings made of ice and rock. It's a gas giant with a cloud-top temperature of about -288°F.</p>
+      </section>
+      <section data-color="8" class="planet">
+        <p>Uranus is the seventh planet from the Sun and an ice giant. It rotates on its side, giving it unique seasons. The cloud-top temperature is around -357°F.</p>
+      </section>
+      <section data-color="10" class="planet">
+        <p>Neptune is the eighth and farthest planet from the Sun. It's another ice giant with strong winds and a deep blue color. The cloud-top temperature is about -353°F.</p>
+      </section>
+    </div>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

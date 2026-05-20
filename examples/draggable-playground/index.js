@@ -18,8 +18,14 @@ const [ $log ] = utils.$('#log');
 
 createDraggable('#fixed', {
   container: document.body,
+  releaseStiffness: 200,
+  releaseDamping: 8,
+  velocityMultiplier: 4,
   onDrag: self => {
     $log.innerHTML = `${utils.round(self.velocity, 3)}`;
+  },
+  onUpdate: self => {
+    console.log(self.x);
   }
 });
 
@@ -205,7 +211,7 @@ const flickDraggable = createDraggable(flickData, {
   y: false,
   onGrab: () => animate(flickData, { speedX: 0, duration: 500 }),
   onRelease: () => animate(flickData, { speedX: 2, duration: 500 }),
-  releaseDamping: 10,
+  releaseStiffness: 10,
 });
 
 createTimer({

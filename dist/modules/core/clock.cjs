@@ -1,14 +1,14 @@
 /**
  * Anime.js - core - CJS
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 'use strict';
 
 var consts = require('./consts.cjs');
-var helpers = require('./helpers.cjs');
+var globals = require('./globals.cjs');
 
 /**
  * @import {
@@ -30,7 +30,7 @@ class Clock {
     /** @type {Number} */
     this._currentTime = initTime;
     /** @type {Number} */
-    this._elapsedTime = initTime;
+    this._lastTickTime = initTime;
     /** @type {Number} */
     this._startTime = initTime;
     /** @type {Number} */
@@ -38,7 +38,7 @@ class Clock {
     /** @type {Number} */
     this._scheduledTime = 0;
     /** @type {Number} */
-    this._frameDuration = helpers.round(consts.K / consts.maxFps, 0);
+    this._frameDuration = consts.K / consts.maxFps;
     /** @type {Number} */
     this._fps = consts.maxFps;
     /** @type {Number} */
@@ -59,7 +59,8 @@ class Clock {
     const previousFrameDuration = this._frameDuration;
     const fr = +frameRate;
     const fps = fr < consts.minValue ? consts.minValue : fr;
-    const frameDuration = helpers.round(consts.K / fps, 0);
+    const frameDuration = consts.K / fps;
+    if (fps > globals.defaults.frameRate) globals.defaults.frameRate = fps;
     this._fps = fps;
     this._frameDuration = frameDuration;
     this._scheduledTime += frameDuration - previousFrameDuration;
@@ -80,14 +81,13 @@ class Clock {
    */
   requestTick(time) {
     const scheduledTime = this._scheduledTime;
-    const elapsedTime = this._elapsedTime;
-    this._elapsedTime += (time - elapsedTime);
-    // If the elapsed time is lower than the scheduled time
+    this._lastTickTime = time;
+    // If the current time is lower than the scheduled time
     // this means not enough time has passed to hit one frameDuration
     // so skip that frame
-    if (elapsedTime < scheduledTime) return consts.tickModes.NONE;
+    if (time < scheduledTime) return consts.tickModes.NONE;
     const frameDuration = this._frameDuration;
-    const frameDelta = elapsedTime - scheduledTime;
+    const frameDelta = time - scheduledTime;
     // Ensures that _scheduledTime progresses in steps of at least 1 frameDuration.
     // Skips ahead if the actual elapsed time is higher.
     this._scheduledTime += frameDelta < frameDuration ? frameDuration : frameDelta;

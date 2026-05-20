@@ -7,8 +7,6 @@ import {
   valueTypes,
   tickModes,
   compositionTypes,
-  emptyString,
-  transformsFragmentStrings,
   transformsSymbol,
   minValue,
 } from './consts.js';
@@ -21,8 +19,17 @@ import {
   forEachChildren,
 } from './helpers.js';
 
+import {
+  buildTransformString,
+} from './transforms.js';
+
+import {
+  composeColorValue,
+  composeComplexValue,
+} from './values.js';
+
 /**
- *   @import {
+ * @import {
  *   Tickable,
  *   Renderable,
  *   CallbackArgument,
@@ -65,7 +72,6 @@ export const render = (tickable, time, muteCallbacks, internalRender, tickMode) 
   const _hasChildren = tickable._hasChildren;
   const tickableDelay = tickable._delay;
   const tickablePrevAbsoluteTime = tickable._currentTime; // TODO: rename ._currentTime to ._absoluteCurrentTime
-
   const tickableEndTime = tickableDelay + iterationDuration;
   const tickableAbsoluteTime = time - tickableDelay;
   const tickablePrevTime = clamp(tickablePrevAbsoluteTime, -tickableDelay, duration);
@@ -197,30 +203,9 @@ export const render = (tickable, time, muteCallbacks, internalRender, tickMode) 
             number = /** @type {Number} */(tweenModifier(round(lerp(tween._fromNumber, tween._toNumber,  tweenProgress), tweenPrecision)));
             value = `${number}${tween._unit}`;
           } else if (tweenValueType === valueTypes.COLOR) {
-            const fn = tween._fromNumbers;
-            const tn = tween._toNumbers;
-            const r = round(clamp(/** @type {Number} */(tweenModifier(lerp(fn[0], tn[0], tweenProgress))), 0, 255), 0);
-            const g = round(clamp(/** @type {Number} */(tweenModifier(lerp(fn[1], tn[1], tweenProgress))), 0, 255), 0);
-            const b = round(clamp(/** @type {Number} */(tweenModifier(lerp(fn[2], tn[2], tweenProgress))), 0, 255), 0);
-            const a = clamp(/** @type {Number} */(tweenModifier(round(lerp(fn[3], tn[3], tweenProgress), tweenPrecision))), 0, 1);
-            value = `rgba(${r},${g},${b},${a})`;
-            if (tweenHasComposition) {
-              const ns = tween._numbers;
-              ns[0] = r;
-              ns[1] = g;
-              ns[2] = b;
-              ns[3] = a;
-            }
+            value = composeColorValue(tween, tweenProgress, tweenPrecision);
           } else if (tweenValueType === valueTypes.COMPLEX) {
-            value = tween._strings[0];
-            for (let j = 0, l = tween._toNumbers.length; j < l; j++) {
-              const n = /** @type {Number} */(tweenModifier(round(lerp(tween._fromNumbers[j], tween._toNumbers[j], tweenProgress), tweenPrecision)));
-              const s = tween._strings[j + 1];
-              value += `${s ? n + s : n}`;
-              if (tweenHasComposition) {
-                tween._numbers[j] = n;
-              }
-            }
+            value = composeComplexValue(tween, tweenProgress, tweenPrecision);
           }
 
           // For additive tweens and Animatables
@@ -263,14 +248,8 @@ export const render = (tickable, time, muteCallbacks, internalRender, tickMode) 
 
         }
 
-        // NOTE: Possible improvement: Use translate(x,y) / translate3d(x,y,z) syntax
-        // to reduce memory usage on string composition
         if (tweenTransformsNeedUpdate && tween._renderTransforms) {
-          let str = emptyString;
-          for (let key in tweenTargetTransformsProperties) {
-            str += `${transformsFragmentStrings[key]}${tweenTargetTransformsProperties[key]}) `;
-          }
-          tweenStyle.transform = str;
+          tweenStyle.transform = buildTransformString(tweenTargetTransformsProperties);
           tweenTransformsNeedUpdate = 0;
         }
 
@@ -381,7 +360,6 @@ export const tick = (tickable, time, muteCallbacks, internalRender, tickMode) =>
 
     // Renders on timeline are triggered by its children so it needs to be set after rendering the children
     if (!muteCallbacks && tlChildrenHasRendered) tl.onRender(/** @type {CallbackArgument} */(tl));
-
     // Triggers the timeline onComplete() once all chindren all completed and the current time has reached the end
     if ((tlChildrenHaveCompleted || tlIsRunningBackwards) && tl._currentTime >= tl.duration) {
       // Make sure the paused flag is false in case it has been skipped in the render function

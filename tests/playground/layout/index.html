@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Layout tests / anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+      min-height: 100lvh;
+      padding-bottom: 28rem;
+    }
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      padding: .5rem;
+      background-color: var(--bg-1);
+      border-bottom: 1px solid var(--bg-4);
+    }
+    #controls button {
+      width: 20%;
+      flex-grow: 1;
+      flex-shrink: 0;
+      height: 4ch;
+      min-width: 0;
+      margin: .5ch;
+      background-color: var(--fg-1);
+      color: var(--bg-2);
+    }
+    #controls button.is-active {
+      background-color: var(--fg-1);
+      color: var(--bg-3);
+    }
+    .tests {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .test {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      flex-direction: column;
+      width: 100%;
+      border: 1px solid var(--white-5);
+      margin-right: -1px;
+      margin-top: -1px;
+      padding: 3rem 1rem 1rem 1rem;
+      background: var(--bg-1);
+    }
+    @media (min-width: 740px) {
+      .test {
+        width: 50%;
+      }
+      .double-container {
+        width: 100%;
+      }
+    }
+    @media (min-width: 1024px) {
+      .test {
+        width: 33.333333%;
+      }
+      .double-container {
+        width: 100%;
+      }
+    }
+    @media (min-width: 1600px) {
+      .test {
+        width: 25%;
+      }
+      .double-container {
+        width: 50%;
+      }
+    }
+    .test-header {
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: .5rem;
+    }
+    .test-header button {
+      padding: 0 .5rem;
+    }
+    .fixed-height{
+      height: 18rem;
+    }
+    .demo {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      container-type: inline-size;
+      padding: 0;
+      width: 100%;
+    }
+    .demo:has(.sticky) {
+      align-items: flex-start;
+      height: 100%;
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      top: 1.5rem;
+      gap: .5rem;
+      padding: .5rem;
+      width: 100cqw;
+      margin-left: 1rem;
+      margin-right: 1rem;
+      background-color: var(--bg-2);
+      border: 1px dotted var(--white-2);
+    }
+    .double-container .container {
+      width: 50cqw;
+      margin-left: 0rem;
+      margin-right: 0rem;
+    }
+    .display-none {
+      display: none;
+    }
+    .relative {
+      position: relative;
+      top: 0rem;
+    }
+    .static {
+      position: static;
+      top: 2.5rem;
+    }
+    .absolute {
+      position: absolute;
+      top: 2.5rem;
+    }
+    .fixed {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+    }
+    .sticky {
+      position: sticky;
+      top: 3.5rem;
+    }
+    .vertical {
+      flex-direction: column;
+    }
+    .vertical.reverse {
+      flex-direction: column-reverse;
+    }
+    .horizontal {
+      flex-direction: row;
+    }
+    .target-container .child {
+      display: none;
+    }
+    .child {
+      border: 1px dashed var(--white-3);
+      width: 100%;
+      padding: .5rem;
+      border-radius: 1rem;
+      background-color: var(--bg-4);
+      transition: all 1s ease-out;
+    }
+    .child > span {
+      background: var(--white-2);
+      color: var(--bg-2);
+    }
+    .sub-child {
+      width: 100%;
+      border: 1px solid var(--white-4);
+      margin-top: .5rem;
+      padding: .5rem;
+      border-radius: .5rem;
+      background-color: var(--bg-5);
+    }
+    .sub-child > span {
+      background: var(--white-2);
+      color: var(--bg-2);
+    }
+    .flex {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 1rem;
+    }
+    #layout-id .child-b,
+    #layout-id .vertical .child-a {
+      visibility: hidden;
+    }
+    #layout-id .vertical .child-b {
+      visibility: visible;
+    }
+    #simple-fixed-root {
+      position: relative;
+      z-index: 10;
+    }
+    #specific-properties .vertical .child {
+      color: var(--red-1);
+      border-radius: .5rem;
+    }
+    #specific-properties .vertical .child > span {
+      background-color: var(--red-1);
+    }
+    #specific-properties .vertical .sub-child {
+      color: var(--orange-1);
+      border-radius: .25rem;
+    }
+    #specific-properties .vertical .sub-child > span {
+      background-color: var(--orange-1);
+    }
+    #simple-fixed-root {
+      position: fixed;
+      z-index: 11;
+      bottom: 0;
+      right: 0;
+      height: 14rem;
+    }
+    #swap-outside-fixed-root {
+      z-index: 10;
+    }
+    #swap-outside-fixed-root .container-b {
+      position: fixed;
+      top: inherit;
+      bottom: 2rem;
+      left: 2rem;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <button id="animate-all">animate all</button>
+    <button id="revert-all">revert all</button>
+  </div>
+  <div class="tests">
+
+    <div id="simple-absolute-root" class="test fixed-height">
+      <div class="test-header">
+        <h2>Simple absolute root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container absolute vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <strong>sub child</strong> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="simple-sticky-root" class="test fixed-height">
+      <div class="test-header">
+        <h2>Simple sticky root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container sticky vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="simple-fixed-root" class="test fixed-height">
+      <div class="test-header">
+        <h2>Simple fixed root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container fixed vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="simple-relative-root" class="test fixed-height">
+      <div class="test-header">
+        <h2>Simple relative root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container relative vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="inlined-comments" class="test fixed-height">
+      <div class="test-header">
+        <h2>Inlined HTML comments</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container static vertical">
+          <div class="child">A direct <!-- --><span>child</span><!-- --> element. <div class="sub-child"> And a <!-- --><strong>sub child</strong><!-- --> element</div></div>
+          <div class="child">A direct <!-- --><span>child</span><!-- --> element. <div class="sub-child"> And a <!-- --><strong>sub child</strong><!-- --> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="simple-flex-root" class="test flex-height">
+      <div class="test-header">
+        <h2>Simple flex root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child flex">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child flex">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="flex-root-inline-divs" class="test flex-height">
+      <div class="test-header">
+        <h2>Flex root with inlined DIVs</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child flex">A direct <div>DIV</div> element. <div class="sub-child"> And a <div>sub DIV</div> element</div></div>
+          <div class="child flex">A direct <div>DIV</div> element. <div class="sub-child"> And a <div>sub DIV</div> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="simple-static-root" class="test fixed-height">
+      <div class="test-header">
+        <h2>Simple static root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container static vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="specific-children" class="test fixed-height">
+      <div class="test-header">
+        <h2>Specific children</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="specific-properties" class="test fixed-height">
+      <div class="test-header">
+        <h2>Specific properties</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="hide-display-none" class="test fixed-height">
+      <div class="test-header">
+        <h2>Remove with "display: none"</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="hide-visibility-hidden" class="test fixed-height">
+      <div class="test-header">
+        <h2>Remove with "visibility: hidden"</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="frozen-properties" class="test fixed-height">
+      <div class="test-header">
+        <h2>Custom frozen properties</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="removed-properties" class="test fixed-height">
+      <div class="test-header">
+        <h2>Custom removed properties</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="added-properties" class="test fixed-height">
+      <div class="test-header">
+        <h2>Added properties</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="custom-timings" class="test fixed-height">
+      <div class="test-header">
+        <h2>Custom timings</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="spring-ease" class="test fixed-height">
+      <div class="test-header">
+        <h2>Spring ease</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="layout-id" class="test fixed-height">
+      <div class="test-header">
+        <h2>Swap elements with id</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child child-a" data-layout-id="test-id-1">A direct <span data-layout-id="test-id-2">child</span> element. <div class="sub-child" data-layout-id="test-id-3"> And a <span data-layout-id="test-id-4">sub child</span> element</div></div>
+          <div class="child child-b" data-layout-id="test-id-1">A direct <span data-layout-id="test-id-2">child</span> element. <div class="sub-child" data-layout-id="test-id-3"> And a <span data-layout-id="test-id-4">sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="swap-outside-fixed-root" class="test fixed-height">
+      <div class="test-header">
+        <h2>Swap element outside fixed root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container container-a">
+          <div class="child" data-layout-id="c">A direct <span data-layout-id="c-1">child</span> element. <div class="sub-child" data-layout-id="c-2"> And a <span data-layout-id="c-3">sub child</span> element</div></div>
+          <div class="child" data-layout-id="d">A direct <span data-layout-id="d-1">child</span> element. <div class="sub-child" data-layout-id="d-2"> And a <span data-layout-id="d-3">sub child</span> element</div></div>
+        </div>
+        <div class="container container-b target-container">
+          <div class="child" data-layout-id="c">A direct <span data-layout-id="c-1">child</span> element. <div class="sub-child" data-layout-id="c-2"> And a <span data-layout-id="c-3">sub child</span> element</div></div>
+          <div class="child" data-layout-id="d">A direct <span data-layout-id="d-1">child</span> element. <div class="sub-child" data-layout-id="d-2"> And a <span data-layout-id="d-3">sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="stagger-timings" class="test fixed-height">
+      <div class="test-header">
+        <h2>Stagger timings</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical reverse">
+          <div class="child child-animated"><div>anim</div></div>
+          <div class="child child-removed"><div>rem</div></div>
+          <div class="child child-added" style="display: none"><div>add</div></div>
+          <div class="child child-animated"><div>anim</div></div>
+          <div class="child child-removed"><div>rem</div></div>
+          <div class="child child-added" style="display: none"><div>add</div></div>
+          <div class="child child-animated"><div>anim</div></div>
+          <div class="child child-removed"><div>rem</div></div>
+          <div class="child child-added" style="display: none"><div>add</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="stagger-values" class="test fixed-height">
+      <div class="test-header">
+        <h2>Stagger values</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical reverse">
+          <div class="child child-animated"><div>anim</div></div>
+          <div class="child child-removed"><div>rem</div></div>
+          <div class="child child-added" style="display: none"><div>add</div></div>
+          <div class="child child-animated"><div>anim</div></div>
+          <div class="child child-removed"><div>rem</div></div>
+          <div class="child child-added" style="display: none"><div>add</div></div>
+          <div class="child child-animated"><div>anim</div></div>
+          <div class="child child-removed"><div>rem</div></div>
+          <div class="child child-added" style="display: none"><div>add</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="transformed-parent" class="test fixed-height">
+      <div class="test-header">
+        <h2>Transformed parent</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo" style="transform: rotate(20deg) scale(.87); perspective: 1000px;">
+        <div class="container vertical reverse" style="transform: rotateX(-40deg); transform-style: preserve-3d;">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+    <div id="swap-inside-root" class="test fixed-height double-container">
+      <div class="test-header">
+        <h2>Swap element inside root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container vertical">
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+          <div class="child">A direct <span>child</span> element. <div class="sub-child"> And a <span>sub child</span> element</div></div>
+        </div>
+        <div class="container vertical"></div>
+      </div>
+    </div>
+    <div id="swap-outside-root" class="test fixed-height double-container">
+      <div class="test-header">
+        <h2>Swap element outside root</h2>
+        <button>Animate</button>
+      </div>
+      <div class="demo">
+        <div class="container container-a">
+          <div class="child" data-layout-id="a">A direct <span data-layout-id="a-1">child</span> element. <div class="sub-child" data-layout-id="a-2"> And a <span data-layout-id="a-3">sub child</span> element</div></div>
+          <div class="child" data-layout-id="b">A direct <span data-layout-id="b-1">child</span> element. <div class="sub-child" data-layout-id="b-2"> And a <span data-layout-id="b-3">sub child</span> element</div></div>
+        </div>
+        <div class="container container-b target-container">
+          <div class="child" data-layout-id="a">A direct <span data-layout-id="a-1">child</span> element. <div class="sub-child" data-layout-id="a-2"> And a <span data-layout-id="a-3">sub child</span> element</div></div>
+          <div class="child" data-layout-id="b">A direct <span data-layout-id="b-1">child</span> element. <div class="sub-child" data-layout-id="b-2"> And a <span data-layout-id="b-3">sub child</span> element</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

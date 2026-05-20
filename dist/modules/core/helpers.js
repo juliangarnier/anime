@@ -1,11 +1,11 @@
 /**
  * Anime.js - core - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
-import { isBrowser, maxValue, minValue, hexTestRgx, lowerCaseRgx } from './consts.js';
+import { isBrowser, maxValue, minValue, lowerCaseRgx, hexTestRgx, validRgbHslRgx } from './consts.js';
 import { globals } from './globals.js';
 
 /**
@@ -57,8 +57,8 @@ const isHex = a => hexTestRgx.test(a);
 const isRgb = a => stringStartsWith(a, 'rgb');
 /**@param {any} a @return {Boolean} */
 const isHsl = a => stringStartsWith(a, 'hsl');
-/**@param {any} a @return {Boolean} */
-const isCol = a => isHex(a) || isRgb(a) || isHsl(a);
+/**@param {any} a @return {Boolean} */ // Make sure boxShadow syntax like 'rgb(255, 0, 0) 0px 0px 6px 0px' is not a valid color type
+const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a)));
 /**@param {any} a @return {Boolean} */
 const isKey = a => !globals.defaults.hasOwnProperty(a);
 
@@ -122,8 +122,6 @@ const _round = Math.round;
  */
 const clamp = (v, min, max) => v < min ? min : v > max ? max : v;
 
-const powCache = {};
-
 /**
  * Rounds a number to specified decimal places
  *
@@ -131,13 +129,12 @@ const powCache = {};
  * @param  {Number} decimalLength - Number of decimal places
  * @return {Number}
  */
-const round = (v, decimalLength) => {
-  if (decimalLength < 0) return v;
-  if (!decimalLength) return _round(v);
-  let p = powCache[decimalLength];
-  if (!p) p = powCache[decimalLength] = 10 ** decimalLength;
-  return _round(v * p) / p;
-};
+ const round = (v, decimalLength) => {
+   if (decimalLength < 0) return v;
+   if (!decimalLength) return _round(v);
+   const p = 10 ** decimalLength;
+   return _round(v * p) / p;
+ };
 
 /**
  * Snaps a value to nearest increment or array value

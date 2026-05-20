@@ -211,10 +211,10 @@ suite('Parameters', () => {
     expect(getTweenDelay(getChildAtIndex(animation, 2))).to.equal(duration * (.1));
     expect(getChildAtIndex(animation, 2)._changeDuration).to.equal(duration * .70);
 
-    expect(targetEl.style.transform).to.equal('translateX(0px) rotate(0deg) translateY(0px)');
+    expect(targetEl.style.transform).to.equal('translate(0px, 0px) rotate(0deg)');
     animation.pause();
     animation.seek(animation.duration * .5);
-    expect(targetEl.style.transform).to.equal('translateX(66.7px) rotate(302.4deg) translateY(134.69px)');
+    expect(targetEl.style.transform).to.equal('translate(66.7px, 134.69px) rotate(302.4deg)');
   });
 
   test('Specific property parameters on transforms values when last transform value update after everything else', resolve => {
@@ -286,7 +286,7 @@ suite('Parameters', () => {
     });
 
     expect(animation.duration).to.equal(minValue);
-    expect(targetEl.style.transform).to.equal('translateX(100px) translateY(100px)');
+    expect(targetEl.style.transform).to.equal('translate(100px, 100px)');
   });
 
   test('0 duration timeline with infinite loop', () => {

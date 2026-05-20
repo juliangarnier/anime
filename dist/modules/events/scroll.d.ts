@@ -55,6 +55,8 @@ export class ScrollObserver {
     /** @type {Callback<ScrollObserver>} */
     onUpdate: Callback<ScrollObserver>;
     /** @type {Callback<ScrollObserver>} */
+    onResize: Callback<ScrollObserver>;
+    /** @type {Callback<ScrollObserver>} */
     onSyncComplete: Callback<ScrollObserver>;
     /** @type {Boolean} */
     reverted: boolean;

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    html {
+      --top-bar-height: 8rem;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 100lvh;
+      padding: var(--padding);
+      padding: 0;
+      gap: var(--padding);
+      padding: var(--padding);
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: calc(var(--padding) * .5);
+      padding: calc(var(--padding) * .5);
+      border: var(--border-width) solid var(--bg-4);
+      background-color: var(--bg-2);
+    }
+    .list {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: calc(var(--padding) * .5);
+      padding: calc(var(--padding) * .5);
+      border: var(--border-width) solid var(--bg-5);
+      background-color: var(--bg-4);
+    }
+    .list:empty {
+      background-color: var(--bg-2);
+      border-color: var(--bg-2);
+    }
+    .list-a {
+      width: 20rem;
+      color: var(--orange-1);
+    }
+    .list-b {
+      width: 16rem;
+      color: var(--green-1);
+    }
+    .list .card {
+      width: 100%;
+      padding: var(--padding);
+      border: var(--border-width) solid currentColor;
+      background: var(--black-1);
+      transition: color .1s ease-out, border-color .1s ease-out;
+      background-color: var(--bg-5);
+      cursor: pointer;
+    }
+    .list-a .card {
+      color: var(--orange-2);
+      border-color: var(--orange-3);
+      background-color: var(--orange-4);
+    }
+    .list-b .card {
+      color: var(--green-2);
+      border-color: var(--green-3);
+      background-color: var(--green-4);
+    }
+    .list-a .card:hover {
+      color: var(--orange-1);
+      border-color: var(--orange-1);
+    }
+    .list-b .card:hover {
+      color: var(--green-1);
+      border-color: var(--green-1);
+    }
+    .list .card.is-hidden {
+      pointer-events: none;
+      display: none;
+      /*visibility: hidden;*/
+    }
+  </style>
+</head>
+<body>
+  <h2>Click on a card to clone it</h2>
+  <div class="container br">
+    <div class="list list-a br"><div class="card br" data-layout-id="card-1">■■■■■■■ ■■ ■■■■■■■■■■ ■■■ ■■■■■■■■ ■■■■ ■■■■■■■■■ ■■■■■■ ■■■■ ■■■■■■■ ■■■ ■■ ■■■■■■■■■ ■■■■</div><div class="card br" data-layout-node="card-2">■■■■■■■■■ ■■■■■■■ ■■ ■■■■■■■■■ ■■■■ ■■■■■■■■■ ■■ ■■■ ■■■■■■■ ■■■■■■■ ■■■ ■■ ■■■■■■■■■ ■■</div><div class="card br" data-layout-node="card-3">■■ ■■■■■■■■■ ■■■■■■■ ■■ ■■■■■■■■■ ■■■■ ■■■■■■■■■ ■■ ■■■■■■■■ ■■■■ ■■■■■■■■■ ■■■■■■ ■■■■</div><div class="card br" data-layout-node="card-4">■■■ ■■ ■■■■■■■■■ ■■■■ ■■■■■■■■■ ■■ ■■■■■■■■ ■■■■■■■ ■■</div><div class="card br" data-layout-node="card-5">■■■■■■■■■ ■■■■ ■■■■■■■ ■■■■■■■■■■ ■■ ■■■ ■■■■■■■ ■■■■■■■ ■■■ ■■ ■■■■■■■■■ ■■■■ </div></div>
+    <div class="list list-b br"></div>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

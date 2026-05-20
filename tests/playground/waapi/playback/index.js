@@ -40,7 +40,7 @@ const scope = createScope({
   })
 
   const scrollAnim = waapi.animate('.square', {
-    translate: ($el, i, t) => `0px ${stagger([-20, 20])($el, i, t)}rem`,
+    translate: ($el, i, targets) => `0px ${stagger([-20, 20])($el, i, targets)}rem`,
     rotate: `90deg`,
     delay: stagger(100),
     reversed: true,

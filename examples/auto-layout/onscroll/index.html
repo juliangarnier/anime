@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / onScroll / anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+
+<style>
+  body {
+    display: flex;
+    padding: 8rem;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 300lvh;
+  }
+
+  .fn   { color: var(--red-1); }     /* functions */
+  .str  { color: var(--citrus-1); }    /* strings */
+  .var  { color: var(--orange-1); }  /* variables / identifiers */
+
+  .container {
+    position: sticky;
+    top: 8rem;
+    width: 100%;
+    max-width: 66ch;
+    padding: 1rem 2rem;
+    /*overflow: hidden;*/
+    background: var(--orange-6);
+    color: var(--corail-1);
+    border-radius: 1rem;
+    will-change: height;
+  }
+
+  .container .waapi,
+  .container.show-animejs .animejs {
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+
+  .container .animejs,
+  .container.show-animejs .waapi {
+    position: absolute;
+    top: 1rem;
+    left: 2rem;
+  }
+
+  .container .waapi span,
+  .container.show-animejs .animejs span {
+    display: inline-block;
+  }
+
+  .container .animejs span,
+  .container.show-animejs .waapi span {
+    display: none;
+  }
+
+</style>
+
+<div class="container">
+
+<pre class="waapi">
+<code>
+/* WAAPI */
+
+document.querySelectorAll('.circle').forEach(($el, i) => {
+  el.animate({
+    translate: '100px',
+  }, {
+    duration: 1000,
+    delay: i * 100,
+    easing: 'ease-out',
+  }).finished.then(() => {
+    $el.style.translate = '100px';
+  })
+});
+</code>
+</pre>
+
+<pre class="animejs">
+<code>
+/* ANIMEJS */
+
+waapi.animate('.circle', {
+  translate: '100px',
+  duration: 1000,
+  delay: stagger(100),
+  ease: 'ease-out',
+});
+</code>
+</pre>
+
+</div>
+
+<script type="module" src="./index.js"></script>
+</body>
+</html>

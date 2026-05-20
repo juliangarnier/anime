@@ -1,5 +1,10 @@
-import { waapi, animate, onScroll, $, set, stagger, spring, random, utils } from '../../../dist/modules/index.js';
+import { createTimeline, waapi } from '../../../dist/modules/index.js';
 
-async function animation() {
-  await animate('test', { x: 100 });
-}
+const { animate } = waapi;
+
+const red = animate('.red', { x: '15rem', autoplay: false });
+const blue = animate('.blue', { x: '15rem', autoplay: false });
+
+const tl = createTimeline({loop: 1})
+.sync(red, 0)
+.sync(blue, 500);

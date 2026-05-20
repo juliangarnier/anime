@@ -1,8 +1,8 @@
 /**
  * Anime.js - timer - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { minValue, noop, maxValue, compositionTypes, tickModes } from '../core/consts.js';
@@ -67,6 +67,9 @@ const reviveTimer = timer => {
 
 let timerId = 0;
 
+/** @param {Timer} prev @param {Timer} child */
+const sortByPriority = (prev, child) => prev._priority > child._priority;
+
 /**
  * Base class used to create Timers, Animations and Timelines
  */
@@ -80,6 +83,8 @@ class Timer extends Clock {
 
     super(0);
 
+    ++timerId;
+
     const {
       id,
       delay,
@@ -91,6 +96,7 @@ class Timer extends Clock {
       autoplay,
       frameRate,
       playbackRate,
+      priority,
       onComplete,
       onLoop,
       onPause,
@@ -101,31 +107,32 @@ class Timer extends Clock {
 
     if (scope.current) scope.current.register(this);
 
-    const timerInitTime = parent ? 0 : engine._elapsedTime;
+    const timerInitTime = parent ? 0 : engine._lastTickTime;
     const timerDefaults = parent ? parent.defaults : globals.defaults;
     const timerDelay = /** @type {Number} */(isFnc(delay) || isUnd(delay) ? timerDefaults.delay : +delay);
     const timerDuration = isFnc(duration) || isUnd(duration) ? Infinity : +duration;
     const timerLoop = setValue(loop, timerDefaults.loop);
     const timerLoopDelay = setValue(loopDelay, timerDefaults.loopDelay);
-    const timerIterationCount = timerLoop === true ||
-                                timerLoop === Infinity ||
-                                /** @type {Number} */(timerLoop) < 0 ? Infinity :
-                                /** @type {Number} */(timerLoop) + 1;
+    let timerIterationCount = timerLoop === true ||
+                              timerLoop === Infinity ||
+                              /** @type {Number} */(timerLoop) < 0 ? Infinity :
+                              /** @type {Number} */(timerLoop) + 1;
 
     let offsetPosition = 0;
 
     if (parent) {
       offsetPosition = parentPosition;
     } else {
-      // Make sure to tick the engine once if not currently running to get up to date engine._elapsedTime
+      // Make sure to tick the engine once if not currently running to get up to date engine._lastTickTime
       // to avoid big gaps with the following offsetPosition calculation
       if (!engine.reqId) engine.requestTick(now());
       // Make sure to scale the offset position with globals.timeScale to properly handle seconds unit
-      offsetPosition = (engine._elapsedTime - engine._startTime) * globals.timeScale;
+      offsetPosition = (engine._lastTickTime - engine._startTime) * globals.timeScale;
     }
 
     // Timer's parameters
-    this.id = !isUnd(id) ? id : ++timerId;
+    /** @type {String|Number} */
+    this.id = !isUnd(id) ? id : timerId;
     /** @type {Timeline} */
     this.parent = parent;
     // Total duration of the timer
@@ -185,7 +192,7 @@ class Timer extends Clock {
 
     // Clock's parameters
     /** @type {Number} */
-    this._elapsedTime = timerInitTime;
+    this._lastTickTime = timerInitTime;
     /** @type {Number} */
     this._startTime = timerInitTime;
     /** @type {Number} */
@@ -194,6 +201,8 @@ class Timer extends Clock {
     this._fps = setValue(frameRate, timerDefaults.frameRate);
     /** @type {Number} */
     this._speed = setValue(playbackRate, timerDefaults.playbackRate);
+    /** @type {Number} */
+    this._priority = +setValue(priority, 1);
   }
 
   get cancelled() {
@@ -216,7 +225,7 @@ class Timer extends Clock {
   }
 
   get iterationCurrentTime() {
-    return round(this._iterationTime, globals.precision);
+    return clamp(round(this._iterationTime, globals.precision), 0, this.iterationDuration);
   }
 
   set iterationCurrentTime(time) {
@@ -314,9 +323,9 @@ class Timer extends Clock {
   /** @return {this} */
   resetTime() {
     const timeScale = 1 / (this._speed * engine._speed);
-    // TODO: See if we can safely use engine._elapsedTime here
+    // TODO: See if we can safely use engine._lastTickTime here
     // if (!engine.reqId) engine.requestTick(now())
-    // this._startTime = engine._elapsedTime - (this._currentTime + this._delay) * timeScale;
+    // this._startTime = engine._lastTickTime - (this._currentTime + this._delay) * timeScale;
     this._startTime = now() - (this._currentTime + this._delay) * timeScale;
     return this;
   }
@@ -338,7 +347,7 @@ class Timer extends Clock {
       tick(this, minValue, 0, 0, tickModes.FORCE);
     } else {
       if (!this._running) {
-        addChild(engine, this);
+        addChild(engine, this, sortByPriority);
         engine._hasChildren = true;
         this._running = true;
       }
@@ -448,10 +457,11 @@ class Timer extends Clock {
 
  /**
    * Imediatly completes the timer, cancels it and triggers the onComplete callback
+   * @param  {Boolean|Number} [muteCallbacks]
    * @return {this}
    */
-  complete() {
-    return this.seek(this.duration).cancel();
+  complete(muteCallbacks = 0) {
+    return this.seek(this.duration, muteCallbacks).cancel();
   }
 
   /**

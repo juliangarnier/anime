@@ -1,8 +1,8 @@
 /**
  * Anime.js - waapi - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { removeChild, addChild } from '../core/helpers.js';
@@ -80,7 +80,7 @@ const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
   parent.animations.push(animation);
   removeWAAPIAnimation($el, property);
   addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
-  const handleRemove = () => { removeWAAPIAnimation($el, property, parent); };
+  const handleRemove = () => removeWAAPIAnimation($el, property, parent);
   animation.oncancel = handleRemove;
   animation.onremove = handleRemove;
   if (!parent.persist) {

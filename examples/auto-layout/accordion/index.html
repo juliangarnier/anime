@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / Accordion / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      padding: 6rem 1rem;
+      min-height: 100lvh;
+    }
+    .accordion {
+      --padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 32rem;
+      border-radius: 1rem;
+      overflow: hidden;
+      background-color: var(--bg-3);
+    }
+    .accordion section {
+      perspective: 1000px;
+      overflow: hidden;
+      width: 100%;
+      color: var(--color-1);
+      font-size: .825rem;
+    }
+    .accordion section:not(:last-child) {
+      border-bottom: 1px solid var(--bg-1);
+    }
+    .accordion button {
+      display: flex;
+      justify-content: space-between;
+      background: transparent;
+      height: auto;
+      width: 100%;
+      font-size: 1rem;
+      color: var(--fg-2);
+      cursor: pointer;
+      padding: var(--padding);
+      border-radius: 0;
+      transition: background-color .15s ease-out;
+    }
+    .accordion button .icon {
+      display: inline-block;
+      transform: rotate(45deg);
+    }
+    .accordion .content {
+      transform-style: preserve-3d;
+      display: none;
+      width: 100%;
+      padding: 0 var(--padding) var(--padding) var(--padding);
+      transform-origin: 50% 0px;
+    }
+    .accordion section.is-open .content {
+      display: block;
+    }
+    .accordion button:focus-visible,
+    .accordion section:hover button,
+    .accordion section.is-open button,
+    .accordion section:hover,
+    .accordion section.is-open {
+      color: var(--color-1);
+      background: var(--color-5);
+      outline: none;
+      transition-duration: none;
+    }
+    .accordion section.is-open button .icon {
+      transform: rotate(0deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="accordion">
+    <section data-color="1">
+      <button>Mercury <span class="icon">×</span></button>
+      <div class="content"><p>Circles the Sun in only eighty-eight days, so its airless surface is blasted by radiation before plunging into frigid darkness each night. Craters overlap in chaotic mosaics and vast scarps wrinkle the crust where the entire planet shrank as its iron core cooled. Despite furnace-like daytime temperatures, radar has detected bright deposits of water ice tucked inside permanently shadowed polar craters. Spacecraft measurements show that this tiny world still hosts an active magnetic field, remnant volcanism, and intriguing hollows, proving that Mercury is far more dynamic than its cratered face suggests.</p></div>
+    </section>
+    <section data-color="2">
+      <button>Venus <span class="icon">×</span></button>
+      <div class="content"><p>Glows brilliantly in twilight because sunlight reflects off clouds packed with sulfuric acid droplets, yet those same clouds trap enough heat to bake the surface hotter than 470 °C. Atmospheric pressure equals standing nearly a kilometer under Earth’s oceans, crushing most landers within hours. Radar mapping uncovered tessera highlands, pancake domes, and channels carved by lava, revealing a world periodically resurfaced by massive eruptions. Lightning flashes inside the dense haze, and hurricane-strength winds race around the planet despite its extremely slow rotation, creating a greenhouse furnace unlike anywhere else in the Solar System.</p></div>
+    </section>
+    <section data-color="6">
+      <button>Earth <span class="icon">×</span></button>
+      <div class="content"><p>The only known planet where liquid water, protective magnetism, and an oxygen-rich atmosphere coexist to support complex life. Plate tectonics recycle crust, drive volcanism, and sculpt mountain ranges while oceans regulate climate and shuttle nutrients. The biosphere stretches from deep-sea vents to polar ice, constantly exchanging gases with the atmosphere. Our planet’s ozone layer filters harmful ultraviolet radiation, and the magnetic field deflects solar wind particles that would otherwise strip the air away. Earth’s constantly evolving landscapes, weather systems, and ecosystems are tightly coupled, making it a rare, self-sustaining oasis in space.</p></div>
+    </section>
+    <section data-color="0">
+      <button>Mars <span class="icon">×</span></button>
+      <div class="content"><p>A cold desert wrapped in a thin carbon-dioxide atmosphere that kicks up dust storms capable of engulfing the entire planet. Towering shield volcanoes like Olympus Mons dwarf Everest, while Valles Marineris carves a canyon system stretching the width of North America. Orbiters have mapped dry river deltas, layered sedimentary rocks, and recurring slope streaks hinting at seasonal brines. Rovers continue to drill into clay-rich outcrops, finding organic molecules and mineral evidence that ancient lakes existed for millions of years. Today, permafrost and buried ice preserve a chemical record of Mars’s more hospitable past.</p></div>
+    </section>
+    <section data-color="3">
+      <button>Jupiter <span class="icon">×</span></button>
+      <div class="content"><p>A colossal gas giant composed mainly of hydrogen and helium, with storm belts powered by deep internal heat and breakneck ten-hour rotation. The Great Red Spot, a spinning cyclone wider than Earth, has raged for centuries, while lightning and ammonia blizzards illuminate the turbulent cloud decks. Beneath the pastel bands lies a mantle of metallic hydrogen that conducts electricity and generates an enormous magnetic field extending millions of kilometers. Four large moons—Io, Europa, Ganymede, and Callisto—form a miniature planetary system whose volcanic eruptions and subsurface oceans are shaped by Jupiter’s immense gravity.</p></div>
+    </section>
+    <section data-color="4">
+      <button>Saturn <span class="icon">×</span></button>
+      <div class="content"><p>Pastel atmosphere hides fierce jet streams, but its shimmering rings steal the show: billions of icy grains orbiting within a disk only tens of meters thick. Shepherd moons sculpt gaps and produce ripples, demonstrating how gravity organizes material around planets. Saturn’s low density and rapid spin flatten the poles, while a deep layer of metallic hydrogen drives a magnetic field offset from the planet’s center. Moons like Titan and Enceladus harbor methane seas and geysering plumes that feed the faint E ring, making Saturn a laboratory for understanding both planetary interiors and moon-forming disks.</p></div>
+    </section>
+    <section data-color="8">
+      <button>Uranus <span class="icon">×</span></button>
+      <div class="content"><p>An ice giant tipped almost completely on its side, so its poles alternately bask in decades of continuous sunlight before plunging into equally long winters. Methane high in the atmosphere absorbs red light, giving the planet a calm cyan appearance occasionally punctuated by bright storms and polar vortices. A set of faint dark rings and small shepherd moons circle the equator, while larger moons display tectonic canyons and resurfaced plains that hint at ancient internal heat. Uranus’s magnetic field is wildly tilted and offset, causing auroras and charged-particle belts to wander unpredictably.</p></div>
+    </section>
+    <section data-color="10">
+      <button>Neptune <span class="icon">×</span></button>
+      <div class="content"><p>Orbits so far from the Sun that daylight is nine hundred times dimmer than on Earth, yet supersonic winds power storms bigger than continents. Methane clouds and high-altitude hazes create a deep sapphire hue interrupted by transient dark vortices and bright cirrus. A complex magnetosphere, offset from the planet’s center, produces wandering auroras, while the largest moon Triton orbits backward and erupts with nitrogen geysers. Neptune’s faint rings and small shepherd moons round out a system that continues to reveal surprises, offering the clearest glimpse of what icy exoplanets might look like.</p></div>
+    </section>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

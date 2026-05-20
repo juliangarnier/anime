@@ -1,8 +1,8 @@
 /**
  * Anime.js - timeline - CJS
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 'use strict';
@@ -14,9 +14,9 @@ var values = require('../core/values.cjs');
 var targets = require('../core/targets.cjs');
 var render = require('../core/render.cjs');
 var styles = require('../core/styles.cjs');
+var timer = require('../timer/timer.cjs');
 var composition = require('../animation/composition.cjs');
 var animation = require('../animation/animation.cjs');
-var timer = require('../timer/timer.cjs');
 var parser = require('../easings/eases/parser.cjs');
 var position = require('./position.cjs');
 
@@ -33,6 +33,7 @@ var position = require('./position.cjs');
  *   DefaultsParams,
  *   TimelinePosition,
  *   StaggerFunction,
+ *   TargetsArray,
  * } from '../types/index.js'
 */
 
@@ -41,6 +42,8 @@ var position = require('./position.cjs');
  *   WAAPIAnimation,
  * } from '../waapi/waapi.js'
 */
+
+/** @import {TweakRegister} from 'tweaks' */
 
 /**
  * @param {Timeline} tl
@@ -63,7 +66,7 @@ function getTimelineTotalDuration(tl) {
  * @param  {Number} timePosition
  * @param  {TargetsParam} targets
  * @param  {Number} [index]
- * @param  {Number} [length]
+ * @param  {TargetsArray} [allTargets]
  * @return {Timeline}
  *
  * @param  {TimerParams|AnimationParams} childParams
@@ -71,17 +74,17 @@ function getTimelineTotalDuration(tl) {
  * @param  {Number} timePosition
  * @param  {TargetsParam} [targets]
  * @param  {Number} [index]
- * @param  {Number} [length]
+ * @param  {TargetsArray} [allTargets]
  */
-function addTlChild(childParams, tl, timePosition, targets, index, length) {
+function addTlChild(childParams, tl, timePosition, targets, index, allTargets) {
   const isSetter = helpers.isNum(childParams.duration) && /** @type {Number} */(childParams.duration) <= consts.minValue;
   // Offset the tl position with -minValue for 0 duration animations or .set() calls in order to align their end value with the defined position
   const adjustedPosition = isSetter ? timePosition - consts.minValue : timePosition;
-  render.tick(tl, adjustedPosition, 1, 1, consts.tickModes.AUTO);
+  if (tl.composition) render.tick(tl, adjustedPosition, 1, 1, consts.tickModes.AUTO);
   const tlChild = targets ?
-    new animation.JSAnimation(targets,/** @type {AnimationParams} */(childParams), tl, adjustedPosition, false, index, length) :
+    new animation.JSAnimation(targets,/** @type {AnimationParams} */(childParams), tl, adjustedPosition, false, index, allTargets) :
     new timer.Timer(/** @type {TimerParams} */(childParams), tl, adjustedPosition);
-  tlChild.init(true);
+  if (tl.composition) tlChild.init(true);
   // TODO: Might be better to insert at a position relative to startTime?
   helpers.addChild(tl, tlChild);
   helpers.forEachChildren(tl, (/** @type {Renderable} */child) => {
@@ -93,6 +96,8 @@ function addTlChild(childParams, tl, timePosition, targets, index, length) {
   return tl;
 }
 
+let TLId = 0;
+
 class Timeline extends timer.Timer {
 
   /**
@@ -100,6 +105,9 @@ class Timeline extends timer.Timer {
    */
   constructor(parameters = {}) {
     super(/** @type {TimerParams&TimelineParams} */(parameters), null, 0);
+    ++TLId;
+    /** @type {String|Number} */
+    this.id = !helpers.isUnd(parameters.id) ? parameters.id : TLId;
     /** @type {Number} */
     this.duration = 0; // TL duration starts at 0 and grows when adding children
     /** @type {Record<String, Number>} */
@@ -108,6 +116,8 @@ class Timeline extends timer.Timer {
     const globalDefaults = globals.globals.defaults;
     /** @type {DefaultsParams} */
     this.defaults = defaultsParams ? helpers.mergeObjects(defaultsParams, globalDefaults) : globalDefaults;
+    /** @type {Boolean} */
+    this.composition = values.setValue(parameters.composition, true);
     /** @type {Callback<this>} */
     this.onRender = parameters.onRender || globalDefaults.onRender;
     const tlPlaybackEase = values.setValue(parameters.playbackEase, globalDefaults.playbackEase);
@@ -120,7 +130,7 @@ class Timeline extends timer.Timer {
    * @overload
    * @param {TargetsParam} a1
    * @param {AnimationParams} a2
-   * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+   * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
    * @return {this}
    *
    * @overload
@@ -130,7 +140,7 @@ class Timeline extends timer.Timer {
    *
    * @param {TargetsParam|TimerParams} a1
    * @param {TimelinePosition|AnimationParams} a2
-   * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+   * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
    */
   add(a1, a2, a3) {
     const isAnim = helpers.isObj(a2);
@@ -139,9 +149,11 @@ class Timeline extends timer.Timer {
       this._hasChildren = true;
       if (isAnim) {
         const childParams = /** @type {AnimationParams} */(a2);
-        // Check for function for children stagger positions
-        if (helpers.isFnc(a3)) {
-          const staggeredPosition = a3;
+        const editorHook = globals.globals.editor && globals.globals.editor.addTimelineChild;
+        const isStaggerType = a3 && /** @type {TweakRegister} */(a3).type === 'Stagger' && globals.globals.editor;
+        // Check for function or Stagger type children positions
+        const staggeredPosition = helpers.isFnc(a3) ? a3 : null;
+        if (staggeredPosition || isStaggerType) {
           const parsedTargetsArray = targets.parseTargets(/** @type {TargetsParam} */(a1));
           // Store initial duration before adding new children that will change the duration
           const tlDuration = this.duration;
@@ -152,28 +164,36 @@ class Timeline extends timer.Timer {
           let i = 0;
           /** @type {Number} */
           const parsedLength = (parsedTargetsArray.length);
+          // Call editor hook once for the entire stagger group instead of per target
+          const resolvedParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3, parsedLength) : null;
+          // Resolve stagger AFTER editor hook so tweaked position value (a3.defaultValue) is used
+          const staggerFn = staggeredPosition || globals.globals.editor.resolveStagger(/** @type {TweakRegister} */(a3).defaultValue);
           parsedTargetsArray.forEach((/** @type {Target} */target) => {
             // Create a new parameter object for each staggered children
-            const staggeredChildParams = { ...childParams };
+            const staggeredChildParams = { ...(resolvedParams || childParams) };
             // Reset the duration of the timeline iteration before each stagger to prevent wrong start value calculation
             this.duration = tlDuration;
             this.iterationDuration = tlIterationDuration;
             if (!helpers.isUnd(id)) staggeredChildParams.id = id + '-' + i;
+            const staggeredTimePosition = position.parseTimelinePosition(this, staggerFn(target, i, parsedTargetsArray, null, this));
             addTlChild(
               staggeredChildParams,
               this,
-              position.parseTimelinePosition(this, staggeredPosition(target, i, parsedLength, this)),
+              staggeredTimePosition,
               target,
               i,
-              parsedLength
+              parsedTargetsArray,
             );
             i++;
           });
         } else {
+          // Call editor hook before resolving position so tweaked values are applied
+          const resolvedChildParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3) : childParams;
+          const resolvedPosition = a3 && /** @type {*} */(a3).type ? /** @type {*} */(a3).defaultValue : a3;
           addTlChild(
-            childParams,
+            resolvedChildParams,
             this,
-            position.parseTimelinePosition(this, a3),
+            position.parseTimelinePosition(this, resolvedPosition),
             /** @type {TargetsParam} */(a1),
           );
         }
@@ -185,7 +205,8 @@ class Timeline extends timer.Timer {
           position.parseTimelinePosition(this,a2),
         );
       }
-      return this.init(true);
+      if (this.composition) this.init(true);
+      return this;
     }
   }
 
@@ -212,7 +233,11 @@ class Timeline extends timer.Timer {
     if (helpers.isUnd(synced) || synced && helpers.isUnd(synced.pause)) return this;
     synced.pause();
     const duration = +(/** @type {globalThis.Animation} */(synced).effect ? /** @type {globalThis.Animation} */(synced).effect.getTiming().duration : /** @type {Tickable} */(synced).duration);
-    return this.add(synced, { currentTime: [0, duration], duration, ease: 'linear' }, position);
+    // Forces WAAPI Animation to persist; otherwise, they will stop syncing on finish.
+    if (!helpers.isUnd(synced) && !helpers.isUnd(/** @type {WAAPIAnimation} */(synced).persist)) {
+      /** @type {WAAPIAnimation} */(synced).persist = true;
+    }
+    return this.add(synced, { currentTime: [0, duration], duration, delay: 0, ease: 'linear', playbackEase: 'linear' }, position);
   }
 
   /**
@@ -235,7 +260,7 @@ class Timeline extends timer.Timer {
    */
   call(callback, position) {
     if (helpers.isUnd(callback) || callback && !helpers.isFnc(callback)) return this;
-    return this.add({ duration: 0, onComplete: () => callback(this) }, position);
+    return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
   }
 
   /**
@@ -278,8 +303,8 @@ class Timeline extends timer.Timer {
    * @return {this}
    */
   refresh() {
-    helpers.forEachChildren(this, (/** @type {JSAnimation} */child) => {
-      if (child.refresh) child.refresh();
+    helpers.forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => {
+      if (/** @type {JSAnimation} */(child).refresh) /** @type {JSAnimation} */(child).refresh();
     });
     return this;
   }
@@ -289,8 +314,8 @@ class Timeline extends timer.Timer {
    */
   revert() {
     super.revert();
-    helpers.forEachChildren(this, (/** @type {JSAnimation} */child) => child.revert, true);
-    return styles.cleanInlineStyles(this);
+    helpers.forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert, true);
+    return styles.revertValues(this);
   }
 
   /**
@@ -310,7 +335,12 @@ class Timeline extends timer.Timer {
  * @param {TimelineParams} [parameters]
  * @return {Timeline}
  */
-const createTimeline = parameters => new Timeline(parameters).init();
+const createTimeline = parameters => {
+  if (globals.globals.editor) {
+    return /** @type {Timeline} */(/** @type {unknown} */(globals.globals.editor.addTimeline(parameters)));
+  }
+  return new Timeline(parameters).init();
+};
 
 exports.Timeline = Timeline;
 exports.createTimeline = createTimeline;

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / Planets / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+      min-height: 100lvh;
+      --header-height: 4rem;
+    }
+    .container {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      width: 100%;
+      height: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding: calc(var(--header-height) + var(--padding) * 1) var(--padding);
+    }
+    #root {
+      display: flex;
+      flex-wrap: wrap;
+      perspective: 1000px;
+      align-items: center;
+      justify-content: flex-start;
+      flex-direction: row;
+      gap: var(--padding);
+      overflow: hidden;
+    }
+    #overlay {
+      --overlay-alpha: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      overflow: visible;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      z-index: 3;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      max-width: none;
+      max-height: none;
+      border: none;
+      background-color: color-mix(in srgb, var(--black-1), transparent var(--overlay-alpha));
+    }
+    #overlay[open] {
+      --overlay-alpha: 40%;
+      pointer-events: auto;
+    }
+    #overlay::backdrop {
+      background: transparent;
+    }
+    .close-overlay {
+      position: absolute;
+      align-self: flex-end;
+      width: 3rem;
+      height: 3rem;
+      flex-shrink: 0;
+      border-radius: 1.5rem;
+      z-index: 1;
+      top: -1rem;
+      right: -1rem;
+      background: var(--color-4);
+      color: var(--color-1);
+      border: 1px solid var(--color-1);
+      font-size: 1.5rem;
+      transform: rotate(-90deg) scale(.5);
+      transition: scale .125s ease-out;
+    }
+    button.close-overlay:disabled {
+      background: var(--color-4);
+      opacity: 0;
+    }
+    button.close-overlay:hover {
+      background: var(--color-3);
+      color: var(--color-1);
+      scale: 1.025;
+    }
+    button.close-overlay:active {
+      scale: .975;
+    }
+    #overlay .close-overlay {
+      opacity: 1;
+      position: sticky;
+      top: 1.5rem;
+      right: 1.5rem;
+      margin-bottom: -3rem;
+      transform: rotate(0deg) scale(1);
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      flex-shrink: 1;
+      position: fixed;
+      z-index: 1;
+      top: 0px;
+      width: 100%;
+      height: var(--header-height);
+      padding: var(--padding);
+    }
+    .controls-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      height: var(--header-height);
+      gap: calc(var(--padding) * .5);
+    }
+    .controls button {
+      background-color: var(--bg-4);
+      color: #FFF;
+      flex-shrink: 1;
+    }
+    .controls button:hover {
+      background-color: var(--bg-5);
+    }
+    .controls button.is-active {
+      background-color: #FFF;
+      color: var(--bg-3);
+    }
+    .card {
+      --bg-alpha: 0%;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: var(--border-width) solid var(--color-3);
+      border-radius: .5rem;
+      background-color: var(--color-5);
+      color: var(--color-1);
+      transform-style: preserve-3d;
+      transition: transform .1s ease-out;
+      text-decoration: none;
+    }
+    #root .card:hover {
+      cursor: pointer;
+      transform: scale(1.0125);
+    }
+    #overlay .card,
+    #root .card:hover {
+      border-color: var(--color-1);
+    }
+    #root .card.is-removed {
+      display: none;
+    }
+    #root .card.is-open,
+    #overlay .card {
+      visibility: hidden;
+    }
+    #overlay[open] .card {
+      visibility: visible;
+    }
+    .card-image {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 16 / 12;
+    }
+    .card-image-grid {
+      --grid-size: 2rem;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: conic-gradient(from 90deg at 1px 1px, #0000 90deg, var(--color-3) 0), var(--color-2);
+      background-size: var(--grid-size) var(--grid-size);
+      background-position: center;
+    }
+    .card-image svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .card-image circle {
+      vector-effect: non-scaling-stroke;
+      stroke-width: 1px;
+    }
+    .card-image .planet circle {
+      fill: var(--color-3);
+      stroke: var(--color-4);
+    }
+    .card-image .rings circle {
+      fill: transparent;
+      stroke: var(--color-4);
+    }
+    .card-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: .875rem;
+      padding: .75rem var(--padding);
+      width: 100%;
+    }
+    .card-title {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: .25rem;
+    }
+    .card-type {
+      color: var(--color-5);
+      background: var(--color-2);
+      padding: 0 .2rem;
+      margin-bottom: .25rem;
+      border-radius: .125rem;
+      font-weight: 600;
+      font-size: .75rem;
+      text-transform: uppercase;
+      overflow: hidden;
+      transition: background-color .125s ease-out;
+    }
+    #root .card:hover .card-type {
+      background: var(--color-1);
+    }
+    .card-more-info {
+      display: none;
+    }
+    .card-intro-description {
+      display: block;
+    }
+    .card-more-info ul {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      list-style: square;
+      padding-left: 1rem;
+    }
+    #overlay .card {
+      overflow: auto;
+      width: 100%;
+      max-width: 44rem;
+      border-radius: 2rem;
+      max-height: calc(100lvh - 1.5rem);
+    }
+    #overlay .card-text {
+      padding: calc(var(--padding) * 2);
+    }
+    #overlay .card-image {
+      aspect-ratio: 2/1;
+    }
+    #overlay .card-more-info {
+      display: block;
+    }
+    #overlay .card-type {
+      margin-bottom: 1rem;
+      background: var(--color-1);
+    }
+    /* States */
+    #root[data-layout="list"] {
+      flex-direction: column;
+    }
+    #root[data-layout="list"] .card {
+      flex-direction: row;
+      width: 100%;
+      max-width: 32rem;
+      flex-grow: 1;
+    }
+    #root[data-layout="list"] .card-image {
+      width: 6rem;
+      height: 6rem;
+      margin: 0rem;
+    }
+    #root[data-layout="list"] .card-type {
+      position: absolute;
+      top: var(--padding);
+      right: var(--padding);
+    }
+    #root[data-layout="grid"] {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      align-items: flex-start;
+    }
+    #root[data-layout="grid"] .card {
+      width: 100%;
+      max-width: none;
+    }
+    #root[data-layout="grid"] .card-intro-description {
+      display: none;
+    }
+    #root[data-layout="stack"], #root[data-layout="chaos"] {
+      display: grid;
+      place-content: center;
+      height: 100lvh;
+    }
+    #root[data-layout="stack"] .card {
+      width: 20rem;
+      height: 20rem;
+      grid-area: 1/1;
+    }
+    #root[data-layout="stack"] .card-intro-description, #root[data-layout="chaos"] .card-intro-description {
+      display: none;
+    }
+    #root[data-layout="chaos"] .card {
+      width: 15rem;
+      grid-area: 1/1;
+    }
+    #root[data-layout="stripes"] {
+      flex-wrap: nowrap;
+      gap: 0px;
+      width: 100%;
+      height: 100lvh;
+      padding: calc(var(--header-height) + var(--padding) * 0) 0 0;
+    }
+    #root[data-layout="stripes"] .card {
+      --bg-alpha: 100%;
+      max-width: 50%;
+      height: 100%;
+      border-radius: 0;
+      margin-left: -1px;
+    }
+    #root[data-layout="stripes"] .card:hover {
+      z-index: 1;
+      transform: translateY(-1rem);
+    }
+    #root[data-layout="stripes"] .card-image {
+      width: 100%;
+      height: 100%;
+    }
+    #root[data-layout="stripes"] .card-title {
+      justify-content: center;
+      width: 100%;
+      font-size: 1rem;
+    }
+    #root[data-layout="stripes"] .card-intro-description,
+    #root[data-layout="stripes"] .card-type {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <div class="controls-group display br">
+      <button class="is-active toggle" id="grid">grid</button>
+      <button class="toggle" id="list">list</button>
+      <button class="toggle" id="stripes">stripes</button>
+      <button class="toggle" id="stack">stack</button>
+      <button class="toggle" id="chaos">chaos</button>
+    </div>
+    <div class="controls-group actions br">
+      <button class="action" id="add">add</button>
+      <button class="action" id="remove">remove</button>
+      <button class="action" id="shuffle">shuffle</button>
+    </div>
+  </div>
+  <template id="card">
+    <a href="#" class="card br" data-color="0">
+      <button disabled class="close-overlay">×</button>
+      <div class="card-image"><div class="card-image-grid"></div></div>
+      <div class="card-text">
+        <h2 class="card-title"></h2>
+        <p class="card-type"></p>
+        <p class="card-info">
+          <span class="card-intro-description"></span>
+          <span class="card-more-info"></span>
+        </p>
+      </div>
+    </a>
+  </template>
+  <div id="root" class="container" data-layout="grid">
+  </div>
+  <dialog id="overlay" class="container" aria-label="Planet details"></dialog>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

@@ -73,7 +73,7 @@
     const green = '#18FF74';
     const darkgreen = '#00D672';
     const turquoise = '#3CFFEC';
-    const skyblue = '#61C3FF';
+    const blue = '#61C3FF';
     const kingblue = '#5A87FF';
     const lavender = '#8453E3';
     const purple = '#C26EFF';
@@ -108,7 +108,7 @@
           scale: [{ from: 1.4, to: .5, duration: 4000 }, { to: 1.6, duration: 2000 }],
           rotate: [{ to: 45, duration: 2000 }],
           zIndex: { to: 999, modifier: utils.round(0), ease: 'linear', duration: 25 },
-          color: { to: el.dataset.clicked ? skyblue : orange, duration: 300, ease: 'out(4)' },
+          color: { to: el.dataset.clicked ? blue : orange, duration: 300, ease: 'out(4)' },
           boxShadow: '0 0 10px 0 rgba(0, 0, 0, .3)',
           duration: 900,
           onBegin() { el.dataset.hover = true; },

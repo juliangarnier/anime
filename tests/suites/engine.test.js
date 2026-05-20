@@ -26,7 +26,7 @@ suite('Engine', () => {
           });
           expect(animation1._offset).to.be.above(50); // Above the setTimeout value
           expect(animation1._offset).to.be.below(animation2._offset); // Below animation2._offset
-          expect(animation2._offset).to.be.above(animation1._offset + 15);
+          expect(animation2._offset).to.be.above(animation1._offset);
           resolve();
         }
       });

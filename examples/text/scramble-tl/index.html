@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text / Scramble TL / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "animejs": "../../../dist/modules/index.js",
+        "tweaks": "../../../node_modules/tweaks/tweaks.js",
+        "tweaks/gui": "../../../node_modules/tweaks/gui.js"
+      }
+    }
+  </script>
+  <style>
+
+    body {
+      position: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      overflow: hidden;
+      color: var(--orange-1);
+      background: var(--orange-5);
+    }
+
+    main {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      aspect-ratio: 16/9;
+      backface-visibility: hidden;
+    }
+
+    .slide {
+      opacity: 0;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slide .row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+
+    .slide p {
+      font-size: 2rem;
+      flex-shrink: 0;
+      line-height: 1;
+      margin: 1ch;
+      white-space: nowrap;
+    }
+
+    .features p {
+      color: var(--color-1);
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <div class="slide">
+      <div class="row"><p>Introducing</p><p>Introducing</p></div>
+      <div class="row"><p>Introducing</p><p>Introducing</p><p>Introducing</p></div>
+      <div class="row"><p>Introducing</p><p>Introducing</p><p>Introducing</p><p>Introducing</p></div>
+      <div class="row"><p>Introducing</p><p>Introducing</p><p class="center">Introducing</p><p>Introducing</p><p>Introducing</p></div>
+      <div class="row"><p>Introducing</p><p>Introducing</p><p>Introducing</p><p>Introducing</p></div>
+      <div class="row"><p>Introducing</p><p>Introducing</p><p>Introducing</p></div>
+      <div class="row"><p>Introducing</p><p>Introducing</p></div>
+    </div>
+    <div class="slide features">
+      <div class="row"><p data-color="3">Custom Easing</p><p data-color="8">Keyframe Chaining</p></div>
+      <div class="row"><p data-color="14">Custom Characters</p><p data-color="0">Perturbation</p><p data-color="6">Settle Duration</p></div>
+      <div class="row"><p data-color="3">Char Interval</p><p data-color="16">Text Cursor</p><p data-color="4">Seeded Random</p><p data-color="1">Text Override</p></div>
+      <div class="row"><p data-color="11">Refresh Rate</p><p data-color="5">Reveal Direction</p><p data-color="10">Built-in charsets</p></div>
+      <div class="row"><p data-color="13">Speed Control</p><p data-color="2">Reveal Delay</p></div>
+    </div>
+    <div class="slide">
+      <p>Learn more at animejs.com</p>
+    </div>
+  </main>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

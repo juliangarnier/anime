@@ -103,12 +103,23 @@ const filterEmptyElements = $el => {
 /**
  * @param {HTMLElement} $el
  * @param {Number} lineIndex
- * @param {Set<HTMLElement>} bin
- * @returns {Set<HTMLElement>}
+ * @param {Set<HTMLElement|Node>} bin
+ * @returns {Set<HTMLElement|Node>}
  */
 const filterLineElements = ($el, lineIndex, bin) => {
   const dataLineAttr = $el.getAttribute(dataLine);
-  if (dataLineAttr !== null && +dataLineAttr !== lineIndex || $el.tagName === 'BR') bin.add($el);
+  if (dataLineAttr !== null && +dataLineAttr !== lineIndex || $el.tagName === 'BR') {
+    bin.add($el);
+    // Also remove adjacent whitespace-only text nodes
+    const prev = $el.previousSibling;
+    const next = $el.nextSibling;
+    if (prev && prev.nodeType === 3 && whiteSpaceRgx.test(prev.textContent)) {
+      bin.add(prev);
+    }
+    if (next && next.nodeType === 3 && whiteSpaceRgx.test(next.textContent)) {
+      bin.add(next);
+    }
+  }
   let i = $el.childElementCount;
   while (i--) filterLineElements(/** @type {HTMLElement} */($el.children[i]), lineIndex, bin);
   return bin;
@@ -200,7 +211,7 @@ const processHTMLTemplate = (htmlTemplate, store, node, $parentFragment, type, d
  */
 export class TextSplitter {
   /**
-   * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+   * @param  {Element|NodeList|String|Array<Element>} target
    * @param  {TextSplitterParams} [parameters]
    */
   constructor(target, parameters = {}) {
@@ -272,11 +283,11 @@ export class TextSplitter {
   }
 
   /**
-   * @param  {(...args: any[]) => Tickable | (() => void)} effect
+   * @param  {(...args: any[]) => Tickable | (() => void) | void} effect
    * @return this
    */
   addEffect(effect) {
-    if (!isFnc(effect)) return console.warn('Effect must return a function.');
+    if (!isFnc(effect)) { console.warn('Effect must return a function.'); return this; }
     const refreshableEffect = keepTime(effect);
     this.effects.push(refreshableEffect);
     if (this.ready) this.effectsCleanups[this.effects.length - 1] = refreshableEffect(this);
@@ -323,7 +334,7 @@ export class TextSplitter {
             // Only concatenate if both current and previous are non-word-like and don't contain spaces
             const lastWordIndex = tempWords.length - 1;
             const lastWord = tempWords[lastWordIndex];
-            if (!lastWord.includes(' ') && !segment.includes(' ')) {
+            if (!whiteSpaceGroupRgx.test(lastWord) && !whiteSpaceGroupRgx.test(segment)) {
               tempWords[lastWordIndex] += segment;
             } else {
               tempWords.push(segment);
@@ -416,7 +427,7 @@ export class TextSplitter {
     for (let i = 0, l = elementsArray.length; i < l; i++) {
       const $el = elementsArray[i];
       const { top, height } = $el.getBoundingClientRect();
-      if (y && top - y > height * .5) linesCount++;
+      if (!isUnd(y) && top - y > height * .5) linesCount++;
       $el.setAttribute(dataLine, `${linesCount}`);
       const nested = $el.querySelectorAll(`[${dataLine}]`);
       let c = nested.length;
@@ -430,9 +441,11 @@ export class TextSplitter {
       for (let lineIndex = 0; lineIndex < linesCount + 1; lineIndex++) {
         const $clone = /** @type {HTMLElement} */($el.cloneNode(true));
         filterLineElements($clone, lineIndex, new Set()).forEach($el => {
-          const $parent = $el.parentElement;
-          if ($parent) parents.add($parent);
-          $el.remove();
+          const $parent = $el.parentNode;
+          if ($parent) {
+            if ($el.nodeType === 1) parents.add(/** @type {HTMLElement} */($parent));
+            $parent.removeChild($el);
+          }
         });
         clones.push($clone);
       }
@@ -445,6 +458,7 @@ export class TextSplitter {
       if (wordTemplate) this.words = getAllTopLevelElements($el, wordType);
       if (charTemplate) this.chars = getAllTopLevelElements($el, charType);
     }
+
     // Remove the word wrappers and clear the words array if lines split only
     if (this.linesOnly) {
       const words = this.words;
@@ -479,7 +493,7 @@ export class TextSplitter {
 }
 
 /**
- * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+ * @param  {Element|NodeList|String|Array<Element>} target
  * @param  {TextSplitterParams} [parameters]
  * @return {TextSplitter}
  */

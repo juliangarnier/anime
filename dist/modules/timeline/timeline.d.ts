@@ -7,6 +7,8 @@ export class Timeline extends Timer {
     labels: Record<string, number>;
     /** @type {DefaultsParams} */
     defaults: DefaultsParams;
+    /** @type {Boolean} */
+    composition: boolean;
     /** @type {Callback<this>} */
     onRender: Callback<this>;
     _ease: import("../types/index.js").EasingFunction;
@@ -14,7 +16,7 @@ export class Timeline extends Timer {
      * @overload
      * @param {TargetsParam} a1
      * @param {AnimationParams} a2
-     * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+     * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
      * @return {this}
      *
      * @overload
@@ -24,14 +26,14 @@ export class Timeline extends Timer {
      *
      * @param {TargetsParam|TimerParams} a1
      * @param {TimelinePosition|AnimationParams} a2
-     * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+     * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
      */
-    add(a1: TargetsParam, a2: AnimationParams, a3?: TimelinePosition | StaggerFunction<number | string>): this;
+    add(a1: TargetsParam, a2: AnimationParams, a3?: TimelinePosition | StaggerFunction<number | string> | TweakRegister): this;
     /**
      * @overload
      * @param {TargetsParam} a1
      * @param {AnimationParams} a2
-     * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+     * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
      * @return {this}
      *
      * @overload
@@ -41,7 +43,7 @@ export class Timeline extends Timer {
      *
      * @param {TargetsParam|TimerParams} a1
      * @param {TimelinePosition|AnimationParams} a2
-     * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+     * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
      */
     add(a1: TimerParams, a2?: TimelinePosition): this;
     /**
@@ -162,6 +164,7 @@ import type { TargetsParam } from '../types/index.js';
 import type { AnimationParams } from '../types/index.js';
 import type { TimelinePosition } from '../types/index.js';
 import type { StaggerFunction } from '../types/index.js';
+import type { TweakRegister } from 'tweaks';
 import type { TimerParams } from '../types/index.js';
 import type { Tickable } from '../types/index.js';
 import type { WAAPIAnimation } from '../waapi/waapi.js';

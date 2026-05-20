@@ -70,8 +70,6 @@ suite('Animations', () => {
       skewX: 100,
       skewY: 100,
       perspective: 100,
-      matrix: 100,
-      matrix3d: 100,
       duration: 100,
     });
 

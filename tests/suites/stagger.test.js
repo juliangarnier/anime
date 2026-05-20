@@ -310,4 +310,144 @@ suite('Stagger', () => {
     expect(getChildAtIndex(tl, 2)._head._toNumber).to.equal(100);
     expect(getChildAtIndex(tl, 3)._head._toNumber).to.equal(0);
   });
+
+  test('Grid staggering with from as [x, y] array', () => {
+    const animation = animate('#grid div', {
+      scale: [1, 0],
+      delay: stagger(10, {grid: [5, 3], from: [0.5, 0.5]}),
+      autoplay: false
+    });
+
+    expect(getTweenDelay(getChildAtIndex(animation, 0))).to.be.closeTo(22.4, .0001);
+    expect(getTweenDelay(getChildAtIndex(animation, 1))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 2))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 3))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 4))).to.be.closeTo(22.4, .0001);
+
+    expect(getTweenDelay(getChildAtIndex(animation, 5))).to.equal(20);
+    expect(getTweenDelay(getChildAtIndex(animation, 6))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 7))).to.equal(0);
+    expect(getTweenDelay(getChildAtIndex(animation, 8))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 9))).to.equal(20);
+
+    expect(getTweenDelay(getChildAtIndex(animation, 10))).to.be.closeTo(22.4, .0001);
+    expect(getTweenDelay(getChildAtIndex(animation, 11))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 12))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 13))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 14))).to.be.closeTo(22.4, .0001);
+  });
+
+  test('Auto grid staggering with DOM elements', () => {
+    const animation = animate('#grid div', {
+      scale: [1, 0],
+      delay: stagger(10, {grid: true, from: 'center'}),
+      autoplay: false
+    });
+
+    // Center element should have delay 0
+    expect(getTweenDelay(getChildAtIndex(animation, 7))).to.equal(0);
+
+    // Symmetric elements should have equal delays
+    // Middle row: left/right of center
+    expect(getTweenDelay(getChildAtIndex(animation, 6))).to.equal(getTweenDelay(getChildAtIndex(animation, 8)));
+    expect(getTweenDelay(getChildAtIndex(animation, 5))).to.equal(getTweenDelay(getChildAtIndex(animation, 9)));
+
+    // Center column: top/bottom of center
+    expect(getTweenDelay(getChildAtIndex(animation, 2))).to.equal(getTweenDelay(getChildAtIndex(animation, 12)));
+
+    // All four corners should have equal delays
+    const cornerDelay = getTweenDelay(getChildAtIndex(animation, 0));
+    expect(getTweenDelay(getChildAtIndex(animation, 4))).to.equal(cornerDelay);
+    expect(getTweenDelay(getChildAtIndex(animation, 10))).to.equal(cornerDelay);
+    expect(getTweenDelay(getChildAtIndex(animation, 14))).to.equal(cornerDelay);
+
+    // Corners should have the largest delay
+    expect(cornerDelay).to.be.greaterThan(getTweenDelay(getChildAtIndex(animation, 6)));
+    expect(cornerDelay).to.be.greaterThan(getTweenDelay(getChildAtIndex(animation, 2)));
+  });
+
+  test('Auto grid staggering with JS objects from center', () => {
+    const targets = [];
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 5; col++) {
+        targets.push({ x: col, y: row, val: 1 });
+      }
+    }
+    const animation = animate(targets, {
+      val: 0,
+      delay: stagger(10, { grid: true, from: 'center' }),
+      autoplay: false,
+    });
+
+    expect(getTweenDelay(getChildAtIndex(animation, 0))).to.be.closeTo(22.4, .0001);
+    expect(getTweenDelay(getChildAtIndex(animation, 1))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 2))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 3))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 4))).to.be.closeTo(22.4, .0001);
+
+    expect(getTweenDelay(getChildAtIndex(animation, 5))).to.equal(20);
+    expect(getTweenDelay(getChildAtIndex(animation, 6))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 7))).to.equal(0);
+    expect(getTweenDelay(getChildAtIndex(animation, 8))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 9))).to.equal(20);
+
+    expect(getTweenDelay(getChildAtIndex(animation, 10))).to.be.closeTo(22.4, .0001);
+    expect(getTweenDelay(getChildAtIndex(animation, 11))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 12))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 13))).to.be.closeTo(14.1, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 14))).to.be.closeTo(22.4, .0001);
+  });
+
+  test('Auto grid staggering with from as [x, y] array', () => {
+    const targets = [];
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 5; col++) {
+        targets.push({ x: col, y: row, val: 1 });
+      }
+    }
+    const animation = animate(targets, {
+      val: 0,
+      delay: stagger(10, { grid: true, from: [1, 1] }),
+      autoplay: false,
+    });
+
+    expect(getTweenDelay(getChildAtIndex(animation, 14))).to.equal(0);
+    expect(getTweenDelay(getChildAtIndex(animation, 0))).to.be.closeTo(44.7, .01);
+    expect(getTweenDelay(getChildAtIndex(animation, 4))).to.equal(20);
+    expect(getTweenDelay(getChildAtIndex(animation, 10))).to.equal(40);
+  });
+
+  test('Auto grid staggering with axis parameter', () => {
+    const targets = [];
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 5; col++) {
+        targets.push({ x: col, y: row, val: 0 });
+      }
+    }
+    const animation = animate(targets, {
+      val: stagger(10, { grid: true, from: 'center', axis: 'x' }),
+      autoplay: false,
+    });
+
+    expect(getChildAtIndex(animation, 0)._toNumber).to.equal(-20);
+    expect(getChildAtIndex(animation, 1)._toNumber).to.equal(-10);
+    expect(getChildAtIndex(animation, 2)._toNumber).to.equal(0);
+    expect(getChildAtIndex(animation, 3)._toNumber).to.equal(10);
+    expect(getChildAtIndex(animation, 4)._toNumber).to.equal(20);
+    expect(getChildAtIndex(animation, 5)._toNumber).to.equal(-20);
+    expect(getChildAtIndex(animation, 10)._toNumber).to.equal(-20);
+  });
+
+  test('Auto grid staggering fallback to 1D without spatial data', () => {
+    const targets = [{ val: 1 }, { val: 1 }, { val: 1 }, { val: 1 }];
+    const animation = animate(targets, {
+      val: 0,
+      delay: stagger(10, { grid: true }),
+      autoplay: false,
+    });
+    expect(getTweenDelay(getChildAtIndex(animation, 0))).to.equal(0);
+    expect(getTweenDelay(getChildAtIndex(animation, 1))).to.equal(10);
+    expect(getTweenDelay(getChildAtIndex(animation, 2))).to.equal(20);
+    expect(getTweenDelay(getChildAtIndex(animation, 3))).to.equal(30);
+  });
 });

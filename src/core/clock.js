@@ -6,8 +6,8 @@ import {
 } from './consts.js';
 
 import {
-  round,
-} from './helpers.js';
+  defaults,
+} from './globals.js';
 
 /**
  * @import {
@@ -29,7 +29,7 @@ export class Clock {
     /** @type {Number} */
     this._currentTime = initTime;
     /** @type {Number} */
-    this._elapsedTime = initTime;
+    this._lastTickTime = initTime;
     /** @type {Number} */
     this._startTime = initTime;
     /** @type {Number} */
@@ -37,7 +37,7 @@ export class Clock {
     /** @type {Number} */
     this._scheduledTime = 0;
     /** @type {Number} */
-    this._frameDuration = round(K / maxFps, 0);
+    this._frameDuration = K / maxFps;
     /** @type {Number} */
     this._fps = maxFps;
     /** @type {Number} */
@@ -58,7 +58,8 @@ export class Clock {
     const previousFrameDuration = this._frameDuration;
     const fr = +frameRate;
     const fps = fr < minValue ? minValue : fr;
-    const frameDuration = round(K / fps, 0);
+    const frameDuration = K / fps;
+    if (fps > defaults.frameRate) defaults.frameRate = fps;
     this._fps = fps;
     this._frameDuration = frameDuration;
     this._scheduledTime += frameDuration - previousFrameDuration;
@@ -79,14 +80,13 @@ export class Clock {
    */
   requestTick(time) {
     const scheduledTime = this._scheduledTime;
-    const elapsedTime = this._elapsedTime;
-    this._elapsedTime += (time - elapsedTime);
-    // If the elapsed time is lower than the scheduled time
+    this._lastTickTime = time;
+    // If the current time is lower than the scheduled time
     // this means not enough time has passed to hit one frameDuration
     // so skip that frame
-    if (elapsedTime < scheduledTime) return tickModes.NONE;
+    if (time < scheduledTime) return tickModes.NONE;
     const frameDuration = this._frameDuration;
-    const frameDelta = elapsedTime - scheduledTime;
+    const frameDelta = time - scheduledTime;
     // Ensures that _scheduledTime progresses in steps of at least 1 frameDuration.
     // Skips ahead if the actual elapsed time is higher.
     this._scheduledTime += frameDelta < frameDuration ? frameDuration : frameDelta;

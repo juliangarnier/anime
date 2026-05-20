@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / Todo list / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      padding: 6rem 1rem;
+      min-height: 100lvh;
+    }
+    #\$app {
+      width: 100%;
+      height: 100%;
+      max-height: calc(100vh - 12rem);
+      max-width: 32rem;
+      background-color: var(--bg-3);
+      padding: 1rem 1rem;
+      border-radius: 1rem;
+      overflow-y: scroll;
+    }
+    #\$container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+    }
+    #\$addInput {
+      width: 100%;
+      height: 100%;
+      border: none;
+      color: var(--fg-1);
+      background-color: transparent;
+    }
+    #\$addInput:focus {
+      outline: none;
+    }
+    .block {
+      position: relative;
+      width: 100%;
+      list-style: none;
+    }
+    .icon {
+      display: inline;
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+      text-align: center;
+      transition: opacity .125s ease-out;
+    }
+    .list {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      width: 100%;
+      height: 100%;
+    }
+    .item {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: calc(3rem - 1px);
+      color: var(--color-1);
+      background-color: var(--color-5);
+      padding: 0 1rem;
+      border-radius: .5rem;
+      box-shadow: 0 0 0 1px var(--bg-3);
+      transition: background-color 100ms ease-out ;
+      will-change: translate, background-color;
+    }
+    .item:hover {
+      transition-duration: 0ms;
+      background-color: var(--color-4);
+    }
+    #\$new {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #\$header .item {
+      color: var(--fg-1);
+      background-color: var(--bg-4);
+    }
+    #\$header .item:has(#\$addInput:focus) {
+      background-color: var(--bg-5);
+    }
+    .list { z-index: 0; }
+    .list.is-active { z-index: 1; }
+    .item.is-floating { z-index: 3; }
+    .item.is-removed { display: none; z-index: 0; }
+    .item,
+    label {
+      gap: 1rem;
+      align-items: center;
+    }
+    label {
+      display: flex;
+      flex: 1;
+      height: 100%;
+    }
+    input.icon {
+      accent-color: var(--color-1);
+    }
+    button.icon {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 3rem;
+      border: none;
+      background: transparent;
+      color: var(--color-3);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    button.icon:not(:disabled):hover {
+      color: var(--color-1);
+      background: transparent;
+    }
+    #\$createForm:has(#\$addInput:invalid) button.icon {
+      opacity: 0;
+    }
+    #\$createForm button.icon:not(:disabled):hover {
+      color: var(--color-1);
+      background: transparent;
+    }
+    #\$header button.icon {
+      transform: rotate(-45deg);
+    }
+    h2 {
+      z-index: 2;
+      display: inline-block;
+      align-items: center;
+      height: 2rem;
+      gap: .5rem;
+      margin-top: 1rem;
+      color: var(--fg-3);
+    }
+    .block:not(:has(.item)) h2 {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="$app">
+    <div id="$container">
+      <div id="$header" class="block">
+        <ul id="$new" class="list"></ul>
+        <form id="$createForm" autocomplete="off">
+          <div class="item">
+            <input class="icon" type="checkbox" disabled>
+            <input id="$addInput" type="text" required placeholder="What needs to be done?" />
+            <button type="button" class="action icon" aria-label="Create todo">×</button>
+          </div>
+        </form>
+      </div>
+      <div class="block" data-color="4">
+        <h2>Pending</h2>
+        <ul id="$pending" class="list"></ul>
+      </div>
+      <div class="block" data-color="6">
+        <h2>Completed</h2>
+        <ul id="$completed" class="list"></ul>
+      </div>
+    </div>
+  </div>
+  <template id="$todoTemplate">
+    <li class="item">
+      <label>
+        <input class="icon" type="checkbox">
+        <span class="text"></span>
+      </label>
+      <button type="button" class="action icon" aria-label="Delete todo">×</button>
+    </li>
+  </template>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

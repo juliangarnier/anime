@@ -1,8 +1,8 @@
 /**
  * Anime.js - ESM bundle
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 // Global types
@@ -22,7 +22,7 @@
  * @property {Number|FunctionValue} [duration]
  * @property {Number|FunctionValue} [delay]
  * @property {Number} [loopDelay]
- * @property {EasingParam} [ease]
+ * @property {EasingParam|FunctionValue} [ease]
  * @property {'none'|'replace'|'blend'|compositionTypes} [composition]
  * @property {(v: any) => any} [modifier]
  * @property {Callback<Tickable>} [onBegin]
@@ -37,7 +37,7 @@
 /** @typedef {JSAnimation|Timeline} Renderable */
 /** @typedef {Timer|Renderable} Tickable */
 /** @typedef {Timer&JSAnimation&Timeline} CallbackArgument */
-/** @typedef {Animatable|Tickable|WAAPIAnimation|Draggable|ScrollObserver|TextSplitter|Scope} Revertible */
+/** @typedef {Animatable|Tickable|WAAPIAnimation|Draggable|ScrollObserver|TextSplitter|Scope|AutoLayout} Revertible */
 
 // Stagger types
 
@@ -46,7 +46,8 @@
  * @callback StaggerFunction
  * @param {Target} [target]
  * @param {Number} [index]
- * @param {Number} [length]
+ * @param {TargetsArray} [targets]
+ * @param {Tween|null} [prevTween]
  * @param {Timeline} [tl]
  * @return {T}
  */
@@ -54,9 +55,9 @@
 /**
  * @typedef  {Object} StaggerParams
  * @property {Number|String} [start]
- * @property {Number|'first'|'center'|'last'|'random'} [from]
+ * @property {Number|'first'|'center'|'last'|'random'|Array.<Number>} [from]
  * @property {Boolean} [reversed]
- * @property {Array.<Number>} [grid]
+ * @property {Array.<Number>|Boolean} [grid]
  * @property {('x'|'y')} [axis]
  * @property {String|((target: Target, i: Number, length: Number) => Number)} [use]
  * @property {Number} [total]
@@ -117,8 +118,8 @@
 
 // A hack to get both ease names suggestions AND allow any strings
 // https://github.com/microsoft/TypeScript/issues/29729#issuecomment-460346421
-/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring} EasingParam */
-/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring} WAAPIEasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring|TweakRegister} EasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring|TweakRegister} WAAPIEasingParam */
 
 // Spring types
 
@@ -174,6 +175,7 @@
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number} [frameRate]
  * @property {Number} [playbackRate]
+ * @property {Number} [priority]
  */
 
 /**
@@ -184,10 +186,11 @@
 
 /**
  * @callback FunctionValue
- * @param {Target} target - The animated target
- * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
- * @return {Number|String|TweenObjectValue|Array.<Number|String|TweenObjectValue>}
+ * @param {Target} [target] - The animated target
+ * @param {Number} [index] - The target index
+ * @param {TargetsArray} [targets] - The array of all animated targets
+ * @param {Tween|null} [prevTween] - The previous sibling tween for the same target and property
+ * @return {Number|String|TweenObjectValue|EasingParam|Array.<Number|String|TweenObjectValue>}
  */
 
 /**
@@ -205,7 +208,8 @@
  * @property {String} property
  * @property {Target} target
  * @property {String|Number} _value
- * @property {Function|null} _func
+ * @property {Function|null} _toFunc
+ * @property {Function|null} _fromFunc
  * @property {EasingFunction} _ease
  * @property {Array.<Number>} _fromNumbers
  * @property {Array.<Number>} _toNumbers
@@ -255,7 +259,7 @@
 // JSAnimation types
 
 /**
- * @typedef {Number|String|FunctionValue} TweenParamValue
+ * @typedef {Number|String|FunctionValue|EasingParam} TweenParamValue
  */
 
 /**
@@ -270,7 +274,7 @@
  * @typedef {Object} TweenParamsOptions
  * @property {TweenParamValue} [duration]
  * @property {TweenParamValue} [delay]
- * @property {EasingParam} [ease]
+ * @property {EasingParam|FunctionValue} [ease]
  * @property {TweenModifier} [modifier]
  * @property {TweenComposition} [composition]
  */
@@ -354,13 +358,14 @@
  * - `'label'` - Label: Position animation at a named label position (e.g., `'My Label'`)<br>
  * - `stagger(String|Nummber)` - Stagger multi-elements animation positions (e.g., 10, 20, 30...)
  *
- * @typedef {TimelinePosition | StaggerFunction<Number|String>} TimelineAnimationPosition
+ * @typedef {TimelinePosition | StaggerFunction<Number|String> | TweakRegister} TimelineAnimationPosition
  */
 
 /**
  * @typedef {Object} TimelineOptions
  * @property {DefaultsParams} [defaults]
  * @property {EasingParam} [playbackEase]
+ * @property {Boolean} [composition]
  */
 
 /**
@@ -377,8 +382,8 @@
  * @callback WAAPIFunctionValue
  * @param {DOMTarget} target - The animated target
  * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
- * @return {WAAPITweenValue}
+ * @param {DOMTargetsArray} targets - The array of all animated targets
+ * @return {WAAPITweenValue|WAAPIEasingParam}
  */
 
 /**
@@ -404,7 +409,7 @@
  * @property {Number} [playbackRate]
  * @property {Number|WAAPIFunctionValue} [duration]
  * @property {Number|WAAPIFunctionValue} [delay]
- * @property {WAAPIEasingParam} [ease]
+ * @property {WAAPIEasingParam|WAAPIFunctionValue} [ease]
  * @property {CompositeOperation} [composition]
  * @property {Boolean} [persist]
  * @property {Callback<WAAPIAnimation>} [onComplete]
@@ -535,6 +540,7 @@
  * @property {Callback<ScrollObserver>} [onEnterBackward]
  * @property {Callback<ScrollObserver>} [onLeaveBackward]
  * @property {Callback<ScrollObserver>} [onUpdate]
+ * @property {Callback<ScrollObserver>} [onResize]
  * @property {Callback<ScrollObserver>} [onSyncComplete]
  */
 
@@ -623,6 +629,26 @@
  * @property {Boolean} [debug]
  */
 
+/**
+ * @typedef {Object} ScrambleTextParams
+ * @property {String|function(Target, Number, TargetsArray): String} [text] - the text to transition to, otherwise uses the original text
+ * @property {String|function(Target, Number, TargetsArray): String} [chars] - the characters used for scramble; named sets: 'lowercase', 'uppercase', 'numbers', 'symbols', 'braille', 'blocks', 'shades'; range syntax: 'A-Z', 'a-z0-9'; defaults to 'a-zA-Z0-9!%#_'
+ * @property {EasingParam} [ease] - the easing applied to the scramble animation
+ * @property {Number|'left'|'center'|'right'|'random'|'auto'} [from] - where the reveal wave starts from, 'auto' (default) uses 'left' when text grows and 'right' when it shrinks
+ * @property {Boolean} [reversed] - reverses the reveal order, so 'center' reveals from edges inward instead of center outward
+ * @property {Boolean|Number|String} [cursor] - characters displayed at the leading edge of the reveal wave; true uses '_', a number is a char code, a string is used directly
+ * @property {Number} [perturbation] - adds random timing offsets to each character's start and end, creating a more organic reveal
+ * @property {Number} [seed] - a seed for the random number generator to produce reproducible scramble sequences
+ * @property {Boolean|String} [override] - controls the starting appearance: false shows original text, true scrambles it (default), '' starts from blank, ' ' replaces characters with spaces, a custom string (supports range syntax like 'A-Z') uses its characters as scramble set
+ * @property {Number} [revealRate] - characters per second entering the active zone; higher values make the reveal wave move faster (default: 60)
+ * @property {Number} [settleDuration] - time in ms each character spends scrambling before settling into its final glyph (default: 300)
+ * @property {Number} [settleRate] - how many times per second scramble characters cycle in the active zone (default: 30)
+ * @property {Number|function(Target, Number, TargetsArray): Number} [duration] - if set to a value greater than 0, overrides the computed duration from interval and settle; if unset or 0, duration is calculated automatically from text length and timing parameters
+ * @property {Number|function(Target, Number, TargetsArray): Number} [revealDelay] - delay in ms before the reveal wave starts within the scramble animation
+ * @property {Number|function(Target, Number, TargetsArray): Number} [delay] - delay in ms before the entire scramble animation starts
+ * @property {function(String, Number): void} [onChange] - callback fired each time a character changes during scramble; receives the current scrambled text and the eased progress (0-1)
+ */
+
 // SVG types
 
 /**
@@ -638,8 +664,10 @@
 // TODO: Do we need to check if we're running inside a worker ?
 const isBrowser = typeof window !== 'undefined';
 
-/** @type {Window & {AnimeJS: Array}|null} */
-const win = isBrowser ? /** @type {Window & {AnimeJS: Array}} */(/** @type {unknown} */(window)) : null;
+/** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
+
+/** @type {AnimeJSWindow} */
+const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
 
 /** @type {Document|null} */
 const doc = isBrowser ? document : null;
@@ -683,7 +711,6 @@ const isRegisteredTargetSymbol = Symbol();
 const isDomSymbol = Symbol();
 const isSvgSymbol = Symbol();
 const transformsSymbol = Symbol();
-const morphPointsSymbol = Symbol();
 const proxyTargetSymbol = Symbol();
 
 // Numbers
@@ -691,7 +718,7 @@ const proxyTargetSymbol = Symbol();
 const minValue = 1e-11;
 const maxValue = 1e12;
 const K = 1e3;
-const maxFps = 120;
+const maxFps = 240;
 
 // Strings
 
@@ -707,6 +734,7 @@ const shortTransforms = /*#__PURE__*/ (() => {
 })();
 
 const validTransforms = [
+  'perspective',
   'translateX',
   'translateY',
   'translateZ',
@@ -721,9 +749,6 @@ const validTransforms = [
   'skew',
   'skewX',
   'skewY',
-  'matrix',
-  'matrix3d',
-  'perspective',
 ];
 
 const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) => ({...a, [v]: v + '('}), {});
@@ -735,6 +760,7 @@ const noop = () => {};
 
 // Regex
 
+const validRgbHslRgx = /\)\s*[-.\d]/;
 const hexTestRgx = /(^#([\da-f]{3}){1,2}$)|(^#([\da-f]{4}){1,2}$)/i;
 const rgbExecRgx = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i;
 const rgbaExecRgx = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/i;
@@ -745,11 +771,22 @@ const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
 const unitsExecRgx = /^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)([a-z]+|%)$/i;
 const lowerCaseRgx = /([a-z])([A-Z])/g;
-const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
 const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
 
 
+
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {boolean} synced
+ * @property {Function} addAnimation
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
 
 /** @type {DefaultsParams} */
 const defaults = {
@@ -794,9 +831,11 @@ const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 };
 
-const globalVersions = { version: '4.2.2', engine: null };
+const globalVersions = { version: '4.4.1', engine: null };
 
 if (isBrowser) {
   if (!win.AnimeJS) win.AnimeJS = [];
@@ -847,8 +886,8 @@ const isHex = a => hexTestRgx.test(a);
 const isRgb = a => stringStartsWith(a, 'rgb');
 /**@param {any} a @return {Boolean} */
 const isHsl = a => stringStartsWith(a, 'hsl');
-/**@param {any} a @return {Boolean} */
-const isCol = a => isHex(a) || isRgb(a) || isHsl(a);
+/**@param {any} a @return {Boolean} */ // Make sure boxShadow syntax like 'rgb(255, 0, 0) 0px 0px 6px 0px' is not a valid color type
+const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a)));
 /**@param {any} a @return {Boolean} */
 const isKey = a => !globals.defaults.hasOwnProperty(a);
 
@@ -912,8 +951,6 @@ const _round = Math.round;
  */
 const clamp$1 = (v, min, max) => v < min ? min : v > max ? max : v;
 
-const powCache = {};
-
 /**
  * Rounds a number to specified decimal places
  *
@@ -921,13 +958,12 @@ const powCache = {};
  * @param  {Number} decimalLength - Number of decimal places
  * @return {Number}
  */
-const round$1 = (v, decimalLength) => {
-  if (decimalLength < 0) return v;
-  if (!decimalLength) return _round(v);
-  let p = powCache[decimalLength];
-  if (!p) p = powCache[decimalLength] = 10 ** decimalLength;
-  return _round(v * p) / p;
-};
+ const round$1 = (v, decimalLength) => {
+   if (decimalLength < 0) return v;
+   if (!decimalLength) return _round(v);
+   const p = 10 ** decimalLength;
+   return _round(v * p) / p;
+ };
 
 /**
  * Snaps a value to nearest increment or array value
@@ -1058,26 +1094,141 @@ const addChild = (parent, child, sortMethod, prevProp = '_prev', nextProp = '_ne
  */
 const parseInlineTransforms = (target, propName, animationInlineStyles) => {
   const inlineTransforms = target.style.transform;
-  let inlinedStylesPropertyValue;
   if (inlineTransforms) {
     const cachedTransforms = target[transformsSymbol];
-    let t; while (t = transformsExecRgx.exec(inlineTransforms)) {
-      const inlinePropertyName = t[1];
-      // const inlinePropertyValue = t[2];
-      const inlinePropertyValue = t[2].slice(1, -1);
-      cachedTransforms[inlinePropertyName] = inlinePropertyValue;
-      if (inlinePropertyName === propName) {
-        inlinedStylesPropertyValue = inlinePropertyValue;
-        // Store the new parsed inline styles if animationInlineStyles is provided
-        if (animationInlineStyles) {
-          animationInlineStyles[propName] = inlinePropertyValue;
+    let pos = 0;
+    const len = inlineTransforms.length;
+    let fullTranslateValue;
+    while (pos < len) {
+      // Skip whitespace
+      while (pos < len && inlineTransforms.charCodeAt(pos) === 32) pos++;
+      if (pos >= len) break;
+      // Read function name
+      const nameStart = pos;
+      while (pos < len && inlineTransforms.charCodeAt(pos) !== 40) pos++;
+      if (pos >= len) break;
+      const name = inlineTransforms.substring(nameStart, pos);
+      // Scan to closing paren, recording top-level comma positions
+      let depth = 1;
+      const valueStart = pos + 1;
+      let c1 = -1, c2 = -1;
+      pos++;
+      while (pos < len && depth > 0) {
+        const c = inlineTransforms.charCodeAt(pos);
+        if (c === 40) depth++;
+        else if (c === 41) depth--;
+        else if (c === 44 && depth === 1) {
+          if (c1 === -1) c1 = pos;
+          else if (c2 === -1) c2 = pos;
         }
+        pos++;
+      }
+      const valueEnd = pos - 1;
+      // Decompose multi-arg functions into individual axis properties
+      if (name === 'translate' || name === 'translate3d') {
+        if (c1 === -1) {
+          cachedTransforms.translateX = inlineTransforms.substring(valueStart, valueEnd).trim();
+        } else {
+          cachedTransforms.translateX = inlineTransforms.substring(valueStart, c1).trim();
+          if (c2 === -1) {
+            cachedTransforms.translateY = inlineTransforms.substring(c1 + 1, valueEnd).trim();
+          } else {
+            cachedTransforms.translateY = inlineTransforms.substring(c1 + 1, c2).trim();
+            cachedTransforms.translateZ = inlineTransforms.substring(c2 + 1, valueEnd).trim();
+          }
+        }
+        fullTranslateValue = inlineTransforms.substring(valueStart, valueEnd);
+      } else if (name === 'scale' || name === 'scale3d') {
+        if (c1 === -1) {
+          cachedTransforms.scale = inlineTransforms.substring(valueStart, valueEnd).trim();
+        } else {
+          cachedTransforms.scaleX = inlineTransforms.substring(valueStart, c1).trim();
+          if (c2 === -1) {
+            cachedTransforms.scaleY = inlineTransforms.substring(c1 + 1, valueEnd).trim();
+          } else {
+            cachedTransforms.scaleY = inlineTransforms.substring(c1 + 1, c2).trim();
+            cachedTransforms.scaleZ = inlineTransforms.substring(c2 + 1, valueEnd).trim();
+          }
+        }
+      } else {
+        cachedTransforms[name] = inlineTransforms.substring(valueStart, valueEnd);
       }
     }
+    // Resolve the requested property from the cache
+    if (propName === 'translate3d' && fullTranslateValue) {
+      if (animationInlineStyles) animationInlineStyles[propName] = fullTranslateValue;
+      return fullTranslateValue;
+    }
+    const cached = cachedTransforms[propName];
+    if (!isUnd(cached)) {
+      if (animationInlineStyles) animationInlineStyles[propName] = cached;
+      return cached;
+    }
   }
-  return inlineTransforms && !isUnd(inlinedStylesPropertyValue) ? inlinedStylesPropertyValue :
+  return propName === 'translate3d' ? '0px, 0px, 0px' :
+    propName === 'rotate3d' ? '0, 0, 0, 0deg' :
     stringStartsWith(propName, 'scale') ? '1' :
     stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew') ? '0deg' : '0px';
+};
+
+/**
+ * Builds a CSS transform string from the target's cached transform properties.
+ * Iterates validTransforms in order (perspective > translate > rotate > scale > skew > matrix).
+ * When adjacent axis properties are all present, emits a shorter shorthand (translateX + translateY -> translate(x, y))
+ * The index is advanced past consumed properties so they are not emitted twice.
+ * Properties without a grouping partner (e.g. translateY alone, scaleZ alone) emit individually.
+ *
+ * @param  {Record<String, String>} props
+ * @return {String}
+ */
+const buildTransformString = (props) => {
+  let str = emptyString;
+  for (let i = 0, l = validTransforms.length; i < l; i++) {
+    const key = validTransforms[i];
+    const val = props[key];
+    if (val !== undefined) {
+      // Group translateX with adjacent translateY / translateZ
+      if (key === 'translateX') {
+        const next = props.translateY;
+        if (next !== undefined) {
+          const next2 = props.translateZ;
+          if (next2 !== undefined) {
+            str += `translate3d(${val},${next},${next2}) `;
+            i += 2;
+          } else {
+            str += `translate(${val},${next}) `;
+            i += 1;
+          }
+          continue;
+        }
+      }
+      // Group scaleX with adjacent scaleY / scaleZ (only when standalone scale is absent)
+      if (key === 'scaleX' && props.scale === undefined) {
+        const next = props.scaleY;
+        if (next !== undefined) {
+          const next2 = props.scaleZ;
+          if (next2 !== undefined) {
+            str += `scale3d(${val},${next},${next2}) `;
+            i += 2;
+          } else {
+            str += `scale(${val},${next}) `;
+            i += 1;
+          }
+          continue;
+        }
+      }
+      // All other properties: emit individually using pre-built fragment string
+      str += `${transformsFragmentStrings[key]}${val}) `;
+    }
+    // Preserve non-animatable rotate3d in correct position (after rotateZ, before scale)
+    if (key === 'rotateZ') {
+      if (props.rotate3d !== undefined) str += `rotate3d(${props.rotate3d}) `;
+    }
+  }
+  // Preserve non-animatable matrix/matrix3d from inline styles
+  if (props.matrix !== undefined) str += `matrix(${props.matrix}) `;
+  if (props.matrix3d !== undefined) str += `matrix3d(${props.matrix3d}) `;
+  return str;
 };
 
 
@@ -1181,15 +1332,16 @@ const setValue = (targetValue, defaultValue) => {
  * @param  {TweenPropValue} value
  * @param  {Target} target
  * @param  {Number} index
- * @param  {Number} total
- * @param  {Object} [store]
+ * @param  {TargetsArray} targets
+ * @param  {Object|null} store
+ * @param  {Tween|null} prevTween
  * @return {any}
  */
-const getFunctionValue = (value, target, index, total, store) => {
+const getFunctionValue = (value, target, index, targets, store, prevTween) => {
   let func;
   if (isFnc(value)) {
     func = () => {
-      const computed = /** @type {Function} */(value)(target, index, total);
+      const computed = /** @type {Function} */(value)(target, index, targets, prevTween);
       // Fallback to 0 if the function returns undefined / NaN / null / false / 0
       return !isNaN(+computed) ? +computed : computed || 0;
     };
@@ -1256,9 +1408,17 @@ const getCSSValue = (target, propName, animationInlineStyles) => {
  */
 const getOriginalAnimatableValue = (target, propName, tweenType, animationInlineStyles) => {
   const type = !isUnd(tweenType) ? tweenType : getTweenType(target, propName);
-  return type === tweenTypes.OBJECT ? target[propName] || 0 :
-         type === tweenTypes.ATTRIBUTE ? /** @type {DOMTarget} */(target).getAttribute(propName) :
-         type === tweenTypes.TRANSFORM ? parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
+  if (type === tweenTypes.OBJECT) {
+    const value = target[propName];
+    if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+    return value || 0;
+  }
+  if (type === tweenTypes.ATTRIBUTE) {
+    const value = /** @type {DOMTarget} */(target).getAttribute(propName);
+    if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+    return value;
+  }
+  return type === tweenTypes.TRANSFORM ? parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
          type === tweenTypes.CSS_VAR ? getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles).trimStart() :
          getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles);
 };
@@ -1360,6 +1520,54 @@ const decomposeTweenValue = (tween, targetObject) => {
 
 const decomposedOriginalValue = createDecomposedValueTargetObject();
 
+/**
+ * @param  {Tween} tween
+ * @param  {Number} progress
+ * @param  {Number} precision
+ * @return {String}
+ */
+const composeColorValue = (tween, progress, precision) => {
+  const mod = tween._modifier;
+  const fn = tween._fromNumbers;
+  const tn = tween._toNumbers;
+  const r = round$1(clamp$1(/** @type {Number} */(mod(lerp$1(fn[0], tn[0], progress))), 0, 255), 0);
+  const g = round$1(clamp$1(/** @type {Number} */(mod(lerp$1(fn[1], tn[1], progress))), 0, 255), 0);
+  const b = round$1(clamp$1(/** @type {Number} */(mod(lerp$1(fn[2], tn[2], progress))), 0, 255), 0);
+  const a = clamp$1(/** @type {Number} */(mod(round$1(lerp$1(fn[3], tn[3], progress), precision))), 0, 1);
+  if (tween._composition !== compositionTypes.none) {
+    const ns = tween._numbers;
+    ns[0] = r;
+    ns[1] = g;
+    ns[2] = b;
+    ns[3] = a;
+  }
+  return `rgba(${r},${g},${b},${a})`;
+};
+
+/**
+ * @param  {Tween} tween
+ * @param  {Number} progress
+ * @param  {Number} precision
+ * @return {String}
+ */
+const composeComplexValue = (tween, progress, precision) => {
+  const mod = tween._modifier;
+  const fn = tween._fromNumbers;
+  const tn = tween._toNumbers;
+  const ts = tween._strings;
+  const hasComposition = tween._composition !== compositionTypes.none;
+  let v = ts[0];
+  for (let j = 0, l = tn.length; j < l; j++) {
+    const n = /** @type {Number} */(mod(round$1(lerp$1(fn[j], tn[j], progress), precision)));
+    const s = ts[j + 1];
+    v += `${s ? n + s : n}`;
+    if (hasComposition) {
+      tween._numbers[j] = n;
+    }
+  }
+  return v;
+};
+
 
 
 
@@ -1388,7 +1596,6 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
   const _hasChildren = tickable._hasChildren;
   const tickableDelay = tickable._delay;
   const tickablePrevAbsoluteTime = tickable._currentTime; // TODO: rename ._currentTime to ._absoluteCurrentTime
-
   const tickableEndTime = tickableDelay + iterationDuration;
   const tickableAbsoluteTime = time - tickableDelay;
   const tickablePrevTime = clamp$1(tickablePrevAbsoluteTime, -tickableDelay, duration);
@@ -1520,30 +1727,9 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
             number = /** @type {Number} */(tweenModifier(round$1(lerp$1(tween._fromNumber, tween._toNumber,  tweenProgress), tweenPrecision)));
             value = `${number}${tween._unit}`;
           } else if (tweenValueType === valueTypes.COLOR) {
-            const fn = tween._fromNumbers;
-            const tn = tween._toNumbers;
-            const r = round$1(clamp$1(/** @type {Number} */(tweenModifier(lerp$1(fn[0], tn[0], tweenProgress))), 0, 255), 0);
-            const g = round$1(clamp$1(/** @type {Number} */(tweenModifier(lerp$1(fn[1], tn[1], tweenProgress))), 0, 255), 0);
-            const b = round$1(clamp$1(/** @type {Number} */(tweenModifier(lerp$1(fn[2], tn[2], tweenProgress))), 0, 255), 0);
-            const a = clamp$1(/** @type {Number} */(tweenModifier(round$1(lerp$1(fn[3], tn[3], tweenProgress), tweenPrecision))), 0, 1);
-            value = `rgba(${r},${g},${b},${a})`;
-            if (tweenHasComposition) {
-              const ns = tween._numbers;
-              ns[0] = r;
-              ns[1] = g;
-              ns[2] = b;
-              ns[3] = a;
-            }
+            value = composeColorValue(tween, tweenProgress, tweenPrecision);
           } else if (tweenValueType === valueTypes.COMPLEX) {
-            value = tween._strings[0];
-            for (let j = 0, l = tween._toNumbers.length; j < l; j++) {
-              const n = /** @type {Number} */(tweenModifier(round$1(lerp$1(tween._fromNumbers[j], tween._toNumbers[j], tweenProgress), tweenPrecision)));
-              const s = tween._strings[j + 1];
-              value += `${s ? n + s : n}`;
-              if (tweenHasComposition) {
-                tween._numbers[j] = n;
-              }
-            }
+            value = composeComplexValue(tween, tweenProgress, tweenPrecision);
           }
 
           // For additive tweens and Animatables
@@ -1586,14 +1772,8 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
 
         }
 
-        // NOTE: Possible improvement: Use translate(x,y) / translate3d(x,y,z) syntax
-        // to reduce memory usage on string composition
         if (tweenTransformsNeedUpdate && tween._renderTransforms) {
-          let str = emptyString;
-          for (let key in tweenTargetTransformsProperties) {
-            str += `${transformsFragmentStrings[key]}${tweenTargetTransformsProperties[key]}) `;
-          }
-          tweenStyle.transform = str;
+          tweenStyle.transform = buildTransformString(tweenTargetTransformsProperties);
           tweenTransformsNeedUpdate = 0;
         }
 
@@ -1704,7 +1884,6 @@ const tick = (tickable, time, muteCallbacks, internalRender, tickMode) => {
 
     // Renders on timeline are triggered by its children so it needs to be set after rendering the children
     if (!muteCallbacks && tlChildrenHasRendered) tl.onRender(/** @type {CallbackArgument} */(tl));
-
     // Triggers the timeline onComplete() once all chindren all completed and the current time has reached the end
     if ((tlChildrenHaveCompleted || tlIsRunningBackwards) && tl._currentTime >= tl.duration) {
       // Make sure the paused flag is false in case it has been skipped in the render function
@@ -1758,58 +1937,77 @@ const sanitizePropertyName = (propertyName, target, tweenType) => {
 /**
  * @template {Renderable} T
  * @param {T} renderable
+ * @param {Boolean} [inlineStylesOnly]
  * @return {T}
  */
-const cleanInlineStyles = renderable => {
-  // Allow cleanInlineStyles() to be called on timelines
+const revertValues = (renderable, inlineStylesOnly = false) => {
+  // Allow revertValues() to be called on timelines
   if (renderable._hasChildren) {
-    forEachChildren(renderable, cleanInlineStyles, true);
+    forEachChildren(renderable, (/** @type {Renderable} */child) => revertValues(child, inlineStylesOnly), true);
   } else {
     const animation = /** @type {JSAnimation} */(renderable);
     animation.pause();
     forEachChildren(animation, (/** @type {Tween} */tween) => {
       const tweenProperty = tween.property;
       const tweenTarget = tween.target;
-      if (tweenTarget[isDomSymbol]) {
-        const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
-        const originalInlinedValue = tween._inlineValue;
-        const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
-        if (tween._tweenType === tweenTypes.TRANSFORM) {
-          const cachedTransforms = tweenTarget[transformsSymbol];
-          if (tweenHadNoInlineValue) {
-            delete cachedTransforms[tweenProperty];
-          } else {
-            cachedTransforms[tweenProperty] = originalInlinedValue;
-          }
-          if (tween._renderTransforms) {
-            if (!Object.keys(cachedTransforms).length) {
-              targetStyle.removeProperty('transform');
+      const tweenType = tween._tweenType;
+      const originalInlinedValue = tween._inlineValue;
+      const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
+      if (tweenType === tweenTypes.OBJECT) {
+        if (!inlineStylesOnly && !tweenHadNoInlineValue) {
+          tweenTarget[tweenProperty] = originalInlinedValue;
+        }
+      } else if (tweenTarget[isDomSymbol]) {
+        if (tweenType === tweenTypes.ATTRIBUTE) {
+          if (!inlineStylesOnly) {
+            if (tweenHadNoInlineValue) {
+              /** @type {DOMTarget} */(tweenTarget).removeAttribute(tweenProperty);
             } else {
-              let str = emptyString;
-              for (let key in cachedTransforms) {
-                str += transformsFragmentStrings[key] + cachedTransforms[key] + ') ';
-              }
-              targetStyle.transform = str;
+              /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(originalInlinedValue));
             }
           }
         } else {
-          if (tweenHadNoInlineValue) {
-            targetStyle.removeProperty(toLowerCase(tweenProperty));
+          const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
+          if (tweenType === tweenTypes.TRANSFORM) {
+            const cachedTransforms = tweenTarget[transformsSymbol];
+            if (tweenHadNoInlineValue) {
+              delete cachedTransforms[tweenProperty];
+            } else {
+              cachedTransforms[tweenProperty] = originalInlinedValue;
+            }
+            if (tween._renderTransforms) {
+              if (!Object.keys(cachedTransforms).length) {
+                targetStyle.removeProperty('transform');
+              } else {
+                targetStyle.transform = buildTransformString(cachedTransforms);
+              }
+            }
           } else {
-            targetStyle[tweenProperty] = originalInlinedValue;
+            if (tweenHadNoInlineValue) {
+              targetStyle.removeProperty(toLowerCase(tweenProperty));
+            } else {
+              targetStyle[tweenProperty] = originalInlinedValue;
+            }
           }
         }
-        if (animation._tail === tween) {
-          animation.targets.forEach(t => {
-            if (t.getAttribute && t.getAttribute('style') === emptyString) {
-              t.removeAttribute('style');
-            }          });
-        }
+      }
+      if (tweenTarget[isDomSymbol] && animation._tail === tween) {
+        animation.targets.forEach(t => {
+          if (t.getAttribute && t.getAttribute('style') === emptyString) {
+            t.removeAttribute('style');
+          }        });
       }
     });
   }
   return renderable;
 };
+
+/**
+ * @template {Renderable} T
+ * @param {T} renderable
+ * @return {T}
+ */
+const cleanInlineStyles = renderable => revertValues(renderable, true);
 
 
 
@@ -1826,7 +2024,7 @@ class Clock {
     /** @type {Number} */
     this._currentTime = initTime;
     /** @type {Number} */
-    this._elapsedTime = initTime;
+    this._lastTickTime = initTime;
     /** @type {Number} */
     this._startTime = initTime;
     /** @type {Number} */
@@ -1834,7 +2032,7 @@ class Clock {
     /** @type {Number} */
     this._scheduledTime = 0;
     /** @type {Number} */
-    this._frameDuration = round$1(K / maxFps, 0);
+    this._frameDuration = K / maxFps;
     /** @type {Number} */
     this._fps = maxFps;
     /** @type {Number} */
@@ -1855,7 +2053,8 @@ class Clock {
     const previousFrameDuration = this._frameDuration;
     const fr = +frameRate;
     const fps = fr < minValue ? minValue : fr;
-    const frameDuration = round$1(K / fps, 0);
+    const frameDuration = K / fps;
+    if (fps > defaults.frameRate) defaults.frameRate = fps;
     this._fps = fps;
     this._frameDuration = frameDuration;
     this._scheduledTime += frameDuration - previousFrameDuration;
@@ -1876,14 +2075,13 @@ class Clock {
    */
   requestTick(time) {
     const scheduledTime = this._scheduledTime;
-    const elapsedTime = this._elapsedTime;
-    this._elapsedTime += (time - elapsedTime);
-    // If the elapsed time is lower than the scheduled time
+    this._lastTickTime = time;
+    // If the current time is lower than the scheduled time
     // this means not enough time has passed to hit one frameDuration
     // so skip that frame
-    if (elapsedTime < scheduledTime) return tickModes.NONE;
+    if (time < scheduledTime) return tickModes.NONE;
     const frameDuration = this._frameDuration;
-    const frameDelta = elapsedTime - scheduledTime;
+    const frameDelta = time - scheduledTime;
     // Ensures that _scheduledTime progresses in steps of at least 1 frameDuration.
     // Skips ahead if the actual elapsed time is higher.
     this._scheduledTime += frameDelta < frameDuration ? frameDuration : frameDelta;
@@ -2020,7 +2218,7 @@ class Engine extends Clock {
 
   wake() {
     if (this.useDefaultMainLoop && !this.reqId) {
-      // Imediatly request a tick to update engine._elapsedTime and get accurate offsetPosition calculation in timer.js
+      // Imediatly request a tick to update engine._lastTickTime and get accurate offsetPosition calculation in timer.js
       this.requestTick(now());
       this.reqId = engineTickMethod(tickEngine);
     }
@@ -2495,6 +2693,9 @@ const reviveTimer = timer => {
 
 let timerId = 0;
 
+/** @param {Timer} prev @param {Timer} child */
+const sortByPriority = (prev, child) => prev._priority > child._priority;
+
 /**
  * Base class used to create Timers, Animations and Timelines
  */
@@ -2508,6 +2709,8 @@ class Timer extends Clock {
 
     super(0);
 
+    ++timerId;
+
     const {
       id,
       delay,
@@ -2519,6 +2722,7 @@ class Timer extends Clock {
       autoplay,
       frameRate,
       playbackRate,
+      priority,
       onComplete,
       onLoop,
       onPause,
@@ -2529,31 +2733,32 @@ class Timer extends Clock {
 
     if (scope.current) scope.current.register(this);
 
-    const timerInitTime = parent ? 0 : engine._elapsedTime;
+    const timerInitTime = parent ? 0 : engine._lastTickTime;
     const timerDefaults = parent ? parent.defaults : globals.defaults;
     const timerDelay = /** @type {Number} */(isFnc(delay) || isUnd(delay) ? timerDefaults.delay : +delay);
     const timerDuration = isFnc(duration) || isUnd(duration) ? Infinity : +duration;
     const timerLoop = setValue(loop, timerDefaults.loop);
     const timerLoopDelay = setValue(loopDelay, timerDefaults.loopDelay);
-    const timerIterationCount = timerLoop === true ||
-                                timerLoop === Infinity ||
-                                /** @type {Number} */(timerLoop) < 0 ? Infinity :
-                                /** @type {Number} */(timerLoop) + 1;
+    let timerIterationCount = timerLoop === true ||
+                              timerLoop === Infinity ||
+                              /** @type {Number} */(timerLoop) < 0 ? Infinity :
+                              /** @type {Number} */(timerLoop) + 1;
 
     let offsetPosition = 0;
 
     if (parent) {
       offsetPosition = parentPosition;
     } else {
-      // Make sure to tick the engine once if not currently running to get up to date engine._elapsedTime
+      // Make sure to tick the engine once if not currently running to get up to date engine._lastTickTime
       // to avoid big gaps with the following offsetPosition calculation
       if (!engine.reqId) engine.requestTick(now());
       // Make sure to scale the offset position with globals.timeScale to properly handle seconds unit
-      offsetPosition = (engine._elapsedTime - engine._startTime) * globals.timeScale;
+      offsetPosition = (engine._lastTickTime - engine._startTime) * globals.timeScale;
     }
 
     // Timer's parameters
-    this.id = !isUnd(id) ? id : ++timerId;
+    /** @type {String|Number} */
+    this.id = !isUnd(id) ? id : timerId;
     /** @type {Timeline} */
     this.parent = parent;
     // Total duration of the timer
@@ -2613,7 +2818,7 @@ class Timer extends Clock {
 
     // Clock's parameters
     /** @type {Number} */
-    this._elapsedTime = timerInitTime;
+    this._lastTickTime = timerInitTime;
     /** @type {Number} */
     this._startTime = timerInitTime;
     /** @type {Number} */
@@ -2622,6 +2827,8 @@ class Timer extends Clock {
     this._fps = setValue(frameRate, timerDefaults.frameRate);
     /** @type {Number} */
     this._speed = setValue(playbackRate, timerDefaults.playbackRate);
+    /** @type {Number} */
+    this._priority = +setValue(priority, 1);
   }
 
   get cancelled() {
@@ -2644,7 +2851,7 @@ class Timer extends Clock {
   }
 
   get iterationCurrentTime() {
-    return round$1(this._iterationTime, globals.precision);
+    return clamp$1(round$1(this._iterationTime, globals.precision), 0, this.iterationDuration);
   }
 
   set iterationCurrentTime(time) {
@@ -2742,9 +2949,9 @@ class Timer extends Clock {
   /** @return {this} */
   resetTime() {
     const timeScale = 1 / (this._speed * engine._speed);
-    // TODO: See if we can safely use engine._elapsedTime here
+    // TODO: See if we can safely use engine._lastTickTime here
     // if (!engine.reqId) engine.requestTick(now())
-    // this._startTime = engine._elapsedTime - (this._currentTime + this._delay) * timeScale;
+    // this._startTime = engine._lastTickTime - (this._currentTime + this._delay) * timeScale;
     this._startTime = now() - (this._currentTime + this._delay) * timeScale;
     return this;
   }
@@ -2766,7 +2973,7 @@ class Timer extends Clock {
       tick(this, minValue, 0, 0, tickModes.FORCE);
     } else {
       if (!this._running) {
-        addChild(engine, this);
+        addChild(engine, this, sortByPriority);
         engine._hasChildren = true;
         this._running = true;
       }
@@ -2876,10 +3083,11 @@ class Timer extends Clock {
 
  /**
    * Imediatly completes the timer, cancels it and triggers the onComplete callback
+   * @param  {Boolean|Number} [muteCallbacks]
    * @return {this}
    */
-  complete() {
-    return this.seek(this.duration).cancel();
+  complete(muteCallbacks = 0) {
+    return this.seek(this.duration, muteCallbacks).cancel();
   }
 
   /**
@@ -3252,12 +3460,14 @@ const fromTargetObject = createDecomposedValueTargetObject();
 const toTargetObject = createDecomposedValueTargetObject();
 const inlineStylesStore = {};
 const toFunctionStore = { func: null };
+const fromFunctionStore = { func: null };
 const keyframesTargetArray = [null];
 const fastSetValuesArray = [null, null];
 /** @type {TweenKeyValue} */
 const keyObjectTarget = { to: null };
 
 let tweenId = 0;
+let JSAnimationId = 0;
 let keyframes;
 /** @type {TweenParamsOptions & TweenValues} */
 let key;
@@ -3358,7 +3568,7 @@ class JSAnimation extends Timer {
    * @param {Number} [parentPosition]
    * @param {Boolean} [fastSet=false]
    * @param {Number} [index=0]
-   * @param {Number} [length=0]
+   * @param {TargetsArray} [allTargets]
    */
   constructor(
     targets,
@@ -3367,10 +3577,12 @@ class JSAnimation extends Timer {
     parentPosition,
     fastSet = false,
     index = 0,
-    length = 0
+    allTargets
   ) {
 
     super(/** @type {TimerParams & AnimationParams} */(parameters), parent, parentPosition);
+
+    ++JSAnimationId;
 
     const parsedTargets = registerTargets(targets);
     const targetsLength = parsedTargets.length;
@@ -3381,6 +3593,7 @@ class JSAnimation extends Timer {
     const params = /** @type {AnimationParams} */(kfParams ? mergeObjects(generateKeyframes(/** @type {DurationKeyframes} */(kfParams), parameters), parameters) : parameters);
 
     const {
+      id,
       delay,
       duration,
       ease,
@@ -3391,11 +3604,12 @@ class JSAnimation extends Timer {
     } = params;
 
     const animDefaults = parent ? parent.defaults : globals.defaults;
-    const animaPlaybackEase = setValue(playbackEase, animDefaults.playbackEase);
-    const animEase = animaPlaybackEase ? parseEase(animaPlaybackEase) : null;
-    const hasSpring = !isUnd(ease) && !isUnd(/** @type {Spring} */(ease).ease);
-    const tEasing = hasSpring ? /** @type {Spring} */(ease).ease : setValue(ease, animEase ? 'linear' : animDefaults.ease);
-    const tDuration = hasSpring ? /** @type {Spring} */(ease).settlingDuration : setValue(duration, animDefaults.duration);
+    const animEase = setValue(ease, animDefaults.ease);
+    const animPlaybackEase = setValue(playbackEase, animDefaults.playbackEase);
+    const parsedAnimPlaybackEase = animPlaybackEase ? parseEase(animPlaybackEase) : null;
+    const hasSpring = !isUnd(/** @type {Spring} */(animEase).ease);
+    const tEasing = hasSpring ? /** @type {Spring} */(animEase).ease : setValue(ease, parsedAnimPlaybackEase ? 'linear' : animDefaults.ease);
+    const tDuration = hasSpring ? /** @type {Spring} */(animEase).settlingDuration : setValue(duration, animDefaults.duration);
     const tDelay = setValue(delay, animDefaults.delay);
     const tModifier = modifier || animDefaults.modifier;
     // If no composition is defined and the targets length is high (>= 1000) set the composition to 'none' (0) for faster tween creation
@@ -3403,7 +3617,7 @@ class JSAnimation extends Timer {
     // const absoluteOffsetTime = this._offset;
     const absoluteOffsetTime = this._offset + (parent ? parent._offset : 0);
     // This allows targeting the current animation in the spring onComplete callback
-    if (hasSpring) /** @type {Spring} */(ease).parent = this;
+    if (hasSpring) /** @type {Spring} */(animEase).parent = this;
 
     let iterationDuration = NaN;
     let iterationDelay = NaN;
@@ -3414,7 +3628,7 @@ class JSAnimation extends Timer {
 
       const target = parsedTargets[targetIndex];
       const ti = index || targetIndex;
-      const tl = length || targetsLength;
+      const tl = allTargets || parsedTargets;
 
       let lastTransformGroupIndex = NaN;
       let lastTransformGroupLength = NaN;
@@ -3488,8 +3702,16 @@ class JSAnimation extends Timer {
             }
 
             toFunctionStore.func = null;
+            fromFunctionStore.func = null;
 
-            const computedToValue = getFunctionValue(key.to, target, ti, tl, toFunctionStore);
+            const computedComposition = getFunctionValue(setValue(key.composition, tComposition), target, ti, tl, null, null);
+            const tweenComposition = isNum(computedComposition) ? computedComposition : compositionTypes[computedComposition];
+            if (!siblings && tweenComposition !== compositionTypes.none) siblings = getTweenSiblings(target, propName);
+            // Timelines pass the last sibling tween if it belongs to the same timeline
+            // Standalone animations only pass prevTween when the property has multiple keyframes
+            const tailTween = siblings ? siblings._tail : null;
+            const prevSiblingTween = parent && tailTween && tailTween.parent.parent === parent ? tailTween : prevTween;
+            const computedToValue = getFunctionValue(key.to, target, ti, tl, toFunctionStore, prevSiblingTween);
 
             let tweenToValue;
             // Allows function based values to return an object syntax value ({to: v})
@@ -3499,17 +3721,18 @@ class JSAnimation extends Timer {
             } else {
               tweenToValue = computedToValue;
             }
-            const tweenFromValue = getFunctionValue(key.from, target, ti, tl);
-            const keyEasing = key.ease;
+            const tweenFromValue = getFunctionValue(key.from, target, ti, tl, null, prevSiblingTween);
+            const easeToParse = key.ease || tEasing;
+
+            const easeFunctionResult = getFunctionValue(easeToParse, target, ti, tl, null, prevSiblingTween);
+            const keyEasing = isFnc(easeFunctionResult) || isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
+
             const hasSpring = !isUnd(keyEasing) && !isUnd(/** @type {Spring} */(keyEasing).ease);
-            // Easing are treated differently and don't accept function based value to prevent having to pass a function wrapper that returns an other function all the time
-            const tweenEasing = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing || tEasing;
+            const tweenEasing = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
             // Calculate default individual keyframe duration by dividing the tl of keyframes
-            const tweenDuration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(setValue(key.duration, (l > 1 ? getFunctionValue(tDuration, target, ti, tl) / l : tDuration)), target, ti, tl);
+            const tweenDuration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(setValue(key.duration, (l > 1 ? getFunctionValue(tDuration, target, ti, tl, null, prevSiblingTween) / l : tDuration)), target, ti, tl, null, prevSiblingTween);
             // Default delay value should only be applied to the first tween
-            const tweenDelay = getFunctionValue(setValue(key.delay, (!tweenIndex ? tDelay : 0)), target, ti, tl);
-            const computedComposition = getFunctionValue(setValue(key.composition, tComposition), target, ti, tl);
-            const tweenComposition = isNum(computedComposition) ? computedComposition : compositionTypes[computedComposition];
+            const tweenDelay = getFunctionValue(setValue(key.delay, (!tweenIndex ? tDelay : 0)), target, ti, tl, null, prevSiblingTween);
             // Modifiers are treated differently and don't accept function based value to prevent having to pass a function wrapper
             const tweenModifier = key.modifier || tModifier;
             const hasFromvalue = !isUnd(tweenFromValue);
@@ -3526,7 +3749,6 @@ class JSAnimation extends Timer {
             let prevSibling = prevTween;
 
             if (tweenComposition !== compositionTypes.none) {
-              if (!siblings) siblings = getTweenSiblings(target, propName);
               let nextSibling = siblings._head;
               // Iterate trough all the next siblings until we find a sibling with an equal or inferior start time
               while (nextSibling && !nextSibling._isOverridden && nextSibling._absoluteStartTime <= absoluteStartTime) {
@@ -3545,8 +3767,10 @@ class JSAnimation extends Timer {
 
             // Decompose values
             if (isFromToValue) {
-              decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[0], target, ti, tl) : tweenFromValue, fromTargetObject);
-              decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[1], target, ti, tl, toFunctionStore) : tweenToValue, toTargetObject);
+              decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[0], target, ti, tl, fromFunctionStore, prevSiblingTween) : tweenFromValue, fromTargetObject);
+              decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[1], target, ti, tl, toFunctionStore, prevSiblingTween) : tweenToValue, toTargetObject);
+              // Needed to force an inline style registration
+              const originalValue = getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore);
               if (fromTargetObject.t === valueTypes.NUMBER) {
                 if (prevSibling) {
                   if (prevSibling._valueType === valueTypes.UNIT) {
@@ -3555,7 +3779,7 @@ class JSAnimation extends Timer {
                   }
                 } else {
                   decomposeRawValue(
-                    getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore),
+                    originalValue,
                     decomposedOriginalValue
                   );
                   if (decomposedOriginalValue.t === valueTypes.UNIT) {
@@ -3660,7 +3884,8 @@ class JSAnimation extends Timer {
               property: propName,
               target: target,
               _value: null,
-              _func: toFunctionStore.func,
+              _toFunc: toFunctionStore.func,
+              _fromFunc: fromFunctionStore.func,
               _ease: parseEase(tweenEasing),
               _fromNumbers: cloneArray(fromTargetObject.d),
               _toNumbers: cloneArray(toTargetObject.d),
@@ -3695,6 +3920,18 @@ class JSAnimation extends Timer {
 
             if (tweenComposition !== compositionTypes.none) {
               composeTween(tween, siblings);
+            }
+
+            // Pre-compute the tween end value for function-based value chaining (ie morphTo / scrambleText in keyframe arrays and timelines)
+            const vt = tween._valueType;
+            if (vt === valueTypes.COMPLEX) {
+              tween._value = composeComplexValue(tween, 1, -1);
+            } else if (vt === valueTypes.COLOR) {
+              tween._value = composeColorValue(tween, 1, -1);
+            } else if (vt === valueTypes.UNIT) {
+              tween._value = `${tweenModifier(tween._toNumber)}${tween._unit}`;
+            } else {
+              tween._value = tweenModifier(tween._toNumber);
             }
 
             if (isNaN(firstTweenChangeStartTime)) {
@@ -3774,12 +4011,14 @@ class JSAnimation extends Timer {
     }
     /** @type {TargetsArray} */
     this.targets = parsedTargets;
+    /** @type {String|Number} */
+    this.id = !isUnd(id) ? id : JSAnimationId;
     /** @type {Number} */
     this.duration = iterationDuration === minValue ? minValue : clampInfinity(((iterationDuration + this._loopDelay) * this.iterationCount) - this._loopDelay) || minValue;
     /** @type {Callback<this>} */
     this.onRender = onRender || animDefaults.onRender;
     /** @type {EasingFunction} */
-    this._ease = animEase;
+    this._ease = parsedAnimPlaybackEase;
     /** @type {Number} */
     this._delay = iterationDelay;
     // NOTE: I'm keeping delay values separated from offsets in timelines because delays can override previous tweens and it could be confusing to debug a timeline with overridden tweens and no associated visible delays.
@@ -3816,18 +4055,29 @@ class JSAnimation extends Timer {
    */
   refresh() {
     forEachChildren(this, (/** @type {Tween} */tween) => {
-      const tweenFunc = tween._func;
-      if (tweenFunc) {
-        const ogValue = getOriginalAnimatableValue(tween.target, tween.property, tween._tweenType);
-        decomposeRawValue(ogValue, decomposedOriginalValue);
-        // TODO: Check for from / to Array based values here,
-        decomposeRawValue(tweenFunc(), toTargetObject);
-        tween._fromNumbers = cloneArray(decomposedOriginalValue.d);
-        tween._fromNumber = decomposedOriginalValue.n;
-        tween._toNumbers = cloneArray(toTargetObject.d);
-        tween._strings = cloneArray(toTargetObject.s);
-        // Make sure to apply relative operators https://github.com/juliangarnier/anime/issues/1025
-        tween._toNumber = toTargetObject.o ? getRelativeValue(decomposedOriginalValue.n, toTargetObject.n, toTargetObject.o) : toTargetObject.n;
+      const toFunc = tween._toFunc;
+      const fromFunc = tween._fromFunc;
+      if (toFunc || fromFunc) {
+        if (fromFunc) {
+          decomposeRawValue(fromFunc(), fromTargetObject);
+          if (fromTargetObject.u !== tween._unit && tween.target[isDomSymbol]) {
+            convertValueUnit(/** @type {DOMTarget} */(tween.target), fromTargetObject, tween._unit, true);
+          }
+          tween._fromNumbers = cloneArray(fromTargetObject.d);
+          tween._fromNumber = fromTargetObject.n;
+        } else if (toFunc) {
+          // When only toFunc exists, get from value from target
+          decomposeRawValue(getOriginalAnimatableValue(tween.target, tween.property, tween._tweenType), decomposedOriginalValue);
+          tween._fromNumbers = cloneArray(decomposedOriginalValue.d);
+          tween._fromNumber = decomposedOriginalValue.n;
+        }
+        if (toFunc) {
+          decomposeRawValue(toFunc(), toTargetObject);
+          tween._toNumbers = cloneArray(toTargetObject.d);
+          tween._strings = cloneArray(toTargetObject.s);
+          // Make sure to apply relative operators https://github.com/juliangarnier/anime/issues/1025
+          tween._toNumber = toTargetObject.o ? getRelativeValue(tween._fromNumber, toTargetObject.n, toTargetObject.o) : toTargetObject.n;
+        }
       }
     });
     // This forces setter animations to render once
@@ -3841,7 +4091,7 @@ class JSAnimation extends Timer {
    */
   revert() {
     super.revert();
-    return cleanInlineStyles(this);
+    return revertValues(this);
   }
 
   /**
@@ -3863,170 +4113,12 @@ class JSAnimation extends Timer {
  * @param {AnimationParams} parameters
  * @return {JSAnimation}
  */
-const animate = (targets, parameters) => new JSAnimation(targets, parameters, null, 0, false).init();
-
-
-
-
-
-const WAAPIAnimationsLookups = {
-  _head: null,
-  _tail: null,
-};
-
-/**
- * @param {DOMTarget} $el
- * @param {String} [property]
- * @param {WAAPIAnimation} [parent]
- * @return {globalThis.Animation}
- */
-const removeWAAPIAnimation = ($el, property, parent) => {
-  let nextLookup = WAAPIAnimationsLookups._head;
-  let anim;
-  while (nextLookup) {
-    const next = nextLookup._next;
-    const matchTarget = nextLookup.$el === $el;
-    const matchProperty = !property || nextLookup.property === property;
-    const matchParent = !parent || nextLookup.parent === parent;
-    if (matchTarget && matchProperty && matchParent) {
-      anim = nextLookup.animation;
-      try { anim.commitStyles(); } catch {}      anim.cancel();
-      removeChild(WAAPIAnimationsLookups, nextLookup);
-      const lookupParent = nextLookup.parent;
-      if (lookupParent) {
-        lookupParent._completed++;
-        if (lookupParent.animations.length === lookupParent._completed) {
-          lookupParent.completed = true;
-          lookupParent.paused = true;
-          if (!lookupParent.muteCallbacks) {
-            lookupParent.onComplete(lookupParent);
-            lookupParent._resolve(lookupParent);
-          }
-        }
-      }
-    }
-    nextLookup = next;
-  }
-  return anim;
-};
-
-/**
- * @param {WAAPIAnimation} parent
- * @param {DOMTarget} $el
- * @param {String} property
- * @param {PropertyIndexedKeyframes} keyframes
- * @param {KeyframeAnimationOptions} params
- * @retun {globalThis.Animation}
- */
-const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
-  const animation = $el.animate(keyframes, params);
-  const animTotalDuration = params.delay + (+params.duration * params.iterations);
-  animation.playbackRate = parent._speed;
-  if (parent.paused) animation.pause();
-  if (parent.duration < animTotalDuration) {
-    parent.duration = animTotalDuration;
-    parent.controlAnimation = animation;
-  }
-  parent.animations.push(animation);
-  removeWAAPIAnimation($el, property);
-  addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
-  const handleRemove = () => { removeWAAPIAnimation($el, property, parent); };
-  animation.oncancel = handleRemove;
-  animation.onremove = handleRemove;
-  if (!parent.persist) {
-    animation.onfinish = handleRemove;
-  }
-  return animation;
-};
-
-
-
-
-
-/**
- * @overload
- * @param  {DOMTargetSelector} targetSelector
- * @param  {String} propName
- * @return {String}
- *
- * @overload
- * @param  {JSTargetsParam} targetSelector
- * @param  {String} propName
- * @return {Number|String}
- *
- * @overload
- * @param  {DOMTargetsParam} targetSelector
- * @param  {String} propName
- * @param  {String} unit
- * @return {String}
- *
- * @overload
- * @param  {TargetsParam} targetSelector
- * @param  {String} propName
- * @param  {Boolean} unit
- * @return {Number}
- *
- * @param  {TargetsParam} targetSelector
- * @param  {String} propName
- * @param  {String|Boolean} [unit]
- */
-function get(targetSelector, propName, unit) {
-  const targets = registerTargets(targetSelector);
-  if (!targets.length) return;
-  const [ target ] = targets;
-  const tweenType = getTweenType(target, propName);
-  const normalizePropName = sanitizePropertyName(propName, target, tweenType);
-  let originalValue = getOriginalAnimatableValue(target, normalizePropName);
-  if (isUnd(unit)) {
-    return originalValue;
+const animate = (targets, parameters) => {
+  if (globals.editor) {
+    return globals.editor.addAnimation(targets, parameters);
   } else {
-    decomposeRawValue(originalValue, decomposedOriginalValue);
-    if (decomposedOriginalValue.t === valueTypes.NUMBER || decomposedOriginalValue.t === valueTypes.UNIT) {
-      if (unit === false) {
-        return decomposedOriginalValue.n;
-      } else {
-        const convertedValue = convertValueUnit(/** @type {DOMTarget} */(target), decomposedOriginalValue, /** @type {String} */(unit), false);
-        return `${round$1(convertedValue.n, globals.precision)}${convertedValue.u}`;
-      }
-    }
+    return new JSAnimation(targets, parameters, null, 0, false).init();
   }
-}
-
-/**
- * @param  {TargetsParam} targets
- * @param  {AnimationParams} parameters
- * @return {JSAnimation}
- */
-const set = (targets, parameters) => {
-  if (isUnd(parameters)) return;
-  parameters.duration = minValue;
-  // Do not overrides currently active tweens by default
-  parameters.composition = setValue(parameters.composition, compositionTypes.none);
-  // Skip init() and force rendering by playing the animation
-  return new JSAnimation(targets, parameters, null, 0, true).resume();
-};
-
-/**
- * @param  {TargetsParam} targets
- * @param  {Renderable|WAAPIAnimation} [renderable]
- * @param  {String} [propertyName]
- * @return {TargetsArray}
- */
-const remove = (targets, renderable, propertyName) => {
-  const targetsArray = parseTargets(targets);
-  for (let i = 0, l = targetsArray.length; i < l; i++) {
-    removeWAAPIAnimation(
-      /** @type {DOMTarget}  */(targetsArray[i]),
-      propertyName,
-      renderable && /** @type {WAAPIAnimation} */(renderable).controlAnimation && /** @type {WAAPIAnimation} */(renderable),
-    );
-  }
-  removeTargetsFromRenderable(
-    targetsArray,
-    /** @type {Renderable} */(renderable),
-    propertyName
-  );
-  return targetsArray;
 };
 
 
@@ -4082,6 +4174,8 @@ const parseTimelinePosition = (timeline, timePosition) => {
 
 
 
+
+
 /**
  * @param {Timeline} tl
  * @return {Number}
@@ -4103,7 +4197,7 @@ function getTimelineTotalDuration(tl) {
  * @param  {Number} timePosition
  * @param  {TargetsParam} targets
  * @param  {Number} [index]
- * @param  {Number} [length]
+ * @param  {TargetsArray} [allTargets]
  * @return {Timeline}
  *
  * @param  {TimerParams|AnimationParams} childParams
@@ -4111,17 +4205,17 @@ function getTimelineTotalDuration(tl) {
  * @param  {Number} timePosition
  * @param  {TargetsParam} [targets]
  * @param  {Number} [index]
- * @param  {Number} [length]
+ * @param  {TargetsArray} [allTargets]
  */
-function addTlChild(childParams, tl, timePosition, targets, index, length) {
+function addTlChild(childParams, tl, timePosition, targets, index, allTargets) {
   const isSetter = isNum(childParams.duration) && /** @type {Number} */(childParams.duration) <= minValue;
   // Offset the tl position with -minValue for 0 duration animations or .set() calls in order to align their end value with the defined position
   const adjustedPosition = isSetter ? timePosition - minValue : timePosition;
-  tick(tl, adjustedPosition, 1, 1, tickModes.AUTO);
+  if (tl.composition) tick(tl, adjustedPosition, 1, 1, tickModes.AUTO);
   const tlChild = targets ?
-    new JSAnimation(targets,/** @type {AnimationParams} */(childParams), tl, adjustedPosition, false, index, length) :
+    new JSAnimation(targets,/** @type {AnimationParams} */(childParams), tl, adjustedPosition, false, index, allTargets) :
     new Timer(/** @type {TimerParams} */(childParams), tl, adjustedPosition);
-  tlChild.init(true);
+  if (tl.composition) tlChild.init(true);
   // TODO: Might be better to insert at a position relative to startTime?
   addChild(tl, tlChild);
   forEachChildren(tl, (/** @type {Renderable} */child) => {
@@ -4133,6 +4227,8 @@ function addTlChild(childParams, tl, timePosition, targets, index, length) {
   return tl;
 }
 
+let TLId = 0;
+
 class Timeline extends Timer {
 
   /**
@@ -4140,6 +4236,9 @@ class Timeline extends Timer {
    */
   constructor(parameters = {}) {
     super(/** @type {TimerParams&TimelineParams} */(parameters), null, 0);
+    ++TLId;
+    /** @type {String|Number} */
+    this.id = !isUnd(parameters.id) ? parameters.id : TLId;
     /** @type {Number} */
     this.duration = 0; // TL duration starts at 0 and grows when adding children
     /** @type {Record<String, Number>} */
@@ -4148,6 +4247,8 @@ class Timeline extends Timer {
     const globalDefaults = globals.defaults;
     /** @type {DefaultsParams} */
     this.defaults = defaultsParams ? mergeObjects(defaultsParams, globalDefaults) : globalDefaults;
+    /** @type {Boolean} */
+    this.composition = setValue(parameters.composition, true);
     /** @type {Callback<this>} */
     this.onRender = parameters.onRender || globalDefaults.onRender;
     const tlPlaybackEase = setValue(parameters.playbackEase, globalDefaults.playbackEase);
@@ -4160,7 +4261,7 @@ class Timeline extends Timer {
    * @overload
    * @param {TargetsParam} a1
    * @param {AnimationParams} a2
-   * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+   * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
    * @return {this}
    *
    * @overload
@@ -4170,7 +4271,7 @@ class Timeline extends Timer {
    *
    * @param {TargetsParam|TimerParams} a1
    * @param {TimelinePosition|AnimationParams} a2
-   * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+   * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
    */
   add(a1, a2, a3) {
     const isAnim = isObj(a2);
@@ -4179,9 +4280,11 @@ class Timeline extends Timer {
       this._hasChildren = true;
       if (isAnim) {
         const childParams = /** @type {AnimationParams} */(a2);
-        // Check for function for children stagger positions
-        if (isFnc(a3)) {
-          const staggeredPosition = a3;
+        const editorHook = globals.editor && globals.editor.addTimelineChild;
+        const isStaggerType = a3 && /** @type {TweakRegister} */(a3).type === 'Stagger' && globals.editor;
+        // Check for function or Stagger type children positions
+        const staggeredPosition = isFnc(a3) ? a3 : null;
+        if (staggeredPosition || isStaggerType) {
           const parsedTargetsArray = parseTargets(/** @type {TargetsParam} */(a1));
           // Store initial duration before adding new children that will change the duration
           const tlDuration = this.duration;
@@ -4192,28 +4295,36 @@ class Timeline extends Timer {
           let i = 0;
           /** @type {Number} */
           const parsedLength = (parsedTargetsArray.length);
+          // Call editor hook once for the entire stagger group instead of per target
+          const resolvedParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3, parsedLength) : null;
+          // Resolve stagger AFTER editor hook so tweaked position value (a3.defaultValue) is used
+          const staggerFn = staggeredPosition || globals.editor.resolveStagger(/** @type {TweakRegister} */(a3).defaultValue);
           parsedTargetsArray.forEach((/** @type {Target} */target) => {
             // Create a new parameter object for each staggered children
-            const staggeredChildParams = { ...childParams };
+            const staggeredChildParams = { ...(resolvedParams || childParams) };
             // Reset the duration of the timeline iteration before each stagger to prevent wrong start value calculation
             this.duration = tlDuration;
             this.iterationDuration = tlIterationDuration;
             if (!isUnd(id)) staggeredChildParams.id = id + '-' + i;
+            const staggeredTimePosition = parseTimelinePosition(this, staggerFn(target, i, parsedTargetsArray, null, this));
             addTlChild(
               staggeredChildParams,
               this,
-              parseTimelinePosition(this, staggeredPosition(target, i, parsedLength, this)),
+              staggeredTimePosition,
               target,
               i,
-              parsedLength
+              parsedTargetsArray,
             );
             i++;
           });
         } else {
+          // Call editor hook before resolving position so tweaked values are applied
+          const resolvedChildParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3) : childParams;
+          const resolvedPosition = a3 && /** @type {*} */(a3).type ? /** @type {*} */(a3).defaultValue : a3;
           addTlChild(
-            childParams,
+            resolvedChildParams,
             this,
-            parseTimelinePosition(this, a3),
+            parseTimelinePosition(this, resolvedPosition),
             /** @type {TargetsParam} */(a1),
           );
         }
@@ -4225,7 +4336,8 @@ class Timeline extends Timer {
           parseTimelinePosition(this,a2),
         );
       }
-      return this.init(true);
+      if (this.composition) this.init(true);
+      return this;
     }
   }
 
@@ -4252,7 +4364,11 @@ class Timeline extends Timer {
     if (isUnd(synced) || synced && isUnd(synced.pause)) return this;
     synced.pause();
     const duration = +(/** @type {globalThis.Animation} */(synced).effect ? /** @type {globalThis.Animation} */(synced).effect.getTiming().duration : /** @type {Tickable} */(synced).duration);
-    return this.add(synced, { currentTime: [0, duration], duration, ease: 'linear' }, position);
+    // Forces WAAPI Animation to persist; otherwise, they will stop syncing on finish.
+    if (!isUnd(synced) && !isUnd(/** @type {WAAPIAnimation} */(synced).persist)) {
+      /** @type {WAAPIAnimation} */(synced).persist = true;
+    }
+    return this.add(synced, { currentTime: [0, duration], duration, delay: 0, ease: 'linear', playbackEase: 'linear' }, position);
   }
 
   /**
@@ -4275,7 +4391,7 @@ class Timeline extends Timer {
    */
   call(callback, position) {
     if (isUnd(callback) || callback && !isFnc(callback)) return this;
-    return this.add({ duration: 0, onComplete: () => callback(this) }, position);
+    return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
   }
 
   /**
@@ -4318,8 +4434,8 @@ class Timeline extends Timer {
    * @return {this}
    */
   refresh() {
-    forEachChildren(this, (/** @type {JSAnimation} */child) => {
-      if (child.refresh) child.refresh();
+    forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => {
+      if (/** @type {JSAnimation} */(child).refresh) /** @type {JSAnimation} */(child).refresh();
     });
     return this;
   }
@@ -4329,8 +4445,8 @@ class Timeline extends Timer {
    */
   revert() {
     super.revert();
-    forEachChildren(this, (/** @type {JSAnimation} */child) => child.revert, true);
-    return cleanInlineStyles(this);
+    forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert, true);
+    return revertValues(this);
   }
 
   /**
@@ -4350,7 +4466,12 @@ class Timeline extends Timer {
  * @param {TimelineParams} [parameters]
  * @return {Timeline}
  */
-const createTimeline = parameters => new Timeline(parameters).init();
+const createTimeline = parameters => {
+  if (globals.editor) {
+    return /** @type {Timeline} */(/** @type {unknown} */(globals.editor.addTimeline(parameters)));
+  }
+  return new Timeline(parameters).init();
+};
 
 
 
@@ -4791,6 +4912,170 @@ const spring = (parameters) => new Spring(parameters);
 const createSpring = (parameters) => {
   console.warn('createSpring() is deprecated use spring() instead');
   return new Spring(parameters);
+};
+
+
+
+
+
+const WAAPIAnimationsLookups = {
+  _head: null,
+  _tail: null,
+};
+
+/**
+ * @param {DOMTarget} $el
+ * @param {String} [property]
+ * @param {WAAPIAnimation} [parent]
+ * @return {globalThis.Animation}
+ */
+const removeWAAPIAnimation = ($el, property, parent) => {
+  let nextLookup = WAAPIAnimationsLookups._head;
+  let anim;
+  while (nextLookup) {
+    const next = nextLookup._next;
+    const matchTarget = nextLookup.$el === $el;
+    const matchProperty = !property || nextLookup.property === property;
+    const matchParent = !parent || nextLookup.parent === parent;
+    if (matchTarget && matchProperty && matchParent) {
+      anim = nextLookup.animation;
+      try { anim.commitStyles(); } catch {}      anim.cancel();
+      removeChild(WAAPIAnimationsLookups, nextLookup);
+      const lookupParent = nextLookup.parent;
+      if (lookupParent) {
+        lookupParent._completed++;
+        if (lookupParent.animations.length === lookupParent._completed) {
+          lookupParent.completed = true;
+          lookupParent.paused = true;
+          if (!lookupParent.muteCallbacks) {
+            lookupParent.onComplete(lookupParent);
+            lookupParent._resolve(lookupParent);
+          }
+        }
+      }
+    }
+    nextLookup = next;
+  }
+  return anim;
+};
+
+/**
+ * @param {WAAPIAnimation} parent
+ * @param {DOMTarget} $el
+ * @param {String} property
+ * @param {PropertyIndexedKeyframes} keyframes
+ * @param {KeyframeAnimationOptions} params
+ * @retun {globalThis.Animation}
+ */
+const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
+  const animation = $el.animate(keyframes, params);
+  const animTotalDuration = params.delay + (+params.duration * params.iterations);
+  animation.playbackRate = parent._speed;
+  if (parent.paused) animation.pause();
+  if (parent.duration < animTotalDuration) {
+    parent.duration = animTotalDuration;
+    parent.controlAnimation = animation;
+  }
+  parent.animations.push(animation);
+  removeWAAPIAnimation($el, property);
+  addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
+  const handleRemove = () => removeWAAPIAnimation($el, property, parent);
+  animation.oncancel = handleRemove;
+  animation.onremove = handleRemove;
+  if (!parent.persist) {
+    animation.onfinish = handleRemove;
+  }
+  return animation;
+};
+
+
+
+
+
+/**
+ * @overload
+ * @param  {DOMTargetSelector} targetSelector
+ * @param  {String} propName
+ * @return {String}
+ *
+ * @overload
+ * @param  {JSTargetsParam} targetSelector
+ * @param  {String} propName
+ * @return {Number|String}
+ *
+ * @overload
+ * @param  {DOMTargetsParam} targetSelector
+ * @param  {String} propName
+ * @param  {String} unit
+ * @return {String}
+ *
+ * @overload
+ * @param  {TargetsParam} targetSelector
+ * @param  {String} propName
+ * @param  {Boolean} unit
+ * @return {Number}
+ *
+ * @param  {TargetsParam} targetSelector
+ * @param  {String} propName
+ * @param  {String|Boolean} [unit]
+ */
+function get(targetSelector, propName, unit) {
+  const targets = registerTargets(targetSelector);
+  if (!targets.length) return;
+  const [ target ] = targets;
+  const tweenType = getTweenType(target, propName);
+  const normalizePropName = sanitizePropertyName(propName, target, tweenType);
+  let originalValue = getOriginalAnimatableValue(target, normalizePropName);
+  if (isUnd(unit)) {
+    return originalValue;
+  } else {
+    decomposeRawValue(originalValue, decomposedOriginalValue);
+    if (decomposedOriginalValue.t === valueTypes.NUMBER || decomposedOriginalValue.t === valueTypes.UNIT) {
+      if (unit === false) {
+        return decomposedOriginalValue.n;
+      } else {
+        const convertedValue = convertValueUnit(/** @type {DOMTarget} */(target), decomposedOriginalValue, /** @type {String} */(unit), false);
+        return `${round$1(convertedValue.n, globals.precision)}${convertedValue.u}`;
+      }
+    }
+  }
+}
+
+/**
+ * @param  {TargetsParam} targets
+ * @param  {AnimationParams} parameters
+ * @return {JSAnimation}
+ */
+const set = (targets, parameters) => {
+  if (isUnd(parameters)) return;
+  parameters.duration = minValue;
+  // Do not overrides currently active tweens by default
+  parameters.composition = setValue(parameters.composition, compositionTypes.none);
+  // Skip init() and force rendering by playing the animation
+  return new JSAnimation(targets, parameters, null, 0, true).resume();
+};
+
+/**
+ * @param  {TargetsParam} targets
+ * @param  {Renderable|WAAPIAnimation} [renderable]
+ * @param  {String} [propertyName]
+ * @return {TargetsArray}
+ */
+const remove = (targets, renderable, propertyName) => {
+  const targetsArray = parseTargets(targets);
+  for (let i = 0, l = targetsArray.length; i < l; i++) {
+    removeWAAPIAnimation(
+      /** @type {DOMTarget}  */(targetsArray[i]),
+      propertyName,
+      renderable && /** @type {WAAPIAnimation} */(renderable).controlAnimation && /** @type {WAAPIAnimation} */(renderable),
+    );
+  }
+  removeTargetsFromRenderable(
+    targetsArray,
+    /** @type {Renderable} */(renderable),
+    propertyName
+  );
+  return targetsArray;
 };
 
 
@@ -5999,19 +6284,20 @@ const sync = (callback = noop) => {
 };
 
 /**
- * @param  {(...args: any[]) => Tickable | ((...args: any[]) => void)} constructor
+ * @param  {(...args: any[]) => Tickable | ((...args: any[]) => void) | void} constructor
  * @return {(...args: any[]) => Tickable | ((...args: any[]) => void)}
  */
 const keepTime = constructor => {
   /** @type {Tickable} */
   let tracked;
   return (...args) => {
-    let currentIteration, currentIterationProgress, reversed, alternate;
+    let currentIteration, currentIterationProgress, reversed, alternate, startTime;
     if (tracked) {
       currentIteration = tracked.currentIteration;
       currentIterationProgress = tracked.iterationProgress;
       reversed = tracked.reversed;
       alternate = tracked._alternate;
+      startTime = tracked._startTime;
       tracked.revert();
     }
     const cleanup = constructor(...args);
@@ -6019,6 +6305,7 @@ const keepTime = constructor => {
     if (!isUnd(currentIterationProgress)) {
       /** @type {Tickable} */(tracked).currentIteration = currentIteration;
       /** @type {Tickable} */(tracked).iterationProgress = (alternate ? !(currentIteration % 2) ? reversed : !reversed : reversed) ? 1 - currentIterationProgress : currentIterationProgress;
+      /** @type {Tickable} */(tracked)._startTime = startTime;
     }
     return cleanup || noop;
   }
@@ -6426,6 +6713,7 @@ class ScrollContainer {
     this.updateBounds();
     forEachChildren(this, (/** @type {ScrollObserver} */child) => {
       child.refresh();
+      child.onResize(child);
       if (child._debug) {
         child.debug();
       }
@@ -6637,6 +6925,8 @@ class ScrollObserver {
     /** @type {Callback<ScrollObserver>} */
     this.onUpdate = parameters.onUpdate || noop;
     /** @type {Callback<ScrollObserver>} */
+    this.onResize = parameters.onResize || noop;
+    /** @type {Callback<ScrollObserver>} */
     this.onSyncComplete = parameters.onSyncComplete || noop;
     /** @type {Boolean} */
     this.reverted = false;
@@ -6700,7 +6990,9 @@ class ScrollObserver {
       linked.pause();
       this.linked = linked;
       // Forces WAAPI Animation to persist; otherwise, they will stop syncing on finish.
-      if (!isUnd(/** @type {WAAPIAnimation} */(linked))) /** @type {WAAPIAnimation} */(linked).persist = true;
+      if (!isUnd(linked) && !isUnd(/** @type {WAAPIAnimation} */(linked).persist)) {
+        /** @type {WAAPIAnimation} */(linked).persist = true;
+      }
       // Try to use a target of the linked object if no target parameters specified
       if (!this._params.target) {
         /** @type {HTMLElement} */
@@ -6902,12 +7194,11 @@ class ScrollObserver {
     // let offsetX = 0;
     // let offsetY = 0;
     // let $offsetParent = $el;
-    /** @type {Element} */
     if (linked) {
       linkedTime = linked.currentTime;
       linked.seek(0, true);
     }
-    /* Old implementation to get offset and targetSize before fixing https://github.com/juliangarnier/anime/issues/1021
+    // Old implementation to get offset and targetSize before fixing https://github.com/juliangarnier/anime/issues/1021
     // const isContainerStatic = get(container.element, 'position') === 'static' ? set(container.element, { position: 'relative '}) : false;
     // while ($el && $el !== container.element && $el !== doc.body) {
     //   const isSticky = get($el, 'position') === 'sticky' ?
@@ -7281,6 +7572,2018 @@ var index$3 = /*#__PURE__*/Object.freeze({
   steps: steps
 });
 
+
+
+
+
+
+
+/**
+ * Converts an easing function into a valid CSS linear() timing function string
+ * @param {EasingFunction} fn
+ * @param {number} [samples=100]
+ * @returns {string} CSS linear() timing function
+ */
+const easingToLinear = (fn, samples = 100) => {
+  const points = [];
+  for (let i = 0; i <= samples; i++) points.push(round$1(fn(i / samples), 4));
+  return `linear(${points.join(', ')})`;
+};
+
+const WAAPIEasesLookups = {};
+
+/**
+ * @param  {EasingParam} ease
+ * @return {String}
+ */
+const parseWAAPIEasing = (ease) => {
+  let parsedEase = WAAPIEasesLookups[ease];
+  if (parsedEase) return parsedEase;
+  parsedEase = 'linear';
+  if (isStr(ease)) {
+    if (
+      stringStartsWith(ease, 'linear') ||
+      stringStartsWith(ease, 'cubic-') ||
+      stringStartsWith(ease, 'steps') ||
+      stringStartsWith(ease, 'ease')
+    ) {
+      parsedEase = ease;
+    } else if (stringStartsWith(ease, 'cubicB')) {
+      parsedEase = toLowerCase(ease);
+    } else {
+      const parsed = parseEaseString(ease);
+      if (isFnc(parsed)) parsedEase = parsed === none ? 'linear' : easingToLinear(parsed);
+    }
+    // Only cache string based easing name, otherwise function arguments get lost
+    WAAPIEasesLookups[ease] = parsedEase;
+  } else if (isFnc(ease)) {
+    const easing = easingToLinear(ease);
+    if (easing) parsedEase = easing;
+  } else if (/** @type {Spring} */(ease).ease) {
+    parsedEase = easingToLinear(/** @type {Spring} */(ease).ease);
+  }
+  return parsedEase;
+};
+
+const transformsShorthands = ['x', 'y', 'z'];
+const commonDefaultPXProperties = [
+  'perspective',
+  'width',
+  'height',
+  'margin',
+  'padding',
+  'top',
+  'right',
+  'bottom',
+  'left',
+  'borderWidth',
+  'fontSize',
+  'borderRadius',
+  ...transformsShorthands
+];
+
+const validIndividualTransforms = /*#__PURE__*/ (() => [...transformsShorthands, ...validTransforms.filter(t => ['X', 'Y', 'Z'].some(axis => t.endsWith(axis)))])();
+
+let transformsPropertiesRegistered = null;
+
+/**
+ * @param  {String} propName
+ * @param  {WAAPIKeyframeValue} value
+ * @param  {DOMTarget} $el
+ * @param  {Number} i
+ * @param  {DOMTargetsArray} parsedTargets
+ * @return {String}
+ */
+const normalizeTweenValue = (propName, value, $el, i, parsedTargets) => {
+  // Do not try to compute strings with getFunctionValue otherwise it will convert CSS variables
+  let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, parsedTargets, null, null);
+  if (!isNum(v)) return v;
+  if (commonDefaultPXProperties.includes(propName) || stringStartsWith(propName, 'translate')) return `${v}px`;
+  if (stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew')) return `${v}deg`;
+  return `${v}`;
+};
+
+/**
+ * @param  {DOMTarget} $el
+ * @param  {String} propName
+ * @param  {WAAPIKeyframeValue} from
+ * @param  {WAAPIKeyframeValue} to
+ * @param  {Number} i
+ * @param  {DOMTargetsArray} parsedTargets
+ * @return {WAAPITweenValue}
+ */
+const parseIndividualTweenValue = ($el, propName, from, to, i, parsedTargets) => {
+  /** @type {WAAPITweenValue} */
+  let tweenValue = '0';
+  const computedTo = !isUnd(to) ? normalizeTweenValue(propName, to, $el, i, parsedTargets) : getComputedStyle($el)[propName];
+  if (!isUnd(from)) {
+    const computedFrom = normalizeTweenValue(propName, from, $el, i, parsedTargets);
+    tweenValue = [computedFrom, computedTo];
+  } else {
+    tweenValue = isArr(to) ? to.map((/** @type {any} */v) => normalizeTweenValue(propName, v, $el, i, parsedTargets)) : computedTo;
+  }
+  return tweenValue;
+};
+
+class WAAPIAnimation {
+/**
+ * @param {DOMTargetsParam} targets
+ * @param {WAAPIAnimationParams} params
+ */
+  constructor(targets, params) {
+
+    if (scope.current) scope.current.register(this);
+
+    // Skip the registration and fallback to no animation in case CSS.registerProperty is not supported
+    if (isNil(transformsPropertiesRegistered)) {
+      if (isBrowser && (isUnd(CSS) || !Object.hasOwnProperty.call(CSS, 'registerProperty'))) {
+        transformsPropertiesRegistered = false;
+      } else {
+        validTransforms.forEach(t => {
+          const isSkew = stringStartsWith(t, 'skew');
+          const isScale = stringStartsWith(t, 'scale');
+          const isRotate = stringStartsWith(t, 'rotate');
+          const isTranslate = stringStartsWith(t, 'translate');
+          const isAngle = isRotate || isSkew;
+          const syntax = isAngle ? '<angle>' : isScale ? "<number>" : isTranslate ? "<length-percentage>" : "*";
+          try {
+            CSS.registerProperty({
+              name: '--' + t,
+              syntax,
+              inherits: false,
+              initialValue: isTranslate ? '0px' : isAngle ? '0deg' : isScale ? '1' : '0',
+            });
+          } catch {}        });
+        transformsPropertiesRegistered = true;
+      }
+    }
+
+    const parsedTargets = registerTargets(targets);
+
+    if (!parsedTargets.length) {
+      console.warn(`No target found. Make sure the element you're trying to animate is accessible before creating your animation.`);
+    }
+
+    const autoplay = setValue(params.autoplay, globals.defaults.autoplay);
+    const scroll = autoplay && /** @type {ScrollObserver} */(autoplay).link ? autoplay : false;
+    const alternate = params.alternate && /** @type {Boolean} */(params.alternate) === true;
+    const reversed = params.reversed && /** @type {Boolean} */(params.reversed) === true;
+    const loop = setValue(params.loop, globals.defaults.loop);
+    const iterations = /** @type {Number} */((loop === true || loop === Infinity) ? Infinity : isNum(loop) ? loop + 1 : 1);
+    /** @type {PlaybackDirection} */
+    const direction = alternate ? reversed ? 'alternate-reverse' : 'alternate' : reversed ? 'reverse' : 'normal';
+    /** @type {FillMode} */
+    const fill = 'both'; // We use 'both' here because the animation can be reversed during playback
+    const timeScale = (globals.timeScale === 1 ? 1 : K);
+
+    /** @type {DOMTargetsArray}] */
+    this.targets = parsedTargets;
+    /** @type {Array<globalThis.Animation>}] */
+    this.animations = [];
+    /** @type {globalThis.Animation}] */
+    this.controlAnimation = null;
+    /** @type {Callback<this>} */
+    this.onComplete = params.onComplete || /** @type {Callback<WAAPIAnimation>} */(/** @type {unknown} */(globals.defaults.onComplete));
+    /** @type {Number} */
+    this.duration = 0;
+    /** @type {Boolean} */
+    this.muteCallbacks = false;
+    /** @type {Boolean} */
+    this.completed = false;
+    /** @type {Boolean} */
+    this.paused = !autoplay || scroll !== false;
+    /** @type {Boolean} */
+    this.reversed = reversed;
+    /** @type {Boolean} */
+    this.persist = setValue(params.persist, globals.defaults.persist);
+    /** @type {Boolean|ScrollObserver} */
+    this.autoplay = autoplay;
+    /** @type {Number} */
+    this._speed = setValue(params.playbackRate, globals.defaults.playbackRate);
+    /** @type {Function} */
+    this._resolve = noop; // Used by .then()
+    /** @type {Number} */
+    this._completed = 0;
+    /** @type {Array.<Object>} */
+    this._inlineStyles = [];
+
+    parsedTargets.forEach(($el, i) => {
+
+      const cachedTransforms = $el[transformsSymbol];
+      const hasIndividualTransforms = validIndividualTransforms.some(t => params.hasOwnProperty(t));
+      const elStyle = $el.style;
+      const inlineStyles = this._inlineStyles[i] = {};
+
+      const easeToParse = setValue(params.ease, globals.defaults.ease);
+
+      const easeFunctionResult = getFunctionValue(easeToParse, $el, i, parsedTargets, null, null);
+      const keyEasing = isFnc(easeFunctionResult) || isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
+
+      const spring = /** @type {Spring} */(easeToParse).ease && easeToParse;
+      /** @type {String} */
+      const easing = parseWAAPIEasing(keyEasing);
+
+      /** @type {Number} */
+      const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, parsedTargets, null, null)) * timeScale;
+      /** @type {Number} */
+      const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, parsedTargets, null, null) * timeScale;
+      /** @type {CompositeOperation} */
+      const composite = /** @type {CompositeOperation} */(setValue(params.composition, 'replace'));
+
+      for (let name in params) {
+        if (!isKey(name)) continue;
+        /** @type {PropertyIndexedKeyframes} */
+        const keyframes = {};
+        /** @type {KeyframeAnimationOptions} */
+        const tweenParams = { iterations, direction, fill, easing, duration, delay, composite };
+        const propertyValue = params[name];
+        const individualTransformProperty = hasIndividualTransforms ? validTransforms.includes(name) ? name : shortTransforms.get(name) : false;
+
+        const styleName = individualTransformProperty ? 'transform' : name;
+        if (!inlineStyles[styleName]) {
+          inlineStyles[styleName] = elStyle[styleName];
+        }
+
+        let parsedPropertyValue;
+        if (isObj(propertyValue)) {
+          const tweenOptions = /** @type {WAAPITweenOptions} */(propertyValue);
+          const tweenOptionsEase = setValue(tweenOptions.ease, easing);
+          const tweenOptionsSpring = /** @type {Spring} */(tweenOptionsEase).ease && tweenOptionsEase;
+          const to = /** @type {WAAPITweenOptions} */(tweenOptions).to;
+          const from = /** @type {WAAPITweenOptions} */(tweenOptions).from;
+          /** @type {Number} */
+          tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, parsedTargets, null, null)) * timeScale;
+          /** @type {Number} */
+          tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, parsedTargets, null, null) * timeScale;
+          /** @type {CompositeOperation} */
+          tweenParams.composite = /** @type {CompositeOperation} */(setValue(tweenOptions.composition, composite));
+          /** @type {String} */
+          tweenParams.easing = parseWAAPIEasing(tweenOptionsEase);
+          parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, parsedTargets);
+          if (individualTransformProperty) {
+            keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
+            cachedTransforms[individualTransformProperty] = parsedPropertyValue;
+          } else {
+            keyframes[name] = parseIndividualTweenValue($el, name, from, to, i, parsedTargets);
+          }
+          addWAAPIAnimation(this, $el, name, keyframes, tweenParams);
+          if (!isUnd(from)) {
+            if (!individualTransformProperty) {
+              elStyle[name] = keyframes[name][0];
+            } else {
+              const key = `--${individualTransformProperty}`;
+              elStyle.setProperty(key, keyframes[key][0]);
+            }
+          }
+        } else {
+          parsedPropertyValue = isArr(propertyValue) ?
+                                propertyValue.map((/** @type {any} */v) => normalizeTweenValue(name, v, $el, i, parsedTargets)) :
+                                normalizeTweenValue(name, /** @type {any} */(propertyValue), $el, i, parsedTargets);
+          if (individualTransformProperty) {
+            keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
+            cachedTransforms[individualTransformProperty] = parsedPropertyValue;
+          } else {
+            keyframes[name] = parsedPropertyValue;
+          }
+          addWAAPIAnimation(this, $el, name, keyframes, tweenParams);
+        }
+      }
+      if (hasIndividualTransforms) {
+        let transforms = emptyString;
+        for (let t in cachedTransforms) {
+          transforms += `${transformsFragmentStrings[t]}var(--${t})) `;
+        }
+        elStyle.transform = transforms;
+      }
+    });
+
+    if (scroll) {
+      /** @type {ScrollObserver} */(this.autoplay).link(this);
+    }
+  }
+
+  /**
+   * @callback forEachCallback
+   * @param {globalThis.Animation} animation
+   */
+
+  /**
+   * @param  {forEachCallback|String} callback
+   * @return {this}
+   */
+  forEach(callback) {
+    try {
+      const cb = isStr(callback) ? (/** @type {globalThis.Animation} */a) => a[callback]() : callback;
+      this.animations.forEach(cb);
+    } catch {}    return this;
+  }
+
+  get speed() {
+    return this._speed;
+  }
+
+  set speed(speed) {
+    this._speed = +speed;
+    this.forEach(anim => anim.playbackRate = speed);
+  }
+
+  get currentTime() {
+    const controlAnimation = this.controlAnimation;
+    const timeScale = globals.timeScale;
+    return this.completed ? this.duration : controlAnimation ? +controlAnimation.currentTime * (timeScale === 1 ? 1 : timeScale) : 0;
+  }
+
+  set currentTime(time) {
+    const t = time * (globals.timeScale === 1 ? 1 : K);
+    this.forEach(anim => {
+      // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
+      // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
+      // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event
+      // This is not needed for persisting animations since they never finish.
+      if (!this.persist && t >= this.duration) anim.play();
+      anim.currentTime = t;
+    });
+  }
+
+  get progress() {
+    return this.currentTime / this.duration;
+  }
+
+  set progress(progress) {
+    this.forEach(anim => anim.currentTime = progress * this.duration || 0);
+  }
+
+  resume() {
+    if (!this.paused) return this;
+    this.paused = false;
+    // TODO: Store the current time, and seek back to the last position
+    return this.forEach('play');
+  }
+
+  pause() {
+    if (this.paused) return this;
+    this.paused = true;
+    return this.forEach('pause');
+  }
+
+  alternate() {
+    this.reversed = !this.reversed;
+    this.forEach('reverse');
+    if (this.paused) this.forEach('pause');
+    return this;
+  }
+
+  play() {
+    if (this.reversed) this.alternate();
+    return this.resume();
+  }
+
+  reverse() {
+    if (!this.reversed) this.alternate();
+    return this.resume();
+  }
+
+ /**
+  * @param {Number} time
+  * @param {Boolean} muteCallbacks
+  */
+  seek(time, muteCallbacks = false) {
+    if (muteCallbacks) this.muteCallbacks = true;
+    if (time < this.duration) this.completed = false;
+    this.currentTime = time;
+    this.muteCallbacks = false;
+    if (this.paused) this.pause();
+    return this;
+  }
+
+  restart() {
+    this.completed = false;
+    return this.seek(0, true).resume();
+  }
+
+  commitStyles() {
+    return this.forEach('commitStyles');
+  }
+
+  complete() {
+    return this.seek(this.duration);
+  }
+
+  cancel() {
+    this.muteCallbacks = true; // This prevents triggering the onComplete callback and resolving the Promise
+    this.commitStyles().forEach('cancel');
+    this.animations.length = 0; // Needed to release all animations from memory
+    requestAnimationFrame(() => {
+      this.targets.forEach(($el) => { // Needed to avoid unecessary inline transorms
+        if ($el.style.transform === 'none') $el.style.removeProperty('transform');
+      });
+    });
+    return this;
+  }
+
+  revert() {
+    // NOTE: We need a better way to revert the transforms, since right now the entire transform property value is reverted,
+    // This means if you have multiple animations animating different transforms on the same target,
+    // reverting one of them will also override the transform property of the other animations.
+    // A better approach would be to store the original custom property values if they exist instead of the entire transform value,
+    // and update the CSS variables with the orignal value
+    this.cancel().targets.forEach(($el, i) => {
+      const targetStyle = $el.style;
+      const targetInlineStyles = this._inlineStyles[i];
+      for (let name in targetInlineStyles) {
+        const originalInlinedValue = targetInlineStyles[name];
+        if (isUnd(originalInlinedValue) || originalInlinedValue === emptyString) {
+          targetStyle.removeProperty(toLowerCase(name));
+        } else {
+          $el.style[name] = originalInlinedValue;
+        }
+      }
+      // Remove style attribute if empty
+      if ($el.getAttribute('style') === emptyString) $el.removeAttribute('style');
+    });
+    return this;
+  }
+
+  /**
+   * @typedef {this & {then: null}} ResolvedWAAPIAnimation
+   */
+
+  /**
+   * @param  {Callback<ResolvedWAAPIAnimation>} [callback]
+   * @return Promise<this>
+   */
+  then(callback = noop) {
+    const then = this.then;
+    const onResolve = () => {
+      this.then = null;
+      callback(/** @type {ResolvedWAAPIAnimation} */(this));
+      this.then = then;
+      this._resolve = noop;
+    };
+    return new Promise(r => {
+      this._resolve = () => r(onResolve());
+      if (this.completed) this._resolve();
+      return this;
+    });
+  }
+}
+
+const waapi = {
+/**
+ * @param {DOMTargetsParam} targets
+ * @param {WAAPIAnimationParams} params
+ * @return {WAAPIAnimation}
+ */
+  animate: (targets, params) => new WAAPIAnimation(targets, params),
+  convertEase: easingToLinear
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @typedef {DOMTargetSelector|Array<DOMTargetSelector>} LayoutChildrenParam
+ */
+
+/**
+ * @typedef {Object} LayoutAnimationTimingsParams
+ * @property {Number|FunctionValue} [delay]
+ * @property {Number|FunctionValue} [duration]
+ * @property {EasingParam|FunctionValue} [ease]
+ */
+
+/**
+ * @typedef {Record<String, Number|String|FunctionValue>} LayoutStateAnimationProperties
+ */
+
+/**
+ * @typedef {LayoutStateAnimationProperties & LayoutAnimationTimingsParams} LayoutStateParams
+ */
+
+/**
+ * @typedef {Object} LayoutSpecificAnimationParams
+ * @property {Number|String} [id]
+ * @property {Number|FunctionValue} [delay]
+ * @property {Number|FunctionValue} [duration]
+ * @property {EasingParam|FunctionValue} [ease]
+ * @property {EasingParam} [playbackEase]
+ * @property {LayoutStateParams} [swapAt]
+ * @property {LayoutStateParams} [enterFrom]
+ * @property {LayoutStateParams} [leaveTo]
+ */
+
+/**
+ * @typedef {LayoutSpecificAnimationParams & TimerParams & TickableCallbacks<Timeline> & RenderableCallbacks<Timeline>} LayoutAnimationParams
+ */
+
+/**
+ * @typedef {Object} LayoutOptions
+ * @property {LayoutChildrenParam} [children]
+ * @property {Array<String>} [properties]
+ */
+
+/**
+ * @typedef {LayoutAnimationParams & LayoutOptions} AutoLayoutParams
+ */
+
+/**
+ * @typedef {Record<String, Number|String|FunctionValue> & {
+ *   transform: String,
+ *   x: Number,
+ *   y: Number,
+ *   left: Number,
+ *   top: Number,
+ *   clientLeft: Number,
+ *   clientTop: Number,
+ *   width: Number,
+ *   height: Number,
+ * }} LayoutNodeProperties
+ */
+
+/**
+ * @typedef {Object} LayoutNode
+ * @property {String} id
+ * @property {DOMTarget} $el
+ * @property {Number} index
+ * @property {Array<DOMTarget>} targets
+ * @property {Number} delay
+ * @property {Number} duration
+ * @property {EasingParam} ease
+ * @property {DOMTarget} $measure
+ * @property {LayoutSnapshot} state
+ * @property {AutoLayout} layout
+ * @property {LayoutNode|null} parentNode
+ * @property {Boolean} isTarget
+ * @property {Boolean} isEntering
+ * @property {Boolean} isLeaving
+ * @property {Boolean} hasTransform
+ * @property {Array<String>} inlineStyles
+ * @property {String|null} inlineTransforms
+ * @property {String|null} inlineTransition
+ * @property {Boolean} branchAdded
+ * @property {Boolean} branchRemoved
+ * @property {Boolean} branchNotRendered
+ * @property {Boolean} sizeChanged
+ * @property {Boolean} isInlined
+ * @property {Boolean} hasVisibilitySwap
+ * @property {Boolean} hasDisplayNone
+ * @property {Boolean} hasVisibilityHidden
+ * @property {String|null} measuredInlineTransform
+ * @property {String|null} measuredInlineTransition
+ * @property {String|null} measuredDisplay
+ * @property {String|null} measuredVisibility
+ * @property {String|null} measuredPosition
+ * @property {Boolean} measuredHasDisplayNone
+ * @property {Boolean} measuredHasVisibilityHidden
+ * @property {Boolean} measuredIsVisible
+ * @property {Boolean} measuredIsRemoved
+ * @property {Boolean} measuredIsInsideRoot
+ * @property {LayoutNodeProperties} properties
+ * @property {LayoutNode|null} _head
+ * @property {LayoutNode|null} _tail
+ * @property {LayoutNode|null} _prev
+ * @property {LayoutNode|null} _next
+ */
+
+/**
+ * @callback LayoutNodeIterator
+ * @param {LayoutNode} node
+ * @param {Number} index
+ * @return {void}
+ */
+
+let layoutId = 0;
+let nodeId = 0;
+
+/**
+ * @param {DOMTarget} root
+ * @param {DOMTarget} $el
+ * @return {Boolean}
+ */
+const isElementInRoot = (root, $el) => {
+  if (!root || !$el) return false;
+  return root === $el || root.contains($el);
+};
+
+/**
+ * @param {DOMTarget|null} $el
+ * @return {String|null}
+ */
+const muteElementTransition = $el => {
+  if (!$el) return null;
+  const style = $el.style;
+  const transition = style.transition || '';
+  style.setProperty('transition', 'none', 'important');
+  return transition;
+};
+
+/**
+ * @param {DOMTarget|null} $el
+ * @param {String|null} transition
+ */
+const restoreElementTransition = ($el, transition) => {
+  if (!$el) return;
+  const style = $el.style;
+  if (transition) {
+    style.transition = transition;
+  } else {
+    style.removeProperty('transition');
+  }
+};
+
+/**
+ * @param {LayoutNode} node
+ */
+const muteNodeTransition = node => {
+  const store = node.layout.transitionMuteStore;
+  const $el = node.$el;
+  const $measure = node.$measure;
+  if ($el && !store.has($el)) store.set($el, muteElementTransition($el));
+  if ($measure && !store.has($measure)) store.set($measure, muteElementTransition($measure));
+};
+
+/**
+ * @param {Map<DOMTarget, String|null>} store
+ */
+const restoreLayoutTransition = store => {
+  store.forEach((value, $el) => restoreElementTransition($el, value));
+  store.clear();
+};
+
+const hiddenComputedStyle = /** @type {CSSStyleDeclaration} */({
+  display: 'none',
+  visibility: 'hidden',
+  opacity: '0',
+  transform: 'none',
+  position: 'static',
+});
+
+/**
+ * @param {LayoutNode|null} node
+ */
+const detachNode = node => {
+  if (!node) return;
+  const parent = node.parentNode;
+  if (!parent) return;
+  if (parent._head === node) parent._head = node._next;
+  if (parent._tail === node) parent._tail = node._prev;
+  if (node._prev) node._prev._next = node._next;
+  if (node._next) node._next._prev = node._prev;
+  node._prev = null;
+  node._next = null;
+  node.parentNode = null;
+};
+
+/**
+ * @param {DOMTarget} $el
+ * @param {LayoutNode|null} parentNode
+ * @param {LayoutSnapshot} state
+ * @param {LayoutNode} recycledNode
+ * @return {LayoutNode}
+ */
+const createNode = ($el, parentNode, state, recycledNode) => {
+  let dataId = $el.dataset.layoutId;
+  if (!dataId) dataId = $el.dataset.layoutId = `node-${nodeId++}`;
+  const node = recycledNode ? recycledNode : /** @type {LayoutNode} */({});
+  node.$el = $el;
+  node.$measure = $el;
+  node.id = dataId;
+  node.index = 0;
+  node.targets = null;
+  node.delay = 0;
+  node.duration = 0;
+  node.ease = null;
+  node.state = state;
+  node.layout = state.layout;
+  node.parentNode = parentNode || null;
+  node.isTarget = false;
+  node.isEntering = false;
+  node.isLeaving = false;
+  node.isInlined = false;
+  node.hasTransform = false;
+  node.inlineStyles = [];
+  node.inlineTransforms = null;
+  node.inlineTransition = null;
+  node.branchAdded = false;
+  node.branchRemoved = false;
+  node.branchNotRendered = false;
+  node.sizeChanged = false;
+  node.hasVisibilitySwap = false;
+  node.hasDisplayNone = false;
+  node.hasVisibilityHidden = false;
+  node.measuredInlineTransform = null;
+  node.measuredInlineTransition = null;
+  node.measuredDisplay = null;
+  node.measuredVisibility = null;
+  node.measuredPosition = null;
+  node.measuredHasDisplayNone = false;
+  node.measuredHasVisibilityHidden = false;
+  node.measuredIsVisible = false;
+  node.measuredIsRemoved = false;
+  node.measuredIsInsideRoot = false;
+  node.properties = /** @type {LayoutNodeProperties} */({
+    transform: 'none',
+    x: 0,
+    y: 0,
+    left: 0,
+    top: 0,
+    clientLeft: 0,
+    clientTop: 0,
+    width: 0,
+    height: 0,
+  });
+  node.layout.properties.forEach(prop => node.properties[prop] = 0);
+  node._head = null;
+  node._tail = null;
+  node._prev = null;
+  node._next = null;
+  return node;
+};
+
+/**
+ * @param {LayoutNode} node
+ * @param {DOMTarget} $measure
+ * @param {CSSStyleDeclaration} computedStyle
+ * @param {Boolean} skipMeasurements
+ * @return {LayoutNode}
+ */
+const recordNodeState = (node, $measure, computedStyle, skipMeasurements) => {
+  const $el = node.$el;
+  const root = node.layout.root;
+  const isRoot = root === $el;
+  const properties = node.properties;
+  const rootNode = node.state.rootNode;
+  const parentNode = node.parentNode;
+  const computedTransforms = computedStyle.transform;
+  const inlineTransforms = $el.style.transform;
+  const parentNotRendered = parentNode ? parentNode.measuredIsRemoved : false;
+  const position = computedStyle.position;
+  if (isRoot) node.layout.absoluteCoords = position === 'fixed' || position === 'absolute';
+  node.$measure = $measure;
+  node.inlineTransforms = inlineTransforms;
+  node.hasTransform = computedTransforms && computedTransforms !== 'none';
+  node.measuredIsInsideRoot = isElementInRoot(root, $measure);
+  node.measuredInlineTransform = null;
+  node.measuredDisplay = computedStyle.display;
+  node.measuredVisibility = computedStyle.visibility;
+  node.measuredPosition = position;
+  node.measuredHasDisplayNone = computedStyle.display === 'none';
+  node.measuredHasVisibilityHidden = computedStyle.visibility === 'hidden';
+  node.measuredIsVisible = !(node.measuredHasDisplayNone || node.measuredHasVisibilityHidden);
+  node.measuredIsRemoved = node.measuredHasDisplayNone || node.measuredHasVisibilityHidden || parentNotRendered;
+  // Check if element has adjacent text that would reflow when taken out of flow
+  let hasAdjacentText = false;
+  let s = $el.previousSibling;
+  while (s && (s.nodeType === Node.COMMENT_NODE || (s.nodeType === Node.TEXT_NODE && !s.textContent.trim()))) s = s.previousSibling;
+  if (s && s.nodeType === Node.TEXT_NODE) {
+    hasAdjacentText = true;
+  } else {
+    s = $el.nextSibling;
+    while (s && (s.nodeType === Node.COMMENT_NODE || (s.nodeType === Node.TEXT_NODE && !s.textContent.trim()))) s = s.nextSibling;
+    hasAdjacentText = s !== null && s.nodeType === Node.TEXT_NODE;
+  }
+  node.isInlined = hasAdjacentText;
+
+  // Mute transforms (and transition to avoid triggering an animation) before the position calculation
+  if (node.hasTransform && !skipMeasurements) {
+    const transitionMuteStore = node.layout.transitionMuteStore;
+    if (!transitionMuteStore.get($el)) node.inlineTransition = muteElementTransition($el);
+    if ($measure === $el) {
+      $el.style.transform = 'none';
+    } else {
+      if (!transitionMuteStore.get($measure)) node.measuredInlineTransition = muteElementTransition($measure);
+      node.measuredInlineTransform = $measure.style.transform;
+      $measure.style.transform = 'none';
+    }
+  }
+
+  let left = 0;
+  let top = 0;
+  let width = 0;
+  let height = 0;
+
+  if (!skipMeasurements) {
+    const rect = $measure.getBoundingClientRect();
+    left = rect.left;
+    top = rect.top;
+    width = rect.width;
+    height = rect.height;
+  }
+
+  for (let name in properties) {
+    const computedProp = name === 'transform' ? computedTransforms : computedStyle[name] || (computedStyle.getPropertyValue && computedStyle.getPropertyValue(name));
+    if (!isUnd(computedProp)) properties[name] = computedProp;
+  }
+
+  properties.left = left;
+  properties.top = top;
+  properties.clientLeft = skipMeasurements ? 0 : $measure.clientLeft;
+  properties.clientTop = skipMeasurements ? 0 : $measure.clientTop;
+  // Compute local x/y relative to parent
+  let absoluteLeft, absoluteTop;
+  if (isRoot) {
+    if (!node.layout.absoluteCoords) {
+      absoluteLeft = 0;
+      absoluteTop = 0;
+    } else {
+      absoluteLeft = left;
+      absoluteTop = top;
+    }
+  } else {
+    const p = parentNode || rootNode;
+    const parentLeft = p.properties.left;
+    const parentTop = p.properties.top;
+    const borderLeft = p.properties.clientLeft;
+    const borderTop = p.properties.clientTop;
+    if (!node.layout.absoluteCoords) {
+      if (p === rootNode) {
+        const rootLeft = rootNode.properties.left;
+        const rootTop = rootNode.properties.top;
+        const rootBorderLeft = rootNode.properties.clientLeft;
+        const rootBorderTop = rootNode.properties.clientTop;
+        absoluteLeft = left - rootLeft - rootBorderLeft;
+        absoluteTop = top - rootTop - rootBorderTop;
+      } else {
+        absoluteLeft = left - parentLeft - borderLeft;
+        absoluteTop = top - parentTop - borderTop;
+      }
+    } else {
+      absoluteLeft = left - parentLeft - borderLeft;
+      absoluteTop = top - parentTop - borderTop;
+    }
+  }
+  properties.x = absoluteLeft;
+  properties.y = absoluteTop;
+  properties.width = width;
+  properties.height = height;
+  return node;
+};
+
+/**
+ * @param {LayoutNode} node
+ * @param {LayoutStateAnimationProperties} [props]
+ */
+const updateNodeProperties = (node, props) => {
+  if (!props) return;
+  for (let name in props) {
+    node.properties[name] = props[name];
+  }
+};
+
+/**
+ * @param  {LayoutNode} node
+ * @param  {LayoutAnimationTimingsParams} params
+ */
+const updateNodeTimingParams = (node, params) => {
+  const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.targets, null, null);
+  const keyEasing = isFnc(easeFunctionResult) ? easeFunctionResult : params.ease;
+  const hasSpring = !isUnd(keyEasing) && !isUnd(/** @type {Spring} */(keyEasing).ease);
+  node.ease = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
+  node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.targets, null, null);
+  node.delay = getFunctionValue(params.delay, node.$el, node.index, node.targets, null, null);
+};
+
+/**
+ * @param {LayoutNode} node
+ */
+const recordNodeInlineStyles = node => {
+  const style = node.$el.style;
+  const stylesStore = node.inlineStyles;
+  stylesStore.length = 0;
+  node.layout.recordedProperties.forEach(prop => {
+    stylesStore.push(prop, style[prop] || '');
+  });
+};
+
+/**
+ * @param {LayoutNode} node
+ */
+const restoreNodeInlineStyles = node => {
+  const style = node.$el.style;
+  const stylesStore = node.inlineStyles;
+  for (let i = 0, l = stylesStore.length; i < l; i += 2) {
+    const property = stylesStore[i];
+    const styleValue = stylesStore[i + 1];
+    if (styleValue && styleValue !== '') {
+      style[property] = styleValue;
+    } else {
+      style[property] = '';
+      style.removeProperty(property);
+    }
+  }
+};
+
+/**
+ * @param {LayoutNode} node
+ */
+const restoreNodeTransform = node => {
+  const inlineTransforms = node.inlineTransforms;
+  const nodeStyle = node.$el.style;
+  if (!node.hasTransform || !inlineTransforms || (node.hasTransform && nodeStyle.transform === 'none') || (inlineTransforms && inlineTransforms === 'none')) {
+    nodeStyle.removeProperty('transform');
+  } else if (inlineTransforms) {
+    nodeStyle.transform = inlineTransforms;
+  }
+  const $measure = node.$measure;
+  if (node.hasTransform && $measure !== node.$el) {
+    const measuredStyle = $measure.style;
+    const measuredInline = node.measuredInlineTransform;
+    if (measuredInline && measuredInline !== '') {
+      measuredStyle.transform = measuredInline;
+    } else {
+      measuredStyle.removeProperty('transform');
+    }
+  }
+  node.measuredInlineTransform = null;
+  if (node.inlineTransition !== null) {
+    restoreElementTransition(node.$el, node.inlineTransition);
+    node.inlineTransition = null;
+  }
+  if ($measure !== node.$el && node.measuredInlineTransition !== null) {
+    restoreElementTransition($measure, node.measuredInlineTransition);
+    node.measuredInlineTransition = null;
+  }
+};
+
+/**
+ * @param {LayoutNode} node
+ */
+const restoreNodeVisualState = node => {
+  if (node.measuredIsRemoved || node.hasVisibilitySwap) {
+    node.$el.style.removeProperty('display');
+    node.$el.style.removeProperty('visibility');
+    if (node.hasVisibilitySwap) {
+      node.$measure.style.removeProperty('display');
+      node.$measure.style.removeProperty('visibility');
+    }
+  }
+  // if (node.measuredIsRemoved) {
+  node.layout.pendingRemoval.delete(node.$el);
+  // }
+};
+
+/**
+ * @param {LayoutNode} node
+ * @param {LayoutNode} targetNode
+ * @param {LayoutSnapshot} newState
+ * @return {LayoutNode}
+ */
+const cloneNodeProperties = (node, targetNode, newState) => {
+  targetNode.properties = /** @type {LayoutNodeProperties} */({ ...node.properties });
+  targetNode.state = newState;
+  targetNode.isTarget = node.isTarget;
+  targetNode.hasTransform = node.hasTransform;
+  targetNode.inlineTransforms = node.inlineTransforms;
+  targetNode.measuredIsVisible = node.measuredIsVisible;
+  targetNode.measuredDisplay = node.measuredDisplay;
+  targetNode.measuredIsRemoved = node.measuredIsRemoved;
+  targetNode.measuredHasDisplayNone = node.measuredHasDisplayNone;
+  targetNode.measuredHasVisibilityHidden = node.measuredHasVisibilityHidden;
+  targetNode.hasDisplayNone = node.hasDisplayNone;
+  targetNode.isInlined = node.isInlined;
+  targetNode.hasVisibilityHidden = node.hasVisibilityHidden;
+  return targetNode;
+};
+
+class LayoutSnapshot {
+  /**
+   * @param {AutoLayout} layout
+   */
+  constructor(layout) {
+    /** @type {AutoLayout} */
+    this.layout = layout;
+    /** @type {LayoutNode|null} */
+    this.rootNode = null;
+    /** @type {Set<LayoutNode>} */
+    this.rootNodes = new Set();
+    /** @type {Map<String, LayoutNode>} */
+    this.nodes = new Map();
+    /** @type {Number} */
+    this.scrollX = 0;
+    /** @type {Number} */
+    this.scrollY = 0;
+  }
+
+  /**
+   * @return {this}
+   */
+  revert() {
+    this.forEachNode(node => {
+      this.layout.pendingRemoval.delete(node.$el);
+      node.$el.removeAttribute('data-layout-id');
+      node.$measure.removeAttribute('data-layout-id');
+    });
+    this.rootNode = null;
+    this.rootNodes.clear();
+    this.nodes.clear();
+    return this;
+  }
+
+  /**
+   * @param {DOMTarget} $el
+   * @return {LayoutNode}
+   */
+  getNode($el) {
+    if (!$el || !$el.dataset) return;
+    return this.nodes.get($el.dataset.layoutId);
+  }
+
+  /**
+   * @param {DOMTarget} $el
+   * @param {String} prop
+   * @return {Number|String}
+   */
+  getComputedValue($el, prop) {
+    const node = this.getNode($el);
+    if (!node) return;
+    return /** @type {Number|String} */(node.properties[prop]);
+  }
+
+  /**
+   * @param {LayoutNode|null} rootNode
+   * @param {LayoutNodeIterator} cb
+   */
+  forEach(rootNode, cb) {
+    let node = rootNode;
+    let i = 0;
+    while (node) {
+      cb(node, i++);
+      if (node._head) {
+        node = node._head;
+      } else if (node._next) {
+        node = node._next;
+      } else {
+        while (node && !node._next) {
+          node = node.parentNode;
+        }
+        if (node) node = node._next;
+      }
+    }
+  }
+
+  /**
+   * @param {LayoutNodeIterator} cb
+   */
+  forEachRootNode(cb) {
+    this.forEach(this.rootNode, cb);
+  }
+
+  /**
+   * @param {LayoutNodeIterator} cb
+   */
+  forEachNode(cb) {
+    for (const rootNode of this.rootNodes) {
+      this.forEach(rootNode, cb);
+    }
+  }
+
+  /**
+   * @param {DOMTarget} $el
+   * @param {LayoutNode|null} parentNode
+   * @return {LayoutNode|null}
+   */
+  registerElement($el, parentNode) {
+    if (!$el || $el.nodeType !== 1) return null;
+
+    if (!this.layout.transitionMuteStore.has($el)) this.layout.transitionMuteStore.set($el, muteElementTransition($el));
+
+    /** @type {Array<DOMTarget|LayoutNode|null>} */
+    const stack = [$el, parentNode];
+    const root = this.layout.root;
+    let firstNode = null;
+
+    while (stack.length) {
+      /** @type {LayoutNode|null} */
+      const $parent = /** @type {LayoutNode|null} */(stack.pop());
+      /** @type {DOMTarget|null} */
+      const $current = /** @type {DOMTarget|null} */(stack.pop());
+
+      if (!$current || $current.nodeType !== 1 || isSvg($current)) continue;
+
+      const skipMeasurements = $parent ? $parent.measuredIsRemoved : false;
+      const computedStyle = skipMeasurements ? hiddenComputedStyle : getComputedStyle($current);
+      const hasDisplayNone = skipMeasurements ? true : computedStyle.display === 'none';
+      const hasVisibilityHidden = skipMeasurements ? true : computedStyle.visibility === 'hidden';
+      const isVisible = !hasDisplayNone && !hasVisibilityHidden;
+      const existingId = $current.dataset.layoutId;
+      const isInsideRoot = isElementInRoot(root, $current);
+
+      let node = existingId ? this.nodes.get(existingId) : null;
+
+      if (node && node.$el !== $current) {
+        const nodeInsideRoot = isElementInRoot(root, node.$el);
+        const measuredVisible = node.measuredIsVisible;
+        const shouldReassignNode = !nodeInsideRoot && (isInsideRoot || (!isInsideRoot && !measuredVisible && isVisible));
+        const shouldReuseMeasurements = nodeInsideRoot && !measuredVisible && isVisible;
+        // Rebind nodes that move into the root or whose detached twin just became visible
+        if (shouldReassignNode) {
+          detachNode(node);
+          node = createNode($current, $parent, this, node);
+        // for hidden element with in-root sibling, keep the hidden node but borrow measurements from its visible in-root twin element
+        } else if (shouldReuseMeasurements) {
+          recordNodeState(node, $current, computedStyle, skipMeasurements);
+          let $child = $current.lastElementChild;
+          while ($child) {
+            stack.push(/** @type {DOMTarget} */($child), node);
+            $child = $child.previousElementSibling;
+          }
+          if (!firstNode) firstNode = node;
+          continue;
+        // No reassignment needed so keep walking descendants under the current parent
+        } else {
+          let $child = $current.lastElementChild;
+          while ($child) {
+            stack.push(/** @type {DOMTarget} */($child), $parent);
+            $child = $child.previousElementSibling;
+          }
+          if (!firstNode) firstNode = node;
+          continue;
+        }
+      } else {
+        node = createNode($current, $parent, this, node);
+      }
+
+      node.branchAdded = false;
+      node.branchRemoved = false;
+      node.branchNotRendered = false;
+      node.isTarget = false;
+      node.sizeChanged = false;
+      node.hasVisibilityHidden = hasVisibilityHidden;
+      node.hasDisplayNone = hasDisplayNone;
+      node.hasVisibilitySwap = (hasVisibilityHidden && !node.measuredHasVisibilityHidden) || (hasDisplayNone && !node.measuredHasDisplayNone);
+
+      this.nodes.set(node.id, node);
+
+      node.parentNode = $parent || null;
+      node._prev = null;
+      node._next = null;
+
+      if ($parent) {
+        this.rootNodes.delete(node);
+        if (!$parent._head) {
+          $parent._head = node;
+          $parent._tail = node;
+        } else {
+          $parent._tail._next = node;
+          node._prev = $parent._tail;
+          $parent._tail = node;
+        }
+      } else {
+        // Each disconnected subtree becomes its own root in the snapshot graph
+        this.rootNodes.add(node);
+      }
+
+      recordNodeState(node, node.$el, computedStyle, skipMeasurements);
+
+      let $child = $current.lastElementChild;
+      while ($child) {
+        stack.push(/** @type {DOMTarget} */($child), node);
+        $child = $child.previousElementSibling;
+      }
+
+      if (!firstNode) firstNode = node;
+    }
+
+    return firstNode;
+  }
+
+  /**
+   * @param {DOMTarget} $el
+   * @param {Set<DOMTarget>} candidates
+   * @return {LayoutNode|null}
+   */
+  ensureDetachedNode($el, candidates) {
+    if (!$el || $el === this.layout.root) return null;
+    const existingId = $el.dataset.layoutId;
+    const existingNode = existingId ? this.nodes.get(existingId) : null;
+    if (existingNode && existingNode.$el === $el) return existingNode;
+    let parentNode = null;
+    let $ancestor = $el.parentElement;
+    while ($ancestor && $ancestor !== this.layout.root) {
+      if (candidates.has($ancestor)) {
+        parentNode = this.ensureDetachedNode($ancestor, candidates);
+        break;
+      }
+      $ancestor = $ancestor.parentElement;
+    }
+    return this.registerElement($el, parentNode);
+  }
+
+  /**
+   * @return {this}
+   */
+  record() {
+    const layout = this.layout;
+    const children = layout.children;
+    const root = layout.root;
+    const toParse = isArr(children) ? children : [children];
+    const scoped = [];
+    const scopeRoot = children === '*' ? root : scope.root;
+
+    // Mute transition and transforms of root ancestors before recording the state
+
+    /** @type {Array<DOMTarget|String|null>} */
+    const rootAncestorTransformStore = [];
+    let $ancestor = root.parentElement;
+    while ($ancestor && $ancestor.nodeType === 1) {
+      const computedStyle = getComputedStyle($ancestor);
+      if (computedStyle.transform && computedStyle.transform !== 'none') {
+        const inlineTransform = $ancestor.style.transform || '';
+        const inlineTransition = muteElementTransition($ancestor);
+        rootAncestorTransformStore.push($ancestor, inlineTransform, inlineTransition);
+        $ancestor.style.transform = 'none';
+      }
+      $ancestor = $ancestor.parentElement;
+    }
+
+    for (let i = 0, l = toParse.length; i < l; i++) {
+      const child = toParse[i];
+      scoped[i] = isStr(child) ? scopeRoot.querySelectorAll(child) : child;
+    }
+
+    const parsedChildren = registerTargets(scoped);
+
+    this.nodes.clear();
+    this.rootNodes.clear();
+
+    const rootNode = this.registerElement(root, null);
+    // Root node are always targets
+    rootNode.isTarget = true;
+    this.rootNode = rootNode;
+
+    const inRootNodeIds = new Set();
+    // Update index and total for inital timing calculation
+    let index = 0;
+    const allNodeTargets = [];
+    this.nodes.forEach((node) => { allNodeTargets.push(node.$el); });
+    this.nodes.forEach((node, id) => {
+      node.index = index++;
+      node.targets = allNodeTargets;
+      // Track ids of nodes that belong to the current root to filter detached matches
+      if (node && node.measuredIsInsideRoot) {
+        inRootNodeIds.add(id);
+      }
+    });
+
+    // Elements with a layout id outside the root that match the children selector
+    const detachedElementsLookup = new Set();
+    const orderedDetachedElements = [];
+
+    for (let i = 0, l = parsedChildren.length; i < l; i++) {
+      const $el = parsedChildren[i];
+      if (!$el || $el.nodeType !== 1 || $el === root) continue;
+      const insideRoot = isElementInRoot(root, $el);
+      if (!insideRoot) {
+        const layoutNodeId = $el.dataset.layoutId;
+        if (!layoutNodeId || !inRootNodeIds.has(layoutNodeId)) continue;
+      }
+      if (!detachedElementsLookup.has($el)) {
+        detachedElementsLookup.add($el);
+        orderedDetachedElements.push($el);
+      }
+    }
+
+    for (let i = 0, l = orderedDetachedElements.length; i < l; i++) {
+      this.ensureDetachedNode(orderedDetachedElements[i], detachedElementsLookup);
+    }
+
+    for (let i = 0, l = parsedChildren.length; i < l; i++) {
+      const $el = parsedChildren[i];
+      const node = this.getNode($el);
+      if (node) {
+        let cur = node;
+        while (cur) {
+          if (cur.isTarget) break;
+          cur.isTarget = true;
+          cur = cur.parentNode;
+        }
+      }
+    }
+
+    this.scrollX = window.scrollX;
+    this.scrollY = window.scrollY;
+
+    this.forEachNode(restoreNodeTransform);
+
+    // Restore transition and transforms of root ancestors
+
+    for (let i = 0, l = rootAncestorTransformStore.length; i < l; i += 3) {
+      const $el = /** @type {DOMTarget} */(rootAncestorTransformStore[i]);
+      const inlineTransform = /** @type {String} */(rootAncestorTransformStore[i + 1]);
+      const inlineTransition = /** @type {String|null} */(rootAncestorTransformStore[i + 2]);
+      if (inlineTransform && inlineTransform !== '') {
+        $el.style.transform = inlineTransform;
+      } else {
+        $el.style.removeProperty('transform');
+      }
+      restoreElementTransition($el, inlineTransition);
+    }
+
+    return this;
+  }
+}
+
+/**
+ * @param  {LayoutStateParams} params
+ * @return {[LayoutStateAnimationProperties, LayoutAnimationTimingsParams]}
+ */
+function splitPropertiesFromParams(params) {
+  /** @type {LayoutStateAnimationProperties} */
+  const properties = {};
+  /** @type {LayoutAnimationTimingsParams} */
+  const parameters = {};
+  for (let name in params) {
+    const value = params[name];
+    const isEase = name === 'ease';
+    const isTiming = name === 'duration' || name === 'delay';
+    if (isTiming || isEase) {
+      if (isEase) {
+        parameters[name] = /** @type {EasingParam} */(value);
+      } else {
+        parameters[name] = /** @type {Number|FunctionValue} */(value);
+      }
+    } else {
+      properties[name] = /** @type {Number|String} */(value);
+    }
+  }
+  return [properties, parameters];
+}
+
+class AutoLayout {
+  /**
+   * @param {DOMTargetSelector} root
+   * @param {AutoLayoutParams} [params]
+   */
+  constructor(root, params = {}) {
+    if (scope.current) scope.current.register(this);
+    const swapAtSplitParams = splitPropertiesFromParams(params.swapAt);
+    const enterFromSplitParams = splitPropertiesFromParams(params.enterFrom);
+    const leaveToSplitParams = splitPropertiesFromParams(params.leaveTo);
+    const transitionProperties = params.properties;
+    /** @type {Number|FunctionValue} */
+    params.duration = setValue(params.duration, 350);
+    /** @type {Number|FunctionValue} */
+    params.delay = setValue(params.delay, 0);
+    /** @type {EasingParam|FunctionValue} */
+    params.ease = setValue(params.ease, 'inOut(3.5)');
+    /** @type {AutoLayoutParams} */
+    this.params = params;
+    /** @type {DOMTarget} */
+    this.root = /** @type {DOMTarget} */(registerTargets(root)[0]);
+    /** @type {Number|String} */
+    this.id = params.id || layoutId++;
+    /** @type {LayoutChildrenParam} */
+    this.children = params.children || '*';
+    /** @type {Boolean} */
+    this.absoluteCoords = false;
+    /** @type {LayoutStateParams} */
+    this.swapAtParams = mergeObjects(params.swapAt || { opacity: 0 }, { ease: 'inOut(1.75)' });
+    /** @type {LayoutStateParams} */
+    this.enterFromParams = params.enterFrom || { opacity: 0 };
+    /** @type {LayoutStateParams} */
+    this.leaveToParams = params.leaveTo || { opacity: 0 };
+    /** @type {Set<String>} */
+    this.properties = new Set([
+      'opacity',
+      'fontSize',
+      'color',
+      'backgroundColor',
+      'borderRadius',
+      'border',
+      'filter',
+      'clipPath',
+    ]);
+    if (swapAtSplitParams[0]) for (let name in swapAtSplitParams[0]) this.properties.add(name);
+    if (enterFromSplitParams[0]) for (let name in enterFromSplitParams[0]) this.properties.add(name);
+    if (leaveToSplitParams[0]) for (let name in leaveToSplitParams[0]) this.properties.add(name);
+    if (transitionProperties) for (let i = 0, l = transitionProperties.length; i < l; i++) this.properties.add(transitionProperties[i]);
+    /** @type {Set<String>} */
+    this.recordedProperties = new Set([
+      'display',
+      'visibility',
+      'translate',
+      'position',
+      'left',
+      'top',
+      'marginLeft',
+      'marginTop',
+      'width',
+      'height',
+      'maxWidth',
+      'maxHeight',
+      'minWidth',
+      'minHeight',
+    ]);
+    this.properties.forEach(prop => this.recordedProperties.add(prop));
+    /** @type {WeakSet<DOMTarget>} */
+    this.pendingRemoval = new WeakSet();
+    /** @type {Map<DOMTarget, String|null>} */
+    this.transitionMuteStore = new Map();
+    /** @type {LayoutSnapshot} */
+    this.oldState = new LayoutSnapshot(this);
+    /** @type {LayoutSnapshot} */
+    this.newState = new LayoutSnapshot(this);
+    /** @type {Timeline} */
+    this.timeline = null;
+    /** @type {WAAPIAnimation} */
+    this.transformAnimation = null;
+    /** @type {Array<DOMTarget>} */
+    this.animating = [];
+    /** @type {Array<DOMTarget>} */
+    this.swapping = [];
+    /** @type {Array<DOMTarget>} */
+    this.leaving = [];
+    /** @type {Array<DOMTarget>} */
+    this.entering = [];
+    // Record the current state as the old state to init the data attributes and allow imediate .animate()
+    this.oldState.record();
+    // And all layout transition muted during the record
+    restoreLayoutTransition(this.transitionMuteStore);
+  }
+
+  /**
+   * @return {this}
+   */
+  revert() {
+    this.root.classList.remove('is-animated');
+    if (this.timeline) {
+      this.timeline.complete();
+      this.timeline = null;
+    }
+    if (this.transformAnimation) {
+      this.transformAnimation.complete();
+      this.transformAnimation = null;
+    }
+    this.animating.length = this.swapping.length = this.leaving.length = this.entering.length = 0;
+    this.oldState.revert();
+    this.newState.revert();
+    requestAnimationFrame(() => restoreLayoutTransition(this.transitionMuteStore));
+    return this;
+  }
+
+  /**
+   * @return {this}
+   */
+  record() {
+    // Commit transforms before measuring
+    if (this.transformAnimation) {
+      this.transformAnimation.cancel();
+      this.transformAnimation = null;
+    }
+    // Record the old state
+    this.oldState.record();
+    // Cancel any running timeline
+    if (this.timeline) {
+      this.timeline.cancel();
+      this.timeline = null;
+    }
+    // Restore previously captured inline styles
+    this.newState.forEachRootNode(restoreNodeInlineStyles);
+    return this;
+  }
+
+  /**
+   * @param {LayoutAnimationParams} [params]
+   * @return {Timeline}
+   */
+  animate(params = {}) {
+    /** @type { LayoutAnimationTimingsParams } */
+    const animationTimings = {
+      ease: setValue(params.ease, this.params.ease),
+      delay: setValue(params.delay, this.params.delay),
+      duration: setValue(params.duration, this.params.duration),
+    };
+    /** @type {TimelineParams} */
+    const tlParams = {
+      id: this.id
+    };
+    const onComplete = setValue(params.onComplete, this.params.onComplete);
+    const onPause = setValue(params.onPause, this.params.onPause);
+    for (let name in defaults) {
+      if (name !== 'ease' && name !== 'duration' && name !== 'delay') {
+        if (!isUnd(params[name])) {
+          tlParams[name] = params[name];
+        } else if (!isUnd(this.params[name])) {
+          tlParams[name] = this.params[name];
+        }
+      }
+    }
+    tlParams.onComplete = () => {
+      const ap = /** @type {ScrollObserver} */(params.autoplay);
+      const ed = globals.editor;
+      const isScrollControled = (ap && ap.linked) || (ed && ed.showPanel);
+      if (isScrollControled) {
+        if (onComplete) onComplete(this.timeline);
+        return;
+      }
+      // Make sure to call .cancel() after restoreNodeInlineStyles(node); otehrwise the commited styles get reverted
+      if (this.transformAnimation) this.transformAnimation.cancel();
+      newState.forEachRootNode(node => {
+        restoreNodeVisualState(node);
+        restoreNodeInlineStyles(node);
+      });
+      for (let i = 0, l = transformed.length; i < l; i++) {
+        const $el = transformed[i];
+        $el.style.transform = newState.getComputedValue($el, 'transform');
+      }
+      if (this.root.classList.contains('is-animated')) {
+        this.root.classList.remove('is-animated');
+        if (onComplete) onComplete(this.timeline);
+      }
+      // Avoid CSS transitions at the end of the animation by restoring them on the next frame
+      requestAnimationFrame(() => {
+        if (this.root.classList.contains('is-animated')) return;
+        restoreLayoutTransition(this.transitionMuteStore);
+      });
+    };
+    tlParams.onPause = () => {
+      const ap = /** @type {ScrollObserver} */(params.autoplay);
+      const isScrollControled = ap && ap.linked;
+      if (isScrollControled) {
+        if (onComplete) onComplete(this.timeline);
+        if (onPause) onPause(this.timeline);
+        return;
+      }
+      if (!this.root.classList.contains('is-animated')) return;
+      if (this.transformAnimation) this.transformAnimation.cancel();
+      newState.forEachRootNode(restoreNodeVisualState);
+      this.root.classList.remove('is-animated');
+      if (onComplete) onComplete(this.timeline);
+      if (onPause) onPause(this.timeline);
+    };
+    tlParams.composition = false;
+
+    const swapAtParams = mergeObjects(mergeObjects(params.swapAt || {}, this.swapAtParams), animationTimings);
+    const enterFromParams = mergeObjects(mergeObjects(params.enterFrom || {}, this.enterFromParams), animationTimings);
+    const leaveToParams = mergeObjects(mergeObjects(params.leaveTo || {}, this.leaveToParams), animationTimings);
+    const [ swapAtProps, swapAtTimings ] = splitPropertiesFromParams(swapAtParams);
+    const [ enterFromProps, enterFromTimings ] = splitPropertiesFromParams(enterFromParams);
+    const [ leaveToProps, leaveToTimings ] = splitPropertiesFromParams(leaveToParams);
+
+    const oldState = this.oldState;
+    const newState = this.newState;
+    const animating = this.animating;
+    const swapping = this.swapping;
+    const entering = this.entering;
+    const leaving = this.leaving;
+    const pendingRemoval = this.pendingRemoval;
+
+    animating.length = swapping.length = entering.length = leaving.length = 0;
+
+    // Mute old state CSS transitions to prevent wrong properties calculation
+    oldState.forEachRootNode(muteNodeTransition);
+    // Capture the new state before animation
+    newState.record();
+    newState.forEachRootNode(recordNodeInlineStyles);
+
+    const targets = [];
+    const animated = [];
+    const transformed = [];
+    const animatedSwap = [];
+    const rootNode = newState.rootNode;
+    const $root = rootNode.$el;
+
+    newState.forEachRootNode(node => {
+
+      const $el = node.$el;
+      const id = node.id;
+      const parent = node.parentNode;
+      const parentAdded = parent ? parent.branchAdded : false;
+      const parentRemoved = parent ? parent.branchRemoved : false;
+      const parentNotRendered = parent ? parent.branchNotRendered : false;
+
+      let oldStateNode = oldState.nodes.get(id);
+
+      const hasNoOldState = !oldStateNode;
+
+      if (hasNoOldState) {
+        oldStateNode = cloneNodeProperties(node, /** @type {LayoutNode} */({}), oldState);
+        oldState.nodes.set(id, oldStateNode);
+        oldStateNode.measuredIsRemoved = true;
+      } else if (oldStateNode.measuredIsRemoved && !node.measuredIsRemoved) {
+        cloneNodeProperties(node, oldStateNode, oldState);
+        oldStateNode.measuredIsRemoved = true;
+      }
+
+      const oldParentNode = oldStateNode.parentNode;
+      const oldParentId = oldParentNode ? oldParentNode.id : null;
+      const newParentId = parent ? parent.id : null;
+      const parentChanged = oldParentId !== newParentId;
+      const elementChanged = oldStateNode.$el !== node.$el;
+      const wasRemovedBefore = oldStateNode.measuredIsRemoved;
+      const isRemovedNow = node.measuredIsRemoved;
+
+      // Recalculate postion relative to their parent for elements that have been moved
+      if (!oldStateNode.measuredIsRemoved && !isRemovedNow && !hasNoOldState && (parentChanged || elementChanged)) {
+        const oldAbsoluteLeft = oldStateNode.properties.left;
+        const oldAbsoluteTop = oldStateNode.properties.top;
+        const newParent = parent || newState.rootNode;
+        const oldParent = newParent.id ? oldState.nodes.get(newParent.id) : null;
+        const parentLeft = oldParent ? oldParent.properties.left : newParent.properties.left;
+        const parentTop = oldParent ? oldParent.properties.top : newParent.properties.top;
+        const borderLeft = oldParent ? oldParent.properties.clientLeft : newParent.properties.clientLeft;
+        const borderTop = oldParent ? oldParent.properties.clientTop : newParent.properties.clientTop;
+        oldStateNode.properties.x = oldAbsoluteLeft - parentLeft - borderLeft;
+        oldStateNode.properties.y = oldAbsoluteTop - parentTop - borderTop;
+      }
+
+      if (node.hasVisibilitySwap) {
+        if (node.hasVisibilityHidden) {
+          node.$el.style.visibility = 'visible';
+          node.$measure.style.visibility = 'hidden';
+        }
+        if (node.hasDisplayNone) {
+          node.$el.style.display = oldStateNode.measuredDisplay || node.measuredDisplay || '';
+          // Setting visibility 'hidden' instead of display none to avoid calculation issues
+          node.$measure.style.visibility = 'hidden';
+          // @TODO: check why setting display here can cause calculation issues
+          // node.$measure.style.display = 'none';
+        }
+      }
+
+      const wasPendingRemoval = pendingRemoval.has($el);
+      const wasVisibleBefore = oldStateNode.measuredIsVisible;
+      const isVisibleNow = node.measuredIsVisible;
+      const becomeVisible = !wasVisibleBefore && isVisibleNow && !parentNotRendered;
+      const topLevelAdded = !isRemovedNow && (wasRemovedBefore || wasPendingRemoval) && !parentAdded;
+      const newlyRemoved = isRemovedNow && !wasRemovedBefore && !parentRemoved;
+      const topLevelRemoved = newlyRemoved || isRemovedNow && wasPendingRemoval && !parentRemoved;
+
+      node.branchAdded = parentAdded || topLevelAdded;
+      node.branchRemoved = parentRemoved || topLevelRemoved;
+      node.branchNotRendered = parentNotRendered || isRemovedNow;
+
+      if (isRemovedNow && wasVisibleBefore) {
+        node.$el.style.display = oldStateNode.measuredDisplay;
+        node.$el.style.visibility = 'visible';
+        cloneNodeProperties(oldStateNode, node, newState);
+      }
+
+      // Node is leaving
+      if (newlyRemoved) {
+        if (node.isTarget) {
+          leaving.push($el);
+          node.isLeaving = true;
+        }
+        pendingRemoval.add($el);
+      } else if (!isRemovedNow && wasPendingRemoval) {
+        pendingRemoval.delete($el);
+      }
+
+      // Node is entering
+      if ((topLevelAdded && !parentNotRendered) || becomeVisible) {
+        updateNodeProperties(oldStateNode, enterFromProps);
+        if (node.isTarget) {
+          entering.push($el);
+          node.isEntering = true;
+        }
+      // Node is leaving
+      } else if (topLevelRemoved && !parentNotRendered) {
+        updateNodeProperties(node, leaveToProps);
+      }
+
+      // Node is animating
+      // The animating array is used only to calculate delays and duration on root children
+      if (node !== rootNode && node.isTarget && !node.isEntering && !node.isLeaving) {
+        animating.push($el);
+      }
+
+      targets.push($el);
+
+    });
+
+    let enteringIndex = 0;
+    let leavingIndex = 0;
+    let animatingIndex = 0;
+
+    newState.forEachRootNode(node => {
+
+      const $el = node.$el;
+      const parent = node.parentNode;
+      const oldStateNode = oldState.nodes.get(node.id);
+      const nodeProperties = node.properties;
+      const oldStateNodeProperties = oldStateNode.properties;
+
+      // Use closest animated parent index and total values so that children staggered delays are in sync with their parent
+      let animatedParent = parent !== rootNode && parent;
+      while (animatedParent && !animatedParent.isTarget && animatedParent !== rootNode) {
+        animatedParent = animatedParent.parentNode;
+      }
+
+      // Root is always animated first in sync with the first child (animating.length is the total of children)
+      if (node === rootNode) {
+        node.index = 0;
+        node.targets = animating;
+        updateNodeTimingParams(node, animationTimings);
+      } else if (node.isEntering) {
+        node.index = animatedParent ? animatedParent.index : enteringIndex;
+        node.targets = animatedParent ? animating : entering;
+        updateNodeTimingParams(node, enterFromTimings);
+        enteringIndex++;
+      } else if (node.isLeaving) {
+        node.index = animatedParent ? animatedParent.index : leavingIndex;
+        node.targets = animatedParent ? animating : leaving;
+        leavingIndex++;
+        updateNodeTimingParams(node, leaveToTimings);
+      } else if (node.isTarget) {
+        node.index = animatingIndex++;
+        node.targets = animating;
+        updateNodeTimingParams(node, animationTimings);
+      } else {
+        node.index = animatedParent ? animatedParent.index : 0;
+        node.targets = animating;
+        updateNodeTimingParams(node, swapAtTimings);
+      }
+
+      // Make sure the old state node has its inex and total values up to date for valid "from" function values calculation
+      oldStateNode.index = node.index;
+      oldStateNode.targets = node.targets;
+
+      // Computes all values up front so we can check for changes and we don't have to re-compute them inside the animation props
+      for (let prop in nodeProperties) {
+        nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.targets, null, null);
+        oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.targets, null, null);
+      }
+
+      // Use a 1px tolerance to detect dimensions changes to prevent width / height animations on barelly visible elements
+      const sizeTolerance = 1;
+      const widthChanged = Math.abs(nodeProperties.width - oldStateNodeProperties.width) > sizeTolerance;
+      const heightChanged = Math.abs(nodeProperties.height - oldStateNodeProperties.height) > sizeTolerance;
+
+      node.sizeChanged = (widthChanged || heightChanged);
+
+      // const hiddenStateChanged = (topLevelAdded || newlyRemoved) && wasRemovedBefore !== isRemovedNow;
+
+      if (node.isTarget && (!node.measuredIsRemoved && oldStateNode.measuredIsVisible || node.measuredIsRemoved && node.measuredIsVisible)) {
+        if (nodeProperties.transform !== 'none' || oldStateNodeProperties.transform !== 'none') {
+          node.hasTransform = true;
+          transformed.push($el);
+        }
+        for (let prop in nodeProperties) {
+          // if (prop !== 'transform' && (nodeProperties[prop] !== oldStateNodeProperties[prop] || hiddenStateChanged)) {
+          if (prop !== 'transform' && (nodeProperties[prop] !== oldStateNodeProperties[prop])) {
+            animated.push($el);
+            break;
+          }
+        }
+      }
+
+      if (!node.isTarget) {
+        swapping.push($el);
+        if (node.sizeChanged && parent && parent.isTarget && parent.sizeChanged) {
+          if (swapAtProps.transform) {
+            node.hasTransform = true;
+            transformed.push($el);
+          }
+          animatedSwap.push($el);
+        }
+      }
+
+    });
+
+    const timingParams = {
+      delay: (/** @type {HTMLElement} */$el) => newState.getNode($el).delay,
+      duration: (/** @type {HTMLElement} */$el) => newState.getNode($el).duration,
+      ease: (/** @type {HTMLElement} */$el) => newState.getNode($el).ease,
+    };
+
+    tlParams.defaults = timingParams;
+
+    this.timeline = createTimeline(tlParams);
+
+    // Imediatly return the timeline if no layout changes detected
+    if (!animated.length && !transformed.length && !swapping.length) {
+      // Make sure to restore all CSS transition if no animation
+      restoreLayoutTransition(this.transitionMuteStore);
+      return this.timeline.complete();
+    }
+
+    if (targets.length) {
+
+      this.root.classList.add('is-animated');
+
+      for (let i = 0, l = targets.length; i < l; i++) {
+        const $el = targets[i];
+        const id = $el.dataset.layoutId;
+        const oldNode = oldState.nodes.get(id);
+        const newNode = newState.nodes.get(id);
+        const oldNodeState = oldNode.properties;
+
+        // muteNodeTransition(newNode);
+
+        // Don't animate positions of inlined elements (to avoid text reflow)
+        if (!newNode.isInlined) {
+          // Display grid can mess with the absolute positioning, so set it to block during transition
+          if (oldNode.measuredDisplay === 'grid' || newNode.measuredDisplay === 'grid') $el.style.setProperty('display', 'block', 'important');
+          // All children must be in position absolute or fixed
+          if ($el !== $root || this.absoluteCoords) {
+            $el.style.position = this.absoluteCoords ? 'fixed' : 'absolute';
+            $el.style.left = '0px';
+            $el.style.top = '0px';
+            $el.style.marginLeft = '0px';
+            $el.style.marginTop = '0px';
+            $el.style.translate = `${oldNodeState.x}px ${oldNodeState.y}px`;
+          }
+          if ($el === $root && newNode.measuredPosition === 'static') {
+            $el.style.position = 'relative';
+            // Cancel left / trop in case the static element had muted values now activated by potision relative
+            $el.style.left = '0px';
+            $el.style.top = '0px';
+          }
+        }
+        // Animate dimensions for all elements (including inlined)
+        $el.style.width = `${oldNodeState.width}px`;
+        $el.style.height = `${oldNodeState.height}px`;
+        // Overrides user defined min and max to prevents width and height clamping
+        $el.style.minWidth = `auto`;
+        $el.style.minHeight = `auto`;
+        $el.style.maxWidth = `none`;
+        $el.style.maxHeight = `none`;
+      }
+
+      // Restore the scroll position if the oldState differs from the current state
+      if (oldState.scrollX !== window.scrollX || oldState.scrollY !== window.scrollY) {
+        // Restoring in the next frame avoids race conditions if for example a waapi animation commit styles that affect the root height
+        requestAnimationFrame(() => window.scrollTo(oldState.scrollX, oldState.scrollY));
+      }
+
+      for (let i = 0, l = animated.length; i < l; i++) {
+        const $el = animated[i];
+        const id = $el.dataset.layoutId;
+        const oldNode = oldState.nodes.get(id);
+        const newNode = newState.nodes.get(id);
+        const oldNodeState = oldNode.properties;
+        const newNodeState = newNode.properties;
+        let nodeHasChanged = false;
+        /** @type {AnimationParams} */
+        const animatedProps = {
+          composition: 'none',
+        };
+        if (oldNodeState.width !== newNodeState.width) {
+          animatedProps.width = [oldNodeState.width, newNodeState.width];
+          nodeHasChanged = true;
+        }
+        if (oldNodeState.height !== newNodeState.height) {
+          animatedProps.height = [oldNodeState.height, newNodeState.height];
+          nodeHasChanged = true;
+        }
+        // If the node has transforms we handle the translate animation in waapi otherwise translate and other transforms can be out of sync
+        // And we don't animate the position of inlined elements
+        if (!newNode.hasTransform && !newNode.isInlined) {
+          animatedProps.translate = [`${oldNodeState.x}px ${oldNodeState.y}px`, `${newNodeState.x}px ${newNodeState.y}px`];
+          nodeHasChanged = true;
+        }
+        this.properties.forEach(prop => {
+          const oldVal = oldNodeState[prop];
+          const newVal = newNodeState[prop];
+          if (prop !== 'transform' && oldVal !== newVal) {
+            animatedProps[prop] = [oldVal, newVal];
+            nodeHasChanged = true;
+          }
+        });
+        if (nodeHasChanged) {
+          this.timeline.add($el, animatedProps, 0);
+        }
+      }
+
+    }
+
+    if (swapping.length) {
+
+      for (let i = 0, l = swapping.length; i < l; i++) {
+        const $el = swapping[i];
+        const oldNode = oldState.getNode($el);
+        const oldNodeProps = oldNode.properties;
+        $el.style.width = `${oldNodeProps.width}px`;
+        $el.style.height = `${oldNodeProps.height}px`;
+        // Overrides user defined min and max to prevents width and height clamping
+        $el.style.minWidth = `auto`;
+        $el.style.minHeight = `auto`;
+        $el.style.maxWidth = `none`;
+        $el.style.maxHeight = `none`;
+        // We don't animate the position of inlined elements
+        if (!oldNode.isInlined) {
+          $el.style.translate = `${oldNodeProps.x}px ${oldNodeProps.y}px`;
+        }
+        this.properties.forEach(prop => {
+          if (prop !== 'transform') {
+            $el.style[prop] = `${oldState.getComputedValue($el, prop)}`;
+          }
+        });
+      }
+
+      for (let i = 0, l = swapping.length; i < l; i++) {
+        const $el = swapping[i];
+        const newNode = newState.getNode($el);
+        const newNodeProps = newNode.properties;
+        this.timeline.call(() => {
+          $el.style.width = `${newNodeProps.width}px`;
+          $el.style.height = `${newNodeProps.height}px`;
+          // Overrides user defined min and max to prevents width and height clamping
+          $el.style.minWidth = `auto`;
+          $el.style.minHeight = `auto`;
+          $el.style.maxWidth = `none`;
+          $el.style.maxHeight = `none`;
+          // Don't set translate for inlined elements (to avoid text reflow)
+          if (!newNode.isInlined) {
+            $el.style.translate = `${newNodeProps.x}px ${newNodeProps.y}px`;
+          }
+          this.properties.forEach(prop => {
+            if (prop !== 'transform') {
+              $el.style[prop] = `${newState.getComputedValue($el, prop)}`;
+            }
+          });
+        }, newNode.delay + newNode.duration / 2);
+      }
+
+      if (animatedSwap.length) {
+        const ease = parseEase(newState.nodes.get(animatedSwap[0].dataset.layoutId).ease);
+        const inverseEased = t => 1 - ease(1 - t);
+        const animatedSwapParams = /** @type {AnimationParams} */({});
+        if (swapAtProps) {
+          for (let prop in swapAtProps) {
+            if (prop !== 'transform') {
+              animatedSwapParams[prop] = [
+                { from: (/** @type {HTMLElement} */$el) => oldState.getComputedValue($el, prop), to: swapAtProps[prop] },
+                { from: swapAtProps[prop], to: (/** @type {HTMLElement} */$el) => newState.getComputedValue($el, prop), ease: inverseEased }
+              ];
+            }
+          }
+        }
+        this.timeline.add(animatedSwap, animatedSwapParams, 0);
+      }
+
+    }
+
+    const transformedLength = transformed.length;
+
+    if (transformedLength) {
+      // We only need to set the transform property here since translate is already defined in the targets loop
+      for (let i = 0; i < transformedLength; i++) {
+        const $el = transformed[i];
+        const node = newState.getNode($el);
+        // Don't set translate for inlined elements (to avoid text reflow)
+        if (!node.isInlined) {
+          $el.style.translate = `${oldState.getComputedValue($el, 'x')}px ${oldState.getComputedValue($el, 'y')}px`;
+        }
+        $el.style.transform = oldState.getComputedValue($el, 'transform');
+        if (animatedSwap.includes($el)) {
+          node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.targets, null, null);
+          node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.targets, null, null);
+        }
+      }
+      this.transformAnimation = waapi.animate(transformed, {
+        translate: (/** @type {HTMLElement} */$el) => {
+          const node = newState.getNode($el);
+          // Don't animate translate for inlined elements (to avoid text reflow)
+          if (node.isInlined) return '0px 0px';
+          return `${newState.getComputedValue($el, 'x')}px ${newState.getComputedValue($el, 'y')}px`;
+        },
+        transform: (/** @type {HTMLElement} */$el) => {
+          const newValue = newState.getComputedValue($el, 'transform');
+          if (!animatedSwap.includes($el)) return newValue;
+          const oldValue = oldState.getComputedValue($el, 'transform');
+          const node = newState.getNode($el);
+          return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.targets, null, null), newValue]
+        },
+        autoplay: false,
+        // persist: true,
+        ...timingParams,
+      });
+      this.timeline.sync(this.transformAnimation, 0);
+    }
+
+    return this.timeline.init();
+  }
+
+  /**
+   * @param {(layout: this) => void} callback
+   * @param {LayoutAnimationParams} [params]
+   * @return {Timeline}
+   */
+  update(callback, params = {}) {
+    this.record();
+    callback(this);
+    return this.animate(params);
+  }
+}
+
+/**
+ * @param {DOMTargetSelector} root
+ * @param {AutoLayoutParams} [params]
+ * @return {AutoLayout}
+ */
+const createLayout = (root, params) => new AutoLayout(root, params);
+
 // Chain-able utilities
 
 const numberUtils = numberImports; // Needed to keep the import when bundling
@@ -7307,10 +9610,13 @@ const chain = fn => {
     const result = fn(...args);
     return new Proxy(noop, {
       apply: (_, __, [v]) => result(v),
-      get: (_, prop) => chain(/**@param {...Number|String} nextArgs */(...nextArgs) => {
-        const nextResult = chainables[prop](...nextArgs);
-        return (/**@type {Number|String} */v) => nextResult(result(v));
-      })
+      get: (_, prop) => {
+        if (!chainables[prop]) return undefined;
+        return chain(/**@param {...Number|String} nextArgs */(...nextArgs) => {
+          const nextResult = chainables[prop](...nextArgs);
+          return (/**@type {Number|String} */v) => nextResult(result(v));
+        })
+      }
     });
   }
 };
@@ -7521,24 +9827,28 @@ const shuffle = items => {
  * @param {StaggerParams} [params]
  * @return {StaggerFunction<Number>}
  */
+
 /**
  * @overload
  * @param {String} val
  * @param {StaggerParams} [params]
  * @return {StaggerFunction<String>}
  */
+
 /**
  * @overload
  * @param {[Number, Number]} val
  * @param {StaggerParams} [params]
  * @return {StaggerFunction<Number>}
  */
+
 /**
  * @overload
  * @param {[String, String]} val
  * @param {StaggerParams} [params]
  * @return {StaggerFunction<String>}
  */
+
 /**
  * @param {Number|String|[Number, Number]|[String, String]} val The staggered value or range
  * @param {StaggerParams} [params] The stagger parameters
@@ -7547,6 +9857,7 @@ const shuffle = items => {
 const stagger = (val, params = {}) => {
   let values = [];
   let maxValue = 0;
+  let cachedOffset;
   const from = params.from;
   const reversed = params.reversed;
   const ease = params.ease;
@@ -7554,12 +9865,14 @@ const stagger = (val, params = {}) => {
   const hasSpring = hasEasing && !isUnd(/** @type {Spring} */(ease).ease);
   const staggerEase = hasSpring ? /** @type {Spring} */(ease).ease : hasEasing ? parseEase(ease) : null;
   const grid = params.grid;
+  const autoGrid = grid === true;
   const axis = params.axis;
   const customTotal = params.total;
   const fromFirst = isUnd(from) || from === 0 || from === 'first';
   const fromCenter = from === 'center';
   const fromLast = from === 'last';
   const fromRandom = from === 'random';
+  const fromArr = isArr(from);
   const isRange = isArr(val);
   const useProp = params.use;
   const val1 = isRange ? parseNumber(val[0]) : parseNumber(val);
@@ -7567,40 +9880,129 @@ const stagger = (val, params = {}) => {
   const unitMatch = unitsExecRgx.exec((isRange ? val[1] : val) + emptyString);
   const start = params.start || 0 + (isRange ? val1 : 0);
   let fromIndex = fromFirst ? 0 : isNum(from) ? from : 0;
-  return (target, i, t, tl) => {
+  return (target, i, t, _, tl) => {
     const [ registeredTarget ] = registerTargets(target);
-    const total = isUnd(customTotal) ? t : customTotal;
+    const total = isUnd(customTotal) ? t.length : customTotal;
     const customIndex = !isUnd(useProp) ? isFnc(useProp) ? useProp(registeredTarget, i, total) : getOriginalAnimatableValue(registeredTarget, useProp) : false;
     const staggerIndex = isNum(customIndex) || isStr(customIndex) && isNum(+customIndex) ? +customIndex : i;
     if (fromCenter) fromIndex = (total - 1) / 2;
     if (fromLast) fromIndex = total - 1;
     if (!values.length) {
-      for (let index = 0; index < total; index++) {
-        if (!grid) {
-          values.push(abs(fromIndex - index));
-        } else {
-          const fromX = !fromCenter ? fromIndex % grid[0] : (grid[0] - 1) / 2;
-          const fromY = !fromCenter ? floor(fromIndex / grid[0]) : (grid[1] - 1) / 2;
-          const toX = index % grid[0];
-          const toY = floor(index / grid[0]);
-          const distanceX = fromX - toX;
-          const distanceY = fromY - toY;
-          let value = sqrt(distanceX * distanceX + distanceY * distanceY);
-          if (axis === 'x') value = -distanceX;
-          if (axis === 'y') value = -distanceY;
-          values.push(value);
+      if (autoGrid) {
+        let hasPositions = true;
+        let minPosX = Infinity;
+        let minPosY = Infinity;
+        let maxPosX = -Infinity;
+        let maxPosY = -Infinity;
+        const pxArr = [];
+        const pyArr = [];
+        for (let index = 0; index < total; index++) {
+          const el = t[index];
+          let px = 0;
+          let py = 0;
+          let found = false;
+          if (el && isFnc(el.getBoundingClientRect)) {
+            const rect = el.getBoundingClientRect();
+            px = rect.left + rect.width / 2;
+            py = rect.top + rect.height / 2;
+            found = true;
+          } else {
+            const obj = /** @type {JSTarget} */(el);
+            if (obj && isNum(obj.x) && isNum(obj.y)) {
+              px = obj.x;
+              py = obj.y;
+              found = true;
+            }
+          }
+          if (!found) {
+            hasPositions = false;
+            break;
+          }
+          pxArr.push(px);
+          pyArr.push(py);
+          if (px < minPosX) minPosX = px;
+          if (py < minPosY) minPosY = py;
+          if (px > maxPosX) maxPosX = px;
+          if (py > maxPosY) maxPosY = py;
         }
-        maxValue = max(...values);
+        if (hasPositions) {
+          let fX = pxArr[0];
+          let fY = pyArr[0];
+          if (fromArr) {
+            fX = minPosX + from[0] * (maxPosX - minPosX);
+            fY = minPosY + from[1] * (maxPosY - minPosY);
+          } else if (fromCenter) {
+            fX = (minPosX + maxPosX) / 2;
+            fY = (minPosY + maxPosY) / 2;
+          } else if (fromLast) {
+            fX = pxArr[total - 1];
+            fY = pyArr[total - 1];
+          } else if (isNum(from)) {
+            fX = pxArr[from];
+            fY = pyArr[from];
+          }
+          for (let index = 0; index < total; index++) {
+            const distanceX = fX - pxArr[index];
+            const distanceY = fY - pyArr[index];
+            let value = sqrt(distanceX * distanceX + distanceY * distanceY);
+            if (axis === 'x') value = -distanceX;
+            if (axis === 'y') value = -distanceY;
+            values.push(value);
+          }
+          let minDist = Infinity;
+          for (let index = 0, l = values.length; index < l; index++) {
+            const absVal = abs(values[index]);
+            if (absVal > 0 && absVal < minDist) minDist = absVal;
+          }
+          if (minDist > 0 && minDist < Infinity) {
+            for (let index = 0, l = values.length; index < l; index++) {
+              values[index] = values[index] / minDist;
+            }
+          }
+        } else {
+          for (let index = 0; index < total; index++) {
+            values.push(abs(fromIndex - index));
+          }
+        }
+      } else {
+        for (let index = 0; index < total; index++) {
+          if (!grid) {
+            values.push(abs(fromIndex - index));
+          } else {
+            let fromX, fromY;
+            if (fromArr) {
+              fromX = from[0] * (grid[0] - 1);
+              fromY = from[1] * (grid[1] - 1);
+            } else if (fromCenter) {
+              fromX = (grid[0] - 1) / 2;
+              fromY = (grid[1] - 1) / 2;
+            } else {
+              fromX = fromIndex % grid[0];
+              fromY = floor(fromIndex / grid[0]);
+            }
+            const toX = index % grid[0];
+            const toY = floor(index / grid[0]);
+            const distanceX = fromX - toX;
+            const distanceY = fromY - toY;
+            let value = sqrt(distanceX * distanceX + distanceY * distanceY);
+            if (axis === 'x') value = -distanceX;
+            if (axis === 'y') value = -distanceY;
+            values.push(value);
+          }
+        }
       }
+      maxValue = max(...values);
       if (staggerEase) values = values.map(val => staggerEase(val / maxValue) * maxValue);
       if (reversed) values = values.map(val => axis ? (val < 0) ? val * -1 : -val : abs(maxValue - val));
       if (fromRandom) values = shuffle(values);
     }
     const spacing = isRange ? (val2 - val1) / maxValue : val1;
-    const offset = tl ? parseTimelinePosition(tl, isUnd(params.start) ? tl.iterationDuration : start) : /** @type {Number} */(start);
+    if (isUnd(cachedOffset)) {
+      cachedOffset = tl ? parseTimelinePosition(tl, isUnd(params.start) ? tl.iterationDuration : start) : /** @type {Number} */(start);
+    }
     /** @type {String|Number} */
-    let output = offset + ((spacing * round$1(values[staggerIndex], 2)) || 0);
-    if (params.modifier) output = params.modifier(output);
+    let output = cachedOffset + ((spacing * round$1(values[staggerIndex], 2)) || 0);
+    if (params.modifier) output = params.modifier(/** @type {Number} */(output));
     if (unitMatch) output = `${output}${unitMatch[2]}`;
     return output;
   }
@@ -7609,11 +10011,13 @@ const stagger = (val, params = {}) => {
 var index$2 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   $: registerTargets,
+  addChild: addChild,
   clamp: clamp,
   cleanInlineStyles: cleanInlineStyles,
   createSeededRandom: createSeededRandom,
   damp: damp,
   degToRad: degToRad,
+  forEachChildren: forEachChildren,
   get: get,
   keepTime: keepTime,
   lerp: lerp,
@@ -7624,6 +10028,7 @@ var index$2 = /*#__PURE__*/Object.freeze({
   random: random,
   randomPick: randomPick,
   remove: remove,
+  removeChild: removeChild,
   round: round,
   roundPad: roundPad,
   set: set,
@@ -7823,7 +10228,7 @@ const createDrawable = (selector, start = 0, end = 0) => {
  * @param  {Number} [precision]
  * @return {FunctionValue}
  */
-const morphTo = (path2, precision = .33) => ($path1) => {
+const morphTo = (path2, precision = .33) => ($path1, index, total, prevTween) => {
   const tagName1 = ($path1.tagName || '').toLowerCase();
   if (!tagName1.match(/^(path|polygon|polyline)$/)) {
     throw new Error(`Can't morph a <${$path1.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
@@ -7838,7 +10243,7 @@ const morphTo = (path2, precision = .33) => ($path1) => {
   }
   const isPath = $path1.tagName === 'path';
   const separator = isPath ? ' ' : ',';
-  const previousPoints = $path1[morphPointsSymbol];
+  const previousPoints = prevTween ? prevTween._value : null;
   if (previousPoints) $path1.setAttribute(isPath ? 'd' : 'points', previousPoints);
 
   let v1 = '', v2 = '';
@@ -7859,8 +10264,6 @@ const morphTo = (path2, precision = .33) => ($path1) => {
       v2 += prefix + round$1(pointOnPath2.x, 3) + separator + pointOnPath2.y + ' ';
     }
   }
-
-  $path1[morphPointsSymbol] = v2;
 
   return [v1, v2];
 };
@@ -7939,12 +10342,23 @@ const filterEmptyElements = $el => {
 /**
  * @param {HTMLElement} $el
  * @param {Number} lineIndex
- * @param {Set<HTMLElement>} bin
- * @returns {Set<HTMLElement>}
+ * @param {Set<HTMLElement|Node>} bin
+ * @returns {Set<HTMLElement|Node>}
  */
 const filterLineElements = ($el, lineIndex, bin) => {
   const dataLineAttr = $el.getAttribute(dataLine);
-  if (dataLineAttr !== null && +dataLineAttr !== lineIndex || $el.tagName === 'BR') bin.add($el);
+  if (dataLineAttr !== null && +dataLineAttr !== lineIndex || $el.tagName === 'BR') {
+    bin.add($el);
+    // Also remove adjacent whitespace-only text nodes
+    const prev = $el.previousSibling;
+    const next = $el.nextSibling;
+    if (prev && prev.nodeType === 3 && whiteSpaceRgx.test(prev.textContent)) {
+      bin.add(prev);
+    }
+    if (next && next.nodeType === 3 && whiteSpaceRgx.test(next.textContent)) {
+      bin.add(next);
+    }
+  }
   let i = $el.childElementCount;
   while (i--) filterLineElements(/** @type {HTMLElement} */($el.children[i]), lineIndex, bin);
   return bin;
@@ -8036,7 +10450,7 @@ const processHTMLTemplate = (htmlTemplate, store, node, $parentFragment, type, d
  */
 class TextSplitter {
   /**
-   * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+   * @param  {Element|NodeList|String|Array<Element>} target
    * @param  {TextSplitterParams} [parameters]
    */
   constructor(target, parameters = {}) {
@@ -8108,11 +10522,11 @@ class TextSplitter {
   }
 
   /**
-   * @param  {(...args: any[]) => Tickable | (() => void)} effect
+   * @param  {(...args: any[]) => Tickable | (() => void) | void} effect
    * @return this
    */
   addEffect(effect) {
-    if (!isFnc(effect)) return console.warn('Effect must return a function.');
+    if (!isFnc(effect)) { console.warn('Effect must return a function.'); return this; }
     const refreshableEffect = keepTime(effect);
     this.effects.push(refreshableEffect);
     if (this.ready) this.effectsCleanups[this.effects.length - 1] = refreshableEffect(this);
@@ -8159,7 +10573,7 @@ class TextSplitter {
             // Only concatenate if both current and previous are non-word-like and don't contain spaces
             const lastWordIndex = tempWords.length - 1;
             const lastWord = tempWords[lastWordIndex];
-            if (!lastWord.includes(' ') && !segment.includes(' ')) {
+            if (!whiteSpaceGroupRgx.test(lastWord) && !whiteSpaceGroupRgx.test(segment)) {
               tempWords[lastWordIndex] += segment;
             } else {
               tempWords.push(segment);
@@ -8252,7 +10666,7 @@ class TextSplitter {
     for (let i = 0, l = elementsArray.length; i < l; i++) {
       const $el = elementsArray[i];
       const { top, height } = $el.getBoundingClientRect();
-      if (y && top - y > height * .5) linesCount++;
+      if (!isUnd(y) && top - y > height * .5) linesCount++;
       $el.setAttribute(dataLine, `${linesCount}`);
       const nested = $el.querySelectorAll(`[${dataLine}]`);
       let c = nested.length;
@@ -8266,9 +10680,11 @@ class TextSplitter {
       for (let lineIndex = 0; lineIndex < linesCount + 1; lineIndex++) {
         const $clone = /** @type {HTMLElement} */($el.cloneNode(true));
         filterLineElements($clone, lineIndex, new Set()).forEach($el => {
-          const $parent = $el.parentElement;
-          if ($parent) parents.add($parent);
-          $el.remove();
+          const $parent = $el.parentNode;
+          if ($parent) {
+            if ($el.nodeType === 1) parents.add(/** @type {HTMLElement} */($parent));
+            $parent.removeChild($el);
+          }
         });
         clones.push($clone);
       }
@@ -8281,6 +10697,7 @@ class TextSplitter {
       if (wordTemplate) this.words = getAllTopLevelElements($el, wordType);
       if (charTemplate) this.chars = getAllTopLevelElements($el, charType);
     }
+
     // Remove the word wrappers and clear the words array if lines split only
     if (this.linesOnly) {
       const words = this.words;
@@ -8315,7 +10732,7 @@ class TextSplitter {
 }
 
 /**
- * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+ * @param  {Element|NodeList|String|Array<Element>} target
  * @param  {TextSplitterParams} [parameters]
  * @return {TextSplitter}
  */
@@ -8333,465 +10750,263 @@ const split = (target, parameters) => {
   return new TextSplitter(target, parameters);
 };
 
+
+
+/**
+ * '-' is the range operator; place it at the start or end of the string to use it as a literal (e.g. '-abc' or 'abc-')
+ * @param {String} str
+ * @return {String}
+ */
+const expandCharRanges = (str) => {
+  let result = '';
+  for (let i = 0, l = str.length; i < l; i++) {
+    if (i + 2 < l && str[i + 1] === '-' && str.charCodeAt(i) < str.charCodeAt(i + 2)) {
+      const start = str.charCodeAt(i);
+      const end = str.charCodeAt(i + 2);
+      for (let c = start; c <= end; c++) result += String.fromCharCode(c);
+      i += 2;
+    } else {
+      result += str[i];
+    }
+  }
+  return result;
+};
+
+const charSets = {
+  lowercase: 'a-z',
+  uppercase: 'A-Z',
+  numbers: '0-9',
+  symbols: '!%#_|*+=',
+  braille: '⠀-⣿',
+  blocks: '▀-▟',
+  shades: '░-▓',
+};
+
+const originalTexts = new WeakMap();
+
+/**
+ * Returns a function-based tween value that scrambles the target's text content,
+ * progressively revealing the original text.
+ *
+ * @param {ScrambleTextParams} [params]
+ * @return {FunctionValue}
+ */
+const scrambleText = (params = {}) => {
+  if (!params) params = {};
+  const charsParam = params.chars;
+  const easeFn = parseEase(params.ease || 'linear');
+  const text = params.text;
+  const fromParam = params.from;
+  const reversed = params.reversed || false;
+  const perturbation = params.perturbation || 0;
+  const cursorParam = params.cursor;
+  const cursorChars = cursorParam === true ? '_'
+                    : typeof cursorParam === 'number' ? String.fromCharCode(cursorParam)
+                    : typeof cursorParam === 'string' ? cursorParam
+                    : '';
+  const cursorLen = cursorChars.length;
+  const seed = params.seed || 0;
+  const override = params.override !== undefined ? params.override : true;
+  const revealRate = params.revealRate || 60;
+  const interval = 1000 * globals.timeScale / revealRate;
+  const settleDuration = params.settleDuration || 300 * globals.timeScale;
+  const settleRate = params.settleRate || 30;
+  const durationParam = params.duration;
+  const revealDelayParam = params.revealDelay;
+  const delayParam = params.delay;
+  const onChange = params.onChange || noop;
+
+  return (target, index, targets, prevTween) => {
+    const rawChars = typeof charsParam === 'function' ? charsParam(target, index, targets) : (charsParam || 'a-zA-Z0-9!%#_');
+    const characters = expandCharRanges(charSets[rawChars] || rawChars);
+    const totalChars = characters.length - 1;
+    const duration = typeof durationParam === 'function' ? durationParam(target, index, targets) : durationParam;
+    const revealDelay = typeof revealDelayParam === 'function' ? revealDelayParam(target, index, targets) : (revealDelayParam || 0);
+    const delay = typeof delayParam === 'function' ? delayParam(target, index, targets) : (delayParam || 0);
+    const rng = seed ? createSeededRandom(seed) : createSeededRandom();
+    if (!originalTexts.has(target)) originalTexts.set(target, target.textContent);
+    const startingText = prevTween ? prevTween._value : target.textContent;
+    const targetText = text !== undefined
+                       ? (typeof text === 'function' ? text(target, index, targets) : text)
+                       : prevTween ? prevTween._value
+                       : originalTexts.get(target);
+    const settledText = targetText === ' ' || targetText === '&nbsp;' ? ' ' : targetText;
+    const startLength = startingText === ' ' ? 0 : startingText.length;
+    const endLength = settledText.length;
+    const overrideChars = override === true ? characters
+                        : typeof override === 'string' && override.length > 0 ? expandCharRanges(charSets[/** @type {String} */(override)] || /** @type {String} */(override))
+                        : null;
+    const totalOverrideChars = overrideChars ? overrideChars.length - 1 : 0;
+    // Space override uses &nbsp; so the browser doesn't collapse consecutive spaces in innerHTML
+    const overrideChar = override === ' ' ? ' ' : null;
+    // When starting from blank, only animate the target text length to avoid padding beyond it
+    const animLength = override === '' ? endLength : Math.max(startLength, endLength);
+    // Compute total duration from interval spacing and settle time, or use the explicit duration
+    const animDuration = duration > 0 ? duration : (animLength - 1) * interval + settleDuration;
+    const computedDuration = round$1((animDuration + revealDelay) / globals.timeScale, 0) * globals.timeScale;
+    const revealDelayRatio = revealDelay > 0 ? round$1(revealDelay / computedDuration, 12) : 0;
+    // Auto-resolve reveal direction: shrinking text reveals from right, growing from left
+    const resolvedFrom = fromParam === undefined || fromParam === 'auto' ? (endLength < startLength ? 'right' : 'left') : fromParam;
+    const charOrder = new Int32Array(animLength);
+    if (resolvedFrom === 'random') {
+      for (let i = 0; i < animLength; i++) charOrder[i] = i;
+      for (let i = animLength - 1; i > 0; i--) {
+        const j = rng(0, i);
+        const t = charOrder[i]; charOrder[i] = charOrder[j]; charOrder[j] = t;
+      }
+    } else {
+      const ref = resolvedFrom === 'right' ? (override === '' || !startLength ? animLength : startLength) - 1
+                : resolvedFrom === 'center' ? ((override === '' || !startLength ? animLength : startLength) - 1) / 2
+                : typeof resolvedFrom === 'number' ? resolvedFrom
+                : 0;
+      const abs = Math.abs;
+      const indices = new Array(animLength);
+      for (let i = 0; i < animLength; i++) indices[i] = i;
+      indices.sort((a, b) => abs(a - ref) - abs(b - ref));
+      for (let i = 0; i < animLength; i++) charOrder[indices[i]] = i;
+    }
+    if (reversed) {
+      const last = animLength - 1;
+      for (let i = 0; i < animLength; i++) charOrder[i] = last - charOrder[i];
+    }
+    // settleRatio is the fraction of the animation each character spends in the active scrambling zone
+    const settleRatio = round$1(settleDuration / animDuration, 12);
+    // settleSpacing is the time gap between consecutive characters entering the active zone
+    const settleSpacing = round$1((1 - settleRatio) / animLength, 12);
+    const cursorZone = cursorLen * settleSpacing;
+    // stepRatio controls how often scramble characters refresh (based on settleRate)
+    const stepRatio = round$1(1000 * globals.timeScale / (settleRate * computedDuration), 12);
+    // Pre-compute per-character start and settle times
+    const charStarts = new Float32Array(animLength);
+    const charEnds = new Float32Array(animLength);
+    const scale = perturbation > 0 ? perturbation * settleRatio : 0;
+    for (let c = 0; c < animLength; c++) {
+      const so = scale > 0 ? (rng(0, 2000) - 1000) / 1000 * scale : 0;
+      const eo = scale > 0 ? (rng(0, 2000) - 1000) / 1000 * scale : 0;
+      charStarts[c] = charOrder[c] * settleSpacing + so;
+      charEnds[c] = Math.ceil((charStarts[c] + settleRatio + eo) / stepRatio) * stepRatio;
+    }
+    // When text shrinks with non-sequential from modes, delay target settle times past all extras
+    if (endLength < animLength && resolvedFrom !== 'left' && resolvedFrom !== 'right' && resolvedFrom !== 'random') {
+      let maxExtraEnd = 0;
+      for (let c = endLength; c < animLength; c++) {
+        if (charEnds[c] > maxExtraEnd) maxExtraEnd = charEnds[c];
+      }
+      const targets = new Array(endLength);
+      for (let c = 0; c < endLength; c++) targets[c] = c;
+      targets.sort((a, b) => charOrder[a] - charOrder[b]);
+      const targetSpacing = (1 - maxExtraEnd) / endLength;
+      for (let i = 0; i < endLength; i++) {
+        const revealTime = maxExtraEnd + i * targetSpacing;
+        if (revealTime > charEnds[targets[i]]) {
+          charEnds[targets[i]] = revealTime;
+        }
+      }
+    }
+    // charCache holds the current scramble character for each position, refreshed at settleRate
+    const charCache = new Array(animLength);
+    for (let c = 0; c < animLength; c++) {
+      charCache[c] = characters[rng(0, totalChars)];
+    }
+    // overrideCache holds scramble characters for the starting text (override: true or custom string)
+    const overrideCache = overrideChars ? (overrideChars === characters ? charCache : new Array(animLength)) : null;
+    if (overrideCache && overrideCache !== charCache) {
+      for (let c = 0; c < animLength; c++) {
+        overrideCache[c] = overrideChar || /** @type {String} */(overrideChars)[rng(0, overrideChars.length - 1)];
+      }
+    }
+    // Build the initial display text based on override mode
+    let fillStartText = startingText;
+    if (!prevTween) {
+      if (override === '') {
+        fillStartText = '';
+      } else if (overrideChars) {
+        fillStartText = '';
+        for (let c = 0; c < startLength; c++) {
+          fillStartText += startingText[c] === ' ' ? ' ' : /** @type {Array<String>} */(overrideCache)[c];
+        }
+      }
+    }
+
+    let lastValue = -1;
+    let lastStep = -1;
+    let scrambled = '';
+    const hasOverride = override !== '';
+    const hasOverrideChars = !!overrideChars;
+    const hasCursor = cursorLen > 0;
+
+    return {
+      from: 0,
+      to: 1,
+      duration: computedDuration,
+      delay: delay,
+      ease: 'linear',
+      modifier: (v) => {
+        if (v === lastValue) return scrambled;
+        lastValue = v;
+        if (delay > 0 && v <= 0) { scrambled = startingText; return startingText; }
+        if (v <= 0) { scrambled = fillStartText; return fillStartText; }
+        if (v >= 1) { scrambled = settledText; return settledText; }
+        scrambled = '';
+        // Only refresh scramble characters when we cross a settleRate step boundary
+        const currentStep = (v / stepRatio) | 0;
+        const refreshChars = currentStep !== lastStep;
+        if (refreshChars) lastStep = currentStep;
+        // Subtract delay ratio to get the effective animation progress
+        const linear = revealDelayRatio > 0 ? (v - revealDelayRatio) / (1 - revealDelayRatio) : v;
+        const t = linear > 0 ? easeFn(linear) : 0;
+        for (let c = 0; c < animLength; c++) {
+          // Each character has its own start/end window based on its reveal order
+          const charStart = charStarts[c];
+          const charEnd = charEnds[c];
+          // Settled zone: character has finished its transition
+          if (t >= charEnd) {
+            if (c < endLength) scrambled += settledText[c];
+            continue;
+          }
+          // Pre-transition zone: reveal wave hasn't reached this character yet
+          if (t <= 0 || t < charStart) {
+            if (hasOverride && c < startLength) {
+              if (hasOverrideChars) {
+                if (startingText[c] === ' ') {
+                  scrambled += ' ';
+                } else {
+                  if (refreshChars) /** @type {Array<String>} */(overrideCache)[c] = overrideChar || /** @type {String} */(overrideChars)[rng(0, totalOverrideChars)];
+                  scrambled += /** @type {Array<String>} */(overrideCache)[c];
+                }
+              } else {
+                // Default (override: false): show the original starting text
+                scrambled += startingText[c];
+              }
+            }
+            continue;
+          }
+          // Active zone: character is between charStart and charEnd
+          const isSpace = (c < endLength && settledText[c] === ' ') || (c < startLength && startingText[c] === ' ');
+          if (isSpace) {
+            scrambled += ' ';
+          } else if (hasCursor && t - charStart < cursorZone) {
+            // Cursor sub-zone: show cursor character based on position within cursor width
+            scrambled += cursorChars[cursorLen - 1 - (((t - charStart) / settleSpacing) | 0)];
+          } else {
+            // Scramble zone: show cycling random characters
+            if (refreshChars) charCache[c] = characters[rng(0, totalChars)];
+            scrambled += charCache[c];
+          }
+        }
+        if (refreshChars) onChange(scrambled, t);
+        return scrambled;
+      }
+    }
+  }
+};
+
 var index = /*#__PURE__*/Object.freeze({
   __proto__: null,
   TextSplitter: TextSplitter,
+  scrambleText: scrambleText,
   split: split,
   splitText: splitText
 });
 
-
-
-
-
-
-
-/**
- * Converts an easing function into a valid CSS linear() timing function string
- * @param {EasingFunction} fn
- * @param {number} [samples=100]
- * @returns {string} CSS linear() timing function
- */
-const easingToLinear = (fn, samples = 100) => {
-  const points = [];
-  for (let i = 0; i <= samples; i++) points.push(round$1(fn(i / samples), 4));
-  return `linear(${points.join(', ')})`;
-};
-
-const WAAPIEasesLookups = {};
-
-/**
- * @param  {EasingParam} ease
- * @return {String}
- */
-const parseWAAPIEasing = (ease) => {
-  let parsedEase = WAAPIEasesLookups[ease];
-  if (parsedEase) return parsedEase;
-  parsedEase = 'linear';
-  if (isStr(ease)) {
-    if (
-      stringStartsWith(ease, 'linear') ||
-      stringStartsWith(ease, 'cubic-') ||
-      stringStartsWith(ease, 'steps') ||
-      stringStartsWith(ease, 'ease')
-    ) {
-      parsedEase = ease;
-    } else if (stringStartsWith(ease, 'cubicB')) {
-      parsedEase = toLowerCase(ease);
-    } else {
-      const parsed = parseEaseString(ease);
-      if (isFnc(parsed)) parsedEase = parsed === none ? 'linear' : easingToLinear(parsed);
-    }
-    // Only cache string based easing name, otherwise function arguments get lost
-    WAAPIEasesLookups[ease] = parsedEase;
-  } else if (isFnc(ease)) {
-    const easing = easingToLinear(ease);
-    if (easing) parsedEase = easing;
-  } else if (/** @type {Spring} */(ease).ease) {
-    parsedEase = easingToLinear(/** @type {Spring} */(ease).ease);
-  }
-  return parsedEase;
-};
-
-const transformsShorthands = ['x', 'y', 'z'];
-const commonDefaultPXProperties = [
-  'perspective',
-  'width',
-  'height',
-  'margin',
-  'padding',
-  'top',
-  'right',
-  'bottom',
-  'left',
-  'borderWidth',
-  'fontSize',
-  'borderRadius',
-  ...transformsShorthands
-];
-
-const validIndividualTransforms = /*#__PURE__*/ (() => [...transformsShorthands, ...validTransforms.filter(t => ['X', 'Y', 'Z'].some(axis => t.endsWith(axis)))])();
-
-let transformsPropertiesRegistered = null;
-
-/**
- * @param  {String} propName
- * @param  {WAAPIKeyframeValue} value
- * @param  {DOMTarget} $el
- * @param  {Number} i
- * @param  {Number} targetsLength
- * @return {String}
- */
-const normalizeTweenValue = (propName, value, $el, i, targetsLength) => {
-  // Do not try to compute strings with getFunctionValue otherwise it will convert CSS variables
-  let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, targetsLength);
-  if (!isNum(v)) return v;
-  if (commonDefaultPXProperties.includes(propName) || stringStartsWith(propName, 'translate')) return `${v}px`;
-  if (stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew')) return `${v}deg`;
-  return `${v}`;
-};
-
-/**
- * @param  {DOMTarget} $el
- * @param  {String} propName
- * @param  {WAAPIKeyframeValue} from
- * @param  {WAAPIKeyframeValue} to
- * @param  {Number} i
- * @param  {Number} targetsLength
- * @return {WAAPITweenValue}
- */
-const parseIndividualTweenValue = ($el, propName, from, to, i, targetsLength) => {
-  /** @type {WAAPITweenValue} */
-  let tweenValue = '0';
-  const computedTo = !isUnd(to) ? normalizeTweenValue(propName, to, $el, i, targetsLength) : getComputedStyle($el)[propName];
-  if (!isUnd(from)) {
-    const computedFrom = normalizeTweenValue(propName, from, $el, i, targetsLength);
-    tweenValue = [computedFrom, computedTo];
-  } else {
-    tweenValue = isArr(to) ? to.map((/** @type {any} */v) => normalizeTweenValue(propName, v, $el, i, targetsLength)) : computedTo;
-  }
-  return tweenValue;
-};
-
-class WAAPIAnimation {
-/**
- * @param {DOMTargetsParam} targets
- * @param {WAAPIAnimationParams} params
- */
-  constructor(targets, params) {
-
-    if (scope.current) scope.current.register(this);
-
-    // Skip the registration and fallback to no animation in case CSS.registerProperty is not supported
-    if (isNil(transformsPropertiesRegistered)) {
-      if (isBrowser && (isUnd(CSS) || !Object.hasOwnProperty.call(CSS, 'registerProperty'))) {
-        transformsPropertiesRegistered = false;
-      } else {
-        validTransforms.forEach(t => {
-          const isSkew = stringStartsWith(t, 'skew');
-          const isScale = stringStartsWith(t, 'scale');
-          const isRotate = stringStartsWith(t, 'rotate');
-          const isTranslate = stringStartsWith(t, 'translate');
-          const isAngle = isRotate || isSkew;
-          const syntax = isAngle ? '<angle>' : isScale ? "<number>" : isTranslate ? "<length-percentage>" : "*";
-          try {
-            CSS.registerProperty({
-              name: '--' + t,
-              syntax,
-              inherits: false,
-              initialValue: isTranslate ? '0px' : isAngle ? '0deg' : isScale ? '1' : '0',
-            });
-          } catch {}        });
-        transformsPropertiesRegistered = true;
-      }
-    }
-
-    const parsedTargets = registerTargets(targets);
-    const targetsLength = parsedTargets.length;
-
-    if (!targetsLength) {
-      console.warn(`No target found. Make sure the element you're trying to animate is accessible before creating your animation.`);
-    }
-
-    const ease = setValue(params.ease, parseWAAPIEasing(globals.defaults.ease));
-    const spring = /** @type {Spring} */(ease).ease && ease;
-    const autoplay = setValue(params.autoplay, globals.defaults.autoplay);
-    const scroll = autoplay && /** @type {ScrollObserver} */(autoplay).link ? autoplay : false;
-    const alternate = params.alternate && /** @type {Boolean} */(params.alternate) === true;
-    const reversed = params.reversed && /** @type {Boolean} */(params.reversed) === true;
-    const loop = setValue(params.loop, globals.defaults.loop);
-    const iterations = /** @type {Number} */((loop === true || loop === Infinity) ? Infinity : isNum(loop) ? loop + 1 : 1);
-    /** @type {PlaybackDirection} */
-    const direction = alternate ? reversed ? 'alternate-reverse' : 'alternate' : reversed ? 'reverse' : 'normal';
-    /** @type {FillMode} */
-    const fill = 'both'; // We use 'both' here because the animation can be reversed during playback
-    /** @type {String} */
-    const easing = parseWAAPIEasing(ease);
-    const timeScale = (globals.timeScale === 1 ? 1 : K);
-
-    /** @type {DOMTargetsArray}] */
-    this.targets = parsedTargets;
-    /** @type {Array<globalThis.Animation>}] */
-    this.animations = [];
-    /** @type {globalThis.Animation}] */
-    this.controlAnimation = null;
-    /** @type {Callback<this>} */
-    this.onComplete = params.onComplete || /** @type {Callback<WAAPIAnimation>} */(/** @type {unknown} */(globals.defaults.onComplete));
-    /** @type {Number} */
-    this.duration = 0;
-    /** @type {Boolean} */
-    this.muteCallbacks = false;
-    /** @type {Boolean} */
-    this.completed = false;
-    /** @type {Boolean} */
-    this.paused = !autoplay || scroll !== false;
-    /** @type {Boolean} */
-    this.reversed = reversed;
-    /** @type {Boolean} */
-    this.persist = setValue(params.persist, globals.defaults.persist);
-    /** @type {Boolean|ScrollObserver} */
-    this.autoplay = autoplay;
-    /** @type {Number} */
-    this._speed = setValue(params.playbackRate, globals.defaults.playbackRate);
-    /** @type {Function} */
-    this._resolve = noop; // Used by .then()
-    /** @type {Number} */
-    this._completed = 0;
-    /** @type {Array.<Object>} */
-    this._inlineStyles = [];
-
-    parsedTargets.forEach(($el, i) => {
-
-      const cachedTransforms = $el[transformsSymbol];
-      const hasIndividualTransforms = validIndividualTransforms.some(t => params.hasOwnProperty(t));
-      const elStyle = $el.style;
-      const inlineStyles = this._inlineStyles[i] = {};
-
-      /** @type {Number} */
-      const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, targetsLength)) * timeScale;
-      /** @type {Number} */
-      const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, targetsLength) * timeScale;
-      /** @type {CompositeOperation} */
-      const composite = /** @type {CompositeOperation} */(setValue(params.composition, 'replace'));
-
-      for (let name in params) {
-        if (!isKey(name)) continue;
-        /** @type {PropertyIndexedKeyframes} */
-        const keyframes = {};
-        /** @type {KeyframeAnimationOptions} */
-        const tweenParams = { iterations, direction, fill, easing, duration, delay, composite };
-        const propertyValue = params[name];
-        const individualTransformProperty = hasIndividualTransforms ? validTransforms.includes(name) ? name : shortTransforms.get(name) : false;
-
-        const styleName = individualTransformProperty ? 'transform' : name;
-        if (!inlineStyles[styleName]) {
-          inlineStyles[styleName] = elStyle[styleName];
-        }
-
-        let parsedPropertyValue;
-        if (isObj(propertyValue)) {
-          const tweenOptions = /** @type {WAAPITweenOptions} */(propertyValue);
-          const tweenOptionsEase = setValue(tweenOptions.ease, ease);
-          const tweenOptionsSpring = /** @type {Spring} */(tweenOptionsEase).ease && tweenOptionsEase;
-          const to = /** @type {WAAPITweenOptions} */(tweenOptions).to;
-          const from = /** @type {WAAPITweenOptions} */(tweenOptions).from;
-          /** @type {Number} */
-          tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, targetsLength)) * timeScale;
-          /** @type {Number} */
-          tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, targetsLength) * timeScale;
-          /** @type {CompositeOperation} */
-          tweenParams.composite = /** @type {CompositeOperation} */(setValue(tweenOptions.composition, composite));
-          /** @type {String} */
-          tweenParams.easing = parseWAAPIEasing(tweenOptionsEase);
-          parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
-          if (individualTransformProperty) {
-            keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
-            cachedTransforms[individualTransformProperty] = parsedPropertyValue;
-          } else {
-            keyframes[name] = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
-          }
-          addWAAPIAnimation(this, $el, name, keyframes, tweenParams);
-          if (!isUnd(from)) {
-            if (!individualTransformProperty) {
-              elStyle[name] = keyframes[name][0];
-            } else {
-              const key = `--${individualTransformProperty}`;
-              elStyle.setProperty(key, keyframes[key][0]);
-            }
-          }
-        } else {
-          parsedPropertyValue = isArr(propertyValue) ?
-                                propertyValue.map((/** @type {any} */v) => normalizeTweenValue(name, v, $el, i, targetsLength)) :
-                                normalizeTweenValue(name, /** @type {any} */(propertyValue), $el, i, targetsLength);
-          if (individualTransformProperty) {
-            keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
-            cachedTransforms[individualTransformProperty] = parsedPropertyValue;
-          } else {
-            keyframes[name] = parsedPropertyValue;
-          }
-          addWAAPIAnimation(this, $el, name, keyframes, tweenParams);
-        }
-      }
-      if (hasIndividualTransforms) {
-        let transforms = emptyString;
-        for (let t in cachedTransforms) {
-          transforms += `${transformsFragmentStrings[t]}var(--${t})) `;
-        }
-        elStyle.transform = transforms;
-      }
-    });
-
-    if (scroll) {
-      /** @type {ScrollObserver} */(this.autoplay).link(this);
-    }
-  }
-
-  /**
-   * @callback forEachCallback
-   * @param {globalThis.Animation} animation
-   */
-
-  /**
-   * @param  {forEachCallback|String} callback
-   * @return {this}
-   */
-  forEach(callback) {
-    const cb = isStr(callback) ? (/** @type {globalThis.Animation} */a) => a[callback]() : callback;
-    this.animations.forEach(cb);
-    return this;
-  }
-
-  get speed() {
-    return this._speed;
-  }
-
-  set speed(speed) {
-    this._speed = +speed;
-    this.forEach(anim => anim.playbackRate = speed);
-  }
-
-  get currentTime() {
-    const controlAnimation = this.controlAnimation;
-    const timeScale = globals.timeScale;
-    return this.completed ? this.duration : controlAnimation ? +controlAnimation.currentTime * (timeScale === 1 ? 1 : timeScale) : 0;
-  }
-
-  set currentTime(time) {
-    const t = time * (globals.timeScale === 1 ? 1 : K);
-    this.forEach(anim => {
-      // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
-      // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
-      // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event
-      // This is not needed for persisting animations since they never finish.
-      if (!this.persist && t >= this.duration) anim.play();
-      anim.currentTime = t;
-    });
-  }
-
-  get progress() {
-    return this.currentTime / this.duration;
-  }
-
-  set progress(progress) {
-    this.forEach(anim => anim.currentTime = progress * this.duration || 0);
-  }
-
-  resume() {
-    if (!this.paused) return this;
-    this.paused = false;
-    // TODO: Store the current time, and seek back to the last position
-    return this.forEach('play');
-  }
-
-  pause() {
-    if (this.paused) return this;
-    this.paused = true;
-    return this.forEach('pause');
-  }
-
-  alternate() {
-    this.reversed = !this.reversed;
-    this.forEach('reverse');
-    if (this.paused) this.forEach('pause');
-    return this;
-  }
-
-  play() {
-    if (this.reversed) this.alternate();
-    return this.resume();
-  }
-
-  reverse() {
-    if (!this.reversed) this.alternate();
-    return this.resume();
-  }
-
- /**
-  * @param {Number} time
-  * @param {Boolean} muteCallbacks
-  */
-  seek(time, muteCallbacks = false) {
-    if (muteCallbacks) this.muteCallbacks = true;
-    if (time < this.duration) this.completed = false;
-    this.currentTime = time;
-    this.muteCallbacks = false;
-    if (this.paused) this.pause();
-    return this;
-  }
-
-  restart() {
-    this.completed = false;
-    return this.seek(0, true).resume();
-  }
-
-  commitStyles() {
-    return this.forEach('commitStyles');
-  }
-
-  complete() {
-    return this.seek(this.duration);
-  }
-
-  cancel() {
-    this.muteCallbacks = true; // This prevents triggering the onComplete callback and resolving the Promise
-    return this.commitStyles().forEach('cancel');
-  }
-
-  revert() {
-    // NOTE: We need a better way to revert the transforms, since right now the entire transform property value is reverted,
-    // This means if you have multiple animations animating different transforms on the same target,
-    // reverting one of them will also override the transform property of the other animations.
-    // A better approach would be to store the original custom property values is they exist instead of the entire transform value,
-    // and update the CSS variables with the orignal value
-    this.cancel().targets.forEach(($el, i) => {
-      const targetStyle = $el.style;
-      const targetInlineStyles = this._inlineStyles[i];
-      for (let name in targetInlineStyles) {
-        const originalInlinedValue = targetInlineStyles[name];
-        if (isUnd(originalInlinedValue) || originalInlinedValue === emptyString) {
-          targetStyle.removeProperty(toLowerCase(name));
-        } else {
-          targetStyle[name] = originalInlinedValue;
-        }
-      }
-      // Remove style attribute if empty
-      if ($el.getAttribute('style') === emptyString) $el.removeAttribute('style');
-    });
-    return this;
-  }
-
-  /**
-   * @typedef {this & {then: null}} ResolvedWAAPIAnimation
-   */
-
-  /**
-   * @param  {Callback<ResolvedWAAPIAnimation>} [callback]
-   * @return Promise<this>
-   */
-  then(callback = noop) {
-    const then = this.then;
-    const onResolve = () => {
-      this.then = null;
-      callback(/** @type {ResolvedWAAPIAnimation} */(this));
-      this.then = then;
-      this._resolve = noop;
-    };
-    return new Promise(r => {
-      this._resolve = () => r(onResolve());
-      if (this.completed) this._resolve();
-      return this;
-    });
-  }
-}
-
-const waapi = {
-/**
- * @param {DOMTargetsParam} targets
- * @param {WAAPIAnimationParams} params
- * @return {WAAPIAnimation}
- */
-  animate: (targets, params) => new WAAPIAnimation(targets, params),
-  convertEase: easingToLinear
-};
-
-export { registerTargets as $, Animatable, Draggable, JSAnimation, Scope, ScrollObserver, Spring, TextSplitter, Timeline, Timer, WAAPIAnimation, animate, clamp, cleanInlineStyles, createAnimatable, createDraggable, createDrawable, createMotionPath, createScope, createSeededRandom, createSpring, createTimeline, createTimer, cubicBezier, damp, degToRad, eases, index$3 as easings, engine, get, irregular, keepTime, lerp, linear, mapRange, morphTo, onScroll, padEnd, padStart, radToDeg, random, randomPick, remove, round, roundPad, scrollContainers, set, shuffle, snap, split, splitText, spring, stagger, steps, index$1 as svg, sync, index as text, index$2 as utils, waapi, wrap };
+export { registerTargets as $, Animatable, AutoLayout, Draggable, JSAnimation, Scope, ScrollObserver, Spring, TextSplitter, Timeline, Timer, WAAPIAnimation, addChild, animate, clamp, cleanInlineStyles, createAnimatable, createDraggable, createDrawable, createLayout, createMotionPath, createScope, createSeededRandom, createSpring, createTimeline, createTimer, cubicBezier, damp, degToRad, eases, index$3 as easings, engine, forEachChildren, get, globals, irregular, keepTime, lerp, linear, mapRange, morphTo, onScroll, padEnd, padStart, radToDeg, random, randomPick, remove, removeChild, round, roundPad, scrambleText, scrollContainers, set, shuffle, snap, split, splitText, spring, stagger, steps, index$1 as svg, sync, index as text, index$2 as utils, waapi, wrap };

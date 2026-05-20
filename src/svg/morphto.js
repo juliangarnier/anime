@@ -1,8 +1,4 @@
 import {
-  morphPointsSymbol,
-} from '../core/consts.js';
-
-import {
   round,
 } from '../core/helpers.js';
 
@@ -22,7 +18,7 @@ import {
  * @param  {Number} [precision]
  * @return {FunctionValue}
  */
-export const morphTo = (path2, precision = .33) => ($path1) => {
+export const morphTo = (path2, precision = .33) => ($path1, index, total, prevTween) => {
   const tagName1 = ($path1.tagName || '').toLowerCase();
   if (!tagName1.match(/^(path|polygon|polyline)$/)) {
     throw new Error(`Can't morph a <${$path1.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
@@ -37,7 +33,7 @@ export const morphTo = (path2, precision = .33) => ($path1) => {
   }
   const isPath = $path1.tagName === 'path';
   const separator = isPath ? ' ' : ',';
-  const previousPoints = $path1[morphPointsSymbol];
+  const previousPoints = prevTween ? prevTween._value : null;
   if (previousPoints) $path1.setAttribute(isPath ? 'd' : 'points', previousPoints);
 
   let v1 = '', v2 = '';
@@ -58,8 +54,6 @@ export const morphTo = (path2, precision = .33) => ($path1) => {
       v2 += prefix + round(pointOnPath2.x, 3) + separator + pointOnPath2.y + ' ';
     }
   }
-
-  $path1[morphPointsSymbol] = v2;
 
   return [v1, v2];
 }

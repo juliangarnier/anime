@@ -51,7 +51,7 @@ document.body.innerHTML += svgLines;
 document.body.innerHTML += svgCircles;
 
 createTimeline({
-  playbackEase: 'out(4)',
+  // playbackEase: 'out(4)',
   loop: 0,
   defaults: {
     ease: 'inOut(4)',
