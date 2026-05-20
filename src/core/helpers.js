@@ -1,5 +1,6 @@
 import {
   isBrowser,
+  validRgbHslRgx,
   lowerCaseRgx,
   hexTestRgx,
   maxValue,
@@ -59,8 +60,8 @@ export const isHex = a => hexTestRgx.test(a);
 export const isRgb = a => stringStartsWith(a, 'rgb');
 /**@param {any} a @return {Boolean} */
 export const isHsl = a => stringStartsWith(a, 'hsl');
-/**@param {any} a @return {Boolean} */
-export const isCol = a => isHex(a) || isRgb(a) || isHsl(a);
+/**@param {any} a @return {Boolean} */ // Make sure boxShadow syntax like 'rgb(255, 0, 0) 0px 0px 6px 0px' is not a valid color type
+export const isCol = a => isHex(a) || ((isRgb(a) || isHsl(a)) && (a[a.length - 1] === ')' || !validRgbHslRgx.test(a)));
 /**@param {any} a @return {Boolean} */
 export const isKey = a => !globals.defaults.hasOwnProperty(a);
 
@@ -124,8 +125,6 @@ export const _round = Math.round;
  */
 export const clamp = (v, min, max) => v < min ? min : v > max ? max : v;
 
-const powCache = {};
-
 /**
  * Rounds a number to specified decimal places
  *
@@ -133,13 +132,12 @@ const powCache = {};
  * @param  {Number} decimalLength - Number of decimal places
  * @return {Number}
  */
-export const round = (v, decimalLength) => {
-  if (decimalLength < 0) return v;
-  if (!decimalLength) return _round(v);
-  let p = powCache[decimalLength];
-  if (!p) p = powCache[decimalLength] = 10 ** decimalLength;
-  return _round(v * p) / p;
-};
+ export const round = (v, decimalLength) => {
+   if (decimalLength < 0) return v;
+   if (!decimalLength) return _round(v);
+   const p = 10 ** decimalLength;
+   return _round(v * p) / p;
+ }
 
 /**
  * Snaps a value to nearest increment or array value

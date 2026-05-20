@@ -1,8 +1,8 @@
 /**
  * Anime.js - events - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 import { noop, doc, isDomSymbol, relativeValuesExecRgx, win } from '../core/consts.js';
@@ -221,6 +221,7 @@ class ScrollContainer {
     this.updateBounds();
     forEachChildren(this, (/** @type {ScrollObserver} */child) => {
       child.refresh();
+      child.onResize(child);
       if (child._debug) {
         child.debug();
       }
@@ -432,6 +433,8 @@ class ScrollObserver {
     /** @type {Callback<ScrollObserver>} */
     this.onUpdate = parameters.onUpdate || noop;
     /** @type {Callback<ScrollObserver>} */
+    this.onResize = parameters.onResize || noop;
+    /** @type {Callback<ScrollObserver>} */
     this.onSyncComplete = parameters.onSyncComplete || noop;
     /** @type {Boolean} */
     this.reverted = false;
@@ -495,7 +498,9 @@ class ScrollObserver {
       linked.pause();
       this.linked = linked;
       // Forces WAAPI Animation to persist; otherwise, they will stop syncing on finish.
-      if (!isUnd(/** @type {WAAPIAnimation} */(linked))) /** @type {WAAPIAnimation} */(linked).persist = true;
+      if (!isUnd(linked) && !isUnd(/** @type {WAAPIAnimation} */(linked).persist)) {
+        /** @type {WAAPIAnimation} */(linked).persist = true;
+      }
       // Try to use a target of the linked object if no target parameters specified
       if (!this._params.target) {
         /** @type {HTMLElement} */
@@ -697,12 +702,11 @@ class ScrollObserver {
     // let offsetX = 0;
     // let offsetY = 0;
     // let $offsetParent = $el;
-    /** @type {Element} */
     if (linked) {
       linkedTime = linked.currentTime;
       linked.seek(0, true);
     }
-    /* Old implementation to get offset and targetSize before fixing https://github.com/juliangarnier/anime/issues/1021
+    // Old implementation to get offset and targetSize before fixing https://github.com/juliangarnier/anime/issues/1021
     // const isContainerStatic = get(container.element, 'position') === 'static' ? set(container.element, { position: 'relative '}) : false;
     // while ($el && $el !== container.element && $el !== doc.body) {
     //   const isSticky = get($el, 'position') === 'sticky' ?

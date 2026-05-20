@@ -7,6 +7,7 @@ import {
   utils,
   stagger,
   eases,
+  createTimeline,
 } from '../../dist/modules/index.js';
 
 suite('WAAPI', () => {
@@ -46,7 +47,7 @@ suite('WAAPI', () => {
 
   test('Animate multiple elements', resolve => {
     const targets = utils.$('.target-class');
-    const animation = waapi.animate(targets, {
+    waapi.animate(targets, {
       transform: `translateX(100px)`,
       duration: 10,
       onComplete: anim => {
@@ -62,7 +63,7 @@ suite('WAAPI', () => {
 
   test('Animate multiple elements with stagger', resolve => {
     const targets = utils.$('.target-class');
-    const animation = waapi.animate(targets, {
+    waapi.animate(targets, {
       transform: `translateX(100px)`,
       duration: 10,
       delay: stagger(1),
@@ -79,7 +80,7 @@ suite('WAAPI', () => {
 
   test('Animate with function based values', resolve => {
     const targets = utils.$('.target-class');
-    const animation = waapi.animate(targets, {
+    waapi.animate(targets, {
       transform: (_, i) => `translateX(${i * 100}px)`,
       duration: 10,
       delay: stagger(1),
@@ -93,9 +94,25 @@ suite('WAAPI', () => {
     });
   });
 
-  test('Animate with function based keyframes value', resolve => {
+  test('Animate with function based properties', () => {
     const targets = utils.$('.target-class');
     const animation = waapi.animate(targets, {
+      transform: `translateX(100px)`,
+      duration: (_, i) => i * 20,
+      delay: (_, i) => i * 5,
+      ease: () => (t) => t,
+      autoplay: false
+    });
+    animation.seek(20).commitStyles();
+    expect(utils.get(targets[0], 'x')).to.equal('100px');
+    expect(utils.get(targets[1], 'x')).to.equal('75px');
+    expect(utils.get(targets[2], 'x')).to.equal('25px');
+    expect(utils.get(targets[3], 'x')).to.equal('8.33333px');
+  });
+
+  test('Animate with function based keyframes value', resolve => {
+    const targets = utils.$('.target-class');
+    waapi.animate(targets, {
       transform: ['translateX(200px)', (_, i) => `translateX(${i * 100}px)`],
       duration: 10,
       delay: stagger(1),
@@ -316,6 +333,55 @@ suite('WAAPI', () => {
     animation1.seek(5);
     animation2.seek(5);
     expect(utils.get($target1, 'opacity')).to.not.equal(utils.get($target2, 'opacity'));
+  });
+
+  test('Looped timeline syncing a WAAPI animation updates values correctly after initial loop', () => {
+    const [ $target1, $target2 ] = utils.$('.target-class');
+    const waapiAnimA = waapi.animate($target1, {
+      opacity: [0, 1],
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
+    });
+    const waapiAnimB = waapi.animate($target2, {
+      opacity: [0, 1],
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
+    });
+    const tl = createTimeline({
+      autoplay: false,
+      loop: 1,
+    })
+    .sync(waapiAnimA)
+    .sync(waapiAnimB, 50); // This caused syncing of the first waapi anim to fail before forcing persist
+    tl.seek(0);
+    expect(utils.get($target1, 'opacity')).to.equal('0');
+    expect(utils.get($target2, 'opacity')).to.equal('0');
+    tl.seek(50);
+    expect(utils.get($target1, 'opacity')).to.equal('0.5');
+    expect(utils.get($target2, 'opacity')).to.equal('0');
+    tl.seek(100);
+    expect(utils.get($target1, 'opacity')).to.equal('1');
+    expect(utils.get($target2, 'opacity')).to.equal('0.5');
+    tl.seek(149);
+    expect(utils.get($target1, 'opacity')).to.equal('1');
+    expect(utils.get($target2, 'opacity')).to.equal('0.99');
+    tl.seek(150);
+    expect(utils.get($target1, 'opacity')).to.equal('0'); // value goes back to 0 when currrent time is the begining of the second loop
+    expect(utils.get($target2, 'opacity')).to.equal('0');
+    tl.seek(200);
+    expect(utils.get($target1, 'opacity')).to.equal('0.5');
+    expect(utils.get($target2, 'opacity')).to.equal('0');
+    tl.seek(250);
+    expect(utils.get($target1, 'opacity')).to.equal('1');
+    expect(utils.get($target2, 'opacity')).to.equal('0.5');
+    tl.seek(299);
+    expect(utils.get($target1, 'opacity')).to.equal('1');
+    expect(utils.get($target2, 'opacity')).to.equal('0.99');
+    tl.seek(300);
+    expect(utils.get($target1, 'opacity')).to.equal('1');
+    expect(utils.get($target2, 'opacity')).to.equal('1');
   });
 
 });

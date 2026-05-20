@@ -92,7 +92,7 @@ class Engine extends Clock {
 
   wake() {
     if (this.useDefaultMainLoop && !this.reqId) {
-      // Imediatly request a tick to update engine._elapsedTime and get accurate offsetPosition calculation in timer.js
+      // Imediatly request a tick to update engine._lastTickTime and get accurate offsetPosition calculation in timer.js
       this.requestTick(now());
       this.reqId = engineTickMethod(tickEngine);
     }

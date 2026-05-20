@@ -41,6 +41,7 @@ const tl = createTimeline({
 });
 tl.label('FALL')
 tl.add('#line-0', {
+  id: 'line-0 wiggle',
   translateY: {to: [-280, 19], ease: 'inQuart', duration: 320 },
   scaleY: { to: [3, 1.75], ease: 'outElastic(1, 1.4)', duration: 300, delay: 320 },
   scaleX: { to: [.8, 1], ease: 'outElastic(1, 1.4)', duration: 650, delay: 320 },
@@ -231,6 +232,7 @@ tl.label('TEXT', '<-=600')
 }, 'OUTRO')
 
 .add(['#a-1', '#n-1', '#i-1', '#m-1', '#e-1'],  {
+  id: 'a n i m e',
   translateY: 80,
   duration: 300,
   ease: 'outQuint',

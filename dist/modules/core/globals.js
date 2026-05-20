@@ -1,11 +1,11 @@
 /**
  * Anime.js - core - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
-import { isBrowser, win, noop, maxFps, K, compositionTypes, doc } from './consts.js';
+import { isBrowser, win, noop, compositionTypes, K, maxFps, doc } from './consts.js';
 
 /**
  * @import {
@@ -17,6 +17,18 @@ import { isBrowser, win, noop, maxFps, K, compositionTypes, doc } from './consts
  *   Scope,
  * } from '../scope/index.js'
 */
+
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {boolean} synced
+ * @property {Function} addAnimation
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
 
 /** @type {DefaultsParams} */
 const defaults = {
@@ -61,9 +73,11 @@ const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 };
 
-const globalVersions = { version: '4.2.2', engine: null };
+const globalVersions = { version: '4.4.1', engine: null };
 
 if (isBrowser) {
   if (!win.AnimeJS) win.AnimeJS = [];

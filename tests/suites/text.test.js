@@ -7,6 +7,8 @@ import {
   utils,
   splitText,
   animate,
+  scrambleText,
+  createTimeline,
 } from '../../dist/modules/index.js';
 
 // Firefox detect Japanse words differently
@@ -426,6 +428,139 @@ suite('Text', () => {
         resolve();
       }, 10);
     });
+  });
+
+  test('scrambleText returns a function-based value', () => {
+    const value = scrambleText();
+    expect(typeof value).to.equal('function');
+  });
+
+  test('scrambleText returns a tween object with from, to, ease, duration and modifier', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText()($el);
+    expect(tweenObj.from).to.equal(0);
+    expect(tweenObj.to).to.equal(1);
+    expect(tweenObj.ease).to.equal('linear');
+    expect(tweenObj.duration).to.be.above(0);
+    expect(typeof tweenObj.modifier).to.equal('function');
+  });
+
+  test('scrambleText default override scrambles text at start', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText({ seed: 1 })($el);
+    expect(tweenObj.modifier(0)).to.not.equal($el.textContent);
+  });
+
+  test('scrambleText override false preserves original text at start', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText({ override: false })($el);
+    expect(tweenObj.modifier(0)).to.equal($el.textContent);
+  });
+
+  test('scrambleText modifier returns target text at 1', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText()($el);
+    expect(tweenObj.modifier(1)).to.equal($el.textContent);
+  });
+
+  test('scrambleText modifier returns scrambled text for intermediate values', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText({ seed: 1 })($el);
+    const result = tweenObj.modifier(.5);
+    expect(result.length).to.equal($el.textContent.length);
+    expect(result).to.not.equal($el.textContent);
+  });
+
+  test('scrambleText modifier preserves whitespace', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText({ seed: 1 })($el);
+    const result = tweenObj.modifier(.125);
+    const spaceIndex = $el.textContent.indexOf(' ');
+    expect(result[spaceIndex]).to.equal(' ');
+  });
+
+  test('scrambleText modifier caches value for same input', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText()($el);
+    const first = tweenObj.modifier(.25);
+    const second = tweenObj.modifier(.25);
+    expect(first).to.equal(second);
+  });
+
+  test('scrambleText custom chars option', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText({ chars: 'XY', seed: 1 })($el);
+    const result = tweenObj.modifier(.5);
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] !== ' ' && result[i] !== $el.textContent[i]) {
+        expect(result[i] === 'X' || result[i] === 'Y').to.equal(true);
+      }
+    }
+  });
+
+  test('scrambleText progressive reveal increases revealed characters', () => {
+    const $el = document.querySelector('#scramble-text');
+    const originalText = $el.textContent;
+    const tweenObj = scrambleText({ seed: 1 })($el);
+    const at25 = tweenObj.modifier(.25);
+    const at75 = tweenObj.modifier(.75);
+    let revealed25 = 0;
+    let revealed75 = 0;
+    for (let i = 0; i < originalText.length; i++) {
+      if (at25[i] === originalText[i] && originalText[i] !== ' ') revealed25++;
+      if (at75[i] === originalText[i] && originalText[i] !== ' ') revealed75++;
+    }
+    expect(revealed75).to.be.above(revealed25);
+  });
+
+  test('scrambleText custom text param transitions to different text', () => {
+    const $el = document.querySelector('#scramble-text');
+    const tweenObj = scrambleText({ text: 'Goodbye' })($el);
+    expect(tweenObj.modifier(1)).to.equal('Goodbye');
+  });
+
+  test('scrambleText works with animate()', resolve => {
+    const $el = document.querySelector('#scramble-text');
+    const originalText = $el.textContent;
+    animate($el, {
+      innerHTML: scrambleText(),
+      duration: 100,
+      autoplay: true,
+      onComplete: () => {
+        expect($el.innerHTML).to.equal(originalText);
+        resolve();
+      }
+    });
+  });
+
+  test('scrambleText keyframe array reads prevTween value between keyframes', resolve => {
+    const $el = document.querySelector('#scramble-text');
+    $el.textContent = '';
+    const anim = animate($el, {
+      innerHTML: [
+        { to: scrambleText({ text: 'First', duration: 100 }) },
+        { to: scrambleText({ text: 'Second', duration: 100 }) },
+      ],
+      autoplay: false,
+    });
+    // End of first keyframe: should equal first target text
+    anim.seek(100);
+    expect($el.innerHTML).to.equal('First');
+    // End of second keyframe: proves prevTween._value was read as starting text
+    anim.seek(anim.duration);
+    expect($el.innerHTML).to.equal('Second');
+    resolve();
+  });
+
+  test('scrambleText timeline chaining reads previous end value', resolve => {
+    const $el = document.querySelector('#scramble-text');
+    $el.textContent = '';
+    const tl = createTimeline({ defaults: { duration: 100 }, autoplay: false });
+    tl.add($el, { innerHTML: scrambleText({ text: 'Hello' }) });
+    tl.add($el, { innerHTML: scrambleText({ override: false }) });
+    tl.seek(tl.duration);
+    expect($el.innerHTML).to.equal('Hello');
+    resolve();
   });
 
 });

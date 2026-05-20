@@ -194,7 +194,6 @@
     utils.set(['.fill.out', '.line.out'], { opacity: 0 });
 
     const logoTimeline = createTimeline({
-      autoplay: false,
       alternate: true,
       loop: 1,
       defaults: {
@@ -293,8 +292,6 @@
       delay: stagger(20),
     }, 4200)
     .init();
-
-    inspect(logoTimeline);
 
     // logoTimeline.seek(660);
     // logoTimeline.seek(660);

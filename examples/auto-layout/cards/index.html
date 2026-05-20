@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cards</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: system-ui; padding: 20px; max-width: 1000px; margin: 0 auto; }
+      nav { margin-bottom: 20px; }
+      nav button { padding: 8px 16px; margin-right: 8px; cursor: pointer; }
+
+      #cards { display: grid; gap: 16px; }
+      .card { position: relative; overflow: hidden; border-radius: 8px; }
+      .card img { width: 100%; height: 100%; object-fit: cover; }
+      .card .info { padding: 12px; }
+      .card h3 { margin-bottom: 4px; }
+
+      /* Tiles: 4-column grid with overlay text */
+      .tiles { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 200px; }
+      .tiles .card:nth-child(3n) { grid-row: span 2; }
+      .tiles .card:nth-child(5n) { grid-column: span 2; }
+      .tiles .card .info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; }
+
+      /* List: vertical list with side-by-side layout */
+      /*.list { grid-template-columns: 1fr; width: 400px; margin: 0 auto; }*/
+      #cards.list { display: flex; flex-direction: column; align-items: center; }
+      .list .card { display: flex; background: #eee; width: 400px; }
+      .list .card img { width: 120px; height: 120px; flex-shrink: 0; }
+      .list .card .info { color: black; }
+
+      /* Grid: uniform rectangular cards with overlay */
+      .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+      .grid .card { aspect-ratio: 4/3; }
+      .grid .card .info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <button data-view="tiles">Tiles</button>
+      <button data-view="list">List</button>
+      <button data-view="grid">Grid</button>
+    </nav>
+    <div id="cards" class="list"></div>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

@@ -6,46 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link href="../assets/css/styles.css" rel="stylesheet">
   <style>
-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 500px;
-}
-
-main {
-  height: 400px;
-  width: 400px;
-  background-color: wheat;
-  overflow-y: auto;
-  scale: .8;
-}
-
-.page {
-  width: 100%;
-  height: 1000px;
-  position: relative;
-}
-
-.rectangle {
-  width: 100px;
-  height: 100px;
-  background: purple;
-  position: absolute;
-  bottom: 100px;
-}
-
+    .square {
+      width: 100px;
+      height: 100px;
+      background: currentColor;
+    }
   </style>
 </head>
 <body>
-  <main>
-    <div class="page">
-      <div class="rectangle" id="target">
-      </div>
-    </div>
-  </main>
+  <div class="square red"></div>
+  <div class="square green"></div>
+  <div class="square blue"></div>
   <script type="module" src="./index.js"></script>
 </body>
 </html>

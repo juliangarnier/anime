@@ -43,11 +43,11 @@
 
   <script type="module">
 
-    import { animate } from '../../../dist/modules/index.js';
+    import { animate, steps } from '../../../dist/modules/index.js';
 
     const ryu = animate('.ryu', {
       backgroundPosition: '100% 0px',
-      ease: 'steps(9)',
+      ease: steps(9),
       duration: 450,
       loop: true
     });

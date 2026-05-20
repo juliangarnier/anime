@@ -1,19 +1,131 @@
 :root {
-  --black: #252423;
-  --white: #F6F4F2;
-  --red: #FF4B4B;
-  --orange: #FF8F42;
-  --lightorange: #FFC730;
-  --yellow: #F6FF56;
-  --citrus: #A4FF4F;
-  --green: #18FF74;
-  --darkgreen: #00D672;
-  --turquoise: #3CFFEC;
-  --skyblue: #61C3FF;
-  --kingblue: #5A87FF;
-  --lavender: #8453E3;
-  --purple: #C26EFF;
-  --pink: #FB89FB;
+  --black-1: #252423;
+  --black-2: #262422;
+  --black-3: #262422;
+  --black-4: #262422;
+  --black-5: #272421;
+  --black-6: #272421;
+  --white-1: #f6f4f2;
+  --white-2: #b8b6b3;
+  --white-3: #9a9593;
+  --white-4: #524f49;
+  --white-5: #413d39;
+  --white-6: #312e2b;
+  --red-1: #ff4b4b;
+  --red-2: #bf3e3e;
+  --red-3: #9e3838;
+  --red-4: #532a29;
+  --red-5: #412726;
+  --red-6: #322523;
+  --corail-1: #ff8333;
+  --corail-2: #bf672d;
+  --corail-3: #9e582b;
+  --corail-4: #533724;
+  --corail-5: #412f23;
+  --corail-6: #322922;
+  --orange-1: #ffa828;
+  --orange-2: #bf8026;
+  --orange-3: #9e6d25;
+  --orange-4: #523e23;
+  --orange-5: #413422;
+  --orange-6: #322b21;
+  --yellow-1: #ffcc2a;
+  --yellow-2: #bf9a27;
+  --yellow-3: #9e8026;
+  --yellow-4: #524723;
+  --yellow-5: #413922;
+  --yellow-6: #322d21;
+  --citrus-1: #f9f640;
+  --citrus-2: #bab836;
+  --citrus-3: #9b9932;
+  --citrus-4: #515027;
+  --citrus-5: #403f24;
+  --citrus-6: #323022;
+  --lime-1: #b7ff54;
+  --lime-2: #8bbe44;
+  --lime-3: #759d3d;
+  --lime-4: #42522b;
+  --lime-5: #384027;
+  --lime-6: #2d3123;
+  --green-1: #6aff65;
+  --green-2: #54be50;
+  --green-3: #4a9e45;
+  --green-4: #31522e;
+  --green-5: #2c4029;
+  --green-6: #273124;
+  --emerald-1: #57f695;
+  --emerald-2: #47b873;
+  --emerald-3: #409962;
+  --emerald-4: #2d5039;
+  --emerald-5: #293f30;
+  --emerald-6: #263128;
+  --turquoise-1: #66ffbc;
+  --turquoise-2: #52be8e;
+  --turquoise-3: #479e77;
+  --turquoise-4: #305242;
+  --turquoise-5: #2b4035;
+  --turquoise-6: #26312b;
+  --cyan-1: #26f2d5;
+  --cyan-2: #25b5a0;
+  --cyan-3: #259686;
+  --cyan-4: #244e48;
+  --cyan-5: #233f39;
+  --cyan-6: #23302d;
+  --sega-1: #05dbe9;
+  --sega-2: #0fa4ae;
+  --sega-3: #138990;
+  --sega-4: #1e4a4c;
+  --sega-5: #203b3c;
+  --sega-6: #212f2f;
+  --sky-1: #33b3f1;
+  --sky-2: #2e88b4;
+  --sky-3: #2c7395;
+  --sky-4: #26424e;
+  --sky-5: #25363e;
+  --sky-6: #242c2f;
+  --indigo-1: #717aff;
+  --indigo-2: #595fbe;
+  --indigo-3: #4d519e;
+  --indigo-4: #323351;
+  --indigo-5: #2c2c3f;
+  --indigo-6: #282630;
+  --lavender-1: #a369ff;
+  --lavender-2: #7d53be;
+  --lavender-3: #6a489e;
+  --lavender-4: #3e3051;
+  --lavender-5: #342a3f;
+  --lavender-6: #2b2530;
+  --purple-1: #c06ddf;
+  --purple-2: #9356a8;
+  --purple-3: #7b4a8c;
+  --purple-4: #45314b;
+  --purple-5: #392b3c;
+  --purple-6: #2f262d;
+  --magenta-1: #e962bf;
+  --magenta-2: #af4e90;
+  --magenta-3: #93447a;
+  --magenta-4: #4e2e43;
+  --magenta-5: #3f2936;
+  --magenta-6: #31252b;
+  --pink-1: #ff86a7;
+  --pink-2: #bf687f;
+  --pink-3: #9f586b;
+  --pink-4: #53363c;
+  --pink-5: #412e32;
+  --pink-6: #322729;
+  --bg-1: #252423;
+  --bg-2: #2a2928;
+  --bg-3: #2f2e2d;
+  --bg-4: #353433;
+  --bg-5: #3a3938;
+  --fg-1: #dddcda;
+  --fg-2: #c6c3c1;
+  --fg-3: #96918f;
+  --fg-4: #65655e;
+  --fg-5: #33332e;
+  --br: 1rem;
+  --padding: 1rem;
+  --border-width: 1px;
 }
 
 *, *:before, *:after {
@@ -27,16 +139,22 @@
 
 html,
 body {
-  background-color: var(--black);
-  color: var(--white);
-  font-family: sans-serif;
+  background-color: var(--bg-1);
+  color: var(--fg-1);
+  font-family: BerkeleyMono-Regular, monospace, sans-serif;
 }
 
-.black { color: var(--black); }
-.white { color: var(--white); }
-.red { color: var(--red); }
-.blue { color: var(--skyblue); }
-.green { color: var(--green); }
+.br { border-radius: var(--br); }
+.br .br { border-radius: calc(var(--br) * .5); }
+.br .br .br { border-radius: calc(var(--br) * .25); }
+
+.black { color: var(--bg-1); }
+.white { color: var(--fg-1); }
+.red { color: var(--red-1); }
+.orange { color: var(--corail-1); }
+.yellow { color: var(--yellow-1); }
+.blue { color: var(--sky-1); }
+.green { color: var(--green-1); }
 
 .grid {
   --one-cell: 100px;

@@ -101,10 +101,10 @@
         linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
         linear-gradient(-90deg, rgba(255,255,255,.04) 1px, transparent 1px),
         linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-        linear-gradient(transparent 3px, var(--black) 3px, var(--black) calc(var(--one-cell) - 2px), transparent calc(var(--one-cell) - 2px)),
-        linear-gradient(-90deg, var(--white) 1px, transparent 1px),
-        linear-gradient(-90deg, transparent 3px, var(--black) 3px, var(--black) calc(var(--one-cell) - 2px), transparent calc(var(--one-cell) - 2px)),
-        linear-gradient(var(--white) 1px, transparent 1px), var(--black);
+        linear-gradient(transparent 3px, var(--black-1) 3px, var(--black-1) calc(var(--one-cell) - 2px), transparent calc(var(--one-cell) - 2px)),
+        linear-gradient(-90deg, var(--white-1) 1px, transparent 1px),
+        linear-gradient(-90deg, transparent 3px, var(--black-1) 3px, var(--black-1) calc(var(--one-cell) - 2px), transparent calc(var(--one-cell) - 2px)),
+        linear-gradient(var(--white-1) 1px, transparent 1px), var(--black-1);
       background-size:
         calc(var(--one-cell) / 10) calc(var(--one-cell) / 10),
         calc(var(--one-cell) / 10) calc(var(--one-cell) / 10),
@@ -165,7 +165,7 @@
 
     .axis-x:first-child:after {
       background-color: var(--red);
-      box-shadow: 0 0 0 1px var(--black);
+      box-shadow: 0 0 0 1px var(--black-1);
     }
 
     .axis-x:not(:first-child):after {
@@ -188,8 +188,8 @@
       align-items: center;
       font-size: .75rem;
       font-weight: bold;
-      color: var(--white);
-      background-color: var(--black);
+      color: var(--white-1);
+      background-color: var(--black-1);
       border: 1px solid rgba(255, 255, 255, .25);
     }
 
@@ -202,7 +202,7 @@
       width: 100%;
       min-height: 100dvh;
       margin-top: 70vw;
-      background: var(--black);
+      background: var(--black-1);
     }
 
     @media (min-width: 640px) {
@@ -222,8 +222,8 @@
       width: 100%;
       padding: .75rem;
       padding-bottom: 0;
-      background: var(--black);
-      box-shadow: 0 10px 10px 0 var(--black);
+      background: var(--black-1);
+      box-shadow: 0 10px 10px 0 var(--black-1);
       border-radius: 1rem 1rem 0 0;
     }
 
@@ -281,7 +281,7 @@
         display: block;
         width: 2.75rem;
         background-color: transparent;
-        color: var(--white);
+        color: var(--white-1);
       }
       .ease-parameter input[type="range"] {
         width: calc(100% - 2.75rem);
@@ -322,7 +322,7 @@
       border: 1px solid currentColor;
       width: 16px;
       height: 29px;
-      background-color: var(--black);
+      background-color: var(--black-1);
       background-image: radial-gradient(transparent 1px, rgba(0, 0, 0, .7) 0), radial-gradient(transparent 1px, currentColor 0), radial-gradient(currentColor 1px, transparent 0);
       background-size: 3px 3px, 3px 3px, 3px 3px;
       background-position: -2px -2px, -2px -2px, -2px -2px;
@@ -340,7 +340,7 @@
       width: 100%;
       min-height: 100%;
       padding: .75rem;
-      background-color: var(--black);
+      background-color: var(--black-1);
     }
 
     @media (min-width: 1280px) {
@@ -361,7 +361,7 @@
       margin: .125rem;
       padding: .5rem;
       background-color: rgba(255, 255, 255, .05);
-      color: var(--white);
+      color: var(--white-1);
       cursor: pointer;
       border-radius: .6rem;
       transition: background-color .25s ease-in-out;
@@ -381,7 +381,7 @@
 
     button.ease-button.is-active {
       background: var(--red);
-      color: var(--black);
+      color: var(--black-1);
     }
 
     button.ease-button .ease-config {
@@ -411,7 +411,7 @@
     }
 
     button.ease-button.is-active svg polyline {
-      stroke: var(--black);
+      stroke: var(--black-1);
     }
 
   </style>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      --header-height: 4rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 100lvh;
+      overflow: hidden;
+      perspective: 1000px;
+    }
+    #scene {
+      position: fixed;
+      transform-style: preserve-3d;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: calc(var(--header-height) + var(--padding)) var(--padding) var(--padding);
+      inset: 0;
+      padding: var(--header-height) var(--padding);
+    }
+    #scene-content {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+    #scene-content[data-layout="table"] {
+      display: grid;
+      grid-template-columns: repeat(18, var(--w));
+      grid-auto-rows: var(--h);
+      gap: 0.25rem;
+      place-content: center;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      flex-shrink: 1;
+      position: fixed;
+      z-index: 3;
+      top: 0px;
+      width: 100%;
+      height: var(--header-height);
+      padding: var(--padding);
+    }
+    .controls-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      height: var(--header-height);
+      gap: calc(var(--padding) * .5);
+    }
+    .controls button {
+      background-color: var(--bg-4);
+      color: var(--fg-1);
+      flex-shrink: 1;
+    }
+    .controls button:hover {
+      background-color: var(--bg-5);
+    }
+    .controls button.is-active {
+      background-color: var(--fg-1);
+      color: var(--bg-3);
+    }
+    .credits {
+      text-align: center;
+      position: fixed;
+      z-index: 1;
+      bottom: 0px;
+      width: 100%;
+      height: var(--header-height);
+      padding: var(--padding);
+      font-size: .75rem;
+    }
+    .credits a {
+      color: var(--red-1);
+      text-decoration: none;
+    }
+    .element {
+      overflow: hidden;
+      pointer-events: auto;
+      --w: 3.5rem;
+      --h: 4rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--color-3);
+      background-color: var(--color-5);
+      color: var(--color-1);
+      width: var(--w);
+      height: var(--h);
+      border-radius: .25rem;
+      padding: .25rem;
+      transform-style: preserve-3d;
+      z-index: 8;
+      cursor: pointer;
+    }
+    button.element:focus-visible,
+    button.element:hover {
+      border: 1px solid var(--color-1);
+      background-color: var(--color-4);
+      color: var(--color-1);
+      outline: none;
+    }
+    .element.is-expanded {
+      --w: 13rem;
+      --h: 13rem;
+      z-index: 1;
+      padding: 1rem;
+      align-items: flex-start;
+    }
+    .element-description {
+      display: none;
+      transform-style: preserve-3d;
+      flex-direction: column;
+      gap: .25rem;
+      width: 100%;
+      font-size: .625rem;
+      text-transform: none;
+      color: var(--color-1);
+      justify-self: flex-end;
+      margin-top: 1.5rem;
+      text-align: left;
+    }
+    .element.is-expanded .element-description {
+      display: block;
+    }
+    .element-symbol {
+      transform-style: preserve-3d;
+      margin-top: -.1rem;
+      margin-bottom: .2rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .element.is-expanded .element-symbol {
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 1rem;
+      text-align: left;
+    }
+    .element-title {
+      transform-style: preserve-3d;
+      font-size: .5rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .element.is-expanded .element-title {
+      font-size: 1.5rem;
+      text-align: left;
+      margin-top: 1rem;
+    }
+    .element-number {
+      transform-style: preserve-3d;
+      font-size: .5rem;
+      text-align: right;
+      align-self: flex-end;
+    }
+    .element.is-expanded .element-number {
+      position: absolute;
+      font-size: 1rem;
+      top: 1rem;
+      right: 1rem;
+    }
+    #scene-content[data-layout="sphere"] .element,
+    #scene-content[data-layout="helix"] .element,
+    #scene-content[data-layout="grid"] .element {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--w) * -.5);
+      margin-top: calc(var(--h) * -.5);
+    }
+    #scene-content[data-layout="table"] .element.is-expanded {
+      left: -1.625rem;
+      top: -1.25rem;
+      margin-left: calc(var(--w) * -.25);
+      margin-top: calc(var(--h) * -.25);
+      margin-right: calc(var(--w) * -.5);
+      margin-bottom: calc(var(--h) * -.5);
+    }
+  </style>
+</head>
+<body data-layout="table">
+  <div class="controls">
+    <div class="controls-group display br">
+      <button class="is-active toggle" id="table">table</button>
+      <button class="toggle" id="sphere">sphere</button>
+      <button class="toggle" id="helix">helix</button>
+      <button class="toggle" id="grid">grid</button>
+    </div>
+  </div>
+  <div id="scene">
+    <div id="scene-content" data-layout="table"></div>
+  </div>
+  <div class="credits">
+    3D transform calculations ported from this three.js <a href="https://threejs.org/examples/css3d_periodictable.html" target="_blank">demo</a>.
+  </div>
+  <template id="element">
+    <button class="element" data-color="0">
+      <div class="element-number"></div>
+      <div class="element-symbol"></div>
+      <div class="element-title"></div>
+      <div class="element-description"></div>
+    </button>
+  </template>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

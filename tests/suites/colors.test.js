@@ -89,20 +89,60 @@ function createColorTestsByType(fromType, toType) {
   }
 }
 
-suite('Colors', () => {
+const domColorInputs = {
+  rgb: {
+    HEX: { input: '#FF4B4B', output: [255, 75, 75, 1] },
+    RGB: { input: 'rgb(255, 168, 40)', output: [255, 168, 40, 1] },
+    HSL: { input: 'hsl(44, 100%, 59%)', output: [255, 199, 46, 1] },
+  },
+  rgba: {
+    HEXA: { input: '#FF4B4B33', output: [255, 75, 75, .2] },
+    RGBA: { input: 'rgba(255, 168, 40, .2)', output: [255, 168, 40, .2] },
+    HSLA: { input: 'hsla(44, 100%, 59%, .2)', output: [255, 199, 46, .2] },
+  },
+};
 
-  test('Properly apply transparency from computed styles', resolve => {
+const domColorProperties = ['background', 'color', 'backgroundColor', 'borderColor'];
+
+function createColorConversionFromDOMTest(property, colorType, colorName) {
+  const { input, output } = domColorInputs[colorType][colorName];
+  const testName = `Animate ${property} to ${colorName}`;
+  return test(testName, () => {
     const [ targetEl ] = utils.$('#target-id');
-    animate(targetEl, {
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      duration: 10,
-      onComplete: () => {
-        expect(targetEl.style.backgroundColor).to.equal('rgba(0, 0, 0, 0)');
-        resolve();
-      }
-    });
+    const animation = animate(targetEl, { [property]: input, autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COLOR);
+    expect(getChildAtIndex(animation, 0)._toNumbers).to.deep.equal(output);
+    animation.seek(animation.duration);
+    if (colorType === 'rgba') {
+      expect(targetEl.style[property]).to.equal(`rgba(${output[0]}, ${output[1]}, ${output[2]}, ${output[3]})`);
+    } else {
+      expect(targetEl.style[property]).to.equal(`rgb(${output[0]}, ${output[1]}, ${output[2]})`);
+    }
   });
+}
 
+function createColorConversionFromDOMTests() {
+  domColorProperties.forEach(property => {
+    for (let colorType in domColorInputs) {
+      for (let colorName in domColorInputs[colorType]) {
+        createColorConversionFromDOMTest(property, colorType, colorName);
+      }
+    }
+  });
+}
+
+suite('Colors', () => {
+  test('boxShadow should not be parsed as color value', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    targetEl.style.boxShadow = `0px 0px 6px red`;
+    const computedShadowA = getComputedStyle(targetEl).boxShadow;
+    targetEl.style.boxShadow = `inset 0px 0px 20px yellow`;
+    const computedShadowB = getComputedStyle(targetEl).boxShadow;
+    // computedShadowA: 'rgb(255, 0, 0) 0px 0px 6px 0px'; computedShadowB: 'rgb(255, 255, 0) 0px 0px 20px 0px inset';
+    const animation = animate(targetEl, { boxShadow: [computedShadowA, computedShadowB], autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COMPLEX); // Fails and return valueTypes.COLOR
+  });
+  createColorConversionFromDOMTests();
   createColorTestsByType('rgb', 'rgb');
   createColorTestsByType('rgb', 'rgba');
   createColorTestsByType('rgba', 'rgb');

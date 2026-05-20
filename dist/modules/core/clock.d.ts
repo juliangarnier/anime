@@ -12,7 +12,7 @@ export class Clock {
     /** @type {Number} */
     _currentTime: number;
     /** @type {Number} */
-    _elapsedTime: number;
+    _lastTickTime: number;
     /** @type {Number} */
     _startTime: number;
     /** @type {Number} */

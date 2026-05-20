@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text / Scramble / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "tweaks": "../../../node_modules/tweaks/tweaks.js",
+        "tweaks/gui": "../../../node_modules/tweaks/gui.js"
+      }
+    }
+  </script>
+  <style>
+
+    body {
+      display: flex;
+      justify-content: center;
+      min-height: 100svh;
+    }
+
+    main {
+      width: 100%;
+      max-width: 640px;
+      padding: 80px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      cursor: default;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+      cursor: default;
+    }
+
+    p {
+      font-size: .875rem;
+      line-height: 1.6;
+      color: var(--fg-2);
+      cursor: default;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    li {
+      font-size: .875rem;
+      line-height: 1.4;
+      color: var(--fg-2);
+      padding-left: 20px;
+      position: relative;
+      cursor: default;
+    }
+
+    li:not(:empty)::before {
+      content: '>';
+      position: absolute;
+      left: 0;
+      color: var(--fg-3);
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <h1 class="scramble">Anime.js Scramble Text</h1>
+    <p class="scramble">A lightweight text scramble effect built into anime.js v4. Hover over any element on this page to see the scramble animation in action.</p>
+    <h2 class="scramble">Features</h2>
+    <ul>
+      <li class="scramble">Named character sets and range syntax for the chars parameter</li>
+      <li class="scramble">Directional reveal with the from parameter</li>
+      <li class="scramble">Adjustable interval between each character</li>
+      <li class="scramble">Per-character settle duration control</li>
+      <li class="scramble">Deterministic output with seeded random</li>
+      <li class="scramble">Cursor pattern for sweep-style effects</li>
+      <li class="scramble">Perturbation to randomize timing and order</li>
+      <li class="scramble">Fill character for different-length transitions</li>
+      <li class="scramble">Works with any easing function</li>
+    </ul>
+    <h2 class="scramble">How It Works</h2>
+    <p class="scramble">The scrambleText helper returns a function-based tween value. Each target element gets its own closure that captures the original text content and computes a per-character reveal timeline. Characters transition through random values before settling on their final position.</p>
+    <p class="scramble">The animation duration is automatically calculated from the text length and timing parameters, ensuring consistent visual pacing regardless of content size, or use the duration parameter to set an exact duration that overrides the computed value.</p>
+  </main>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

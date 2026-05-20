@@ -74,7 +74,7 @@ export const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
   parent.animations.push(animation);
   removeWAAPIAnimation($el, property);
   addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
-  const handleRemove = () => { removeWAAPIAnimation($el, property, parent); };
+  const handleRemove = () => removeWAAPIAnimation($el, property, parent);
   animation.oncancel = handleRemove;
   animation.onremove = handleRemove;
   if (!parent.persist) {

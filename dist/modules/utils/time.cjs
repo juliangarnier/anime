@@ -1,8 +1,8 @@
 /**
  * Anime.js - utils - CJS
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 'use strict';
@@ -28,19 +28,20 @@ const sync = (callback = consts.noop) => {
 };
 
 /**
- * @param  {(...args: any[]) => Tickable | ((...args: any[]) => void)} constructor
+ * @param  {(...args: any[]) => Tickable | ((...args: any[]) => void) | void} constructor
  * @return {(...args: any[]) => Tickable | ((...args: any[]) => void)}
  */
 const keepTime = constructor => {
   /** @type {Tickable} */
   let tracked;
   return (...args) => {
-    let currentIteration, currentIterationProgress, reversed, alternate;
+    let currentIteration, currentIterationProgress, reversed, alternate, startTime;
     if (tracked) {
       currentIteration = tracked.currentIteration;
       currentIterationProgress = tracked.iterationProgress;
       reversed = tracked.reversed;
       alternate = tracked._alternate;
+      startTime = tracked._startTime;
       tracked.revert();
     }
     const cleanup = constructor(...args);
@@ -48,6 +49,7 @@ const keepTime = constructor => {
     if (!helpers.isUnd(currentIterationProgress)) {
       /** @type {Tickable} */(tracked).currentIteration = currentIteration;
       /** @type {Tickable} */(tracked).iterationProgress = (alternate ? !(currentIteration % 2) ? reversed : !reversed : reversed) ? 1 - currentIterationProgress : currentIterationProgress;
+      /** @type {Tickable} */(tracked)._startTime = startTime;
     }
     return cleanup || consts.noop;
   }

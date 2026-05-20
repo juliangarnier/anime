@@ -1,8 +1,8 @@
 /**
  * Anime.js - core - ESM
- * @version v4.2.2
+ * @version v4.4.1
  * @license MIT
- * @copyright 2025 - Julian Garnier
+ * @copyright 2026 - Julian Garnier
  */
 
 // Environments
@@ -10,8 +10,10 @@
 // TODO: Do we need to check if we're running inside a worker ?
 const isBrowser = typeof window !== 'undefined';
 
-/** @type {Window & {AnimeJS: Array}|null} */
-const win = isBrowser ? /** @type {Window & {AnimeJS: Array}} */(/** @type {unknown} */(window)) : null;
+/** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
+
+/** @type {AnimeJSWindow} */
+const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
 
 /** @type {Document|null} */
 const doc = isBrowser ? document : null;
@@ -55,7 +57,6 @@ const isRegisteredTargetSymbol = Symbol();
 const isDomSymbol = Symbol();
 const isSvgSymbol = Symbol();
 const transformsSymbol = Symbol();
-const morphPointsSymbol = Symbol();
 const proxyTargetSymbol = Symbol();
 
 // Numbers
@@ -63,7 +64,7 @@ const proxyTargetSymbol = Symbol();
 const minValue = 1e-11;
 const maxValue = 1e12;
 const K = 1e3;
-const maxFps = 120;
+const maxFps = 240;
 
 // Strings
 
@@ -79,6 +80,7 @@ const shortTransforms = /*#__PURE__*/ (() => {
 })();
 
 const validTransforms = [
+  'perspective',
   'translateX',
   'translateY',
   'translateZ',
@@ -93,9 +95,6 @@ const validTransforms = [
   'skew',
   'skewX',
   'skewY',
-  'matrix',
-  'matrix3d',
-  'perspective',
 ];
 
 const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) => ({...a, [v]: v + '('}), {});
@@ -107,6 +106,7 @@ const noop = () => {};
 
 // Regex
 
+const validRgbHslRgx = /\)\s*[-.\d]/;
 const hexTestRgx = /(^#([\da-f]{3}){1,2}$)|(^#([\da-f]{4}){1,2}$)/i;
 const rgbExecRgx = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i;
 const rgbaExecRgx = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/i;
@@ -117,8 +117,7 @@ const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
 const unitsExecRgx = /^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)([a-z]+|%)$/i;
 const lowerCaseRgx = /([a-z])([A-Z])/g;
-const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
 const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
 
-export { K, compositionTypes, cssVarPrefix, cssVariableMatchRgx, digitWithExponentRgx, doc, emptyString, hexTestRgx, hslExecRgx, hslaExecRgx, isBrowser, isDomSymbol, isRegisteredTargetSymbol, isSvgSymbol, lowerCaseRgx, maxFps, maxValue, minValue, morphPointsSymbol, noop, proxyTargetSymbol, relativeValuesExecRgx, rgbExecRgx, rgbaExecRgx, shortTransforms, tickModes, transformsExecRgx, transformsFragmentStrings, transformsSymbol, tweenTypes, unitsExecRgx, validTransforms, valueTypes, win };
+export { K, compositionTypes, cssVarPrefix, cssVariableMatchRgx, digitWithExponentRgx, doc, emptyString, hexTestRgx, hslExecRgx, hslaExecRgx, isBrowser, isDomSymbol, isRegisteredTargetSymbol, isSvgSymbol, lowerCaseRgx, maxFps, maxValue, minValue, noop, proxyTargetSymbol, relativeValuesExecRgx, rgbExecRgx, rgbaExecRgx, shortTransforms, tickModes, transformsFragmentStrings, transformsSymbol, tweenTypes, unitsExecRgx, validRgbHslRgx, validTransforms, valueTypes, win };
