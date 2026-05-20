@@ -462,6 +462,7 @@ const recordNodeState = (node, $measure, computedStyle, skipMeasurements) => {
 const updateNodeProperties = (node, props) => {
   if (!props) return;
   for (let name in props) {
+    if (name === '__proto__' || name === 'constructor' || name === 'prototype') continue;
     node.properties[name] = props[name];
   }
 }
@@ -929,6 +930,7 @@ function splitPropertiesFromParams(params) {
   /** @type {LayoutAnimationTimingsParams} */
   const parameters = {};
   for (let name in params) {
+    if (name === '__proto__' || name === 'constructor' || name === 'prototype') continue;
     const value = params[name];
     const isEase = name === 'ease';
     const isTiming = name === 'duration' || name === 'delay';
