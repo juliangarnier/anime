@@ -113,3 +113,4 @@ export const lowerCaseRgx = /([a-z])([A-Z])/g;
 export const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
 export const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 export const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
+export const cssUrlFunctionRgx = /url\(\s*(?:"[^"]*"|'[^']*'|[^)]*)\s*\)/gi;
