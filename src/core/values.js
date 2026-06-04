@@ -5,6 +5,7 @@ import {
   valueTypes,
   digitWithExponentRgx,
   unitsExecRgx,
+  cssUrlFunctionRgx,
   isDomSymbol,
   isSvgSymbol,
   proxyTargetSymbol,
@@ -163,6 +164,42 @@ export const createDecomposedValueTargetObject = () => {
 }
 
 /**
+ * @param {String} str
+ * @param {TweenDecomposedValue} targetObject
+ * @return {TweenDecomposedValue}
+ */
+const decomposeComplexStringValue = (str, targetObject) => {
+  const numbers = targetObject.d;
+  const strings = targetObject.s;
+  let lastIndex = 0;
+
+  const appendParsedSegment = segment => {
+    const matchedNumbers = segment.match(digitWithExponentRgx);
+    if (matchedNumbers) {
+      const splitStrings = segment.split(digitWithExponentRgx);
+      strings[strings.length - 1] += splitStrings[0];
+      for (let i = 0, l = matchedNumbers.length; i < l; i++) {
+        numbers.push(+matchedNumbers[i]);
+        strings.push(splitStrings[i + 1]);
+      }
+    } else {
+      strings[strings.length - 1] += segment;
+    }
+  }
+
+  strings.push(emptyString);
+  str.replace(cssUrlFunctionRgx, (urlToken, offset) => {
+    appendParsedSegment(str.slice(lastIndex, offset));
+    strings[strings.length - 1] += urlToken;
+    lastIndex = offset + urlToken.length;
+    return urlToken;
+  });
+  appendParsedSegment(str.slice(lastIndex));
+
+  return targetObject;
+}
+
+/**
  * @param  {String|Number} rawValue
  * @param  {TweenDecomposedValue} targetObject
  * @return {TweenDecomposedValue}
@@ -208,11 +245,10 @@ export const decomposeRawValue = (rawValue, targetObject) => {
       return targetObject;
     } else {
       // Is a more complex string (generally svg coords, calc() or filters CSS values)
-      const matchedNumbers = str.match(digitWithExponentRgx);
       targetObject.t = valueTypes.COMPLEX;
-      targetObject.d = matchedNumbers ? matchedNumbers.map(Number) : [];
-      targetObject.s = str.split(digitWithExponentRgx) || [];
-      return targetObject;
+      targetObject.d = [];
+      targetObject.s = [];
+      return decomposeComplexStringValue(str, targetObject);
     }
   }
 }

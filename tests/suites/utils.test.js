@@ -115,6 +115,17 @@ suite('Utils', () => {
     expect(utils.get('.with-inline-styles', 'width')).to.equal('42px');
   });
 
+  test('Set CSS background image URL strings', () => {
+    const imageUrl = 'https://cdn.advoxel.com/60b03fea860898c1125db547/feeds/1f946da9-3b60-4d74-bc38-45c1713ab0e2/assets/300x250_crea1.jpg';
+    const $target = document.querySelector('#target-id');
+
+    utils.set($target, {
+      backgroundImage: `url(${imageUrl})`,
+    });
+
+    expect($target.style.backgroundImage).to.equal(`url("${imageUrl}")`);
+  });
+
   test('Get CSS transforms', () => {
     utils.set(['#target-id', '.with-inline-transforms'], {
       translateX: 41,
