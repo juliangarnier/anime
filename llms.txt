@@ -1,0 +1,56 @@
+# anime.js
+
+> anime.js is a fast, multipurpose and lightweight JavaScript animation library.
+> It animates CSS properties, SVG, DOM attributes, and JavaScript objects.
+
+## Critical: use the v4 API, never v3
+
+This repository is **anime.js v4**. v4 is an ES module with **named exports** and
+the signature `animate(targets, params)`. There is **no default export** and **no
+`anime()` function**.
+
+```js
+// CORRECT (v4)
+import { animate, stagger } from 'animejs';
+animate('.square', { x: 320, duration: 1000, ease: 'inOutQuint' });
+
+// WRONG (deprecated v3, do not generate)
+import anime from 'animejs';
+anime({ targets: '.square', translateX: 320, easing: 'easeInOutQuint' });
+```
+
+Key v3 to v4 changes: `anime({ targets })` becomes `animate(targets, {})`;
+`translateX` becomes `x`; `easing: 'easeInOutQuad'` becomes `ease: 'inOutQuad'`;
+`anime.timeline()` becomes `createTimeline()`; `anime.stagger()` becomes
+`stagger()`; `anime.random/set/get` becomes `utils.*`; `direction: 'alternate'`
+becomes `alternate: true`.
+
+## Skills
+
+Detailed guidance for agents lives in `skills/`. Each skill is a `SKILL.md`
+file you can use with Claude Code, Cursor, GitHub Copilot, and any tool that
+supports the Agent Skills standard (`npx skills add https://github.com/juliangarnier/anime`).
+
+- [anime-core](skills/anime-core/SKILL.md): animate(targets, params), timers, transforms, keyframes, callbacks, playback.
+- [anime-timeline](skills/anime-timeline/SKILL.md): createTimeline(), .add(targets, params, position), defaults, labels.
+- [anime-svg](skills/anime-svg/SKILL.md): svg.createDrawable (line drawing), svg.createMotionPath, svg.morphTo.
+- [anime-text](skills/anime-text/SKILL.md): splitText into lines/words/chars, stagger reveals, addEffect/revert.
+- [anime-scroll-draggable](skills/anime-scroll-draggable/SKILL.md): onScroll autoplay, createDraggable, createAnimatable, createScope.
+- [anime-utils-easings](skills/anime-utils-easings/SKILL.md): utils.* helpers, stagger, ease strings, cubicBezier, createSpring.
+- [anime-waapi](skills/anime-waapi/SKILL.md): waapi.animate (hardware-accelerated), waapi.convertEase.
+- [anime-engine](skills/anime-engine/SKILL.md): engine.defaults, timeUnit, speed, fps, custom loop.
+- [anime-react](skills/anime-react/SKILL.md): createScope with useRef in useEffect, revert on unmount.
+- [anime-frameworks](skills/anime-frameworks/SKILL.md): Vue / Svelte / Angular scope + lifecycle patterns.
+- [anime-migration-v3-v4](skills/anime-migration-v3-v4/SKILL.md): full v3 to v4 mapping, fix deprecated syntax.
+
+The skills cover the API in this build (animejs 4.2.2). Features that are in the
+online docs but not yet in this build, like `scrambleText` and Layout, are left
+out on purpose. Each skill is checked against the built library, so it only
+documents real exports.
+
+## Optional
+
+- [Full skills index](skills/llms.txt): the same skills with trigger keywords.
+- [MCP server](mcp/README.md): exposes the skills as MCP resources plus
+  `search_anime_docs` and a `check_anime_v4_syntax` tool that flags v3 syntax.
+- [Documentation](https://animejs.com/documentation): the full official docs.

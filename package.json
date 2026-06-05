@@ -196,6 +196,7 @@
     "build": "rm -rf dist && build=true rollup -c && tsc -p tsconfig.types.json && echo '\\n\\033[32m✓ build completed\\n\\033[0m'",
     "test:browser": "browser-sync start --startPath tests/index.html --server --files 'dist/modules/**/*.js' 'tests/suites/**/*.js' --no-notify --directory",
     "test:node": "node --allow-natives-syntax \"node_modules/.bin/mocha\" -u tdd --timeout 20000 \"./tests/suites/node.test.js\"",
-    "open:examples": "browser-sync start --startPath examples --server --no-notify --directory --files '**/*.js'"
+    "open:examples": "browser-sync start --startPath examples --server --no-notify --directory --files '**/*.js'",
+    "validate:skills": "node scripts/validate-skills.mjs"
   }
 }

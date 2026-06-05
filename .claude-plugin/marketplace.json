@@ -1,0 +1,18 @@
+{
+  "name": "animejs",
+  "owner": {
+    "name": "Julian Garnier",
+    "url": "https://github.com/juliangarnier"
+  },
+  "metadata": {
+    "description": "Official anime.js agent skills marketplace.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "animejs-skills",
+      "source": "./",
+      "description": "anime.js v4 agent skills for Claude Code, Cursor, Copilot, and the cross-agent Agent Skills standard."
+    }
+  ]
+}

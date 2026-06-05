@@ -1,0 +1,53 @@
+name: Agent skills & MCP
+
+# Validates the agent skills against the built library (every documented symbol
+# must be a real v4 export, no v3 syntax leaks) and runs the MCP server tests.
+# Scoped to the skills/MCP files so it does not interfere with library CI.
+
+on:
+  push:
+    branches: [dev, master]
+    paths:
+      - "skills/**"
+      - "scripts/**"
+      - "mcp/**"
+      - "llms.txt"
+      - ".github/workflows/skills.yml"
+  pull_request:
+    paths:
+      - "skills/**"
+      - "scripts/**"
+      - "mcp/**"
+      - "llms.txt"
+      - ".github/workflows/skills.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-skills:
+    name: Validate skills against the built library
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run validate:skills
+
+  mcp-tests:
+    name: MCP server tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mcp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: npm install
+      - run: npm test

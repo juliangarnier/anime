@@ -1,0 +1,81 @@
+# anime.js v4: Agent Skills index
+
+anime.js is at v4. v4 is an ES module with NAMED imports and the signature
+animate(targets, params). It has NO default export and NO anime() function.
+The v3 default-export API (`import anime from 'animejs'; anime({ targets,
+translateX, easing })`) is DEPRECATED and must not be generated. Load the
+relevant skill below before writing anime.js code.
+
+Each skill lives in skills/<name>/SKILL.md.
+
+## anime-core
+Core v4 animation: animate(targets, params), createTimer. Tween transforms
+(x, y, scale, rotate, opacity), CSS props, attributes, and JS objects; from/to
+([from,to], {from,to}), relative ('+='), and function values; keyframes;
+callbacks (onBegin/onUpdate/onComplete/onLoop); playback (play/pause/restart/
+reverse/seek). Durations in milliseconds.
+Triggers: anime.js, animejs, animate, tween, x, y, scale, rotate, opacity, duration, delay, ease, loop, alternate, keyframes, onComplete, play, pause, seek, createTimer
+
+## anime-timeline
+Sequencing with createTimeline() and .add(targets, params, position). Shared
+defaults, position offsets ('+=100', '-=250', '<', '<<', absolute ms), labels,
+.set/.call, staggered adds. Replaces v3 anime.timeline().
+Triggers: timeline, createTimeline, sequence, sequencing, choreograph, position parameter, .add, defaults, labels, nested timeline
+
+## anime-svg
+SVG via the svg namespace: line drawing (svg.createDrawable + the `draw`
+property), motion paths (svg.createMotionPath returns {translateX,translateY,
+rotate}), and shape morphing (svg.morphTo).
+Triggers: svg, line drawing, stroke, draw, createDrawable, motion path, createMotionPath, follow path, morph, morphTo, shape morphing, path animation
+
+## anime-text
+Text splitting with splitText(target, { lines, words, chars }) → TextSplitter
+exposing .lines/.words/.chars arrays plus .addEffect/.revert. Animate the
+arrays, usually with stagger(). (This build has no scrambleText.)
+Triggers: text animation, split text, splitText, TextSplitter, per-character, per-word, per-line, words, chars, lines, typewriter, stagger text
+
+## anime-scroll-draggable
+Interactivity: onScroll({target,enter,leave,sync}) as an autoplay value for
+scroll-driven/scrubbed animation; createDraggable(target,{container,x,y,snap});
+createAnimatable for pointer-follow setters; createScope({mediaQueries,root})
+for responsive, revertible animation.
+Triggers: onScroll, scroll animation, scroll trigger, scrub, sync, createDraggable, draggable, drag, snap, createAnimatable, follow cursor, createScope, scope, responsive, revert
+
+## anime-utils-easings
+utils namespace (stagger, $, get, set, remove, clamp, round, lerp, mapRange,
+snap, wrap, damp, random) and easing: string forms ('inOutQuad', 'out(3)',
+'outElastic(.3,1.4)', 'steps(5)', 'linear') plus builders cubicBezier,
+createSpring, steps, irregular, eases.
+Triggers: utils, stagger, random, utils.set, utils.get, utils.$, remove, clamp, round, lerp, mapRange, snap, wrap, damp, ease, easing, cubicBezier, spring, createSpring, steps, eases, outElastic, grid stagger
+
+## anime-waapi
+Hardware-accelerated animation through the Web Animations API: waapi.animate
+(same params as animate, runs on the compositor) and waapi.convertEase for
+spring/custom eases.
+Triggers: waapi, web animations api, hardware acceleration, compositor, native animation, performance, waapi.animate, convertEase, GPU animation
+
+## anime-engine
+The global clock and main loop. Set engine.defaults, engine.timeUnit (ms or s),
+engine.speed, engine.fps, engine.pauseOnDocumentHidden, or drive the loop with
+engine.useDefaultMainLoop = false and engine.update().
+Triggers: engine, global defaults, timeUnit, seconds, engine.speed, slow motion, engine.fps, frame rate, pauseOnDocumentHidden, useDefaultMainLoop, manual tick, engine.update
+
+## anime-react
+React: scope every animation with createScope({ root }) where root is a useRef,
+run it in useEffect, and return () => scope.revert() for cleanup. StrictMode-
+and SSR-safe.
+Triggers: react, useEffect, useRef, ref, createScope, scope, cleanup, revert, unmount, StrictMode, next.js, hooks, component animation
+
+## anime-frameworks
+Vue / Svelte / Angular: build animations on mount inside createScope({ root })
+bound to a template ref, revert on destroy. Scope's root understands Vue refs,
+Svelte element bindings, and Angular ElementRef.
+Triggers: vue, nuxt, onMounted, onUnmounted, template ref, svelte, onMount, onDestroy, angular, ElementRef, ngOnDestroy, ViewChild, createScope, revert
+
+## anime-migration-v3-v4
+Convert v3 to v4 / fix v3 syntax. anime({targets}) → animate(targets,{});
+translateX → x; easing:'easeX' → ease:'x'; value: → to:; direction:'alternate'
+→ alternate:true; update/begin/complete/change → onUpdate/onBegin/onComplete/
+onRender; anime.timeline() → createTimeline(); anime.stagger → stagger;
+anime.random/set/get → utils.*.
+Triggers: v3, v4, migration, migrate, upgrade, deprecated, "anime is not a function", default export, anime(), targets, translateX, translateY, easing, anime.timeline, anime.stagger, anime.random, direction, convert anime

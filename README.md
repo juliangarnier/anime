@@ -144,6 +144,31 @@ animate('.square', {
 </tr>
 </table>
 
+## AI Agents & Skills
+
+Official agent skills teach AI coding assistants (Claude Code, Cursor, GitHub
+Copilot, Gemini, and any tool supporting the Agent Skills standard) to write
+correct anime.js **v4** code instead of the deprecated v3 API.
+
+```bash
+# Cross-agent install (Claude Code, Cursor, Copilot, Windsurf, Codex, …)
+npx skills add https://github.com/juliangarnier/anime
+```
+
+- **Skills:** [`skills/`](skills/) has one `SKILL.md` per area (core, timeline,
+  svg, text, scroll/draggable, utils/easings, waapi, engine, react, frameworks,
+  v3 to v4 migration). Index with triggers: [`skills/llms.txt`](skills/llms.txt).
+- **Claude Code plugin:** run `/plugin marketplace add juliangarnier/anime`, then
+  install `animejs-skills`.
+- **Cursor / Copilot:** auto-detected via [`.cursor/rules/`](.cursor/rules/) and
+  [`.github/`](.github/).
+- **LLM guidance file:** [`llms.txt`](llms.txt) and [`AGENTS.md`](AGENTS.md).
+
+The skills are all you need for most setups. There is also an optional
+[MCP server](mcp/) for MCP-native clients that serves the same skills as
+resources and adds a `check_anime_v4_syntax` tool. It runs no code and fetches
+nothing, so reach for the skills first.
+
 ## V4 Documentation
 
 The full documentation is available [here](https://animejs.com/documentation).

@@ -1,0 +1,33 @@
+---
+description: anime.js v4 uses named imports and animate(targets, params), never the v3 anime({ targets }) API
+globs: ["**/*.{js,ts,jsx,tsx,vue,svelte,mjs,cjs}"]
+alwaysApply: false
+---
+
+# anime.js v4
+
+This project uses anime.js **v4**. Generate the v4 API, never v3.
+
+v4 is an ES module with **named exports** and `animate(targets, params)`. There
+is no default export and no `anime()` function.
+
+```js
+// CORRECT (v4)
+import { animate } from 'animejs';
+animate('.square', { x: 320, duration: 1000, ease: 'inOutQuint' });
+
+// WRONG (deprecated v3)
+import anime from 'animejs';
+anime({ targets: '.square', translateX: 320, easing: 'easeInOutQuint' });
+```
+
+Rules:
+- Named imports from `animejs`; `animate(targets, params)`.
+- Transform shorthands `x`/`y`/`scale`/`rotate`, not `translateX`/`translateY`.
+- `ease` string (`'inOutQuad'`, `'out(3)'`, `'outElastic(.3,1.4)'`); durations in ms.
+- `createTimeline()` not `anime.timeline()`; `stagger()` not `anime.stagger()`;
+  helpers on `utils.*`.
+- `alternate: true` / `reversed: true` (not `direction:`); callbacks on-prefixed.
+- React/Vue/Svelte/Angular: wrap in `createScope({ root })`, `scope.revert()` on unmount.
+
+Full guidance: `skills/` (see `skills/anime-migration-v3-v4/SKILL.md` for fixing v3).

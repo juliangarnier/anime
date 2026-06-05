@@ -1,0 +1,21 @@
+{
+  "name": "animejs-skills",
+  "version": "4.0.0",
+  "description": "Official anime.js v4 agent skills with the correct named-import API and guidance that keeps agents off the v3 syntax, covering animation, timelines, SVG, text, scroll, draggable, easings, React, and frameworks.",
+  "author": {
+    "name": "Julian Garnier",
+    "url": "https://animejs.com"
+  },
+  "homepage": "https://animejs.com",
+  "repository": "https://github.com/juliangarnier/anime",
+  "license": "MIT",
+  "keywords": [
+    "anime.js",
+    "animejs",
+    "animation",
+    "svg",
+    "timeline",
+    "skills"
+  ],
+  "skills": "./skills"
+}

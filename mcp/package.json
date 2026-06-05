@@ -1,0 +1,42 @@
+{
+  "name": "@animejs/mcp",
+  "version": "4.0.0",
+  "description": "MCP server for anime.js v4 that exposes the official agent skills as resources and a check_anime_v4_syntax tool that flags deprecated v3 syntax.",
+  "type": "module",
+  "bin": {
+    "animejs-mcp": "./src/stdio.mjs"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "homepage": "https://animejs.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juliangarnier/anime.git",
+    "directory": "mcp"
+  },
+  "license": "MIT",
+  "keywords": [
+    "anime.js",
+    "animejs",
+    "mcp",
+    "model-context-protocol",
+    "animation"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.8",
+    "vitest": "^4.1.5"
+  }
+}
