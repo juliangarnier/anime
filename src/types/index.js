@@ -413,8 +413,8 @@ export {}
 /**
  * @typedef {Object} WAAPIAnimationOptions
  * @property {Number|Boolean} [loop]
- * @property {Boolean} [Reversed]
- * @property {Boolean} [Alternate]
+ * @property {Boolean} [reversed]
+ * @property {Boolean} [alternate]
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number} [playbackRate]
  * @property {Number|WAAPIFunctionValue} [duration]
