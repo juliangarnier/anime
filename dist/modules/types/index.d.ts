@@ -264,8 +264,8 @@ export type WAAPITweenOptions = {
 };
 export type WAAPIAnimationOptions = {
     loop?: number | boolean;
-    Reversed?: boolean;
-    Alternate?: boolean;
+    reversed?: boolean;
+    alternate?: boolean;
     autoplay?: boolean | ScrollObserver;
     playbackRate?: number;
     duration?: number | WAAPIFunctionValue;
