@@ -28,6 +28,8 @@ import {
   waapi,
 } from '../waapi/waapi.js';
 
+const supportsTranslate = typeof document !== 'undefined' && 'translate' in document.documentElement.style;
+
 import {
   globals,
   defaults,
@@ -1416,9 +1418,12 @@ export class AutoLayout {
             $el.style.position = this.absoluteCoords ? 'fixed' : 'absolute';
             $el.style.left = '0px';
             $el.style.top = '0px';
-            $el.style.marginLeft = '0px';
             $el.style.marginTop = '0px';
-            $el.style.translate = `${oldNodeState.x}px ${oldNodeState.y}px`;
+            if (newNode.hasTransform || supportsTranslate) {
+              $el.style.translate = `${oldNodeState.x}px ${oldNodeState.y}px`;
+            } else {
+              $el.style.transform = `translateX(${oldNodeState.x}px) translateY(${oldNodeState.y}px)`;
+            }
           }
           if ($el === $root && newNode.measuredPosition === 'static') {
             $el.style.position = 'relative';
@@ -1466,7 +1471,12 @@ export class AutoLayout {
         // If the node has transforms we handle the translate animation in waapi otherwise translate and other transforms can be out of sync
         // And we don't animate the position of inlined elements
         if (!newNode.hasTransform && !newNode.isInlined) {
-          animatedProps.translate = [`${oldNodeState.x}px ${oldNodeState.y}px`, `${newNodeState.x}px ${newNodeState.y}px`];
+          if (supportsTranslate) {
+            animatedProps.translate = [`${oldNodeState.x}px ${oldNodeState.y}px`, `${newNodeState.x}px ${newNodeState.y}px`];
+          } else {
+            animatedProps.translateX = [`${oldNodeState.x}px`, `${newNodeState.x}px`];
+            animatedProps.translateY = [`${oldNodeState.y}px`, `${newNodeState.y}px`];
+          }
           nodeHasChanged = true;
         }
         this.properties.forEach(prop => {
@@ -1499,7 +1509,11 @@ export class AutoLayout {
         $el.style.maxHeight = `none`;
         // We don't animate the position of inlined elements
         if (!oldNode.isInlined) {
-          $el.style.translate = `${oldNodeProps.x}px ${oldNodeProps.y}px`;
+          if (oldNode.hasTransform || supportsTranslate) {
+            $el.style.translate = `${oldNodeProps.x}px ${oldNodeProps.y}px`;
+          } else {
+            $el.style.transform = `translateX(${oldNodeProps.x}px) translateY(${oldNodeProps.y}px)`;
+          }
         }
         this.properties.forEach(prop => {
           if (prop !== 'transform') {
@@ -1522,7 +1536,11 @@ export class AutoLayout {
           $el.style.maxHeight = `none`;
           // Don't set translate for inlined elements (to avoid text reflow)
           if (!newNode.isInlined) {
-            $el.style.translate = `${newNodeProps.x}px ${newNodeProps.y}px`;
+            if (newNode.hasTransform || supportsTranslate) {
+              $el.style.translate = `${newNodeProps.x}px ${newNodeProps.y}px`;
+            } else {
+              $el.style.transform = `translateX(${newNodeProps.x}px) translateY(${newNodeProps.y}px)`;
+            }
           }
           this.properties.forEach(prop => {
             if (prop !== 'transform') {

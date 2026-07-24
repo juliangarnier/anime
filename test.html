@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  border: 1px solid red;
+  height: 300px;
+}
+.links > div {
+  padding: 10px;
+  background: lightblue;
+  margin: 5px;
+}
+</style>
+</head>
+<body>
+  <div class="links">
+    <div><a href="">Link1</a></div>
+    <div><a href="">Link2</a></div>
+    <div><a href="">Link3</a></div>
+    <div><a href="">Link4</a></div>
+    <div><a href="">Link5</a></div>
+    <div><a href="">link6</a></div>
+  </div>
+  <button id="move">Move</button>
+
+<script type="module">
+import { animate, createLayout } from "./dist/bundles/anime.esm.js";
+
+const layout = createLayout('.links');
+console.log(layout);
+
+document.getElementById('move').onclick = () => {
+  layout.update(({ root }) => {
+    // using root.firstElementChild to avoid text nodes
+    const itemToMove = root.firstElementChild;
+    root.appendChild(itemToMove);
+  }, {
+    duration: 3000,
+    easing: 'easeInOutQuad',
+  });
+};
+</script>
+</body>
+</html>
