@@ -18,7 +18,7 @@
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
- * @property {Function} resolveStagger
+ * @property {Function} createTweak
  * @property {Object|null} _head
  * @property {Object|null} _tail
  */
@@ -35,6 +35,7 @@ export namespace globals {
     export let tickThreshold: number;
     export let editor: EditorGlobals | null;
 }
+export function makeTweakable(type: string, name: string, fn: Function): Function;
 export namespace globalVersions {
     let version: string;
     let engine: any;
@@ -48,7 +49,7 @@ export type EditorGlobals = {
     addTimelineLabel: Function;
     addTimelineCall: Function;
     addTimelineSync: Function;
-    resolveStagger: Function;
+    createTweak: Function;
     _head: any | null;
     _tail: any | null;
 };

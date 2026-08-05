@@ -1,3 +1,3 @@
-export { createMotionPath } from "./motionpath.js";
-export { createDrawable } from "./drawable.js";
-export { morphTo } from "./morphto.js";
+export * from "./motionpath.js";
+export * from "./drawable.js";
+export * from "./morphto.js";

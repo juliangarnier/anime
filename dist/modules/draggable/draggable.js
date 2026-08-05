@@ -1,6 +1,6 @@
 /**
  * Anime.js - draggable - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -16,7 +16,7 @@ import { JSAnimation } from '../animation/animation.js';
 import { removeTargetsFromRenderable } from '../animation/composition.js';
 import { Animatable } from '../animatable/animatable.js';
 import { parseEase, eases } from '../easings/eases/parser.js';
-import { spring } from '../easings/spring/index.js';
+import { Spring } from '../easings/spring/index.js';
 import { get, set } from '../utils/target.js';
 
 /**
@@ -34,12 +34,6 @@ import { get, set } from '../utils/target.js';
  *   AnimatableObject,
  *   EasingParam,
  * } from '../types/index.js'
-*/
-
-/**
- * @import {
- *   Spring,
- * } from '../easings/spring/index.js'
 */
 
 /**
@@ -219,13 +213,13 @@ class Draggable {
     /** @type {Boolean|DraggableCursorParams} */
     this.cursor = false;
     /** @type {Spring} */
-    this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : spring({
+    this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : new Spring({
       mass: setValue(parameters.releaseMass, 1),
       stiffness: setValue(parameters.releaseStiffness, 80),
       damping: setValue(parameters.releaseDamping, 20),
     });
     /** @type {Spring} */
-    this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : spring({
+    this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : new Spring({
       mass: setValue(parameters.releaseMass, 1),
       stiffness: setValue(parameters.releaseStiffness, 80),
       damping: setValue(parameters.releaseDamping, 20),

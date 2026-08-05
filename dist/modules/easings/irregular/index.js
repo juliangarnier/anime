@@ -1,12 +1,13 @@
 /**
  * Anime.js - easings - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { clamp } from '../../core/helpers.js';
-import { linear } from '../linear/index.js';
+import { linearFactory } from '../linear/factory.js';
+import { makeTweakable } from '../../core/globals.js';
 
 /**
  * @import {
@@ -20,7 +21,7 @@ import { linear } from '../linear/index.js';
  * @param  {Number} [randomness] - How strong the randomness is
  * @return {EasingFunction}
  */
-const irregular = (length = 10, randomness = 1) => {
+const irregularFactory = (length = 10, randomness = 1) => {
   const values = [0];
   const total = length - 1;
   for (let i = 1; i < total; i++) {
@@ -33,7 +34,9 @@ const irregular = (length = 10, randomness = 1) => {
     values.push(clamp(randomValue, previousValue, 1));
   }
   values.push(1);
-  return linear(...values);
+  return linearFactory(...values);
 };
+
+const irregular = /** @type {typeof irregularFactory} */(makeTweakable('Ease', 'irregular', irregularFactory));
 
 export { irregular };

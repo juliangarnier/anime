@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -8,6 +8,7 @@
 'use strict';
 
 var helpers = require('../../core/helpers.cjs');
+var globals = require('../../core/globals.cjs');
 
 /**
  * @import {
@@ -22,9 +23,11 @@ var helpers = require('../../core/helpers.cjs');
  * @param  {Boolean} [fromStart]
  * @return {EasingFunction}
  */
-const steps = (steps = 10, fromStart) => {
+const stepsFactory = (steps = 10, fromStart) => {
   const roundMethod = fromStart ? helpers.ceil : helpers.floor;
   return t => roundMethod(helpers.clamp(t, 0, 1) * steps) * (1 / steps);
 };
+
+const steps = /** @type {typeof stepsFactory} */(globals.makeTweakable('Ease', 'steps', stepsFactory));
 
 exports.steps = steps;

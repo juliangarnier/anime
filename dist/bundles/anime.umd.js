@@ -1,6 +1,6 @@
 /**
  * Anime.js - UMD bundle
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -823,7 +823,7 @@
    * @property {Function} addTimelineLabel
    * @property {Function} addTimelineCall
    * @property {Function} addTimelineSync
-   * @property {Function} resolveStagger
+   * @property {Function} createTweak
    * @property {Object|null} _head
    * @property {Object|null} _tail
    */
@@ -875,7 +875,23 @@
     editor: null,
   };
 
-  const globalVersions = { version: '4.5.0', engine: null };
+  /**
+   * Wraps a factory so the editor can turn its result into an editable tweak when one is active, and
+   * returns the result untouched otherwise. Used by the eases registry, stagger and random.
+   *
+   * @param {String} type The tweak type, for example Ease or Stagger.
+   * @param {String} name The registry key the editor serializes back to a call.
+   * @param {Function} fn The factory whose result is the live anime value.
+   * @return {Function} A function with the same call signature as fn.
+   */
+  const makeTweakable = (type, name, fn) => function() {
+    const result = fn.apply(null, arguments);
+    const editor = globals.editor;
+    // Build the args array only for the editor, the no editor path stays allocation free.
+    return editor ? editor.createTweak(result, type, name, Array.prototype.slice.call(arguments)) : result;
+  };
+
+  const globalVersions = { version: '5.0.0-beta.1', engine: null };
 
   if (isBrowser) {
     if (!win.AnimeJS) win.AnimeJS = [];
@@ -1773,6 +1789,11 @@
         let tweenTargetTransforms;
         let tweenTargetTransformsProperties;
         let tweenTransformsNeedUpdate = 0;
+        // Properties animated together share an ease and a normalized time, so memoize the
+        // last eased progress and skip the repeat ease calls across the group.
+        let lastTweenEase = null;
+        let lastTweenEaseArg = -1;
+        let lastTweenProgress = 0;
 
         while (tween) {
 
@@ -1819,7 +1840,17 @@
           ) {
 
             const tweenNewTime = tween._currentTime = clamp$1(iterationTime - tween._startTime, 0, tweenChangeDuration);
-            const tweenProgress = tween._ease(tweenNewTime / tween._updateDuration);
+            const tweenEase = tween._ease;
+            const tweenEaseArg = tweenNewTime / tween._updateDuration;
+            let tweenProgress;
+            if (tweenEase === lastTweenEase && tweenEaseArg === lastTweenEaseArg) {
+              tweenProgress = lastTweenProgress;
+            } else {
+              tweenProgress = tweenEase(tweenEaseArg);
+              lastTweenEase = tweenEase;
+              lastTweenEaseArg = tweenEaseArg;
+              lastTweenProgress = tweenProgress;
+            }
             const tweenModifier = tween._modifier;
             const tweenValueType = tween._valueType;
             const tweenType = tween._tweenType;
@@ -2610,25 +2641,6 @@
 
       }
 
-      // let nextSibling = tween._nextRep;
-
-      // // All the next siblings are automatically overridden
-
-      // if (nextSibling && nextSibling._absoluteStartTime >= tweenAbsStartTime) {
-      //   while (nextSibling) {
-      //     overrideTween(nextSibling);
-      //     nextSibling = nextSibling._nextRep;
-      //   }
-      // }
-
-      // if (nextSibling && nextSibling._absoluteStartTime < tweenAbsStartTime) {
-      //   while (nextSibling) {
-      //     overrideTween(nextSibling);
-      //     console.log(tween.id, nextSibling.id);
-      //     nextSibling = nextSibling._nextRep;
-      //   }
-      // }
-
     // Handle additive tweens composition
 
     } else if (tweenCompositionType === compositionTypes.blend) {
@@ -2719,16 +2731,16 @@
   };
 
   /**
-   * @param  {TargetsArray} targetsArray
+   * @param  {Set} targetsSet
    * @param  {JSAnimation} animation
    * @param  {String} [propertyName]
    * @return {Boolean}
    */
-  const removeTargetsFromJSAnimation = (targetsArray, animation, propertyName) => {
+  const removeTargetsFromJSAnimation = (targetsSet, animation, propertyName) => {
     let tweensMatchesTargets = false;
     forEachChildren(animation, (/**@type {Tween} */tween) => {
       const tweenTarget = tween.target;
-      if (targetsArray.includes(tweenTarget)) {
+      if (targetsSet.has(tweenTarget)) {
         const tweenName = tween.property;
         const tweenType = tween._tweenType;
         const normalizePropName = sanitizePropertyName(propertyName, tweenTarget, tweenType);
@@ -2753,18 +2765,21 @@
   };
 
   /**
-   * @param  {TargetsArray} targetsArray
+   * @param  {TargetsArray|Set} targetsArray
    * @param  {Renderable} [renderable]
    * @param  {String} [propertyName]
    */
   const removeTargetsFromRenderable = (targetsArray, renderable, propertyName) => {
+    // Accept the public array, or on recursion the Set already built, so target membership stays
+    // constant time and large target lists do not make removal scan quadratically.
+    const targetsSet = targetsArray instanceof Set ? targetsArray : new Set(targetsArray);
     const parent = /** @type {Renderable|typeof engine} **/(renderable ? renderable : engine);
     let removeMatches;
     if (parent._hasChildren) {
       let iterationDuration = 0;
       forEachChildren(parent, (/** @type {Renderable} */child) => {
         if (!child._hasChildren) {
-          removeMatches = removeTargetsFromJSAnimation(targetsArray, /** @type {JSAnimation} */(child), propertyName);
+          removeMatches = removeTargetsFromJSAnimation(targetsSet, /** @type {JSAnimation} */(child), propertyName);
           // Remove the child from its parent if no tweens and no children left after the removal
           if (removeMatches && !child._head) {
             child.cancel();
@@ -2781,7 +2796,7 @@
         // Make sure to also remove engine's children targets
         // NOTE: Avoid recursion?
         if (child._head) {
-          removeTargetsFromRenderable(targetsArray, child, propertyName);
+          removeTargetsFromRenderable(targetsSet, child, propertyName);
         } else {
           child._hasChildren = false;
         }
@@ -2792,7 +2807,7 @@
       }
     } else {
       removeMatches = removeTargetsFromJSAnimation(
-        targetsArray,
+        targetsSet,
         /** @type {JSAnimation} */(parent),
         propertyName
       );
@@ -3192,6 +3207,9 @@
 
     /** @return {this} */
     cancel() {
+      // Skip the removal when already cancelled, a second removeTweenSliblings on unlinked tweens
+      // would null the siblings lookup _head and _tail and orphan every live tween in it.
+      if (this._cancelled) return this.pause();
       if (this._hasChildren) {
         forEachChildren(this, (/** @type {Renderable} */child) => child.cancel(), true);
       } else {
@@ -3285,6 +3303,10 @@
     if (n instanceof NodeList || n instanceof HTMLCollection) return n;
   }
 
+  // The linear duplicate scan benchmarks faster than Set lookups up to somewhere between 32 and
+  // 128 items, so promoting at 128 keeps small target lists on the fastest path.
+  const dedupeSetThreshold = 128;
+
   /**
    * @overload
    * @param  {DOMTargetsParam} targets
@@ -3307,38 +3329,26 @@
       const flattened = targets.flat(Infinity);
       /** @type {TargetsArray} */
       const parsed = [];
+      // Dedupe by identity, scan parsed linearly for small results to skip the Set allocation, then
+      // promote to a Set so large target lists stay linear instead of quadratic.
+      /** @type {Set|null} */
+      let seen = null;
       for (let i = 0, l = flattened.length; i < l; i++) {
         const item = flattened[i];
-        if (!isNil(item)) {
-          const nodeList = getNodeList(item);
-          if (nodeList) {
-            for (let j = 0, jl = nodeList.length; j < jl; j++) {
-              const subItem = nodeList[j];
-              if (!isNil(subItem)) {
-                let isDuplicate = false;
-                for (let k = 0, kl = parsed.length; k < kl; k++) {
-                  if (parsed[k] === subItem) {
-                    isDuplicate = true;
-                    break;
-                  }
-                }
-                if (!isDuplicate) {
-                  parsed.push(subItem);
-                }
-              }
-            }
-          } else {
-            let isDuplicate = false;
-            for (let j = 0, jl = parsed.length; j < jl; j++) {
-              if (parsed[j] === item) {
-                isDuplicate = true;
-                break;
-              }
-            }
-            if (!isDuplicate) {
-              parsed.push(item);
-            }
+        if (isNil(item)) continue;
+        const nodeList = getNodeList(item);
+        if (nodeList) {
+          for (let j = 0, jl = nodeList.length; j < jl; j++) {
+            const subItem = nodeList[j];
+            if (isNil(subItem) || (seen ? seen.has(subItem) : parsed.includes(subItem))) continue;
+            parsed.push(subItem);
+            if (seen) seen.add(subItem);
+            else if (parsed.length > dedupeSetThreshold) seen = new Set(parsed);
           }
+        } else if (!(seen ? seen.has(item) : parsed.includes(item))) {
+          parsed.push(item);
+          if (seen) seen.add(item);
+          else if (parsed.length > dedupeSetThreshold) seen = new Set(parsed);
         }
       }
       return parsed;
@@ -3545,7 +3555,13 @@
    * @property {ElasticEasing} outInElastic
    */
 
+  /**
+   * The built in easing functions, used by name like eases.outQuad or called like eases.out(2). The
+   * standalone easings spring, cubicBezier, steps, irregular and linear are imported individually.
+   * @type {EasesFunctions}
+   */
   const eases = (/*#__PURE__ */ (() => {
+    /** @type {Record<String, Function>} */
     const list = { linear: none, none: none };
     for (let type in easeTypes) {
       for (let name in easeInFunctions) {
@@ -3556,6 +3572,13 @@
           (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b)) :
           easeType(/** @type {EasingFunction} */(easeIn))
         );
+      }
+    }
+    // Wrap the factory eases for the editor, the wrapper runs at the call so the per frame curve stays
+    // raw. Plain eases are used directly and stay raw.
+    for (const name in list) {
+      if (name === 'in' || name === 'out' || name === 'inOut' || name === 'outIn' || name.endsWith('Back') || name.endsWith('Elastic')) {
+        list[name] = makeTweakable('Ease', name, list[name]);
       }
     }
     return /** @type {EasesFunctions} */(list);
@@ -3908,6 +3931,13 @@
 
               if (tweenComposition !== compositionTypes.none) {
                 let nextSibling = siblings._head;
+                // Overrides every sibling when they all start after the new tween, the walk below never enters in that case and they would otherwise stay live and only lose by render order.
+                if (nextSibling && nextSibling._absoluteStartTime > absoluteStartTime) {
+                  while (nextSibling) {
+                    overrideTween(nextSibling);
+                    nextSibling = nextSibling._nextRep;
+                  }
+                }
                 // Walk prior siblings up to the new tween, skipping overridden ones so the chain resolves to the latest live value instead of stopping at the first override.
                 while (nextSibling && nextSibling._absoluteStartTime <= absoluteStartTime) {
                   if (!nextSibling._isOverridden) prevSibling = nextSibling;
@@ -4453,10 +4483,9 @@
         if (isAnim) {
           const childParams = /** @type {AnimationParams} */(a2);
           const editorHook = globals.editor && globals.editor.addTimelineChild;
-          const isStaggerType = a3 && /** @type {TweakRegister} */(a3).type === 'Stagger' && globals.editor;
-          // Check for function or Stagger type children positions
+          // A function position, including a native tagged stagger which is self resolving, expands to one child per target.
           const staggeredPosition = isFnc(a3) ? a3 : null;
-          if (staggeredPosition || isStaggerType) {
+          if (staggeredPosition) {
             const parsedTargetsArray = parseTargets(/** @type {TargetsParam} */(a1));
             // Store initial duration before adding new children that will change the duration
             const tlDuration = this.duration;
@@ -4469,8 +4498,6 @@
             const parsedLength = (parsedTargetsArray.length);
             // Call editor hook once for the entire stagger group instead of per target
             const resolvedParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3, parsedLength) : null;
-            // Resolve stagger AFTER editor hook so tweaked position value (a3.defaultValue) is used
-            const staggerFn = staggeredPosition || globals.editor.resolveStagger(/** @type {TweakRegister} */(a3).defaultValue);
             parsedTargetsArray.forEach((/** @type {Target} */target) => {
               // Create a new parameter object for each staggered children
               const staggeredChildParams = { ...(resolvedParams || childParams) };
@@ -4478,7 +4505,7 @@
               this.duration = tlDuration;
               this.iterationDuration = tlIterationDuration;
               if (!isUnd(id)) staggeredChildParams.id = id + '-' + i;
-              const staggeredTimePosition = parseTimelinePosition(this, staggerFn(target, i, parsedTargetsArray, null, this));
+              const staggeredTimePosition = parseTimelinePosition(this, staggeredPosition(target, i, parsedTargetsArray, null, this));
               addTlChild(
                 staggeredChildParams,
                 this,
@@ -4529,10 +4556,25 @@
      * @param {TimelinePosition} [position]
      * @return {this}
      *
-     * @param {Tickable|WAAPIAnimation|globalThis.Animation} [synced]
-     * @param {TimelinePosition} [position]
+     * @overload
+     * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+     * @return {this}
+     *
+     * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
      */
     sync(synced, position) {
+      if (isArr(synced)) {
+        const syncedArray = /** @type {Array<Tickable|WAAPIAnimation|globalThis.Animation>} */(synced);
+        // A function position, including a native tagged stagger, resolves per synced child against this timeline.
+        for (let i = 0, l = syncedArray.length; i < l; i++) {
+          const syncedChild = /** @type {Tickable} */(syncedArray[i]);
+          const syncedPosition = /** @type {TimelinePosition} */(isFnc(position) ? /** @type {StaggerFunction<Number|String>} */(position)(syncedChild, i, syncedArray, null, this) : position);
+          this.sync(syncedChild, syncedPosition);
+        }
+        return this;
+      }
       if (isUnd(synced) || synced && isUnd(synced.pause)) return this;
       synced.pause();
       const duration = +(/** @type {globalThis.Animation} */(synced).effect ? /** @type {globalThis.Animation} */(synced).effect.getTiming().duration : /** @type {Tickable} */(synced).duration);
@@ -4878,7 +4920,9 @@
    * (c) 2016 Webkit - Apple Inc
    */
 
-  const maxSpringParamValue = K * 10;
+  // K * K puts the ceiling where the w0 clamp saturates anyway, so a stretch can compress any
+  // spring down to its rest window instead of stalling on an artificial parameter bound.
+  const maxSpringParamValue = K * K;
 
   class Spring {
     /**
@@ -5021,6 +5065,49 @@
       this.settlingDuration = round$1(this.solverDuration * K, 0) * globals.timeScale;
     }
 
+    /**
+     * Lowest settlingDuration stretch can reach, the constant rest detection window scaled to the
+     * current time unit. stretch refuses any target at or below it since a shorter settle would no
+     * longer describe a resting motion.
+     * @return {Number}
+     */
+    get minSettlingDuration() {
+      return this.restDuration * globals.timeScale;
+    }
+
+    /**
+     * Retunes stiffness, damping and velocity so the spring settles at the given duration,
+     * keeping its bounce and curve shape. Targets at or below minSettlingDuration are refused,
+     * and a target below what the parameter bounds allow lands on that reachable floor instead.
+     * @param {Number} duration The target settlingDuration
+     * @return {this}
+     */
+    stretch(duration) {
+      // Rest detection appends the constant restDuration window and is not scale invariant,
+      // so the factor derives from the response part and refines against the solver
+      const rest = this.minSettlingDuration;
+      const tolerance = this.timeStep * K * globals.timeScale;
+      if (!(duration > rest)) return this;
+      for (let i = 0; i < 8; i++) {
+        const previous = this.settlingDuration;
+        if (abs(previous - duration) <= tolerance) break;
+        // Bound the factor so no parameter clamps on its own, a lone clamp would break zeta and
+        // turn the retune into a different spring
+        const lowest = Math.max(sqrt(this.s / maxSpringParamValue), this.d / maxSpringParamValue, abs(this.v) / maxSpringParamValue);
+        const highest = Math.min(sqrt(this.s / minValue), this.d / minValue);
+        const factor = clamp$1((duration - rest) / (previous - rest), lowest, highest);
+        if (!(factor > 0) || factor === Infinity || factor === 1) break;
+        // Scale each parameter by its time dimension so zeta holds and the response time scales exactly
+        this.s = clamp$1(round$1(this.s / (factor * factor), 6), minValue, maxSpringParamValue);
+        this.d = clamp$1(round$1(this.d / factor, 6), minValue, maxSpringParamValue);
+        this.v = clamp$1(round$1(this.v / factor, 6), -maxSpringParamValue, maxSpringParamValue);
+        this.pd = clamp$1(round$1(this.pd * factor, 3), 10 * globals.timeScale, maxSpringParamValue * globals.timeScale);
+        this.compute();
+        if (this.settlingDuration === previous) break;
+      }
+      return this;
+    }
+
     get bounce() {
       return this.bn;
     }
@@ -5084,7 +5171,9 @@
    * @param {SpringParams} [parameters]
    * @returns {Spring}
    */
-  const spring = (parameters) => new Spring(parameters);
+  const springFactory = (parameters) => new Spring(parameters);
+
+  const spring = /** @type {typeof springFactory} */(makeTweakable('Ease', 'spring', springFactory));
 
   /**
    * @deprecated createSpring() is deprecated use spring() instead
@@ -5203,9 +5292,15 @@
    * @param  {String|Boolean} [unit]
    */
   function get(targetSelector, propName, unit) {
-    const targets = registerTargets(targetSelector);
-    if (!targets.length) return;
-    const [ target ] = targets;
+    // Fast path for an already registered target, skips the parse and per call array allocation
+    // so repeated reads like editor live values stay allocation free.
+    /** @type {Target} */
+    let target = targetSelector && /** @type {Target} */(targetSelector)[isRegisteredTargetSymbol] ? /** @type {Target} */(targetSelector) : null;
+    if (!target) {
+      const targets = registerTargets(targetSelector);
+      if (!targets.length) return;
+      target = targets[0];
+    }
     const tweenType = getTweenType(target, propName);
     const normalizePropName = sanitizePropertyName(propName, target, tweenType);
     let originalValue = getOriginalAnimatableValue(target, normalizePropName);
@@ -5263,8 +5358,6 @@
     );
     return targetsArray;
   };
-
-  
 
   
 
@@ -5445,13 +5538,13 @@
       /** @type {Boolean|DraggableCursorParams} */
       this.cursor = false;
       /** @type {Spring} */
-      this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : spring({
+      this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : new Spring({
         mass: setValue(parameters.releaseMass, 1),
         stiffness: setValue(parameters.releaseStiffness, 80),
         damping: setValue(parameters.releaseDamping, 20),
       });
       /** @type {Spring} */
-      this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : spring({
+      this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : new Spring({
         mass: setValue(parameters.releaseMass, 1),
         stiffness: setValue(parameters.releaseStiffness, 80),
         damping: setValue(parameters.releaseDamping, 20),
@@ -7665,9 +7758,15 @@
    * @return {EasingFunction}
    */
 
-  const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) => (mX1 === mY1 && mX2 === mY2) ? none :
+  const cubicBezierFactory = (mX1, mY1, mX2, mY2) =>
     t => t === 0 || t === 1 ? t :
     calcBezier(binarySubdivide(t, mX1, mX2), mY1, mY2);
+
+  const taggedCubicBezier = makeTweakable('Ease', 'cubicBezier', cubicBezierFactory);
+
+  const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) =>
+    (mX1 === mY1 && mX2 === mY2) ? none :
+    /** @type {EasingFunction} */(taggedCubicBezier(mX1, mY1, mX2, mY2));
 
   
 
@@ -7678,21 +7777,21 @@
    * @param  {Boolean} [fromStart]
    * @return {EasingFunction}
    */
-  const steps = (steps = 10, fromStart) => {
+  const stepsFactory = (steps = 10, fromStart) => {
     const roundMethod = fromStart ? ceil : floor;
     return t => roundMethod(clamp$1(t, 0, 1) * steps) * (1 / steps);
   };
 
+  const steps = /** @type {typeof stepsFactory} */(makeTweakable('Ease', 'steps', stepsFactory));
+
   
 
   /**
-   * Without parameters, the linear function creates a non-eased transition.
-   * Parameters, if used, creates a piecewise linear easing by interpolating linearly between the specified points.
-   *
+   * Builds the piecewise linear ease, returns none without points. irregular reuses it for its curve.
    * @param  {...(String|Number)} args - Points
    * @return {EasingFunction}
    */
-  const linear = (...args) => {
+  const linearFactory = (...args) => {
     const argsLength = args.length;
     if (!argsLength) return none;
     const totalPoints = argsLength - 1;
@@ -7727,13 +7826,26 @@
 
   
 
+  const taggedLinear = makeTweakable('Ease', 'linear', linearFactory);
+
+  /**
+   * Without parameters, the linear function creates a non-eased transition.
+   * Parameters, if used, creates a piecewise linear easing by interpolating linearly between the specified points.
+   *
+   * @param  {...(String|Number)} args - Points
+   * @return {EasingFunction}
+   */
+  const linear = (...args) => args.length ? /** @type {EasingFunction} */(taggedLinear.apply(null, args)) : none;
+
+  
+
   /**
    * Generate random steps
    * @param  {Number} [length] - The number of steps
    * @param  {Number} [randomness] - How strong the randomness is
    * @return {EasingFunction}
    */
-  const irregular = (length = 10, randomness = 1) => {
+  const irregularFactory = (length = 10, randomness = 1) => {
     const values = [0];
     const total = length - 1;
     for (let i = 1; i < total; i++) {
@@ -7746,8 +7858,10 @@
       values.push(clamp$1(randomValue, previousValue, 1));
     }
     values.push(1);
-    return linear(...values);
+    return linearFactory(...values);
   };
+
+  const irregular = /** @type {typeof irregularFactory} */(makeTweakable('Ease', 'irregular', irregularFactory));
 
   var index$3 = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -9943,45 +10057,122 @@
   const damp = /** @type {typeof numberUtils.damp & ChainedDamp} */(makeChainable('damp', numberUtils.damp, 1));
 
   /**
-   * Generate a random number between optional min and max (inclusive) and decimal precision
-   *
-   * @callback RandomNumberGenerator
-   * @param    {Number} [min=0] - The minimum value (inclusive)
-   * @param    {Number} [max=1] - The maximum value (inclusive)
-   * @param    {Number} [decimalLength=0] - Number of decimal places to round to
-   * @return   {Number} A random number between min and max
+   * @typedef {Object} RandomParams
+   * @property {Number} [min]
+   * @property {Number} [max]
+   * @property {Number} [decimals]
+   * @property {Number|false} [seed] A number seeds a deterministic sequence, false or omitted is unseeded.
+   * @property {Boolean} [perTarget] When true the call returns a generator anime invokes once per target.
    */
 
   /**
-   * Generates a random number between min and max (inclusive) with optional decimal precision
-   *
-   * @type {RandomNumberGenerator}
+   * A 2-arg numeric RNG, the form randomPick and shuffle call.
+   * @callback RandomFunction
+   * @param {Number} min
+   * @param {Number} max
+   * @return {Number}
    */
-  const random = (min = 0, max = 1, decimalLength = 0) => {
-    const m = 10 ** decimalLength;
-    return Math.floor((Math.random() * (max - min + (1 / m)) + min) * m) / m;
-  };
 
   let _seed = 0;
 
   /**
-   * Creates a seeded pseudorandom number generator function
+   * Generates a random number between min and max (inclusive) with optional decimal precision.
+   * @param  {Number} [min=0]
+   * @param  {Number} [max=1]
+   * @param  {Number} [decimalLength=0]
+   * @return {Number}
+   */
+  const randomNumber = (min = 0, max = 1, decimalLength = 0) => {
+    const m = 10 ** decimalLength;
+    return Math.floor((Math.random() * (max - min + (1 / m)) + min) * m) / m;
+  };
+
+  /**
+   * Creates a seeded pseudorandom generator with the same API as random. Positional args draw a number,
+   * a params object draws a number, or a per target generator with perTarget. min, max and decimals can
+   * be overridden per call.
    *
-   * @param  {Number} [seed] - The seed value for the random number generator
-   * @param  {Number} [seededMin=0] - The minimum default value (inclusive) of the returned function
-   * @param  {Number} [seededMax=1] - The maximum default value (inclusive) of the returned function
-   * @param  {Number} [seededDecimalLength=0] - Default number of decimal places to round to of the returned function
-   * @return {RandomNumberGenerator} A function to generate a random number between optional min and max (inclusive) and decimal precision
+   * @param  {Number} [seed] The seed value, undefined advances a shared counter.
+   * @param  {Number} [seededMin=0] Default minimum of the returned generator.
+   * @param  {Number} [seededMax=1] Default maximum of the returned generator.
+   * @param  {Number} [seededDecimalLength=0] Default decimal places of the returned generator.
    */
   const createSeededRandom = (seed, seededMin = 0, seededMax = 1, seededDecimalLength = 0) => {
     let t = seed === undefined ? _seed++ : seed;
-    return (min = seededMin, max = seededMax, decimalLength = seededDecimalLength) => {
+    const draw = (min, max, decimalLength) => {
       t += 0x6D2B79F5;
       t = Math.imul(t ^ t >>> 15, t | 1);
       t ^= t + Math.imul(t ^ t >>> 7, t | 61);
       const m = 10 ** decimalLength;
       return Math.floor(((((t ^ t >>> 14) >>> 0) / 4294967296) * (max - min + (1 / m)) + min) * m) / m;
+    };
+    /**
+     * @overload
+     * @param {Number} [min]
+     * @param {Number} [max]
+     * @param {Number} [decimalLength]
+     * @return {Number}
+     *
+     * @overload
+     * @param {RandomParams} opts
+     * @return {Number|Function}
+     *
+     * @param {Number|RandomParams} [minOrOpts]
+     * @param {Number} [max]
+     * @param {Number} [decimalLength]
+     * @return {Number|Function}
+     */
+    function rng(minOrOpts = seededMin, max = seededMax, decimalLength = seededDecimalLength) {
+      if (minOrOpts !== null && typeof minOrOpts === 'object') {
+        const opts = minOrOpts;
+        const min = opts.min == null ? seededMin : opts.min;
+        const mx = opts.max == null ? seededMax : opts.max;
+        const d = opts.decimals == null ? seededDecimalLength : opts.decimals;
+        return opts.perTarget ? () => draw(min, mx, d) : draw(min, mx, d);
+      }
+      return draw(minOrOpts, max, decimalLength);
     }
+    return rng;
+  };
+
+  /**
+   * Creates the per draw generator for a params object, seeded when seed is a number, unseeded otherwise.
+   * @param  {RandomParams} opts
+   * @return {() => Number}
+   */
+  const createRandomGenerator = (opts) => {
+    const min = opts.min == null ? 0 : opts.min;
+    const max = opts.max == null ? 1 : opts.max;
+    const decimals = opts.decimals || 0;
+    if (opts.seed === undefined || opts.seed === false) return () => randomNumber(min, max, decimals);
+    const rng = createSeededRandom(/** @type {Number} */(opts.seed), min, max, decimals);
+    return () => /** @type {Number} */(rng());
+  };
+
+  /**
+   * Draws one value, or returns a per target generator when perTarget is set.
+   * @param {RandomParams} opts
+   */
+  const resolveRandomFromOpts = (opts) => {
+    const gen = createRandomGenerator(opts);
+    return opts.perTarget ? gen : gen();
+  };
+
+  const randomTweakable = makeTweakable('Random', 'random', resolveRandomFromOpts);
+
+  /**
+   * Generates a random number between min and max (inclusive) with optional decimal precision. Passing a
+   * params object instead of positional args returns a value shared across targets, or a per target
+   * generator when perTarget is true.
+   *
+   * @param  {Number|RandomParams} [min=0] The minimum value, or a params object.
+   * @param  {Number} [max=1] The maximum value, inclusive.
+   * @param  {Number} [decimalLength=0] Number of decimal places to round to.
+   * @return {Number|Function|Object} A number, or a per target generator.
+   */
+  const random = (min = 0, max = 1, decimalLength = 0) => {
+    if (min !== null && typeof min === 'object') return randomTweakable(/** @type {RandomParams} */(min));
+    return randomNumber(/** @type {Number} */(min), max, decimalLength);
   };
 
   /**
@@ -9989,19 +10180,20 @@
    *
    * @template T
    * @param    {String|Array<T>} items - The array or string to pick from
+   * @param    {RandomFunction} [rnd] - Optional RNG, defaults to random
    * @return   {String|T} A random element from the array or character from the string
    */
-  const randomPick = items => items[random(0, items.length - 1)];
+  const randomPick = (items, rnd = /** @type {RandomFunction} */(random)) => items[rnd(0, items.length - 1)];
 
   /**
    * Shuffles an array in-place using the Fisher-Yates algorithm
    * Adapted from https://bost.ocks.org/mike/shuffle/
    *
    * @param  {Array} items - The array to shuffle (will be modified in-place)
-   * @param  {RandomNumberGenerator} [rnd] - Optional RNG matching the random() signature (defaults to random)
+   * @param  {RandomFunction} [rnd] - Optional RNG, defaults to random
    * @return {Array} The same array reference, now shuffled
    */
-  const shuffle = (items, rnd = random) => {
+  const shuffle = (items, rnd = /** @type {RandomFunction} */(random)) => {
     let m = items.length, t, i;
     while (m) { i = rnd(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
     return items;
@@ -10044,7 +10236,7 @@
    * @param {StaggerParams} [params] The stagger parameters
    * @return {StaggerFunction<Number|String>}
    */
-  const stagger = (val, params = {}) => {
+  const staggerFactory = (val, params = {}) => {
     let values = [];
     let maxValue = 0;
     let cachedOffset;
@@ -10251,6 +10443,12 @@
       return output;
     }
   };
+
+  /**
+   * Creates a stagger function that distributes a value across an animation's targets.
+   * @type {typeof staggerFactory}
+   */
+  const stagger = /** @type {typeof staggerFactory} */(makeTweakable('Stagger', 'stagger', staggerFactory));
 
   var index$2 = /*#__PURE__*/Object.freeze({
     __proto__: null,

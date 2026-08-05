@@ -1,12 +1,13 @@
 /**
  * Anime.js - easings - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { abs } from '../../core/helpers.js';
 import { none } from '../none.js';
+import { makeTweakable } from '../../core/globals.js';
 
 /**
  * @import {
@@ -55,8 +56,14 @@ const binarySubdivide = (aX, mX1, mX2) => {
  * @return {EasingFunction}
  */
 
-const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) => (mX1 === mY1 && mX2 === mY2) ? none :
+const cubicBezierFactory = (mX1, mY1, mX2, mY2) =>
   t => t === 0 || t === 1 ? t :
   calcBezier(binarySubdivide(t, mX1, mX2), mY1, mY2);
+
+const taggedCubicBezier = makeTweakable('Ease', 'cubicBezier', cubicBezierFactory);
+
+const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) =>
+  (mX1 === mY1 && mX2 === mY2) ? none :
+  /** @type {EasingFunction} */(taggedCubicBezier(mX1, mY1, mX2, mY2));
 
 export { cubicBezier };

@@ -1,6 +1,6 @@
 /**
  * Anime.js - svg - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */

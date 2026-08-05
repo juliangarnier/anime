@@ -17,55 +17,61 @@ export const easeInPower: PowerEasing;
  */
 /** @type {Record<String, EaseType>} */
 export const easeTypes: Record<string, EaseType>;
-export namespace eases {
-    export let linear: EasingFunction;
-    export let none: EasingFunction;
-    let _in: PowerEasing;
-    export { _in as in };
-    export let out: PowerEasing;
-    export let inOut: PowerEasing;
-    export let outIn: PowerEasing;
-    export let inQuad: EasingFunction;
-    export let outQuad: EasingFunction;
-    export let inOutQuad: EasingFunction;
-    export let outInQuad: EasingFunction;
-    export let inCubic: EasingFunction;
-    export let outCubic: EasingFunction;
-    export let inOutCubic: EasingFunction;
-    export let outInCubic: EasingFunction;
-    export let inQuart: EasingFunction;
-    export let outQuart: EasingFunction;
-    export let inOutQuart: EasingFunction;
-    export let outInQuart: EasingFunction;
-    export let inQuint: EasingFunction;
-    export let outQuint: EasingFunction;
-    export let inOutQuint: EasingFunction;
-    export let outInQuint: EasingFunction;
-    export let inSine: EasingFunction;
-    export let outSine: EasingFunction;
-    export let inOutSine: EasingFunction;
-    export let outInSine: EasingFunction;
-    export let inCirc: EasingFunction;
-    export let outCirc: EasingFunction;
-    export let inOutCirc: EasingFunction;
-    export let outInCirc: EasingFunction;
-    export let inExpo: EasingFunction;
-    export let outExpo: EasingFunction;
-    export let inOutExpo: EasingFunction;
-    export let outInExpo: EasingFunction;
-    export let inBounce: EasingFunction;
-    export let outBounce: EasingFunction;
-    export let inOutBounce: EasingFunction;
-    export let outInBounce: EasingFunction;
-    export let inBack: BackEasing;
-    export let outBack: BackEasing;
-    export let inOutBack: BackEasing;
-    export let outInBack: BackEasing;
-    export let inElastic: ElasticEasing;
-    export let outElastic: ElasticEasing;
-    export let inOutElastic: ElasticEasing;
-    export let outInElastic: ElasticEasing;
-}
+/**
+ * @typedef  {Object} EasesFunctions
+ * @property {EasingFunction} linear
+ * @property {EasingFunction} none
+ * @property {PowerEasing} in
+ * @property {PowerEasing} out
+ * @property {PowerEasing} inOut
+ * @property {PowerEasing} outIn
+ * @property {EasingFunction} inQuad
+ * @property {EasingFunction} outQuad
+ * @property {EasingFunction} inOutQuad
+ * @property {EasingFunction} outInQuad
+ * @property {EasingFunction} inCubic
+ * @property {EasingFunction} outCubic
+ * @property {EasingFunction} inOutCubic
+ * @property {EasingFunction} outInCubic
+ * @property {EasingFunction} inQuart
+ * @property {EasingFunction} outQuart
+ * @property {EasingFunction} inOutQuart
+ * @property {EasingFunction} outInQuart
+ * @property {EasingFunction} inQuint
+ * @property {EasingFunction} outQuint
+ * @property {EasingFunction} inOutQuint
+ * @property {EasingFunction} outInQuint
+ * @property {EasingFunction} inSine
+ * @property {EasingFunction} outSine
+ * @property {EasingFunction} inOutSine
+ * @property {EasingFunction} outInSine
+ * @property {EasingFunction} inCirc
+ * @property {EasingFunction} outCirc
+ * @property {EasingFunction} inOutCirc
+ * @property {EasingFunction} outInCirc
+ * @property {EasingFunction} inExpo
+ * @property {EasingFunction} outExpo
+ * @property {EasingFunction} inOutExpo
+ * @property {EasingFunction} outInExpo
+ * @property {EasingFunction} inBounce
+ * @property {EasingFunction} outBounce
+ * @property {EasingFunction} inOutBounce
+ * @property {EasingFunction} outInBounce
+ * @property {BackEasing} inBack
+ * @property {BackEasing} outBack
+ * @property {BackEasing} inOutBack
+ * @property {BackEasing} outInBack
+ * @property {ElasticEasing} inElastic
+ * @property {ElasticEasing} outElastic
+ * @property {ElasticEasing} inOutElastic
+ * @property {ElasticEasing} outInElastic
+ */
+/**
+ * The built in easing functions, used by name like eases.outQuad or called like eases.out(2). The
+ * standalone easings spring, cubicBezier, steps, irregular and linear are imported individually.
+ * @type {EasesFunctions}
+ */
+export const eases: EasesFunctions;
 export function parseEaseString(string: string): EasingFunction;
 export function parseEase(ease: EasingParam): EasingFunction;
 export type EaseType = (Ease: EasingFunction) => EasingFunction;
@@ -119,6 +125,6 @@ export type EasesFunctions = {
 };
 import type { PowerEasing } from '../../types/index.js';
 import type { EasingFunction } from '../../types/index.js';
+import type { EasingParam } from '../../types/index.js';
 import type { BackEasing } from '../../types/index.js';
 import type { ElasticEasing } from '../../types/index.js';
-import type { EasingParam } from '../../types/index.js';

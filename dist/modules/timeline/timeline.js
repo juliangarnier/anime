@@ -1,13 +1,13 @@
 /**
  * Anime.js - timeline - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { globals } from '../core/globals.js';
 import { minValue, compositionTypes, tickModes } from '../core/consts.js';
-import { isUnd, mergeObjects, isObj, isFnc, isStr, normalizeTime, forEachChildren, isNum, addChild, clampInfinity } from '../core/helpers.js';
+import { isUnd, mergeObjects, isObj, isArr, isFnc, isStr, normalizeTime, forEachChildren, isNum, addChild, clampInfinity } from '../core/helpers.js';
 import { setValue } from '../core/values.js';
 import { parseTargets } from '../core/targets.js';
 import { tick } from '../core/render.js';
@@ -147,10 +147,9 @@ class Timeline extends Timer {
       if (isAnim) {
         const childParams = /** @type {AnimationParams} */(a2);
         const editorHook = globals.editor && globals.editor.addTimelineChild;
-        const isStaggerType = a3 && /** @type {TweakRegister} */(a3).type === 'Stagger' && globals.editor;
-        // Check for function or Stagger type children positions
+        // A function position, including a native tagged stagger which is self resolving, expands to one child per target.
         const staggeredPosition = isFnc(a3) ? a3 : null;
-        if (staggeredPosition || isStaggerType) {
+        if (staggeredPosition) {
           const parsedTargetsArray = parseTargets(/** @type {TargetsParam} */(a1));
           // Store initial duration before adding new children that will change the duration
           const tlDuration = this.duration;
@@ -163,8 +162,6 @@ class Timeline extends Timer {
           const parsedLength = (parsedTargetsArray.length);
           // Call editor hook once for the entire stagger group instead of per target
           const resolvedParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3, parsedLength) : null;
-          // Resolve stagger AFTER editor hook so tweaked position value (a3.defaultValue) is used
-          const staggerFn = staggeredPosition || globals.editor.resolveStagger(/** @type {TweakRegister} */(a3).defaultValue);
           parsedTargetsArray.forEach((/** @type {Target} */target) => {
             // Create a new parameter object for each staggered children
             const staggeredChildParams = { ...(resolvedParams || childParams) };
@@ -172,7 +169,7 @@ class Timeline extends Timer {
             this.duration = tlDuration;
             this.iterationDuration = tlIterationDuration;
             if (!isUnd(id)) staggeredChildParams.id = id + '-' + i;
-            const staggeredTimePosition = parseTimelinePosition(this, staggerFn(target, i, parsedTargetsArray, null, this));
+            const staggeredTimePosition = parseTimelinePosition(this, staggeredPosition(target, i, parsedTargetsArray, null, this));
             addTlChild(
               staggeredChildParams,
               this,
@@ -223,10 +220,25 @@ class Timeline extends Timer {
    * @param {TimelinePosition} [position]
    * @return {this}
    *
-   * @param {Tickable|WAAPIAnimation|globalThis.Animation} [synced]
-   * @param {TimelinePosition} [position]
+   * @overload
+   * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+   * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+   * @return {this}
+   *
+   * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+   * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
    */
   sync(synced, position) {
+    if (isArr(synced)) {
+      const syncedArray = /** @type {Array<Tickable|WAAPIAnimation|globalThis.Animation>} */(synced);
+      // A function position, including a native tagged stagger, resolves per synced child against this timeline.
+      for (let i = 0, l = syncedArray.length; i < l; i++) {
+        const syncedChild = /** @type {Tickable} */(syncedArray[i]);
+        const syncedPosition = /** @type {TimelinePosition} */(isFnc(position) ? /** @type {StaggerFunction<Number|String>} */(position)(syncedChild, i, syncedArray, null, this) : position);
+        this.sync(syncedChild, syncedPosition);
+      }
+      return this;
+    }
     if (isUnd(synced) || synced && isUnd(synced.pause)) return this;
     synced.pause();
     const duration = +(/** @type {globalThis.Animation} */(synced).effect ? /** @type {globalThis.Animation} */(synced).effect.getTiming().duration : /** @type {Tickable} */(synced).duration);

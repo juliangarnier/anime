@@ -1,6 +1,6 @@
 /**
  * Anime.js - timer - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -418,6 +418,9 @@ class Timer extends clock.Clock {
 
   /** @return {this} */
   cancel() {
+    // Skip the removal when already cancelled, a second removeTweenSliblings on unlinked tweens
+    // would null the siblings lookup _head and _tail and orphan every live tween in it.
+    if (this._cancelled) return this.pause();
     if (this._hasChildren) {
       helpers.forEachChildren(this, (/** @type {Renderable} */child) => child.cancel(), true);
     } else {

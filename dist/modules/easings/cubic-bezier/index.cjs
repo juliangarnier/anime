@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -9,6 +9,7 @@
 
 var helpers = require('../../core/helpers.cjs');
 var none = require('../none.cjs');
+var globals = require('../../core/globals.cjs');
 
 /**
  * @import {
@@ -57,8 +58,14 @@ const binarySubdivide = (aX, mX1, mX2) => {
  * @return {EasingFunction}
  */
 
-const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) => (mX1 === mY1 && mX2 === mY2) ? none.none :
+const cubicBezierFactory = (mX1, mY1, mX2, mY2) =>
   t => t === 0 || t === 1 ? t :
   calcBezier(binarySubdivide(t, mX1, mX2), mY1, mY2);
+
+const taggedCubicBezier = globals.makeTweakable('Ease', 'cubicBezier', cubicBezierFactory);
+
+const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) =>
+  (mX1 === mY1 && mX2 === mY2) ? none.none :
+  /** @type {EasingFunction} */(taggedCubicBezier(mX1, mY1, mX2, mY2));
 
 exports.cubicBezier = cubicBezier;

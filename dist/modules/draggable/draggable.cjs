@@ -1,6 +1,6 @@
 /**
  * Anime.js - draggable - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -36,12 +36,6 @@ var target = require('../utils/target.cjs');
  *   AnimatableObject,
  *   EasingParam,
  * } from '../types/index.js'
-*/
-
-/**
- * @import {
- *   Spring,
- * } from '../easings/spring/index.js'
 */
 
 /**
@@ -221,13 +215,13 @@ class Draggable {
     /** @type {Boolean|DraggableCursorParams} */
     this.cursor = false;
     /** @type {Spring} */
-    this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : index.spring({
+    this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : new index.Spring({
       mass: values.setValue(parameters.releaseMass, 1),
       stiffness: values.setValue(parameters.releaseStiffness, 80),
       damping: values.setValue(parameters.releaseDamping, 20),
     });
     /** @type {Spring} */
-    this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : index.spring({
+    this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : new index.Spring({
       mass: values.setValue(parameters.releaseMass, 1),
       stiffness: values.setValue(parameters.releaseStiffness, 80),
       damping: values.setValue(parameters.releaseDamping, 20),

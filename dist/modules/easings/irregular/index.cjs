@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -8,7 +8,8 @@
 'use strict';
 
 var helpers = require('../../core/helpers.cjs');
-var index = require('../linear/index.cjs');
+var factory = require('../linear/factory.cjs');
+var globals = require('../../core/globals.cjs');
 
 /**
  * @import {
@@ -22,7 +23,7 @@ var index = require('../linear/index.cjs');
  * @param  {Number} [randomness] - How strong the randomness is
  * @return {EasingFunction}
  */
-const irregular = (length = 10, randomness = 1) => {
+const irregularFactory = (length = 10, randomness = 1) => {
   const values = [0];
   const total = length - 1;
   for (let i = 1; i < total; i++) {
@@ -35,7 +36,9 @@ const irregular = (length = 10, randomness = 1) => {
     values.push(helpers.clamp(randomValue, previousValue, 1));
   }
   values.push(1);
-  return index.linear(...values);
+  return factory.linearFactory(...values);
 };
+
+const irregular = /** @type {typeof irregularFactory} */(globals.makeTweakable('Ease', 'irregular', irregularFactory));
 
 exports.irregular = irregular;

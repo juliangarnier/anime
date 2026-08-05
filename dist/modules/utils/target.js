@@ -1,12 +1,12 @@
 /**
  * Anime.js - utils - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { globals } from '../core/globals.js';
-import { valueTypes, minValue, compositionTypes } from '../core/consts.js';
+import { isRegisteredTargetSymbol, valueTypes, minValue, compositionTypes } from '../core/consts.js';
 import { isUnd, round } from '../core/helpers.js';
 import { registerTargets, parseTargets } from '../core/targets.js';
 import { sanitizePropertyName } from '../core/styles.js';
@@ -25,6 +25,7 @@ import { JSAnimation } from '../animation/animation.js';
  *   DOMTargetsParam,
  *   TargetsParam,
  *   DOMTarget,
+ *   Target,
  *   AnimationParams,
  *   TargetsArray,
  * } from '../types/index.js'
@@ -64,9 +65,15 @@ import { JSAnimation } from '../animation/animation.js';
  * @param  {String|Boolean} [unit]
  */
 function get(targetSelector, propName, unit) {
-  const targets = registerTargets(targetSelector);
-  if (!targets.length) return;
-  const [ target ] = targets;
+  // Fast path for an already registered target, skips the parse and per call array allocation
+  // so repeated reads like editor live values stay allocation free.
+  /** @type {Target} */
+  let target = targetSelector && /** @type {Target} */(targetSelector)[isRegisteredTargetSymbol] ? /** @type {Target} */(targetSelector) : null;
+  if (!target) {
+    const targets = registerTargets(targetSelector);
+    if (!targets.length) return;
+    target = targets[0];
+  }
   const tweenType = getTweenType(target, propName);
   const normalizePropName = sanitizePropertyName(propName, target, tweenType);
   let originalValue = getOriginalAnimatableValue(target, normalizePropName);

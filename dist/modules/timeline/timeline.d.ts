@@ -62,8 +62,13 @@ export class Timeline extends Timer {
      * @param {TimelinePosition} [position]
      * @return {this}
      *
-     * @param {Tickable|WAAPIAnimation|globalThis.Animation} [synced]
-     * @param {TimelinePosition} [position]
+     * @overload
+     * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+     * @return {this}
+     *
+     * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
      */
     sync(synced?: Tickable, position?: TimelinePosition): this;
     /**
@@ -82,8 +87,13 @@ export class Timeline extends Timer {
      * @param {TimelinePosition} [position]
      * @return {this}
      *
-     * @param {Tickable|WAAPIAnimation|globalThis.Animation} [synced]
-     * @param {TimelinePosition} [position]
+     * @overload
+     * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+     * @return {this}
+     *
+     * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
      */
     sync(synced?: globalThis.Animation, position?: TimelinePosition): this;
     /**
@@ -102,10 +112,40 @@ export class Timeline extends Timer {
      * @param {TimelinePosition} [position]
      * @return {this}
      *
-     * @param {Tickable|WAAPIAnimation|globalThis.Animation} [synced]
-     * @param {TimelinePosition} [position]
+     * @overload
+     * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+     * @return {this}
+     *
+     * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
      */
     sync(synced?: WAAPIAnimation, position?: TimelinePosition): this;
+    /**
+     * @overload
+     * @param {Tickable} [synced]
+     * @param {TimelinePosition} [position]
+     * @return {this}
+     *
+     * @overload
+     * @param {globalThis.Animation} [synced]
+     * @param {TimelinePosition} [position]
+     * @return {this}
+     *
+     * @overload
+     * @param {WAAPIAnimation} [synced]
+     * @param {TimelinePosition} [position]
+     * @return {this}
+     *
+     * @overload
+     * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+     * @return {this}
+     *
+     * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+     * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+     */
+    sync(synced?: Array<Tickable | WAAPIAnimation | globalThis.Animation>, position?: TimelinePosition | StaggerFunction<number | string>): this;
     /**
      * @param  {TargetsParam} targets
      * @param  {AnimationParams} parameters

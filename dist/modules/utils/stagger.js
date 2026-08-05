@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -12,6 +12,7 @@ import { parseTimelinePosition } from '../timeline/position.js';
 import { getOriginalAnimatableValue } from '../core/values.js';
 import { registerTargets } from '../core/targets.js';
 import { createSeededRandom, random, shuffle } from './random.js';
+import { makeTweakable } from '../core/globals.js';
 
 /**
  * @import {
@@ -60,7 +61,7 @@ import { createSeededRandom, random, shuffle } from './random.js';
  * @param {StaggerParams} [params] The stagger parameters
  * @return {StaggerFunction<Number|String>}
  */
-const stagger = (val, params = {}) => {
+const staggerFactory = (val, params = {}) => {
   let values = [];
   let maxValue = 0;
   let cachedOffset;
@@ -267,5 +268,11 @@ const stagger = (val, params = {}) => {
     return output;
   }
 };
+
+/**
+ * Creates a stagger function that distributes a value across an animation's targets.
+ * @type {typeof staggerFactory}
+ */
+const stagger = /** @type {typeof staggerFactory} */(makeTweakable('Stagger', 'stagger', staggerFactory));
 
 export { stagger };

@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -26,6 +26,7 @@ var animation = require('../animation/animation.cjs');
  *   DOMTargetsParam,
  *   TargetsParam,
  *   DOMTarget,
+ *   Target,
  *   AnimationParams,
  *   TargetsArray,
  * } from '../types/index.js'
@@ -65,9 +66,15 @@ var animation = require('../animation/animation.cjs');
  * @param  {String|Boolean} [unit]
  */
 function get(targetSelector, propName, unit) {
-  const targets$1 = targets.registerTargets(targetSelector);
-  if (!targets$1.length) return;
-  const [ target ] = targets$1;
+  // Fast path for an already registered target, skips the parse and per call array allocation
+  // so repeated reads like editor live values stay allocation free.
+  /** @type {Target} */
+  let target = targetSelector && /** @type {Target} */(targetSelector)[consts.isRegisteredTargetSymbol] ? /** @type {Target} */(targetSelector) : null;
+  if (!target) {
+    const targets$1 = targets.registerTargets(targetSelector);
+    if (!targets$1.length) return;
+    target = targets$1[0];
+  }
   const tweenType = values.getTweenType(target, propName);
   const normalizePropName = styles.sanitizePropertyName(propName, target, tweenType);
   let originalValue = values.getOriginalAnimatableValue(target, normalizePropName);

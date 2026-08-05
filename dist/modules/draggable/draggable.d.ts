@@ -208,7 +208,7 @@ export class Draggable {
 }
 export function createDraggable(target: TargetsParam, parameters?: DraggableParams): Draggable;
 import type { DraggableCursorParams } from '../types/index.js';
-import type { Spring } from '../easings/spring/index.js';
+import { Spring } from '../easings/spring/index.js';
 import type { EasingFunction } from '../types/index.js';
 import type { Callback } from '../types/index.js';
 import type { AnimatableObject } from '../types/index.js';

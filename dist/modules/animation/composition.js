@@ -1,6 +1,6 @@
 /**
  * Anime.js - animation - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -182,25 +182,6 @@ const composeTween = (tween, siblings) => {
 
     }
 
-    // let nextSibling = tween._nextRep;
-
-    // // All the next siblings are automatically overridden
-
-    // if (nextSibling && nextSibling._absoluteStartTime >= tweenAbsStartTime) {
-    //   while (nextSibling) {
-    //     overrideTween(nextSibling);
-    //     nextSibling = nextSibling._nextRep;
-    //   }
-    // }
-
-    // if (nextSibling && nextSibling._absoluteStartTime < tweenAbsStartTime) {
-    //   while (nextSibling) {
-    //     overrideTween(nextSibling);
-    //     console.log(tween.id, nextSibling.id);
-    //     nextSibling = nextSibling._nextRep;
-    //   }
-    // }
-
   // Handle additive tweens composition
 
   } else if (tweenCompositionType === compositionTypes.blend) {
@@ -291,16 +272,16 @@ const removeTweenSliblings = tween => {
 };
 
 /**
- * @param  {TargetsArray} targetsArray
+ * @param  {Set} targetsSet
  * @param  {JSAnimation} animation
  * @param  {String} [propertyName]
  * @return {Boolean}
  */
-const removeTargetsFromJSAnimation = (targetsArray, animation, propertyName) => {
+const removeTargetsFromJSAnimation = (targetsSet, animation, propertyName) => {
   let tweensMatchesTargets = false;
   forEachChildren(animation, (/**@type {Tween} */tween) => {
     const tweenTarget = tween.target;
-    if (targetsArray.includes(tweenTarget)) {
+    if (targetsSet.has(tweenTarget)) {
       const tweenName = tween.property;
       const tweenType = tween._tweenType;
       const normalizePropName = sanitizePropertyName(propertyName, tweenTarget, tweenType);
@@ -325,18 +306,21 @@ const removeTargetsFromJSAnimation = (targetsArray, animation, propertyName) => 
 };
 
 /**
- * @param  {TargetsArray} targetsArray
+ * @param  {TargetsArray|Set} targetsArray
  * @param  {Renderable} [renderable]
  * @param  {String} [propertyName]
  */
 const removeTargetsFromRenderable = (targetsArray, renderable, propertyName) => {
+  // Accept the public array, or on recursion the Set already built, so target membership stays
+  // constant time and large target lists do not make removal scan quadratically.
+  const targetsSet = targetsArray instanceof Set ? targetsArray : new Set(targetsArray);
   const parent = /** @type {Renderable|typeof engine} **/(renderable ? renderable : engine);
   let removeMatches;
   if (parent._hasChildren) {
     let iterationDuration = 0;
     forEachChildren(parent, (/** @type {Renderable} */child) => {
       if (!child._hasChildren) {
-        removeMatches = removeTargetsFromJSAnimation(targetsArray, /** @type {JSAnimation} */(child), propertyName);
+        removeMatches = removeTargetsFromJSAnimation(targetsSet, /** @type {JSAnimation} */(child), propertyName);
         // Remove the child from its parent if no tweens and no children left after the removal
         if (removeMatches && !child._head) {
           child.cancel();
@@ -353,7 +337,7 @@ const removeTargetsFromRenderable = (targetsArray, renderable, propertyName) => 
       // Make sure to also remove engine's children targets
       // NOTE: Avoid recursion?
       if (child._head) {
-        removeTargetsFromRenderable(targetsArray, child, propertyName);
+        removeTargetsFromRenderable(targetsSet, child, propertyName);
       } else {
         child._hasChildren = false;
       }
@@ -364,7 +348,7 @@ const removeTargetsFromRenderable = (targetsArray, renderable, propertyName) => 
     }
   } else {
     removeMatches = removeTargetsFromJSAnimation(
-      targetsArray,
+      targetsSet,
       /** @type {JSAnimation} */(parent),
       propertyName
     );

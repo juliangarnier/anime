@@ -1,63 +1,38 @@
 /**
  * Anime.js - adapters - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { SRGBColorSpace, Vector3, Euler, Matrix4, Quaternion, Color, BatchedMesh } from 'three';
+import { Matrix4, Vector3, Euler, Quaternion, SRGBColorSpace, Color, BatchedMesh } from 'three';
 import { radToDeg, degToRad } from '../../utils/number.js';
 import { threeAdapter } from './adapter.js';
-import { readColorHex, COLOR_NORM, applySkewOrigin, readScalar, PATH_DIRECT, writeScalar } from './helpers.js';
+import { readColorHex, COLOR_NORM, readScalar, PATH_DIRECT, writeScalar, applySkewOrigin } from './helpers.js';
 
-const hasSkewOrigin = (t) => !!(t._skewX || t._skewY || t._skewZ || t._originX || t._originY || t._originZ);
+/** @import { Object3D, InstancedMesh } from 'three' */
 
-/**
- * @import { Object3D, InstancedMesh } from 'three'
- *
- * @typedef {InstancedMesh | BatchedMesh} InstanceParent
- */
+/** @typedef {InstancedMesh | BatchedMesh} InstanceParent */
 
 const DIRTY_POS = 1;
 const DIRTY_ROT = 2;
 const DIRTY_SCALE = 4;
 const DIRTY_SKEW = 8;
 
+// Translation occupies elements 12, 13, 14 of every 16 float column major matrix.
+const M_X = 12;
+const M_Y = 13;
+const M_Z = 14;
+
+// Reused scratch for compose and decompose, never held across a call.
+const scratchMatrix = new Matrix4();
+const scratchPosition = new Vector3();
+const scratchEuler = new Euler(0, 0, 0, 'XYZ');
+const scratchQuat = new Quaternion();
+const scratchScale = new Vector3();
+
 /** @type {WeakMap<InstanceParent, InstanceBinding>} */
 const bindings = new WeakMap();
-
-/**
- * Per-mesh state for `InstancedMesh` / `BatchedMesh` animations. Holds the instance array, the dirty queue, and the chained `onBeforeRender` closure.
- */
-class InstanceBinding {
-
-  /** @param {InstanceParent} mesh */
-  constructor(mesh) {
-    this.mesh = mesh;
-    this.hasInstanceMatrix = 'instanceMatrix' in mesh;
-    /** @type {(Instance | null)[]} */
-    this.instances = [];
-    /** @type {Instance[]} */
-    this.dirtyList = [];
-    /** @type {Object3D['onBeforeRender'] | null} */
-    this.userOnBeforeRender = mesh.onBeforeRender || null;
-    this.chainedHandler = makeChainedHandler(this);
-    Object.defineProperty(mesh, 'onBeforeRender', {
-      configurable: true,
-      get: () => this.chainedHandler,
-      set: (fn) => { this.userOnBeforeRender = fn; },
-    });
-  }
-
-  flush() {
-    const list = this.dirtyList;
-    if (list.length === 0) return;
-    for (let i = 0, l = list.length; i < l; i++) list[i]._flush();
-    if (this.hasInstanceMatrix) /** @type {InstancedMesh} */(this.mesh).instanceMatrix.needsUpdate = true;
-    list.length = 0;
-  }
-
-}
 
 /**
  * @param {InstanceBinding} binding
@@ -69,6 +44,194 @@ function makeChainedHandler(binding) {
     const u = binding.userOnBeforeRender;
     if (u) u.call(binding.mesh, renderer, scene, camera, geometry, material, group);
   };
+}
+
+// Enqueue a composed instance for the next flush, coalescing repeated writes into one entry.
+const markDirty = (t, flag) => {
+  const b = t._binding;
+  const id = t.id;
+  if (b.dirty[id] === 0) b.dirtyIds[b.dirtyCount++] = id;
+  b.dirty[id] |= flag;
+};
+
+// Promote to composed mode, seeding position, rotation, and scale from the current
+// matrix so applied translation and scale survive the switch.
+const enterComposed = (t) => {
+  if (t._composed) return;
+  const b = t._binding;
+  if (!b.pos) b.allocateComposed();
+  const m = scratchMatrix;
+  if (t._array) m.fromArray(t._array, t._base);
+  else t.parent.getMatrixAt(t.id, m);
+  if (m.elements[15] === 0) m.identity();
+  m.decompose(scratchPosition, scratchQuat, scratchScale);
+  scratchEuler.setFromQuaternion(scratchQuat, 'XYZ');
+  const b3 = t._base3;
+  const pos = b.pos, rot = b.rot, scl = b.scl;
+  pos[b3] = scratchPosition.x; pos[b3 + 1] = scratchPosition.y; pos[b3 + 2] = scratchPosition.z;
+  rot[b3] = scratchEuler.x; rot[b3 + 1] = scratchEuler.y; rot[b3 + 2] = scratchEuler.z;
+  scl[b3] = scratchScale.x; scl[b3 + 1] = scratchScale.y; scl[b3 + 2] = scratchScale.z;
+  t._composed = true;
+};
+
+// Flag the binding as skewed and allocate the skew and origin rows on first use.
+const enableSkew = (b) => {
+  b.hasSkew = 1;
+  if (b.skew) return;
+  const n = b.capacity * 3;
+  b.skew = new Float64Array(n);
+  b.origin = new Float64Array(n);
+};
+
+// Read rotation or scale from the buffer without switching to composed mode, so a
+// getter never downgrades an instance off the fast position path.
+const scratchEulerOf = (t) => {
+  scratchMatrix.fromArray(t._array, t._base);
+  scratchMatrix.decompose(scratchPosition, scratchQuat, scratchScale);
+  scratchEuler.setFromQuaternion(scratchQuat, 'XYZ');
+  return scratchEuler;
+};
+const scratchScaleOf = (t) => {
+  scratchMatrix.fromArray(t._array, t._base);
+  scratchMatrix.decompose(scratchPosition, scratchQuat, scratchScale);
+  return scratchScale;
+};
+
+// Shared transform read and write, used by the prototype accessor for direct writes
+// and the registered adapter setter so the engine skips a keyed store per frame.
+const getX = (t) => t._composed ? t._binding.pos[t._base3] : t._array[t._base + M_X];
+const setX = (t, v) => { if (t._composed) { t._binding.pos[t._base3] = v; markDirty(t, DIRTY_POS); } else { t._array[t._base + M_X] = v; t._binding.touched = 1; } };
+const getY = (t) => t._composed ? t._binding.pos[t._base3 + 1] : t._array[t._base + M_Y];
+const setY = (t, v) => { if (t._composed) { t._binding.pos[t._base3 + 1] = v; markDirty(t, DIRTY_POS); } else { t._array[t._base + M_Y] = v; t._binding.touched = 1; } };
+const getZ = (t) => t._composed ? t._binding.pos[t._base3 + 2] : t._array[t._base + M_Z];
+const setZ = (t, v) => { if (t._composed) { t._binding.pos[t._base3 + 2] = v; markDirty(t, DIRTY_POS); } else { t._array[t._base + M_Z] = v; t._binding.touched = 1; } };
+
+const getRotateX = (t) => radToDeg(t._composed ? t._binding.rot[t._base3] : scratchEulerOf(t).x);
+const setRotateX = (t, v) => { enterComposed(t); t._binding.rot[t._base3] = degToRad(v); markDirty(t, DIRTY_ROT); };
+const getRotateY = (t) => radToDeg(t._composed ? t._binding.rot[t._base3 + 1] : scratchEulerOf(t).y);
+const setRotateY = (t, v) => { enterComposed(t); t._binding.rot[t._base3 + 1] = degToRad(v); markDirty(t, DIRTY_ROT); };
+const getRotateZ = (t) => radToDeg(t._composed ? t._binding.rot[t._base3 + 2] : scratchEulerOf(t).z);
+const setRotateZ = (t, v) => { enterComposed(t); t._binding.rot[t._base3 + 2] = degToRad(v); markDirty(t, DIRTY_ROT); };
+
+const getScaleX = (t) => t._composed ? t._binding.scl[t._base3] : scratchScaleOf(t).x;
+const setScaleX = (t, v) => { enterComposed(t); t._binding.scl[t._base3] = v; markDirty(t, DIRTY_SCALE); };
+const getScaleY = (t) => t._composed ? t._binding.scl[t._base3 + 1] : scratchScaleOf(t).y;
+const setScaleY = (t, v) => { enterComposed(t); t._binding.scl[t._base3 + 1] = v; markDirty(t, DIRTY_SCALE); };
+const getScaleZ = (t) => t._composed ? t._binding.scl[t._base3 + 2] : scratchScaleOf(t).z;
+const setScaleZ = (t, v) => { enterComposed(t); t._binding.scl[t._base3 + 2] = v; markDirty(t, DIRTY_SCALE); };
+const getScale = (t) => t._composed ? t._binding.scl[t._base3] : scratchScaleOf(t).x;
+const setScale = (t, v) => { enterComposed(t); const b3 = t._base3, scl = t._binding.scl; scl[b3] = v; scl[b3 + 1] = v; scl[b3 + 2] = v; markDirty(t, DIRTY_SCALE); };
+
+const getSkewX = (t) => t._composed && t._binding.skew ? t._binding.skew[t._base3] : 0;
+const setSkewX = (t, v) => { enterComposed(t); const b = t._binding; enableSkew(b); b.skew[t._base3] = v; markDirty(t, DIRTY_SKEW); };
+const getSkewY = (t) => t._composed && t._binding.skew ? t._binding.skew[t._base3 + 1] : 0;
+const setSkewY = (t, v) => { enterComposed(t); const b = t._binding; enableSkew(b); b.skew[t._base3 + 1] = v; markDirty(t, DIRTY_SKEW); };
+const getSkewZ = (t) => t._composed && t._binding.skew ? t._binding.skew[t._base3 + 2] : 0;
+const setSkewZ = (t, v) => { enterComposed(t); const b = t._binding; enableSkew(b); b.skew[t._base3 + 2] = v; markDirty(t, DIRTY_SKEW); };
+
+const getOriginX = (t) => t._composed && t._binding.origin ? t._binding.origin[t._base3] : 0;
+const setOriginX = (t, v) => { enterComposed(t); const b = t._binding; enableSkew(b); b.origin[t._base3] = v; markDirty(t, DIRTY_SKEW); };
+const getOriginY = (t) => t._composed && t._binding.origin ? t._binding.origin[t._base3 + 1] : 0;
+const setOriginY = (t, v) => { enterComposed(t); const b = t._binding; enableSkew(b); b.origin[t._base3 + 1] = v; markDirty(t, DIRTY_SKEW); };
+const getOriginZ = (t) => t._composed && t._binding.origin ? t._binding.origin[t._base3 + 2] : 0;
+const setOriginZ = (t, v) => { enterComposed(t); const b = t._binding; enableSkew(b); b.origin[t._base3 + 2] = v; markDirty(t, DIRTY_SKEW); };
+
+/**
+ * Per-mesh state for an InstancedMesh or BatchedMesh. Position-only instances write
+ * the matrix buffer directly; instances that animate rotation, scale, or skew store
+ * their transform in the flat pos / rot / scl rows and recompose during flush.
+ */
+class InstanceBinding {
+
+  /** @param {InstanceParent} mesh */
+  constructor(mesh) {
+    this.mesh = mesh;
+    this.hasInstanceMatrix = 'instanceMatrix' in mesh;
+    // Direct writes target this buffer for InstancedMesh, null for BatchedMesh whose instances stay composed.
+    /** @type {Float32Array | null} */
+    this.array = this.hasInstanceMatrix ? /** @type {Float32Array} */(/** @type {InstancedMesh} */(mesh).instanceMatrix.array) : null;
+    this.capacity = this.hasInstanceMatrix ? /** @type {InstancedMesh} */(mesh).instanceMatrix.count : /** @type {BatchedMesh} */(mesh).maxInstanceCount;
+    /** @type {(Instance | null)[]} */
+    this.instances = [];
+    // Fast path writes set this so flush raises instanceMatrix.needsUpdate once per render.
+    this.touched = 0;
+    // Composed transform rows and dirty queue, allocated on the first rotation, scale, or skew write.
+    /** @type {Float64Array | null} */
+    this.pos = null;
+    /** @type {Float64Array | null} */
+    this.rot = null;
+    /** @type {Float64Array | null} */
+    this.scl = null;
+    /** @type {Float64Array | null} */
+    this.skew = null;
+    /** @type {Float64Array | null} */
+    this.origin = null;
+    this.hasSkew = 0;
+    /** @type {Uint8Array | null} */
+    this.dirty = null;
+    /** @type {Int32Array | null} */
+    this.dirtyIds = null;
+    this.dirtyCount = 0;
+    // Shared mesh capability flags kept here so each Instance object stays small.
+    this.hasSetColor = 'setColorAt' in mesh;
+    this.hasSetVisible = 'setVisibleAt' in mesh;
+    this.hasGetVisible = 'getVisibleAt' in mesh;
+    /** @type {Object3D['onBeforeRender'] | null} */
+    this.userOnBeforeRender = mesh.onBeforeRender || null;
+    this.chainedHandler = makeChainedHandler(this);
+    Object.defineProperty(mesh, 'onBeforeRender', {
+      configurable: true,
+      get: () => this.chainedHandler,
+      set: (fn) => { this.userOnBeforeRender = fn; },
+    });
+  }
+
+  allocateComposed() {
+    const n = this.capacity * 3;
+    this.pos = new Float64Array(n);
+    this.rot = new Float64Array(n);
+    this.scl = new Float64Array(n);
+    this.dirty = new Uint8Array(this.capacity);
+    this.dirtyIds = new Int32Array(this.capacity);
+  }
+
+  flush() {
+    const count = this.dirtyCount;
+    if (count) {
+      const ids = this.dirtyIds, pos = this.pos, rot = this.rot, scl = this.scl, dirty = this.dirty;
+      const out = this.array, mesh = this.mesh, hasSkew = this.hasSkew, skew = this.skew, origin = this.origin;
+      const sp = scratchPosition, se = scratchEuler, sq = scratchQuat, ss = scratchScale, sm = scratchMatrix;
+      for (let k = 0; k < count; k++) {
+        const id = ids[k];
+        const b3 = id * 3;
+        // Overwrite the translation columns in place when only position changed, so flush skips the
+        // setFromEuler and compose that the unchanged rotation and scale rows would otherwise redo.
+        if (dirty[id] === DIRTY_POS && out && !hasSkew) {
+          const o = id * 16;
+          out[o + M_X] = pos[b3];
+          out[o + M_Y] = pos[b3 + 1];
+          out[o + M_Z] = pos[b3 + 2];
+        } else {
+          sp.set(pos[b3], pos[b3 + 1], pos[b3 + 2]);
+          se.set(rot[b3], rot[b3 + 1], rot[b3 + 2]);
+          sq.setFromEuler(se);
+          ss.set(scl[b3], scl[b3 + 1], scl[b3 + 2]);
+          sm.compose(sp, sq, ss);
+          if (hasSkew) applySkewOrigin(sm.elements, skew[b3], skew[b3 + 1], skew[b3 + 2], origin[b3], origin[b3 + 1], origin[b3 + 2]);
+          if (out) sm.toArray(out, id * 16);
+          else mesh.setMatrixAt(id, sm);
+        }
+        dirty[id] = 0;
+      }
+      this.dirtyCount = 0;
+      this.touched = 1;
+    }
+    if (this.touched) {
+      if (this.hasInstanceMatrix) /** @type {InstancedMesh} */(this.mesh).instanceMatrix.needsUpdate = true;
+      this.touched = 0;
+    }
+  }
+
 }
 
 /**
@@ -85,149 +248,34 @@ class Instance {
    * @param {number} id
    */
   constructor(binding, id) {
-    this.isAnimejsInstanceProxy = true;
+    this._array = binding.array;
+    this._base = id * 16;
+    this._base3 = id * 3;
+    this._composed = false;
+    this._binding = binding;
+    /** @type {Color | null} */
+    this._color = null;
     this.parent = binding.mesh;
     this.id = id;
-    this._position = new Vector3();
-    this._rotation = new Euler(0, 0, 0, 'XYZ');
-    this._scale = new Vector3(1, 1, 1);
-    this._matrix = new Matrix4();
-    this._quat = new Quaternion();
-    // Pre-allocate _color so the hidden class stays stable, set color mutates it in place rather than re-binding the field.
-    this._color = new Color();
-    this._dirty = 0;
-    // Skew in degrees and transform-origin in object-space.
-    // applySkewOrigin computes Math.tan inline per non-zero axis, so we only carry the user-facing angle here.
-    this._skewX = 0;
-    this._skewY = 0;
-    this._skewZ = 0;
-    this._originX = 0;
-    this._originY = 0;
-    this._originZ = 0;
-    // Skip the position-only fast path in _flush whenever any skew or origin is non-zero, since both modify the matrix beyond pure translation.
-    this._hasSkewOrigin = false;
-    // Cache the binding dirty queue once so per-frame setters skip a property hop.
-    /** @type {Instance[]} */
-    this._dirtyList = binding.dirtyList;
-    // Cache parent capability flags once so per-frame setters skip prototype-chain in checks.
-    const parent = binding.mesh;
-    this._hasSetColor = 'setColorAt' in parent;
-    this._hasSetVisible = 'setVisibleAt' in parent;
-    this._hasGetVisible = 'getVisibleAt' in parent;
+    this.isAnimejsInstanceProxy = true;
 
-    parent.getMatrixAt(id, this._matrix);
-    if (this._matrix.elements[15] === 0) this._matrix.identity();
-    this._matrix.decompose(this._position, this._quat, this._scale);
-    this._rotation.setFromQuaternion(this._quat, 'XYZ');
-
-    if ('getColorAt' in parent && 'instanceColor' in parent && parent.instanceColor) {
-      parent.getColorAt(id, this._color);
-    }
-  }
-
-  /**
-   * @param {number} flag
-   */
-  _markDirty(flag) {
-    // Enqueue once per frame, later flags only OR into _dirty without re-pushing to the queue.
-    if (this._dirty === 0) this._dirtyList.push(this);
-    this._dirty |= flag;
-  }
-
-  _flush() {
-    const d = this._dirty;
-    if (!d) return;
-    const m = this._matrix;
-    const p = this._position;
-    if (d === DIRTY_POS && !this._hasSkewOrigin) {
-      const e = m.elements;
-      e[12] = p.x; e[13] = p.y; e[14] = p.z;
+    if (this._array) {
+      // Seed empty slots with identity so a bare translation write yields a valid matrix.
+      const e = this._array;
+      const b = this._base;
+      if (e[b + 15] === 0) { e[b] = 1; e[b + 5] = 1; e[b + 10] = 1; e[b + 15] = 1; }
     } else {
-      const q = this._quat;
-      if (d & DIRTY_ROT) q.setFromEuler(this._rotation);
-      m.compose(p, q, this._scale);
-      if (this._hasSkewOrigin) {
-        applySkewOrigin(m.elements, this._skewX, this._skewY, this._skewZ, this._originX, this._originY, this._originZ);
-      }
+      enterComposed(this);
     }
-    this.parent.setMatrixAt(this.id, m);
-    this._dirty = 0;
   }
 
-  get x() { return this._position.x; }
-  set x(v) { this._position.x = v; this._markDirty(DIRTY_POS); }
-
-  get y() { return this._position.y; }
-  set y(v) { this._position.y = v; this._markDirty(DIRTY_POS); }
-
-  get z() { return this._position.z; }
-  set z(v) { this._position.z = v; this._markDirty(DIRTY_POS); }
-
-  get rotateX() { return radToDeg(this._rotation.x); }
-  set rotateX(v) { this._rotation.x = degToRad(v); this._markDirty(DIRTY_ROT); }
-
-  get rotateY() { return radToDeg(this._rotation.y); }
-  set rotateY(v) { this._rotation.y = degToRad(v); this._markDirty(DIRTY_ROT); }
-
-  get rotateZ() { return radToDeg(this._rotation.z); }
-  set rotateZ(v) { this._rotation.z = degToRad(v); this._markDirty(DIRTY_ROT); }
-
-  get scaleX() { return this._scale.x; }
-  set scaleX(v) { this._scale.x = v; this._markDirty(DIRTY_SCALE); }
-
-  get scaleY() { return this._scale.y; }
-  set scaleY(v) { this._scale.y = v; this._markDirty(DIRTY_SCALE); }
-
-  get scaleZ() { return this._scale.z; }
-  set scaleZ(v) { this._scale.z = v; this._markDirty(DIRTY_SCALE); }
-
-  get scale() { return this._scale.x; }
-  set scale(v) {
-    const s = this._scale;
-    s.x = v; s.y = v; s.z = v;
-    this._markDirty(DIRTY_SCALE);
-  }
-
-  get skewX() { return this._skewX; }
-  set skewX(v) {
-    this._skewX = v;
-    this._hasSkewOrigin = hasSkewOrigin(this);
-    this._markDirty(DIRTY_SKEW);
-  }
-
-  get skewY() { return this._skewY; }
-  set skewY(v) {
-    this._skewY = v;
-    this._hasSkewOrigin = hasSkewOrigin(this);
-    this._markDirty(DIRTY_SKEW);
-  }
-
-  get skewZ() { return this._skewZ; }
-  set skewZ(v) {
-    this._skewZ = v;
-    this._hasSkewOrigin = hasSkewOrigin(this);
-    this._markDirty(DIRTY_SKEW);
-  }
-
-  get transformOriginX() { return this._originX; }
-  set transformOriginX(v) {
-    this._originX = v;
-    this._hasSkewOrigin = hasSkewOrigin(this);
-    this._markDirty(DIRTY_SKEW);
-  }
-
-  get transformOriginY() { return this._originY; }
-  set transformOriginY(v) {
-    this._originY = v;
-    this._hasSkewOrigin = hasSkewOrigin(this);
-    this._markDirty(DIRTY_SKEW);
-  }
-
-  get transformOriginZ() { return this._originZ; }
-  set transformOriginZ(v) {
-    this._originZ = v;
-    this._hasSkewOrigin = hasSkewOrigin(this);
-    this._markDirty(DIRTY_SKEW);
+  _ensureColor() {
+    let c = this._color;
+    if (c) return c;
+    c = this._color = new Color();
+    const p = /** @type {any} */(this.parent);
+    if ('getColorAt' in p && 'instanceColor' in p && p.instanceColor) p.getColorAt(this.id, c);
+    return c;
   }
 
   get opacity() {
@@ -239,56 +287,64 @@ class Instance {
   }
 
   get visible() {
-    return this._hasGetVisible ? /** @type {any} */(this.parent).getVisibleAt(this.id) : true;
+    return this._binding.hasGetVisible ? /** @type {any} */(this.parent).getVisibleAt(this.id) : true;
   }
   /** @param {boolean} v */
   set visible(v) {
-    if (this._hasSetVisible) /** @type {any} */(this.parent).setVisibleAt(this.id, v);
+    if (this._binding.hasSetVisible) /** @type {any} */(this.parent).setVisibleAt(this.id, v);
   }
 
 }
 
-/**
- * Flushes pending matrix writes for every dirty instance of `mesh`.
- * Called automatically before each render. Call it yourself if you read
- * `mesh.instanceMatrix` between an animation tick and the next render.
- *
- * @param {InstanceParent} mesh
- */
-function commitChanges(mesh) {
-  const binding = bindings.get(mesh);
-  if (binding) binding.flush();
+// Each transform property maps to a read and write pair backing both a prototype
+// accessor for direct writes and a registered adapter property the engine uses.
+const TRANSFORM_PROPS = {
+  x: [getX, setX], y: [getY, setY], z: [getZ, setZ],
+  rotateX: [getRotateX, setRotateX], rotateY: [getRotateY, setRotateY], rotateZ: [getRotateZ, setRotateZ],
+  scaleX: [getScaleX, setScaleX], scaleY: [getScaleY, setScaleY], scaleZ: [getScaleZ, setScaleZ], scale: [getScale, setScale],
+  skewX: [getSkewX, setSkewX], skewY: [getSkewY, setSkewY], skewZ: [getSkewZ, setSkewZ],
+  transformOriginX: [getOriginX, setOriginX], transformOriginY: [getOriginY, setOriginY], transformOriginZ: [getOriginZ, setOriginZ],
+};
+
+const instanceAdapter = threeAdapter.registerTargetAdapter((t) => t instanceof Instance);
+
+for (const name in TRANSFORM_PROPS) {
+  const [read, write] = TRANSFORM_PROPS[name];
+  Object.defineProperty(Instance.prototype, name, {
+    configurable: true,
+    get() { return read(this); },
+    set(v) { write(this, v); },
+  });
+  instanceAdapter.registerProperty(name, read, write);
 }
 
-/**
- * Returns an array of per-instance adapters for `mesh`. Index by id, deleted slots on `BatchedMesh` are `null`. Pass the array (or a slice / a single element) to `animate()`.
- *
- * animate(getInstances(mesh), { x: 100, delay: stagger(5) });
- * animate(getInstances(mesh)[42], { scale: 2 });
- *
- * The same array reference is preserved across `mesh.count` / `addInstance` / `deleteInstance` calls. Entries are pushed, nulled, or truncated in place. Animations bound to an outdated reference keep tweening their original adapters.
- *
- * `mesh.onBeforeRender` is replaced with an accessor that flushes
- * pending instance writes before each render and forwards to your
- * handler. Assigning your own `mesh.onBeforeRender = fn` keeps the
- * auto-flush, but reading `mesh.onBeforeRender` afterwards returns the
- * chained dispatcher rather than `fn` itself, so identity checks
- * (`mesh.onBeforeRender === fn`) will not match.
- *
- * @param {InstanceParent} mesh
- * @return {(Instance | null)[]}
- */
-function getInstances(mesh) {
-  let binding = bindings.get(mesh);
-  if (!binding) {
-    binding = new InstanceBinding(mesh);
-    bindings.set(mesh, binding);
-  }
-  if (mesh instanceof BatchedMesh) {
-    return refreshBatched(binding);
-  }
-  return refreshInstanced(binding);
-}
+instanceAdapter.registerProperty('color',
+  (t) => readColorHex(t._ensureColor()),
+  (t, _, tw) => {
+    if (!t._binding.hasSetColor) return;
+    const c = t._ensureColor();
+    const ns = tw._numbers;
+    c.setRGB(ns[0] * COLOR_NORM, ns[1] * COLOR_NORM, ns[2] * COLOR_NORM, SRGBColorSpace);
+    const p = /** @type {any} */(t.parent);
+    p.setColorAt(t.id, c);
+    if (p.instanceColor) p.instanceColor.needsUpdate = true;
+  },
+);
+// Shorthand 3-token string x y z routed via the engine COMPLEX path.
+// The setter reads tween _numbers for the per-frame lerped triplet.
+instanceAdapter.registerProperty('transformOrigin',
+  (t) => { enterComposed(t); const b = t._binding; const o = b.origin, b3 = t._base3; return o ? `${o[b3]} ${o[b3 + 1]} ${o[b3 + 2]}` : '0 0 0'; },
+  (t, _, tw) => {
+    enterComposed(t);
+    const b = t._binding;
+    enableSkew(b);
+    const ns = tw._numbers, b3 = t._base3;
+    b.origin[b3] = ns[0];
+    b.origin[b3 + 1] = ns[1];
+    b.origin[b3 + 2] = ns[2];
+    markDirty(t, DIRTY_SKEW);
+  },
+);
 
 /**
  * @param {InstanceBinding} binding
@@ -336,30 +392,46 @@ function refreshBatched(binding) {
   return arr;
 }
 
-const instanceAdapter = threeAdapter.registerTargetAdapter((t) => t instanceof Instance);
-instanceAdapter.registerProperty('color',
-  (t) => readColorHex(t._color),
-  (t, _, tw) => {
-    if (!t._hasSetColor) return;
-    const ns = tw._numbers;
-    t._color.setRGB(ns[0] * COLOR_NORM, ns[1] * COLOR_NORM, ns[2] * COLOR_NORM, SRGBColorSpace);
-    const p = /** @type {any} */(t.parent);
-    p.setColorAt(t.id, t._color);
-    if (p.instanceColor) p.instanceColor.needsUpdate = true;
-  },
-);
-// Shorthand 3-token string x y z routed via the engine COMPLEX path.
-// The setter reads tween _numbers for the per-frame lerped triplet.
-instanceAdapter.registerProperty('transformOrigin',
-  (t) => `${t._originX} ${t._originY} ${t._originZ}`,
-  (t, _, tw) => {
-    const ns = tw._numbers;
-    t._originX = ns[0];
-    t._originY = ns[1];
-    t._originZ = ns[2];
-    t._hasSkewOrigin = hasSkewOrigin(t);
-    t._markDirty(DIRTY_SKEW);
-  },
-);
+/**
+ * Returns an array of per-instance adapters for `mesh`. Index by id, deleted slots on `BatchedMesh` are `null`. Pass the array (or a slice / a single element) to `animate()`.
+ *
+ * animate(getInstances(mesh), { x: 100, delay: stagger(5) });
+ * animate(getInstances(mesh)[42], { scale: 2 });
+ *
+ * The same array reference is preserved across `mesh.count` / `addInstance` / `deleteInstance` calls. Entries are pushed, nulled, or truncated in place. Animations bound to an outdated reference keep tweening their original adapters.
+ *
+ * `mesh.onBeforeRender` is replaced with an accessor that flushes
+ * pending instance writes before each render and forwards to your
+ * handler. Assigning your own `mesh.onBeforeRender = fn` keeps the
+ * auto-flush, but reading `mesh.onBeforeRender` afterwards returns the
+ * chained dispatcher rather than `fn` itself, so identity checks
+ * (`mesh.onBeforeRender === fn`) will not match.
+ *
+ * @param {InstanceParent} mesh
+ * @return {(Instance | null)[]}
+ */
+function getInstances(mesh) {
+  let binding = bindings.get(mesh);
+  if (!binding) {
+    binding = new InstanceBinding(mesh);
+    bindings.set(mesh, binding);
+  }
+  if (mesh instanceof BatchedMesh) {
+    return refreshBatched(binding);
+  }
+  return refreshInstanced(binding);
+}
+
+/**
+ * Flushes pending matrix writes for every dirty instance of `mesh`.
+ * Called automatically before each render. Call it yourself if you read
+ * `mesh.instanceMatrix` between an animation tick and the next render.
+ *
+ * @param {InstanceParent} mesh
+ */
+function commitChanges(mesh) {
+  const binding = bindings.get(mesh);
+  if (binding) binding.flush();
+}
 
 export { commitChanges, getInstances };

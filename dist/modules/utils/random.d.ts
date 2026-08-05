@@ -1,22 +1,56 @@
+export function createSeededRandom(seed?: number, seededMin?: number, seededMax?: number, seededDecimalLength?: number): {
+    /**
+     * @overload
+     * @param {Number} [min]
+     * @param {Number} [max]
+     * @param {Number} [decimalLength]
+     * @return {Number}
+     *
+     * @overload
+     * @param {RandomParams} opts
+     * @return {Number|Function}
+     *
+     * @param {Number|RandomParams} [minOrOpts]
+     * @param {Number} [max]
+     * @param {Number} [decimalLength]
+     * @return {Number|Function}
+     */
+    (min?: number, max?: number, decimalLength?: number): number;
+    /**
+     * @overload
+     * @param {Number} [min]
+     * @param {Number} [max]
+     * @param {Number} [decimalLength]
+     * @return {Number}
+     *
+     * @overload
+     * @param {RandomParams} opts
+     * @return {Number|Function}
+     *
+     * @param {Number|RandomParams} [minOrOpts]
+     * @param {Number} [max]
+     * @param {Number} [decimalLength]
+     * @return {Number|Function}
+     */
+    (opts: RandomParams): number | Function;
+};
+export function random(min?: number | RandomParams, max?: number, decimalLength?: number): number | Function | any;
+export function randomPick<T>(items: string | Array<T>, rnd?: RandomFunction): string | T;
+export function shuffle(items: any[], rnd?: RandomFunction): any[];
+export type RandomParams = {
+    min?: number;
+    max?: number;
+    decimals?: number;
+    /**
+     * A number seeds a deterministic sequence, false or omitted is unseeded.
+     */
+    seed?: number | false;
+    /**
+     * When true the call returns a generator anime invokes once per target.
+     */
+    perTarget?: boolean;
+};
 /**
- * Generate a random number between optional min and max (inclusive) and decimal precision
- *
- * @callback RandomNumberGenerator
- * @param    {Number} [min=0] - The minimum value (inclusive)
- * @param    {Number} [max=1] - The maximum value (inclusive)
- * @param    {Number} [decimalLength=0] - Number of decimal places to round to
- * @return   {Number} A random number between min and max
+ * A 2-arg numeric RNG, the form randomPick and shuffle call.
  */
-/**
- * Generates a random number between min and max (inclusive) with optional decimal precision
- *
- * @type {RandomNumberGenerator}
- */
-export const random: RandomNumberGenerator;
-export function createSeededRandom(seed?: number, seededMin?: number, seededMax?: number, seededDecimalLength?: number): RandomNumberGenerator;
-export function randomPick<T>(items: string | Array<T>): string | T;
-export function shuffle(items: any[], rnd?: RandomNumberGenerator): any[];
-/**
- * Generate a random number between optional min and max (inclusive) and decimal precision
- */
-export type RandomNumberGenerator = (min?: number, max?: number, decimalLength?: number) => number;
+export type RandomFunction = (min: number, max: number) => number;

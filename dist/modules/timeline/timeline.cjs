@@ -1,6 +1,6 @@
 /**
  * Anime.js - timeline - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -149,10 +149,9 @@ class Timeline extends timer.Timer {
       if (isAnim) {
         const childParams = /** @type {AnimationParams} */(a2);
         const editorHook = globals.globals.editor && globals.globals.editor.addTimelineChild;
-        const isStaggerType = a3 && /** @type {TweakRegister} */(a3).type === 'Stagger' && globals.globals.editor;
-        // Check for function or Stagger type children positions
+        // A function position, including a native tagged stagger which is self resolving, expands to one child per target.
         const staggeredPosition = helpers.isFnc(a3) ? a3 : null;
-        if (staggeredPosition || isStaggerType) {
+        if (staggeredPosition) {
           const parsedTargetsArray = targets.parseTargets(/** @type {TargetsParam} */(a1));
           // Store initial duration before adding new children that will change the duration
           const tlDuration = this.duration;
@@ -165,8 +164,6 @@ class Timeline extends timer.Timer {
           const parsedLength = (parsedTargetsArray.length);
           // Call editor hook once for the entire stagger group instead of per target
           const resolvedParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3, parsedLength) : null;
-          // Resolve stagger AFTER editor hook so tweaked position value (a3.defaultValue) is used
-          const staggerFn = staggeredPosition || globals.globals.editor.resolveStagger(/** @type {TweakRegister} */(a3).defaultValue);
           parsedTargetsArray.forEach((/** @type {Target} */target) => {
             // Create a new parameter object for each staggered children
             const staggeredChildParams = { ...(resolvedParams || childParams) };
@@ -174,7 +171,7 @@ class Timeline extends timer.Timer {
             this.duration = tlDuration;
             this.iterationDuration = tlIterationDuration;
             if (!helpers.isUnd(id)) staggeredChildParams.id = id + '-' + i;
-            const staggeredTimePosition = position.parseTimelinePosition(this, staggerFn(target, i, parsedTargetsArray, null, this));
+            const staggeredTimePosition = position.parseTimelinePosition(this, staggeredPosition(target, i, parsedTargetsArray, null, this));
             addTlChild(
               staggeredChildParams,
               this,
@@ -225,10 +222,25 @@ class Timeline extends timer.Timer {
    * @param {TimelinePosition} [position]
    * @return {this}
    *
-   * @param {Tickable|WAAPIAnimation|globalThis.Animation} [synced]
-   * @param {TimelinePosition} [position]
+   * @overload
+   * @param {Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+   * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
+   * @return {this}
+   *
+   * @param {Tickable|WAAPIAnimation|globalThis.Animation|Array<Tickable|WAAPIAnimation|globalThis.Animation>} [synced]
+   * @param {TimelinePosition|StaggerFunction<Number|String>} [position]
    */
   sync(synced, position) {
+    if (helpers.isArr(synced)) {
+      const syncedArray = /** @type {Array<Tickable|WAAPIAnimation|globalThis.Animation>} */(synced);
+      // A function position, including a native tagged stagger, resolves per synced child against this timeline.
+      for (let i = 0, l = syncedArray.length; i < l; i++) {
+        const syncedChild = /** @type {Tickable} */(syncedArray[i]);
+        const syncedPosition = /** @type {TimelinePosition} */(helpers.isFnc(position) ? /** @type {StaggerFunction<Number|String>} */(position)(syncedChild, i, syncedArray, null, this) : position);
+        this.sync(syncedChild, syncedPosition);
+      }
+      return this;
+    }
     if (helpers.isUnd(synced) || synced && helpers.isUnd(synced.pause)) return this;
     synced.pause();
     const duration = +(/** @type {globalThis.Animation} */(synced).effect ? /** @type {globalThis.Animation} */(synced).effect.getTiming().duration : /** @type {Tickable} */(synced).duration);

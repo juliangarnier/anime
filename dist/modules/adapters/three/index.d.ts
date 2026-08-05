@@ -1,2 +1,2 @@
-export { threeAdapter } from "./adapter.js";
-export { getInstances, commitChanges } from "./instance.js";
+export * from "./adapter.js";
+export * from "./instance.js";

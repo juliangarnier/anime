@@ -1,11 +1,12 @@
 /**
  * Anime.js - easings - ESM
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { ceil, floor, clamp } from '../../core/helpers.js';
+import { makeTweakable } from '../../core/globals.js';
 
 /**
  * @import {
@@ -20,9 +21,11 @@ import { ceil, floor, clamp } from '../../core/helpers.js';
  * @param  {Boolean} [fromStart]
  * @return {EasingFunction}
  */
-const steps = (steps = 10, fromStart) => {
+const stepsFactory = (steps = 10, fromStart) => {
   const roundMethod = fromStart ? ceil : floor;
   return t => roundMethod(clamp(t, 0, 1) * steps) * (1 / steps);
 };
+
+const steps = /** @type {typeof stepsFactory} */(makeTweakable('Ease', 'steps', stepsFactory));
 
 export { steps };

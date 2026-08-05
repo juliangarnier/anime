@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v4.5.0
+ * @version v5.0.0-beta.1
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -14,6 +14,7 @@ var position = require('../timeline/position.cjs');
 var values = require('../core/values.cjs');
 var targets = require('../core/targets.cjs');
 var random = require('./random.cjs');
+var globals = require('../core/globals.cjs');
 
 /**
  * @import {
@@ -62,7 +63,7 @@ var random = require('./random.cjs');
  * @param {StaggerParams} [params] The stagger parameters
  * @return {StaggerFunction<Number|String>}
  */
-const stagger = (val, params = {}) => {
+const staggerFactory = (val, params = {}) => {
   let values$1 = [];
   let maxValue = 0;
   let cachedOffset;
@@ -269,5 +270,11 @@ const stagger = (val, params = {}) => {
     return output;
   }
 };
+
+/**
+ * Creates a stagger function that distributes a value across an animation's targets.
+ * @type {typeof staggerFactory}
+ */
+const stagger = /** @type {typeof staggerFactory} */(globals.makeTweakable('Stagger', 'stagger', staggerFactory));
 
 exports.stagger = stagger;
