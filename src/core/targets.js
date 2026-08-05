@@ -38,6 +38,10 @@ export function getNodeList(v) {
   if (n instanceof NodeList || n instanceof HTMLCollection) return n;
 }
 
+// The linear duplicate scan benchmarks faster than Set lookups up to somewhere between 32 and
+// 128 items, so promoting at 128 keeps small target lists on the fastest path.
+const dedupeSetThreshold = 128;
+
 /**
  * @overload
  * @param  {DOMTargetsParam} targets
@@ -60,38 +64,26 @@ export function parseTargets(targets) {
     const flattened = targets.flat(Infinity);
     /** @type {TargetsArray} */
     const parsed = [];
+    // Dedupe by identity, scan parsed linearly for small results to skip the Set allocation, then
+    // promote to a Set so large target lists stay linear instead of quadratic.
+    /** @type {Set|null} */
+    let seen = null;
     for (let i = 0, l = flattened.length; i < l; i++) {
       const item = flattened[i];
-      if (!isNil(item)) {
-        const nodeList = getNodeList(item);
-        if (nodeList) {
-          for (let j = 0, jl = nodeList.length; j < jl; j++) {
-            const subItem = nodeList[j];
-            if (!isNil(subItem)) {
-              let isDuplicate = false;
-              for (let k = 0, kl = parsed.length; k < kl; k++) {
-                if (parsed[k] === subItem) {
-                  isDuplicate = true;
-                  break;
-                }
-              }
-              if (!isDuplicate) {
-                parsed.push(subItem);
-              }
-            }
-          }
-        } else {
-          let isDuplicate = false;
-          for (let j = 0, jl = parsed.length; j < jl; j++) {
-            if (parsed[j] === item) {
-              isDuplicate = true;
-              break;
-            }
-          }
-          if (!isDuplicate) {
-            parsed.push(item);
-          }
+      if (isNil(item)) continue;
+      const nodeList = getNodeList(item);
+      if (nodeList) {
+        for (let j = 0, jl = nodeList.length; j < jl; j++) {
+          const subItem = nodeList[j];
+          if (isNil(subItem) || (seen ? seen.has(subItem) : parsed.includes(subItem))) continue;
+          parsed.push(subItem);
+          if (seen) seen.add(subItem);
+          else if (parsed.length > dedupeSetThreshold) seen = new Set(parsed);
         }
+      } else if (!(seen ? seen.has(item) : parsed.includes(item))) {
+        parsed.push(item);
+        if (seen) seen.add(item);
+        else if (parsed.length > dedupeSetThreshold) seen = new Set(parsed);
       }
     }
     return parsed;

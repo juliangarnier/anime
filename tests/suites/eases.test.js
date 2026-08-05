@@ -211,39 +211,77 @@ suite('Eases', () => {
     expect(springEasing.settlingDuration).to.equal(1700);
   });
 
-  test('Spring parameters must be clamped at 10000', () => {
+  test('Stretches a spring to settle at the given duration', () => {
+    const springEasing = spring();
+    expect(springEasing.settlingDuration).to.equal(1760);
+    springEasing.stretch(880);
+    expect(springEasing.settlingDuration).to.be.closeTo(880, 25);
+    springEasing.stretch(3520);
+    expect(springEasing.settlingDuration).to.be.closeTo(3520, 25);
+    springEasing.stretch(0);
+    expect(springEasing.settlingDuration).to.be.closeTo(3520, 25);
+  });
+
+  test('Exposes minSettlingDuration as the floor stretch refuses to cross', () => {
+    const springEasing = spring();
+    expect(springEasing.minSettlingDuration).to.equal(200);
+    // A target at or below the floor is refused, the settling stays above it.
+    springEasing.stretch(springEasing.minSettlingDuration);
+    expect(springEasing.settlingDuration).to.be.above(springEasing.minSettlingDuration);
+  });
+
+  test('Keeps bounce, mass and damping ratio when stretched', () => {
+    const springEasing = spring({ mass: 10, velocity: 5 });
+    const zeta = springEasing.zeta;
+    springEasing.stretch(2000);
+    expect(springEasing.settlingDuration).to.be.closeTo(2000, 25);
+    expect(springEasing.mass).to.equal(10);
+    expect(springEasing.zeta).to.be.closeTo(zeta, .0001);
+    const bounced = spring({ bounce: .3, duration: 500 });
+    bounced.stretch(2000);
+    expect(bounced.settlingDuration).to.be.closeTo(2000, 25);
+    expect(bounced.bounce).to.equal(.3);
+    const clamped = spring();
+    const clampedZeta = clamped.zeta;
+    clamped.stretch(240);
+    expect(clamped.zeta).to.be.closeTo(clampedZeta, .0001);
+    // Targets above minSettlingDuration are reachable, the parameter ceiling sits past the w0 clamp.
+    expect(clamped.settlingDuration).to.be.closeTo(240, 25);
+  });
+
+  test('Spring parameters must be clamped at 1000000', () => {
     const springEasing = spring({
-      mass: 15000,
-      stiffness: 15000,
-      damping: 15000,
-      velocity: 15000,
+      mass: 1500000,
+      stiffness: 1500000,
+      damping: 1500000,
+      velocity: 1500000,
     });
-    expect(springEasing.mass).to.equal(10000);
-    expect(springEasing.stiffness).to.equal(10000);
-    expect(springEasing.damping).to.equal(10000);
-    expect(springEasing.velocity).to.equal(10000);
+    expect(springEasing.mass).to.equal(1000000);
+    expect(springEasing.stiffness).to.equal(1000000);
+    expect(springEasing.damping).to.equal(1000000);
+    expect(springEasing.velocity).to.equal(1000000);
     expect(springEasing.settlingDuration).to.be.above(0);
 
-    springEasing.mass = 20000;
-    springEasing.stiffness = 20000;
-    springEasing.damping = 20000;
-    springEasing.velocity = 20000;
+    springEasing.mass = 2000000;
+    springEasing.stiffness = 2000000;
+    springEasing.damping = 2000000;
+    springEasing.velocity = 2000000;
 
-    expect(springEasing.mass).to.equal(10000);
-    expect(springEasing.stiffness).to.equal(10000);
-    expect(springEasing.damping).to.equal(10000);
-    expect(springEasing.velocity).to.equal(10000);
+    expect(springEasing.mass).to.equal(1000000);
+    expect(springEasing.stiffness).to.equal(1000000);
+    expect(springEasing.damping).to.equal(1000000);
+    expect(springEasing.velocity).to.equal(1000000);
     expect(springEasing.settlingDuration).to.be.above(0);
   });
 
   test('Spring velocity can be negative', () => {
     const springEasing = spring({
-      velocity: -15000,
+      velocity: -1500000,
     });
-    expect(springEasing.velocity).to.equal(-10000);
+    expect(springEasing.velocity).to.equal(-1000000);
     expect(springEasing.settlingDuration).to.be.above(0);
-    springEasing.velocity = -20000;
-    expect(springEasing.velocity).to.equal(-10000);
+    springEasing.velocity = -2000000;
+    expect(springEasing.velocity).to.equal(-1000000);
     expect(springEasing.settlingDuration).to.be.above(0);
   });
 

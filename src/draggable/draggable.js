@@ -63,7 +63,7 @@ import {
 } from '../easings/eases/parser.js';
 
 import {
-  spring,
+  Spring,
 } from '../easings/spring/index.js';
 
 import {
@@ -86,12 +86,6 @@ import {
  *   AnimatableObject,
  *   EasingParam,
  * } from '../types/index.js'
-*/
-
-/**
- * @import {
- *   Spring,
- * } from '../easings/spring/index.js'
 */
 
 /**
@@ -271,13 +265,13 @@ export class Draggable {
     /** @type {Boolean|DraggableCursorParams} */
     this.cursor = false;
     /** @type {Spring} */
-    this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : spring({
+    this.releaseXSpring = hasSpring ? /** @type {Spring} */(ease) : new Spring({
       mass: setValue(parameters.releaseMass, 1),
       stiffness: setValue(parameters.releaseStiffness, 80),
       damping: setValue(parameters.releaseDamping, 20),
     });
     /** @type {Spring} */
-    this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : spring({
+    this.releaseYSpring = hasSpring ? /** @type {Spring} */(ease) : new Spring({
       mass: setValue(parameters.releaseMass, 1),
       stiffness: setValue(parameters.releaseStiffness, 80),
       damping: setValue(parameters.releaseDamping, 20),

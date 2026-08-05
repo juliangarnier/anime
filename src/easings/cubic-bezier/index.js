@@ -6,6 +6,10 @@ import {
   none,
 } from '../none.js';
 
+import {
+  makeTweakable,
+} from '../../core/globals.js';
+
 /**
  * @import {
  *   EasingFunction,
@@ -53,6 +57,12 @@ const binarySubdivide = (aX, mX1, mX2) => {
  * @return {EasingFunction}
  */
 
-export const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) => (mX1 === mY1 && mX2 === mY2) ? none :
+const cubicBezierFactory = (mX1, mY1, mX2, mY2) =>
   t => t === 0 || t === 1 ? t :
   calcBezier(binarySubdivide(t, mX1, mX2), mY1, mY2);
+
+const taggedCubicBezier = makeTweakable('Ease', 'cubicBezier', cubicBezierFactory);
+
+export const cubicBezier = (mX1 = 0.5, mY1 = 0.0, mX2 = 0.5, mY2 = 1.0) =>
+  (mX1 === mY1 && mX2 === mY2) ? none :
+  /** @type {EasingFunction} */(taggedCubicBezier(mX1, mY1, mX2, mY2));

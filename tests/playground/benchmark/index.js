@@ -1,4 +1,5 @@
 import { waapi, animate, createTimer, utils, engine } from '../../../dist/modules/index.js';
+import { getInstances } from '../../../dist/modules/adapters/three/index.js';
 
 import {
   Object3D,
@@ -10,7 +11,7 @@ import {
   InstancedMesh,
   Scene,
   WebGLRenderer,
-} from '../../../node_modules/three/build/three.module.min.js';
+} from 'three';
 
 // engine.frameRate = 30;
 
@@ -58,11 +59,19 @@ const webglThreejsMode = {
   step: 5000,
 };
 
+const webglThreejsManualMode = {
+  minCount: 5000,
+  maxCount: 100000,
+  defaultCount: 10000,
+  step: 5000,
+};
+
 const renderModes = {
   'css-transform': AnimeTransformMode,
   'anime-waapi-css-transform': AnimeWAAPITransformMode,
   'wappi-css-transform': WAAPITransformMode,
   'webgl-threejs': webglThreejsMode,
+  'webgl-threejs-manual': webglThreejsManualMode,
 };
 
 const config = {
@@ -312,6 +321,118 @@ webglThreejsMode.init = () => {
 
   webglThreejsMode.isInitialized = true;
 
+  const camera = new PerspectiveCamera(60, containerW / containerH, 1, 150);
+  camera.position.set(0, 0, -150);
+  camera.lookAt(0, 0, 0);
+
+  const geometry = new BoxGeometry(1, 1, 1);
+  // const geometry = new SphereGeometry(1, 6, 3);
+  const material = new MeshBasicMaterial();
+  const mesh = new InstancedMesh(geometry, material, webglThreejsMode.maxCount);
+
+  const scene = new Scene();
+  scene.add(mesh);
+
+  // Per instance adapters, anime animates these directly and the adapter flushes the matrices on render.
+  const instances = getInstances(mesh);
+
+  const renderer = new WebGLRenderer({
+    antialias: false,
+    powerPreference: 'high-performance',
+  });
+
+  renderer.setPixelRatio(1);
+  renderer.setSize(containerW, containerH);
+
+  const renderLoop = createTimer({
+    onUpdate: () => renderer.render(scene, camera),
+    autoplay: false,
+  });
+
+  const screenCoords = new Vector3();
+  const worldCoords = new Vector3();
+
+  const colors = [new Color('#FF4B4B'), new Color('#9F3A39'), new Color('#CF4242')];
+
+  function animateParticle(i) {
+    const instance = instances[i];
+    instance.reversed = !instance.reversed;
+    let delay = 0;
+    if (!instance.started) {
+      instance.started = 1;
+      delay = getBeginOffset(i);
+    }
+    const params = {
+      composition: 'none',
+      delay,
+      duration,
+      ease,
+      onComplete: () => animateParticle(i),
+    };
+    if (config.x) params.x = getRandomX(instance);
+    if (config.y) params.y = getRandomY(instance);
+    if (config.rotation) params.rotateY = getRandomDeg();
+    if (config.scale) params.scale = getRandomScale();
+    animate(instance, params);
+  }
+
+  webglThreejsMode.cancel = () => {
+    utils.remove(instances);
+    for (let i = 0; i < webglThreejsMode.maxCount; i++) {
+      const instance = instances[i];
+      instance.x = 0;
+      instance.y = 0;
+      instance.rotateY = 0;
+      instance.scale = 0;
+      instance.started = 0;
+      instance.reversed = 0;
+    }
+    renderLoop.pause();
+  }
+
+  webglThreejsMode.refresh = () => {
+    const canvas = $particlesContainer.querySelector('canvas');
+    if (canvas !== renderer.domElement) {
+      if (canvas) canvas.remove();
+      $particlesContainer.appendChild(renderer.domElement);
+    }
+    maxScale = utils.clamp(webglThreejsMode.maxCount / config.count, .25, 2);
+    for (let i = 0; i < config.count; i++) {
+      const instance = instances[i];
+      instance.scale = maxScale;
+      instance.rotateY = 36;
+      instance.reversed = utils.random(0, 1);
+      mesh.setColorAt(i, utils.randomPick(colors));
+      animateParticle(i);
+    }
+    mesh.instanceColor.needsUpdate = true;
+    renderLoop.play();
+  }
+
+  webglThreejsMode.resize = () => {
+    camera.aspect = containerW / containerH;
+    camera.updateProjectionMatrix();
+    renderer.setSize(containerW, containerH);
+    screenCoords.set(2, 2, .5);
+    screenCoords.unproject(camera);
+    screenCoords.sub(camera.position).normalize();
+    worldCoords.copy(camera.position).add(screenCoords.multiplyScalar(-camera.position.z / screenCoords.z));
+    W = worldCoords.x;
+    H = worldCoords.y;
+    halfW = W * .5;
+    halfH = H * .5;
+  }
+}
+
+// WebGL Three.js mode, adapter free baseline. anime animates a plain proxy backed by typed arrays
+// (the core object number fast lane) and the matrices are composed and written by hand, no adapter.
+
+webglThreejsManualMode.init = () => {
+
+  if (webglThreejsManualMode.isInitialized) return;
+
+  webglThreejsManualMode.isInitialized = true;
+
   class InstancedMeshProxy {
     constructor(count) {
       this.index = 0;
@@ -343,10 +464,9 @@ webglThreejsMode.init = () => {
   camera.lookAt(0, 0, 0);
 
   const geometry = new BoxGeometry(1, 1, 1);
-  // const geometry = new SphereGeometry(1, 6, 3);
   const material = new MeshBasicMaterial();
-  const mesh = new InstancedMesh(geometry, material, webglThreejsMode.maxCount);
-  const meshProxy = new InstancedMeshProxy(webglThreejsMode.maxCount);
+  const mesh = new InstancedMesh(geometry, material, webglThreejsManualMode.maxCount);
+  const meshProxy = new InstancedMeshProxy(webglThreejsManualMode.maxCount);
 
   const scene = new Scene();
   scene.add(mesh);
@@ -381,25 +501,22 @@ webglThreejsMode.init = () => {
     mesh.instanceMatrix.needsUpdate = true;
   }
 
-  function animateParticle(i, l) {
+  function animateParticle(i) {
     meshProxy.index = i;
     meshProxy.reversed = ~~!meshProxy.reversed;
     let delay = 0;
-    const started = meshProxy.started;
-    if (!started) {
+    if (!meshProxy.started) {
       meshProxy.started = 1;
       delay = getBeginOffset(i);
     }
     const params = {
-      composition: 'none', // Needed to avoid overiding proxy tweens
+      composition: 'none',
       delay,
       duration,
       ease,
       onRender: () => renderMesh(i),
       onUpdate: () => meshProxy.index = i,
-      onComplete: self => {
-        animateParticle(i, l);
-      },
+      onComplete: () => animateParticle(i),
     };
     if (config.x) params.x = getRandomX(meshProxy);
     if (config.y) params.y = getRandomY(meshProxy);
@@ -408,8 +525,8 @@ webglThreejsMode.init = () => {
     animate(meshProxy, params);
   }
 
-  webglThreejsMode.cancel = () => {
-    for (let i = 0; i < webglThreejsMode.maxCount; i++) {
+  webglThreejsManualMode.cancel = () => {
+    for (let i = 0; i < webglThreejsManualMode.maxCount; i++) {
       meshProxy.index = i;
       meshProxy.x = 0;
       meshProxy.y = 0;
@@ -423,24 +540,26 @@ webglThreejsMode.init = () => {
     renderLoop.pause();
   }
 
-  webglThreejsMode.refresh = () => {
-    if (!$particlesContainer.querySelector('canvas')) {
+  webglThreejsManualMode.refresh = () => {
+    const canvas = $particlesContainer.querySelector('canvas');
+    if (canvas !== renderer.domElement) {
+      if (canvas) canvas.remove();
       $particlesContainer.appendChild(renderer.domElement);
     }
-    maxScale = utils.clamp(webglThreejsMode.maxCount / config.count, .25, 2);
+    maxScale = utils.clamp(webglThreejsManualMode.maxCount / config.count, .25, 2);
     for (let i = 0; i < config.count; i++) {
       meshProxy.index = i;
       meshProxy.scale = maxScale;
       meshProxy.rotation = Math.PI * .2;
       meshProxy.reversed = utils.random(0, 1);
       mesh.setColorAt(i, utils.randomPick(colors));
-      animateParticle(i, config.count);
+      animateParticle(i);
     }
     mesh.instanceColor.needsUpdate = true;
     renderLoop.play();
   }
 
-  webglThreejsMode.resize = () => {
+  webglThreejsManualMode.resize = () => {
     camera.aspect = containerW / containerH;
     camera.updateProjectionMatrix();
     renderer.setSize(containerW, containerH);

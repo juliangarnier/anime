@@ -3,8 +3,12 @@ import {
 } from "../../core/helpers.js";
 
 import {
-  linear,
-} from "../linear/index.js";
+  linearFactory,
+} from "../linear/factory.js";
+
+import {
+  makeTweakable,
+} from '../../core/globals.js';
 
 
 /**
@@ -19,7 +23,7 @@ import {
  * @param  {Number} [randomness] - How strong the randomness is
  * @return {EasingFunction}
  */
-export const irregular = (length = 10, randomness = 1) => {
+const irregularFactory = (length = 10, randomness = 1) => {
   const values = [0];
   const total = length - 1;
   for (let i = 1; i < total; i++) {
@@ -32,5 +36,7 @@ export const irregular = (length = 10, randomness = 1) => {
     values.push(clamp(randomValue, previousValue, 1));
   }
   values.push(1);
-  return linear(...values);
+  return linearFactory(...values);
 }
+
+export const irregular = /** @type {typeof irregularFactory} */(makeTweakable('Ease', 'irregular', irregularFactory));

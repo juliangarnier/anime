@@ -18,6 +18,8 @@ import {
 
 import { none } from '../none.js';
 
+import { makeTweakable } from '../../core/globals.js';
+
 /**
  * @import {
  *   EasingFunction,
@@ -136,7 +138,13 @@ const easeInFunctions = {
  * @property {ElasticEasing} outInElastic
  */
 
+/**
+ * The built in easing functions, used by name like eases.outQuad or called like eases.out(2). The
+ * standalone easings spring, cubicBezier, steps, irregular and linear are imported individually.
+ * @type {EasesFunctions}
+ */
 export const eases = (/*#__PURE__ */ (() => {
+  /** @type {Record<String, Function>} */
   const list = { linear: none, none: none };
   for (let type in easeTypes) {
     for (let name in easeInFunctions) {
@@ -147,6 +155,13 @@ export const eases = (/*#__PURE__ */ (() => {
         (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b)) :
         easeType(/** @type {EasingFunction} */(easeIn))
       );
+    }
+  }
+  // Wrap the factory eases for the editor, the wrapper runs at the call so the per frame curve stays
+  // raw. Plain eases are used directly and stay raw.
+  for (const name in list) {
+    if (name === 'in' || name === 'out' || name === 'inOut' || name === 'outIn' || name.endsWith('Back') || name.endsWith('Elastic')) {
+      list[name] = makeTweakable('Ease', name, list[name]);
     }
   }
   return /** @type {EasesFunctions} */(list);

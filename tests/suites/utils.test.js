@@ -283,6 +283,99 @@ suite('Utils', () => {
     }
   });
 
+  test('utils.random positional draws integers within range that vary', () => {
+    const values = [];
+    for (let i = 0; i < 100; i++) {
+      const value = utils.random(10, 20);
+      expect(value).to.be.within(10, 20);
+      expect(value % 1).to.equal(0);
+      values.push(value);
+    }
+    expect(new Set(values).size).to.be.above(1);
+  });
+
+  test('utils.random object form honours min, max and decimals', () => {
+    let fractionalSeen = false;
+    for (let i = 0; i < 100; i++) {
+      const value = utils.random({ min: 1000, max: 2000, decimals: 2 });
+      expect(value).to.be.within(1000, 2000);
+      if (value % 1 !== 0) fractionalSeen = true;
+    }
+    expect(fractionalSeen).to.equal(true);
+  });
+
+  test('utils.random with a seed is reproducible and seed-dependent', () => {
+    expect(utils.random({ min: 0, max: 1000000, seed: 7 })).to.equal(utils.random({ min: 0, max: 1000000, seed: 7 }));
+    expect(utils.random({ min: 0, max: 1000000, seed: 7 })).to.not.equal(utils.random({ min: 0, max: 1000000, seed: 8 }));
+  });
+
+  test('utils.random with perTarget returns a generator drawing varying values in range', () => {
+    const generator = utils.random({ min: 1000, max: 2000, perTarget: true });
+    expect(generator).to.be.a('function');
+    const values = [];
+    for (let i = 0; i < 100; i++) {
+      const value = generator();
+      expect(value).to.be.within(1000, 2000);
+      values.push(value);
+    }
+    expect(new Set(values).size).to.be.above(1);
+  });
+
+  test('utils.random with perTarget and a seed draws a reproducible varying sequence', () => {
+    const a = utils.random({ min: 0, max: 1000, seed: 3, perTarget: true });
+    const b = utils.random({ min: 0, max: 1000, seed: 3, perTarget: true });
+    const sequence = [];
+    for (let i = 0; i < 20; i++) {
+      const value = a();
+      expect(b()).to.equal(value);
+      sequence.push(value);
+    }
+    expect(new Set(sequence).size).to.be.above(1);
+  });
+
+  test('utils.createSeededRandom draws a reproducible varying sequence and honours per-call range', () => {
+    const a = utils.createSeededRandom(42);
+    const b = utils.createSeededRandom(42);
+    const sequence = [];
+    let aboveDefaultMax = false;
+    for (let i = 0; i < 20; i++) {
+      const value = a(0, 1000);
+      expect(b(0, 1000)).to.equal(value);
+      expect(value).to.be.within(0, 1000);
+      if (value > 1) aboveDefaultMax = true;
+      sequence.push(value);
+    }
+    expect(new Set(sequence).size).to.be.above(1);
+    expect(aboveDefaultMax).to.equal(true);
+  });
+
+  test('utils.createSeededRandom diverges for different seeds', () => {
+    const a = utils.createSeededRandom(1);
+    const b = utils.createSeededRandom(2);
+    expect(a(0, 1000000)).to.not.equal(b(0, 1000000));
+  });
+
+  test('utils.createSeededRandom accepts a params object and perTarget honouring its range', () => {
+    expect(utils.createSeededRandom(8)({ min: 1000, max: 2000 })).to.be.within(1000, 2000);
+    const generator = utils.createSeededRandom(8)({ min: 1000, max: 2000, perTarget: true });
+    expect(generator).to.be.a('function');
+    const values = [];
+    for (let i = 0; i < 20; i++) {
+      const value = generator();
+      expect(value).to.be.within(1000, 2000);
+      values.push(value);
+    }
+    expect(new Set(values).size).to.be.above(1);
+  });
+
+  test('utils.randomPick returns an element and a seeded rng picks deterministically', () => {
+    const array = [10, 20, 30, 40, 50];
+    for (let i = 0; i < 50; i++) expect(array).to.include(utils.randomPick(array));
+    const picks = [];
+    for (let i = 0; i < 10; i++) picks.push(utils.randomPick(array, utils.createSeededRandom(2)));
+    expect(new Set(picks).size).to.equal(1);
+  });
+
   test('utils.snap', () => {
     const array = [25, 100, 400];
     const snap = 25;

@@ -162,6 +162,11 @@ export const render = (tickable, time, muteCallbacks, internalRender, tickMode) 
       let tweenTargetTransforms;
       let tweenTargetTransformsProperties;
       let tweenTransformsNeedUpdate = 0;
+      // Properties animated together share an ease and a normalized time, so memoize the
+      // last eased progress and skip the repeat ease calls across the group.
+      let lastTweenEase = null;
+      let lastTweenEaseArg = -1;
+      let lastTweenProgress = 0;
 
       while (tween) {
 
@@ -208,7 +213,17 @@ export const render = (tickable, time, muteCallbacks, internalRender, tickMode) 
         ) {
 
           const tweenNewTime = tween._currentTime = clamp(iterationTime - tween._startTime, 0, tweenChangeDuration);
-          const tweenProgress = tween._ease(tweenNewTime / tween._updateDuration);
+          const tweenEase = tween._ease;
+          const tweenEaseArg = tweenNewTime / tween._updateDuration;
+          let tweenProgress;
+          if (tweenEase === lastTweenEase && tweenEaseArg === lastTweenEaseArg) {
+            tweenProgress = lastTweenProgress;
+          } else {
+            tweenProgress = tweenEase(tweenEaseArg);
+            lastTweenEase = tweenEase;
+            lastTweenEaseArg = tweenEaseArg;
+            lastTweenProgress = tweenProgress;
+          }
           const tweenModifier = tween._modifier;
           const tweenValueType = tween._valueType;
           const tweenType = tween._tweenType;

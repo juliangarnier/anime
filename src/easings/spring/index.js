@@ -6,6 +6,7 @@ import {
 
 import {
   globals,
+  makeTweakable,
 } from '../../core/globals.js';
 
 import {
@@ -44,7 +45,9 @@ import {
  * (c) 2016 Webkit - Apple Inc
  */
 
-const maxSpringParamValue = K * 10;
+// K * K puts the ceiling where the w0 clamp saturates anyway, so a stretch can compress any
+// spring down to its rest window instead of stalling on an artificial parameter bound.
+const maxSpringParamValue = K * K;
 
 export class Spring {
   /**
@@ -187,6 +190,49 @@ export class Spring {
     this.settlingDuration = round(this.solverDuration * K, 0) * globals.timeScale;
   }
 
+  /**
+   * Lowest settlingDuration stretch can reach, the constant rest detection window scaled to the
+   * current time unit. stretch refuses any target at or below it since a shorter settle would no
+   * longer describe a resting motion.
+   * @return {Number}
+   */
+  get minSettlingDuration() {
+    return this.restDuration * globals.timeScale;
+  }
+
+  /**
+   * Retunes stiffness, damping and velocity so the spring settles at the given duration,
+   * keeping its bounce and curve shape. Targets at or below minSettlingDuration are refused,
+   * and a target below what the parameter bounds allow lands on that reachable floor instead.
+   * @param {Number} duration The target settlingDuration
+   * @return {this}
+   */
+  stretch(duration) {
+    // Rest detection appends the constant restDuration window and is not scale invariant,
+    // so the factor derives from the response part and refines against the solver
+    const rest = this.minSettlingDuration;
+    const tolerance = this.timeStep * K * globals.timeScale;
+    if (!(duration > rest)) return this;
+    for (let i = 0; i < 8; i++) {
+      const previous = this.settlingDuration;
+      if (abs(previous - duration) <= tolerance) break;
+      // Bound the factor so no parameter clamps on its own, a lone clamp would break zeta and
+      // turn the retune into a different spring
+      const lowest = Math.max(sqrt(this.s / maxSpringParamValue), this.d / maxSpringParamValue, abs(this.v) / maxSpringParamValue);
+      const highest = Math.min(sqrt(this.s / minValue), this.d / minValue);
+      const factor = clamp((duration - rest) / (previous - rest), lowest, highest);
+      if (!(factor > 0) || factor === Infinity || factor === 1) break;
+      // Scale each parameter by its time dimension so zeta holds and the response time scales exactly
+      this.s = clamp(round(this.s / (factor * factor), 6), minValue, maxSpringParamValue);
+      this.d = clamp(round(this.d / factor, 6), minValue, maxSpringParamValue);
+      this.v = clamp(round(this.v / factor, 6), -maxSpringParamValue, maxSpringParamValue);
+      this.pd = clamp(round(this.pd * factor, 3), 10 * globals.timeScale, maxSpringParamValue * globals.timeScale);
+      this.compute();
+      if (this.settlingDuration === previous) break;
+    }
+    return this;
+  }
+
   get bounce() {
     return this.bn;
   }
@@ -250,7 +296,9 @@ export class Spring {
  * @param {SpringParams} [parameters]
  * @returns {Spring}
  */
-export const spring = (parameters) => new Spring(parameters);
+const springFactory = (parameters) => new Spring(parameters);
+
+export const spring = /** @type {typeof springFactory} */(makeTweakable('Ease', 'spring', springFactory));
 
 /**
  * @deprecated createSpring() is deprecated use spring() instead

@@ -38,6 +38,10 @@ import {
   shuffle,
 } from './random.js';
 
+import {
+  makeTweakable,
+} from '../core/globals.js';
+
 /**
  * @import {
  *   StaggerParams,
@@ -85,7 +89,7 @@ import {
  * @param {StaggerParams} [params] The stagger parameters
  * @return {StaggerFunction<Number|String>}
  */
-export const stagger = (val, params = {}) => {
+const staggerFactory = (val, params = {}) => {
   let values = [];
   let maxValue = 0;
   let cachedOffset;
@@ -292,3 +296,9 @@ export const stagger = (val, params = {}) => {
     return output;
   }
 }
+
+/**
+ * Creates a stagger function that distributes a value across an animation's targets.
+ * @type {typeof staggerFactory}
+ */
+export const stagger = /** @type {typeof staggerFactory} */(makeTweakable('Stagger', 'stagger', staggerFactory));

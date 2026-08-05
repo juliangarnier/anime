@@ -114,7 +114,8 @@
       <label>Anime.js<input class="config-item" type="radio" name="mode" value="css-transform"></label>
       <label>Anime.js + WAAPI<input class="config-item" type="radio" name="mode" value="anime-waapi-css-transform"></label>
       <label>WAAPI<input class="config-item" type="radio" name="mode" value="wappi-css-transform"></label>
-      <label>Anime.js + Three.js<input class="config-item" type="radio" name="mode" value="webgl-threejs"></label>
+      <label>Anime.js + Three.js (adapter)<input class="config-item" type="radio" name="mode" value="webgl-threejs"></label>
+      <label>Anime.js + Three.js (manual)<input class="config-item" type="radio" name="mode" value="webgl-threejs-manual"></label>
     </fieldset>
     <fieldset>
       <legend>ANIMATIONS<input class="config-item" type="text" name="count" value="0" size=6 /></label></legend>
@@ -133,5 +134,8 @@
     </fieldset>
   </div>
 </body>
+<script type="importmap">
+{ "imports": { "three": "../../../node_modules/three/build/three.module.min.js" } }
+</script>
 <script type="module" src="index.js"></script>
 </html>

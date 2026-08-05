@@ -929,7 +929,7 @@ suite('Three.js adapter', () => {
     expect(bins[bid2].id).to.equal(bid2);
   });
 
-  test('Writes instance matrix and decomposes seeded matrix, dirty flag coalesces', () => {
+  test('Writes instance matrix, decomposes seeded matrix, coalesces transform writes', () => {
     const mesh = createInstanced(2);
     const seeded = new Matrix4().compose(new Vector3(5, 10, 15), new Quaternion(), new Vector3(2, 2, 2));
     mesh.setMatrixAt(0, seeded);
@@ -945,15 +945,21 @@ suite('Three.js adapter', () => {
     expect(m.elements[12]).to.equal(5);
     expect(m.elements[13]).to.equal(6);
     expect(m.elements[14]).to.equal(7);
-    instances[1]._dirty = 0;
+    // Position writes target the instanceMatrix buffer; rotation and scale switch to
+    // composed mode. All five writes coalesce into one composed matrix at the next flush.
     instances[1].x = 1;
     instances[1].y = 2;
     instances[1].z = 3;
-    expect(instances[1]._dirty).to.equal(1);
     instances[1].rotateY = 30;
-    expect(instances[1]._dirty).to.equal(1 | 2);
     instances[1].scaleX = 2;
-    expect(instances[1]._dirty).to.equal(1 | 2 | 4);
+    commitChanges(mesh);
+    mesh.getMatrixAt(1, m);
+    const p = new Vector3(), q = new Quaternion(), s = new Vector3();
+    m.decompose(p, q, s);
+    expect(p.x).to.equal(1);
+    expect(p.y).to.equal(2);
+    expect(p.z).to.equal(3);
+    expect(s.x).to.be.closeTo(2, 1e-6);
     animate(instances[0], { scale: 0, duration: 100, ease: 'linear', autoplay: false }).seek(100);
     commitChanges(mesh);
     const zero = new Matrix4();

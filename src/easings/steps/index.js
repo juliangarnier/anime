@@ -4,6 +4,10 @@ import {
   floor,
 } from "../../core/helpers.js";
 
+import {
+  makeTweakable,
+} from '../../core/globals.js';
+
 /**
  * @import {
  *   EasingFunction,
@@ -17,7 +21,9 @@ import {
  * @param  {Boolean} [fromStart]
  * @return {EasingFunction}
  */
-export const steps = (steps = 10, fromStart) => {
+const stepsFactory = (steps = 10, fromStart) => {
   const roundMethod = fromStart ? ceil : floor;
   return t => roundMethod(clamp(t, 0, 1) * steps) * (1 / steps);
 }
+
+export const steps = /** @type {typeof stepsFactory} */(makeTweakable('Ease', 'steps', stepsFactory));

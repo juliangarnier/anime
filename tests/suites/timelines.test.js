@@ -10,6 +10,7 @@ import {
   utils,
   createTimer,
   animate,
+  stagger,
 } from '../../dist/modules/index.js';
 
 import {
@@ -556,6 +557,26 @@ suite('Timelines', () => {
 
     expect(timerLog).to.equal(false);
     expect(+$target.style.transform.replace(/[^\d.-]/g, '')).to.equal(0);
+  });
+
+  test('Syncs an array of timers sequentially', () => {
+    const timers = [
+      createTimer({ duration: 100, autoplay: false }),
+      createTimer({ duration: 100, autoplay: false }),
+      createTimer({ duration: 100, autoplay: false }),
+    ];
+    const tl = createTimeline({ autoplay: false }).sync(timers);
+    expect(tl.duration).to.equal(300);
+  });
+
+  test('Syncs an array of timers with a stagger position', () => {
+    const timers = [
+      createTimer({ duration: 100, autoplay: false }),
+      createTimer({ duration: 100, autoplay: false }),
+      createTimer({ duration: 100, autoplay: false }),
+    ];
+    const tl = createTimeline({ autoplay: false }).sync(timers, stagger(50));
+    expect(tl.duration).to.equal(200);
   });
 
   test('Add animation and timers as targets', resolve => {

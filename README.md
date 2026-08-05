@@ -162,6 +162,7 @@ Then, execute the following scripts with `npm run <script>`.
 | `dev:test` | Runs `dev` and `test:browser` concurrently |
 | `build` | Bundles ESM / UMD / CJS / IIFE versions to `lib/` and creates type declarations in `types/` |
 | `test:browser` | Starts a local server and runs all browser-related tests |
+| `test:headless` | Runs the browser test suite in headless Chrome and reports pass / fail |
 | `test:node` | Starts Node-related tests |
 | `open:examples` | Starts a local server to browse the examples locally |
 

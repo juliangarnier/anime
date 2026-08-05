@@ -228,6 +228,20 @@ suite('Controls', () => {
     expect($target.getAttribute('style')).to.equal('height: 150px; width: 24px;');
   });
 
+  test('Cancel an animation twice keeps the target composition alive', () => {
+    const target = { x: 0 };
+    const animation1 = animate(target, { x: 100, duration: 50 });
+    animation1.cancel();
+    const animation2 = animate(target, { x: 50, duration: 50 });
+    // The stale second cancel runs while animation2's tween sits in the siblings list, a second
+    // sibling removal would null the lookup and hide animation2 from later compositions.
+    animation1.cancel();
+    const animation3 = animate(target, { x: 200, duration: 50 });
+    expect(animation2._cancelled).to.equal(1);
+    expect(animation2.paused).to.equal(true);
+    expect(animation3.paused).to.equal(false);
+  });
+
   test('Cancel a timeline', () => {
     const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
     $target.style.height = '100px';

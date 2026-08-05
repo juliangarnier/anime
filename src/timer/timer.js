@@ -448,6 +448,9 @@ export class Timer extends Clock {
 
   /** @return {this} */
   cancel() {
+    // Skip the removal when already cancelled, a second removeTweenSliblings on unlinked tweens
+    // would null the siblings lookup _head and _tail and orphan every live tween in it.
+    if (this._cancelled) return this.pause();
     if (this._hasChildren) {
       forEachChildren(this, (/** @type {Renderable} */child) => child.cancel(), true);
     } else {

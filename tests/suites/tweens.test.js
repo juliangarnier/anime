@@ -271,6 +271,24 @@ suite('Tweens', () => {
     });
   });
 
+  test('Override tweens of an earlier child when a later added child starts before it', () => {
+    const tl = createTimeline({ autoplay: false })
+    .add('#target-id', {
+      x: 300,
+      duration: 100,
+    }, 50)
+    .add('#target-id', {
+      x: 100,
+      duration: 80,
+    }, 0);
+    // The later added child renders after the first on every frame, so the first never wins
+    expect(tl._head._head._isOverridden).to.equal(1);
+    expect(tl._head._next._head._isOverridden).to.equal(0);
+    // Without the override the first child would render 225 here, its 300 target eased past the later child's held 100
+    tl.seek(100);
+    expect(utils.get('#target-id', 'x', false)).to.equal(100);
+  });
+
   test('Do not pause animation with partially overriden tweens', resolve => {
     const anim1 = animate('#target-id', {
       x: 100,

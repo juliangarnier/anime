@@ -6,6 +6,7 @@ import {
   minValue,
   compositionTypes,
   valueTypes,
+  isRegisteredTargetSymbol,
 } from '../core/consts.js';
 
 import {
@@ -56,6 +57,7 @@ export { registerTargets as $ };
  *   DOMTargetsParam,
  *   TargetsParam,
  *   DOMTarget,
+ *   Target,
  *   AnimationParams,
  *   TargetsArray,
  * } from '../types/index.js'
@@ -95,9 +97,15 @@ export { registerTargets as $ };
  * @param  {String|Boolean} [unit]
  */
 export function get(targetSelector, propName, unit) {
-  const targets = registerTargets(targetSelector);
-  if (!targets.length) return;
-  const [ target ] = targets;
+  // Fast path for an already registered target, skips the parse and per call array allocation
+  // so repeated reads like editor live values stay allocation free.
+  /** @type {Target} */
+  let target = targetSelector && /** @type {Target} */(targetSelector)[isRegisteredTargetSymbol] ? /** @type {Target} */(targetSelector) : null;
+  if (!target) {
+    const targets = registerTargets(targetSelector);
+    if (!targets.length) return;
+    target = targets[0];
+  }
   const tweenType = getTweenType(target, propName);
   const normalizePropName = sanitizePropertyName(propName, target, tweenType);
   let originalValue = getOriginalAnimatableValue(target, normalizePropName);

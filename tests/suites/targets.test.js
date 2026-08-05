@@ -151,6 +151,17 @@ suite('Targets', () => {
     expect(animation.targets.length).to.equal(6);
   });
 
+  test('Dedupes duplicated targets in large arrays', () => {
+    const objects = [];
+    for (let i = 0; i < 200; i++) objects.push({ x: 0 });
+    const animation = animate([objects, objects], {
+      x: 100,
+      duration: 100
+    });
+    expect(animation.targets.length).to.equal(200);
+    expect(getChildLength(animation)).to.equal(200);
+  });
+
   test('Properly handle animations without targets', () => {
     const animation = animate(undefined, { duration: 10 });
     expect(animation.targets).to.deep.equal([]);

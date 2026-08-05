@@ -37,11 +37,11 @@
  * - Auto-detected names that also exist on the mesh itself (e.g. `mesh.foo = 1` and `mesh.material.foo = 2`) take the mesh value, leaving the material untouched.
  */
 
-export { threeAdapter } from './adapter.js';
+export * from './adapter.js';
 
 import './resolvers.js';
 import './uniform.js';
 import './object3d.js';
 import './instance.js';
 
-export { getInstances, commitChanges } from './instance.js';
+export * from './instance.js';

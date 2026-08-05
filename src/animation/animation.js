@@ -413,6 +413,13 @@ export class JSAnimation extends Timer {
 
             if (tweenComposition !== compositionTypes.none) {
               let nextSibling = siblings._head;
+              // Overrides every sibling when they all start after the new tween, the walk below never enters in that case and they would otherwise stay live and only lose by render order.
+              if (nextSibling && nextSibling._absoluteStartTime > absoluteStartTime) {
+                while (nextSibling) {
+                  overrideTween(nextSibling);
+                  nextSibling = nextSibling._nextRep;
+                }
+              }
               // Walk prior siblings up to the new tween, skipping overridden ones so the chain resolves to the latest live value instead of stopping at the first override.
               while (nextSibling && nextSibling._absoluteStartTime <= absoluteStartTime) {
                 if (!nextSibling._isOverridden) prevSibling = nextSibling;
