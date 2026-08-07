@@ -52,6 +52,7 @@ export class Spring {
    */
   constructor(parameters = {}) {
     const hasBounceOrDuration = !isUnd(parameters.bounce) || !isUnd(parameters.duration);
+    const hasStiffnessOrDamping = !isUnd(parameters.stiffness) || !isUnd(parameters.damping);
     this.timeStep = .02; // Interval fed to the solver to calculate duration
     this.restThreshold = .0005; // Values below this threshold are considered resting position
     this.restDuration = 200; // Duration in ms used to check if the spring is resting after reaching restThreshold
@@ -76,6 +77,7 @@ export class Spring {
     /** @type {Callback<JSAnimation>} */
     this.onComplete = parameters.onComplete || noop;
     if (hasBounceOrDuration) this.calculateSDFromBD();
+    else if (hasStiffnessOrDamping) this.calculateBDFromSD();
     this.compute();
     /** @type {EasingFunction} */
     this.ease = t => {
