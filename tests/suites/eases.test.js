@@ -188,6 +188,22 @@ suite('Eases', () => {
     expect(animate(target, createEasingParam(spring({ velocity: 10 }))).duration).to.equal(1700);
   });
 
+  test('Spring stiffness and damping set the perceived duration at creation', () => {
+    let completed = 0;
+    const springEasing = spring({
+      stiffness: 30,
+      damping: 20,
+      mass: 1,
+      onComplete: () => completed++
+    });
+
+    expect(springEasing.duration).to.equal(1147.147);
+    springEasing.ease(628 / springEasing.settlingDuration);
+    expect(completed).to.equal(0);
+    springEasing.ease(springEasing.duration / springEasing.settlingDuration);
+    expect(completed).to.equal(1);
+  });
+
   test('Setting a Spring parameter after creation should update its duration', () => {
     const springEasing = spring();
     expect(springEasing.settlingDuration).to.equal(1760);
