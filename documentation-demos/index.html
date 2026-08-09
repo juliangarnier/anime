@@ -35112,7 +35112,7 @@ engine.useDefaultMainLoop = false;
 
 const [ $container ] = utils.$('.full-container');
 const color = utils.get($container, 'color');
-const { width, height } = $container.getBoundingClientRect();
+const { clientWidth: width, clientHeight: height } = $container;
 
 // Three.js setup
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
@@ -35586,7 +35586,7 @@ window.demos['adapters-threejs-adapter'] = function(
 
 const [ $container ] = utils.$('.full-container');
 const color = utils.get($container, 'color');
-const { width, height } = $container.getBoundingClientRect();
+const { clientWidth: width, clientHeight: height } = $container;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.shadowMap.enabled = true;
@@ -35720,7 +35720,7 @@ window.demos['adapters-threejs-adapter-threejs-object-property-adapter'] = funct
 
 const [ $container ] = utils.$('.full-container');
 const color = utils.get($container, 'color');
-const { width, height } = $container.getBoundingClientRect();
+const { clientWidth: width, clientHeight: height } = $container;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.shadowMap.enabled = true;
@@ -35863,7 +35863,7 @@ window.demos['adapters-threejs-adapter-threejs-transforms-adapter'] = function(
 
 const [ $container ] = utils.$('.full-container');
 const color = utils.get($container, 'color');
-const { width, height } = $container.getBoundingClientRect();
+const { clientWidth: width, clientHeight: height } = $container;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.shadowMap.enabled = true;
@@ -36019,7 +36019,7 @@ window.demos['adapters-threejs-adapter-materials-and-uniforms'] = function(
 // Three.js setup
 
 const [ $container ] = utils.$('.full-container');
-const { width, height } = $container.getBoundingClientRect();
+const { clientWidth: width, clientHeight: height } = $container;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.setSize(width, height);
@@ -36208,7 +36208,7 @@ window.demos['adapters-threejs-adapter-threejs-instanced-and-batched-meshes'] = 
 // Three.js setup
 
 const [ $container ] = utils.$('.full-container');
-const { width, height } = $container.getBoundingClientRect();
+const { clientWidth: width, clientHeight: height } = $container;
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
 renderer.setSize(width, height);
