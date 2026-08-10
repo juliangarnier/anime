@@ -288,26 +288,39 @@ suite('Eases', () => {
   });
 
   test('Steps from start', () => {
+    // jump-start is left-continuous, so it jumps to the next step as soon as
+    // its interval begins instead of waiting until the interval is over
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function#jump-start
     const cubicBezierIn = animate('#target-id', createEasingParam(steps(4, true)));
     cubicBezierIn.seek(0);
-    expect(getOpacityValue()).to.equal(0);
+    expect(getOpacityValue()).to.equal(.25);
     cubicBezierIn.seek(1);
     expect(getOpacityValue()).to.equal(.25);
     cubicBezierIn.seek(24);
     expect(getOpacityValue()).to.equal(.25);
     cubicBezierIn.seek(25);
-    expect(getOpacityValue()).to.equal(.25);
+    expect(getOpacityValue()).to.equal(.5);
     cubicBezierIn.seek(49);
     expect(getOpacityValue()).to.equal(.5);
     cubicBezierIn.seek(50);
-    expect(getOpacityValue()).to.equal(.5);
+    expect(getOpacityValue()).to.equal(.75);
     cubicBezierIn.seek(74);
     expect(getOpacityValue()).to.equal(.75);
     cubicBezierIn.seek(75);
-    expect(getOpacityValue()).to.equal(.75);
+    expect(getOpacityValue()).to.equal(1);
     cubicBezierIn.seek(99);
     expect(getOpacityValue()).to.equal(1);
     cubicBezierIn.seek(100);
+    expect(getOpacityValue()).to.equal(1);
+  });
+
+  test("'step-start' jumps to its final value immediately (steps(1, true))", () => {
+    const stepStart = animate('#target-id', createEasingParam(steps(1, true)));
+    stepStart.seek(0);
+    expect(getOpacityValue()).to.equal(1);
+    stepStart.seek(50);
+    expect(getOpacityValue()).to.equal(1);
+    stepStart.seek(100);
     expect(getOpacityValue()).to.equal(1);
   });
 });
