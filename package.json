@@ -195,8 +195,8 @@
     }
   },
   "peerDependencies": {
-    "three": ">=0.150.0",
-    "@types/three": ">=0.150.0"
+    "@types/three": ">=0.150.0",
+    "three": ">=0.150.0"
   },
   "peerDependenciesMeta": {
     "three": {
@@ -207,16 +207,16 @@
     }
   },
   "devDependencies": {
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.3.0",
+    "@types/three": "^0.184.0",
     "browser-sync": "^3.0.4",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
     "nodemon": "^3.1.10",
-    "rollup": "^4.9.1",
+    "rollup": "^4.59.0",
     "three": "^0.184.0",
-    "@types/three": "^0.184.0",
     "tweaks": "^0.3.4",
     "typescript": "^5.9.2"
   },
