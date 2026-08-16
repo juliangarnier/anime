@@ -8,6 +8,10 @@ import {
   utils,
 } from '../../dist/modules/index.js';
 
+import {
+  valueTypes,
+} from '../../dist/modules/core/consts.js';
+
 const validUnits = ['cm','mm','in','pc','pt','px','em','ex','ch','rem','vw','vh','vmin','vmax','q','lh','rlh','vb','vi','svw','svh','lvw','lvh','dvw','dvh'];
 
 suite('Units', () => {
@@ -210,6 +214,11 @@ suite('Units', () => {
     let animation = animate('#target-id', { rotate: [oneRad, '180deg'], autoplay: false });
     expect(getChildAtIndex(animation, 0)._fromNumber).to.equal(360);
     expect(getChildAtIndex(animation, 0)._toNumber).to.equal(180);
+  });
+
+  test('Value type is set to UNIT after unit conversion (#1170)', () => {
+    let animation = animate('#target-id', { rotate: ['360deg', '.5turn'], autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.UNIT);
   });
 
 });

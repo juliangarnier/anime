@@ -3420,7 +3420,7 @@ const convertValueUnit = (el, decomposedValue, unit, force = false) => {
     decomposedValue.n = convertedValue;
     convertedValuesCache[cachedKey] = convertedValue;
   }
-  decomposedValue.t === valueTypes.UNIT;
+  decomposedValue.t = valueTypes.UNIT;
   decomposedValue.u = unit;
   return decomposedValue;
 };

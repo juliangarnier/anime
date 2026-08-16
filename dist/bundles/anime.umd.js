@@ -3426,7 +3426,7 @@
       decomposedValue.n = convertedValue;
       convertedValuesCache[cachedKey] = convertedValue;
     }
-    decomposedValue.t === valueTypes.UNIT;
+    decomposedValue.t = valueTypes.UNIT;
     decomposedValue.u = unit;
     return decomposedValue;
   };
