@@ -59,7 +59,7 @@ const convertValueUnit = (el, decomposedValue, unit, force = false) => {
     decomposedValue.n = convertedValue;
     convertedValuesCache[cachedKey] = convertedValue;
   }
-  decomposedValue.t === consts.valueTypes.UNIT;
+  decomposedValue.t = consts.valueTypes.UNIT;
   decomposedValue.u = unit;
   return decomposedValue;
 };
