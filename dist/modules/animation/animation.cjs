@@ -1,6 +1,6 @@
 /**
  * Anime.js - animation - CJS
- * @version v5.0.0-beta.1
+ * @version v5.0.0-beta.2
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -455,10 +455,11 @@ class JSAnimation extends timer.Timer {
                 notUnitValue.t = consts.valueTypes.UNIT;
                 notUnitValue.u = unitValue.u;
               } else if (fromTargetObject.t === consts.valueTypes.COLOR || toTargetObject.t === consts.valueTypes.COLOR) {
-                const colorValue = fromTargetObject.t === consts.valueTypes.COLOR ? fromTargetObject : toTargetObject;
+                fromTargetObject.t === consts.valueTypes.COLOR ? fromTargetObject : toTargetObject;
                 const notColorValue = fromTargetObject.t === consts.valueTypes.COLOR ? toTargetObject : fromTargetObject;
                 notColorValue.t = consts.valueTypes.COLOR;
-                notColorValue.d = colorValue.d.map(() => 0);
+                // Default to opaque black so a number side never drags alpha to transparent.
+                notColorValue.d = [0, 0, 0, 1];
               }
             }
 

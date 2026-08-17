@@ -113,7 +113,11 @@ export class ScrollObserver {
     handleScroll(): void;
     revert(): this;
 }
-export function onScroll(parameters?: ScrollObserverParams): ScrollObserver;
+/**
+ * Creates a scroll observer, linking a scroll position to an animation's playback.
+ * @type {typeof onScrollFactory}
+ */
+export const onScroll: typeof onScrollFactory;
 declare class ScrollContainer {
     /**
      * @param {HTMLElement} $el
@@ -191,5 +195,10 @@ import type { EasingFunction } from '../types/index.js';
 import type { Callback } from '../types/index.js';
 import type { JSAnimation } from '../animation/animation.js';
 import type { ScrollObserverParams } from '../types/index.js';
+/**
+ * @param {ScrollObserverParams} [parameters={}]
+ * @return {ScrollObserver}
+ */
+declare function onScrollFactory(parameters?: ScrollObserverParams): ScrollObserver;
 import { Timer } from '../timer/timer.js';
 export {};

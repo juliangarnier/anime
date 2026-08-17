@@ -1,6 +1,6 @@
 /**
  * Anime.js - events - CJS
- * @version v5.0.0-beta.1
+ * @version v5.0.0-beta.2
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -943,7 +943,13 @@ class ScrollObserver {
  * @param {ScrollObserverParams} [parameters={}]
  * @return {ScrollObserver}
  */
-const onScroll = (parameters = {}) => new ScrollObserver(parameters);
+const onScrollFactory = (parameters = {}) => new ScrollObserver(parameters);
+
+/**
+ * Creates a scroll observer, linking a scroll position to an animation's playback.
+ * @type {typeof onScrollFactory}
+ */
+const onScroll = /** @type {typeof onScrollFactory} */(globals.makeTweakable('OnScroll', 'onScroll', onScrollFactory));
 
 exports.ScrollObserver = ScrollObserver;
 exports.onScroll = onScroll;

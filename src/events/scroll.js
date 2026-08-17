@@ -9,6 +9,7 @@ import {
 import {
   scope,
   globals,
+  makeTweakable,
 } from '../core/globals.js';
 
 import {
@@ -985,4 +986,10 @@ export class ScrollObserver {
  * @param {ScrollObserverParams} [parameters={}]
  * @return {ScrollObserver}
  */
-export const onScroll = (parameters = {}) => new ScrollObserver(parameters);
+const onScrollFactory = (parameters = {}) => new ScrollObserver(parameters);
+
+/**
+ * Creates a scroll observer, linking a scroll position to an animation's playback.
+ * @type {typeof onScrollFactory}
+ */
+export const onScroll = /** @type {typeof onScrollFactory} */(makeTweakable('OnScroll', 'onScroll', onScrollFactory));

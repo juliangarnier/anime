@@ -1,12 +1,12 @@
 /**
  * Anime.js - events - ESM
- * @version v5.0.0-beta.1
+ * @version v5.0.0-beta.2
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { noop, doc, isDomSymbol, relativeValuesExecRgx, win } from '../core/consts.js';
-import { scope, globals } from '../core/globals.js';
+import { makeTweakable, scope, globals } from '../core/globals.js';
 import { isUnd, isNum, addChild, forEachChildren, round, isStr, isObj, removeChild, clamp, lerp, isFnc } from '../core/helpers.js';
 import { parseTargets } from '../core/targets.js';
 import { setValue, getRelativeValue, decomposeRawValue, decomposedOriginalValue } from '../core/values.js';
@@ -941,6 +941,12 @@ class ScrollObserver {
  * @param {ScrollObserverParams} [parameters={}]
  * @return {ScrollObserver}
  */
-const onScroll = (parameters = {}) => new ScrollObserver(parameters);
+const onScrollFactory = (parameters = {}) => new ScrollObserver(parameters);
+
+/**
+ * Creates a scroll observer, linking a scroll position to an animation's playback.
+ * @type {typeof onScrollFactory}
+ */
+const onScroll = /** @type {typeof onScrollFactory} */(makeTweakable('OnScroll', 'onScroll', onScrollFactory));
 
 export { ScrollObserver, onScroll, scrollContainers };

@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v5.0.0-beta.1
+ * @version v5.0.0-beta.2
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -30,6 +30,7 @@ var consts = require('./consts.cjs');
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
+ * @property {Function|null} addTimelineTimer
  * @property {Function} createTweak
  * @property {Object|null} _head
  * @property {Object|null} _tail
@@ -98,7 +99,7 @@ const makeTweakable = (type, name, fn) => function() {
   return editor ? editor.createTweak(result, type, name, Array.prototype.slice.call(arguments)) : result;
 };
 
-const globalVersions = { version: '5.0.0-beta.1', engine: null };
+const globalVersions = { version: '5.0.0-beta.2', engine: null };
 
 if (consts.isBrowser) {
   if (!consts.win.AnimeJS) consts.win.AnimeJS = [];

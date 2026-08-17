@@ -1,6 +1,6 @@
 /**
  * Anime.js - UMD bundle
- * @version v5.0.0-beta.1
+ * @version v5.0.0-beta.2
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -823,6 +823,7 @@
    * @property {Function} addTimelineLabel
    * @property {Function} addTimelineCall
    * @property {Function} addTimelineSync
+   * @property {Function|null} addTimelineTimer
    * @property {Function} createTweak
    * @property {Object|null} _head
    * @property {Object|null} _tail
@@ -891,7 +892,7 @@
     return editor ? editor.createTweak(result, type, name, Array.prototype.slice.call(arguments)) : result;
   };
 
-  const globalVersions = { version: '5.0.0-beta.1', engine: null };
+  const globalVersions = { version: '5.0.0-beta.2', engine: null };
 
   if (isBrowser) {
     if (!win.AnimeJS) win.AnimeJS = [];
@@ -4031,10 +4032,11 @@
                   notUnitValue.t = valueTypes.UNIT;
                   notUnitValue.u = unitValue.u;
                 } else if (fromTargetObject.t === valueTypes.COLOR || toTargetObject.t === valueTypes.COLOR) {
-                  const colorValue = fromTargetObject.t === valueTypes.COLOR ? fromTargetObject : toTargetObject;
+                  fromTargetObject.t === valueTypes.COLOR ? fromTargetObject : toTargetObject;
                   const notColorValue = fromTargetObject.t === valueTypes.COLOR ? toTargetObject : fromTargetObject;
                   notColorValue.t = valueTypes.COLOR;
-                  notColorValue.d = colorValue.d.map(() => 0);
+                  // Default to opaque black so a number side never drags alpha to transparent.
+                  notColorValue.d = [0, 0, 0, 1];
                 }
               }
 
@@ -4529,10 +4531,12 @@
           }
         } else {
           // It's a Timer
+          let timerPosition = /** @type {TimelinePosition} */(a2);
+          if (globals.editor && globals.editor.addTimelineTimer) timerPosition = globals.editor.addTimelineTimer(/** @type {TimerParams} */(a1), timerPosition, this.id);
           addTlChild(
             /** @type TimerParams */(a1),
             this,
-            parseTimelinePosition(this,a2),
+            parseTimelinePosition(this, timerPosition),
           );
         }
         if (this.composition) this.init(true);
@@ -4613,8 +4617,17 @@
      */
     call(callback, position) {
       if (isUnd(callback) || callback && !isFnc(callback)) return this;
-      if (globals.editor && globals.editor.addTimelineCall) position = globals.editor.addTimelineCall(callback, position, this.id);
-      return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
+      const editor = globals.editor;
+      if (editor && editor.addTimelineCall) position = editor.addTimelineCall(callback, position, this.id);
+      const timerHook = editor && editor.addTimelineTimer;
+      // Suppress the timer hook for the internal .add, the call already registered its marker.
+      // The restore must survive a throwing editor hook or every later timer stays unregistered.
+      if (editor) editor.addTimelineTimer = null;
+      try {
+        return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
+      } finally {
+        if (editor) editor.addTimelineTimer = timerHook;
+      }
     }
 
     /**
@@ -7713,7 +7726,13 @@
    * @param {ScrollObserverParams} [parameters={}]
    * @return {ScrollObserver}
    */
-  const onScroll = (parameters = {}) => new ScrollObserver(parameters);
+  const onScrollFactory = (parameters = {}) => new ScrollObserver(parameters);
+
+  /**
+   * Creates a scroll observer, linking a scroll position to an animation's playback.
+   * @type {typeof onScrollFactory}
+   */
+  const onScroll = /** @type {typeof onScrollFactory} */(makeTweakable('OnScroll', 'onScroll', onScrollFactory));
 
   
 

@@ -30,6 +30,7 @@ import {
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
+ * @property {Function|null} addTimelineTimer
  * @property {Function} createTweak
  * @property {Object|null} _head
  * @property {Object|null} _tail

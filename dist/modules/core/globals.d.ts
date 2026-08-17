@@ -18,6 +18,7 @@
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
+ * @property {Function|null} addTimelineTimer
  * @property {Function} createTweak
  * @property {Object|null} _head
  * @property {Object|null} _tail
@@ -49,6 +50,7 @@ export type EditorGlobals = {
     addTimelineLabel: Function;
     addTimelineCall: Function;
     addTimelineSync: Function;
+    addTimelineTimer: Function | null;
     createTweak: Function;
     _head: any | null;
     _tail: any | null;

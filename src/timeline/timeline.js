@@ -233,10 +233,12 @@ export class Timeline extends Timer {
         }
       } else {
         // It's a Timer
+        let timerPosition = /** @type {TimelinePosition} */(a2);
+        if (globals.editor && globals.editor.addTimelineTimer) timerPosition = globals.editor.addTimelineTimer(/** @type {TimerParams} */(a1), timerPosition, this.id);
         addTlChild(
           /** @type TimerParams */(a1),
           this,
-          parseTimelinePosition(this,a2),
+          parseTimelinePosition(this, timerPosition),
         );
       }
       if (this.composition) this.init(true);
@@ -317,8 +319,17 @@ export class Timeline extends Timer {
    */
   call(callback, position) {
     if (isUnd(callback) || callback && !isFnc(callback)) return this;
-    if (globals.editor && globals.editor.addTimelineCall) position = globals.editor.addTimelineCall(callback, position, this.id);
-    return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
+    const editor = globals.editor;
+    if (editor && editor.addTimelineCall) position = editor.addTimelineCall(callback, position, this.id);
+    const timerHook = editor && editor.addTimelineTimer;
+    // Suppress the timer hook for the internal .add, the call already registered its marker.
+    // The restore must survive a throwing editor hook or every later timer stays unregistered.
+    if (editor) editor.addTimelineTimer = null;
+    try {
+      return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
+    } finally {
+      if (editor) editor.addTimelineTimer = timerHook;
+    }
   }
 
   /**

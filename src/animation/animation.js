@@ -516,7 +516,8 @@ export class JSAnimation extends Timer {
                 const colorValue = fromTargetObject.t === valueTypes.COLOR ? fromTargetObject : toTargetObject;
                 const notColorValue = fromTargetObject.t === valueTypes.COLOR ? toTargetObject : fromTargetObject;
                 notColorValue.t = valueTypes.COLOR;
-                notColorValue.d = colorValue.d.map(() => 0);
+                // Default to opaque black so a number side never drags alpha to transparent.
+                notColorValue.d = [0, 0, 0, 1];
               }
             }
 
