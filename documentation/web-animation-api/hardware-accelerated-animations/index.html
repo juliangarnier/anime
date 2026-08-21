@@ -17,7 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://animejs.com/media/pages/documentation/web-animation-api/hardware-accelerated-animations/2921e1aac6-1782139874/generated-og-image.en.png">
   <meta name="twitter:description" content="A fast, multipurpose and lightweight JavaScript animation library">
-  <link href="/assets/css/styles.css?v=4.4.1" rel="stylesheet"></head>
+    <link href="/assets/css/core.css?v=1787347425" rel="stylesheet">  <link href="/assets/css/docs.css?v=1787347425" rel="stylesheet"></head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
 <script>
   window.paths = {
@@ -43,7 +43,7 @@
         <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
         <span>Anime.js | JavaScript Animation Engine</span>
       </a>
-      <label id="docs-versions" class="ui-select ui-input docs-info-version">
+      <label id="docs-versions" class="ui-select ui-input">
         <select class="ui-input" name="docs-versions" aria-label="Anime.js versions">
           <option value="/documentation">4.0.0</option>
           <option value="/v3/documentation">3.2.2</option>
@@ -1956,8 +1956,8 @@
                     
     <div class="docs-info is-active" data-color="13" data-id="web-animation-api-hardware-accelerated-animations">
 
-      <div class="docs-info-content text-layout">
-                <div class="docs-breadcrumb" data-color="13">
+      <div class="docs-info-content formatted-text">
+                <div class="docs-breadcrumb text-ui" data-color="13">
           <p>
             <a title="Web Animation API" href="/documentation/web-animation-api">Web Animation API</a>
 
@@ -1974,7 +1974,7 @@
           <!-- <a href="/panel/pages/documentation+web-animation-api+hardware-accelerated-animations" target="_blank">Edit Page</a> -->
         <p>One of the biggest advantages of WAAPI over <code>requestAnimationFrame</code> powered animations is the ability to run animations off the main thread, leading to smoother animations when the CPU is busy while consuming less power, which can improve battery life.</p>
 <p>The catch is that not all properties can be hardware-accelerated, there are currently only a few that can create a new compositor layer and run off the main thread on every browser.</p>
-<div class="block info">
+<div class="notice info">
 <p><strong>Hardware-accelerated properties in every major browsers:</strong></p>
 <ul>
 <li>opacity</li>
@@ -1989,7 +1989,7 @@
 <li>filter</li>
 </ul>
 </div>
-<div class="block warning">
+<div class="notice warning">
 <p>Safari (desktop and mobile) currently won't trigger hardware acceleration if the animation is using a custom <code>'linear()'</code> easing. This mean that custom power eases like: <code>'out(3)'</code>, <code>'in(3)'</code>, <code>'inOut(3)'</code>, and every JavaScript easing passed to <code>waapi.animate()</code> prevents the animation to be hardware accelerated, even if the property supports it.</p>
 </div>      </div>
                   <!-- <a href="/panel/pages/documentation+web-animation-api+hardware-accelerated-animations" target="_blank">Edit Page</a> -->
@@ -2062,34 +2062,37 @@ $block.addEventListener(&#039;click&#039;, toggleCPU);</code></pre>
         </div>
       </section>
       
-                        <div class="links-list-heading prev-next-heading">
-          <strong class="text-ui">Previous</strong>
-          <strong class="text-ui">Next</strong>
+                        <div class="prev-next-heading text-ui">
+          <h6 class="links-list-heading">Previous</h6>
+          <h6 class="links-list-heading">Next</h6>
         </div>
-        <ul class="links-list prev-next-links">
+        <ul class="links-list links-list-boxed prev-next-links">
           <li class="prev-link">
-                        <a class="text-ui" data-color="13" data-id="web-animation-api-when-to-use-waapi" title="When to use WAAPI" href="/documentation/web-animation-api/when-to-use-waapi">When to use WAAPI<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui" data-color="13" data-id="web-animation-api-when-to-use-waapi" title="When to use WAAPI" href="/documentation/web-animation-api/when-to-use-waapi"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="arrow-left" fill="none" fill-rule="evenodd">
     <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="6.5 11.987 11.737 17.225 12.975 15.987 9.849 12.862 17.737 12.862 17.737 11.112 9.849 11.112 12.975 7.987 11.737 6.75"/>
   </g>
 </svg>
-</a>
+When to use WAAPI</a>
                       </li>
           <li class="next-link">
-                        <a class="text-ui" data-color="13" data-id="web-animation-api-improvements-to-the-web-animation-api" title="Improvements to the Web Animation API" href="/documentation/web-animation-api/improvements-to-the-web-animation-api"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui" data-color="13" data-id="web-animation-api-improvements-to-the-web-animation-api" title="Improvements to the Web Animation API" href="/documentation/web-animation-api/improvements-to-the-web-animation-api">Improvements to the Web Animation API<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
-Improvements to the Web Animation API</a>
+</a>
                       </li>
         </ul>
 
-        <footer id="site-footer" class="layout-container" data-color="fg">
+        <footer id="site-footer" class="layout-container text-ui" data-color="fg">
   <div id="site-footer-content">
     <div class="footer-row">
       <div class="footer-block footer-block-sponsors">
-        <strong class="links-list-heading">Platinum sponsors</strong>
+        <h6 class="links-list-heading">Sponsors</h6>
+        <div id="carbon-responsive" class="carbon-ad">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CWBITK77&placement=animejscom&format=responsive" id="_carbonads_js"></script>
+</div>
                   <ul class="links-list">
                                           <li>  <a
     class="sponsor"
@@ -2107,78 +2110,27 @@ Improvements to the Web Animation API</a>
         loading="lazy"
       >
         <span>Become a sponsor</span>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
   </a>
 </li>
-                                      <li><sponsor-button><a href="https://github.com/sponsors/juliangarnier" target="_blank">Become a sponsor <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></sponsor-button></li>
-          </ul>
+                                    </ul>
               </div>
       <div class="footer-block footer-block-links">
         <div class="footer-block">
-          <strong class="links-list-heading">Site</strong>
+          <h6 class="links-list-heading">Site</h6>
           <ul class="links-list">
-            <li><a href="/" title="Documentation">Home<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/documentation" title="Documentation">Documentation<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/easing-editor" title="Easing functions editor">Easings editor<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/learn" title="Learn">Learn<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
+            <li><a href="/" title="Documentation">Home</a></li>
+            <li><a href="/documentation" title="Documentation">Documentation</a></li>
+            <li><a href="/easing-editor" title="Easing functions editor">Easings editor</a></li>
+            <li><a href="/learn" title="Learn">Learn</a></li>
           </ul>
         </div>
         <div class="footer-block">
-          <strong class="links-list-heading">Socials</strong>
+          <h6 class="links-list-heading">Socials</h6>
           <ul class="links-list">
-            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
+            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
+            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
+            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
+            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen</a></li>
           </ul>
         </div>
       </div>
@@ -2196,12 +2148,12 @@ Improvements to the Web Animation API</a>
         </div>
       </div>
       <div class="footer-block">
-        <strong class="links-list-heading">Stay in the loop</strong>
+        <h6 class="links-list-heading">Stay in the loop</h6>
         <email-signup url="https://buttondown.com/api/emails/embed-subscribe/juliangarnier?tag=footer" class="email-signup-form">
           <form>
   <div id="form-fields" class="email-signup-fields is-active">
     <input class="email-signup-field email-signup-input" type="email" name="email" placeholder="Enter your email" required />
-    <input class="email-signup-field email-signup-submit" type="submit" value="Subscribe" />
+    <input class="email-signup-field email-signup-submit text-ui" type="submit" value="Subscribe" />
   </div>
 
   <div id="success-message" class="email-signup-alert email-signup-success">
@@ -2268,5 +2220,5 @@ Improvements to the Web Animation API</a>
 
 <!-- !DEMOS -->
   </div>
-<script src="/assets/js/scripts.js?v=4.4.1"></script></body>
+<script src="/assets/js/docs.js?v=1787347425" type="module"></script></body>
 </html>

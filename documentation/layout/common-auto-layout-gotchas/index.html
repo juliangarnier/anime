@@ -17,7 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://animejs.com/media/pages/documentation/layout/common-auto-layout-gotchas/b8a7f914a0-1782139867/generated-og-image.en.png">
   <meta name="twitter:description" content="A fast, multipurpose and lightweight JavaScript animation library">
-  <link href="/assets/css/styles.css?v=4.4.1" rel="stylesheet"></head>
+    <link href="/assets/css/core.css?v=1787347425" rel="stylesheet">  <link href="/assets/css/docs.css?v=1787347425" rel="stylesheet"></head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
 <script>
   window.paths = {
@@ -43,7 +43,7 @@
         <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
         <span>Anime.js | JavaScript Animation Engine</span>
       </a>
-      <label id="docs-versions" class="ui-select ui-input docs-info-version">
+      <label id="docs-versions" class="ui-select ui-input">
         <select class="ui-input" name="docs-versions" aria-label="Anime.js versions">
           <option value="/documentation">4.0.0</option>
           <option value="/v3/documentation">3.2.2</option>
@@ -1956,8 +1956,8 @@
                     
     <div class="docs-info is-active" data-color="6" data-id="layout-common-auto-layout-gotchas">
 
-      <div class="docs-info-content text-layout">
-                <div class="docs-breadcrumb" data-color="6">
+      <div class="docs-info-content formatted-text">
+                <div class="docs-breadcrumb text-ui" data-color="6">
           <p>
             <a title="Layout" href="/documentation/layout">Layout</a>
 
@@ -1980,7 +1980,7 @@
 <li>The element's size has changed</li>
 <li>Its parent is a target and the parent's size has also changed</li>
 </ul>
-<div class="block success">
+<div class="notice success">
 <h3>Workaround</h3>
 <p>Either add the elements you want to keep visible to the <code>children</code> selectors array.<br>
 Or change the <code>swapAt</code> parameter to <code>opacity: 1</code>.</p>
@@ -1992,7 +1992,7 @@ Or change the <code>swapAt</code> parameter to <code>opacity: 1</code>.</p>
 <h2 id="the-root-element-position-jumps-during-a-transition" class="heading-anchor"><a href="#the-root-element-position-jumps-during-a-transition">The root element position "jumps" during a transition</a></h2>
 <p>The position of the root element is never animated because it could cause other issues like having the root siblings jumping during a transition because they are not part of the layout.<br>
 The root dimensions can be animated because animating the width and height will affect other elements position (in most cases).</p>
-<div class="block success">
+<div class="notice success">
 <h3>Workaround</h3>
 <p>If you end up in a situation where the position of the root element of your layout needs to be animated, you'll have to use the parent element of the current root as the new root:</p>
 <pre><code class="language-js">// From this
@@ -2002,14 +2002,14 @@ const layout = createLayout('#container'); // Now .grid position can be animated
 </div>
 <h2 id="my-text-is-jumping-during-a-layout-transition" class="heading-anchor"><a href="#my-text-is-jumping-during-a-layout-transition">My text is jumping during a layout transition</a></h2>
 <p>Animating <code>fontSize</code> alongside <code>width</code> or <code>height</code> can cause text to reflow mid-animation, especially in Firefox. Even if the start and end states have identical line breaks, intermediate frames may have a width/font-size ratio that triggers wrapping.</p>
-<div class="block success">
+<div class="notice success">
 <h3>Workaround</h3>
 <p>Use <code>white-space: nowrap</code> on the element if text wrapping isn't needed.</p>
 </div>
 <h2 id="some-elements-inlined-within-the-text-are-not-moving" class="heading-anchor"><a href="#some-elements-inlined-within-the-text-are-not-moving">Some elements inlined within the text are not moving</a></h2>
 <p>To prevents breaking text flow during a transition, elements adjacent to text nodes are excluded from position animations. </p>
 <pre><code class="language-html">&lt;p&gt;Some text &lt;span class="highlight"&gt;inline element&lt;/span&gt; more text&lt;/p&gt;</code></pre>
-<div class="block success">
+<div class="notice success">
 <h3>Workaround</h3>
 <p>Wrap text elements in span tags to allow text nodes to animate with the inlined elements.</p>
 <pre><code class="language-html">&lt;p&gt;&lt;span&gt;Some text&lt;/span&gt; &lt;span class="highlight"&gt;inline element&lt;/span&gt; &lt;span&gt;more text&lt;/span&gt;&lt;/p&gt;</code></pre>
@@ -2020,7 +2020,7 @@ const layout = createLayout('#container'); // Now .grid position can be animated
 createLayout('#root', {
   enterFrom: { scale: 0 }
 });</code></pre>
-<div class="block success">
+<div class="notice success">
 <h3>Workaround</h3>
 <p>Use the <code>transform</code> property with a full transform string:</p>
 <pre><code class="language-js">// Use transform string
@@ -2031,34 +2031,37 @@ createLayout('#root', {
 <h2 id="svg-elements-are-not-animated" class="heading-anchor"><a href="#svg-elements-are-not-animated">SVG elements are not animated</a></h2>
 <p>SVG elements and their descendants are excluded from layout animations. Only HTML elements are tracked and animated.</p>      </div>
       
-                        <div class="links-list-heading prev-next-heading">
-          <strong class="text-ui">Previous</strong>
-          <strong class="text-ui">Next</strong>
+                        <div class="prev-next-heading text-ui">
+          <h6 class="links-list-heading">Previous</h6>
+          <h6 class="links-list-heading">Next</h6>
         </div>
-        <ul class="links-list prev-next-links">
+        <ul class="links-list links-list-boxed prev-next-links">
           <li class="prev-link">
-                        <a class="text-ui" data-color="6" data-id="layout-layout-properties" title="Layout properties" href="/documentation/layout/layout-properties">Layout properties<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui" data-color="6" data-id="layout-layout-properties" title="Layout properties" href="/documentation/layout/layout-properties"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="arrow-left" fill="none" fill-rule="evenodd">
     <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="6.5 11.987 11.737 17.225 12.975 15.987 9.849 12.862 17.737 12.862 17.737 11.112 9.849 11.112 12.975 7.987 11.737 6.75"/>
   </g>
 </svg>
-</a>
+Layout properties</a>
                       </li>
           <li class="next-link">
-                        <a class="text-ui" data-color="7" data-id="scope" title="Scope" href="/documentation/scope"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui" data-color="7" data-id="scope" title="Scope" href="/documentation/scope">Scope<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
-Scope</a>
+</a>
                       </li>
         </ul>
 
-        <footer id="site-footer" class="layout-container" data-color="fg">
+        <footer id="site-footer" class="layout-container text-ui" data-color="fg">
   <div id="site-footer-content">
     <div class="footer-row">
       <div class="footer-block footer-block-sponsors">
-        <strong class="links-list-heading">Platinum sponsors</strong>
+        <h6 class="links-list-heading">Sponsors</h6>
+        <div id="carbon-responsive" class="carbon-ad">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CWBITK77&placement=animejscom&format=responsive" id="_carbonads_js"></script>
+</div>
                   <ul class="links-list">
                                           <li>  <a
     class="sponsor"
@@ -2076,78 +2079,27 @@ Scope</a>
         loading="lazy"
       >
         <span>Become a sponsor</span>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
   </a>
 </li>
-                                      <li><sponsor-button><a href="https://github.com/sponsors/juliangarnier" target="_blank">Become a sponsor <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></sponsor-button></li>
-          </ul>
+                                    </ul>
               </div>
       <div class="footer-block footer-block-links">
         <div class="footer-block">
-          <strong class="links-list-heading">Site</strong>
+          <h6 class="links-list-heading">Site</h6>
           <ul class="links-list">
-            <li><a href="/" title="Documentation">Home<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/documentation" title="Documentation">Documentation<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/easing-editor" title="Easing functions editor">Easings editor<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/learn" title="Learn">Learn<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
+            <li><a href="/" title="Documentation">Home</a></li>
+            <li><a href="/documentation" title="Documentation">Documentation</a></li>
+            <li><a href="/easing-editor" title="Easing functions editor">Easings editor</a></li>
+            <li><a href="/learn" title="Learn">Learn</a></li>
           </ul>
         </div>
         <div class="footer-block">
-          <strong class="links-list-heading">Socials</strong>
+          <h6 class="links-list-heading">Socials</h6>
           <ul class="links-list">
-            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
+            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
+            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
+            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
+            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen</a></li>
           </ul>
         </div>
       </div>
@@ -2165,12 +2117,12 @@ Scope</a>
         </div>
       </div>
       <div class="footer-block">
-        <strong class="links-list-heading">Stay in the loop</strong>
+        <h6 class="links-list-heading">Stay in the loop</h6>
         <email-signup url="https://buttondown.com/api/emails/embed-subscribe/juliangarnier?tag=footer" class="email-signup-form">
           <form>
   <div id="form-fields" class="email-signup-fields is-active">
     <input class="email-signup-field email-signup-input" type="email" name="email" placeholder="Enter your email" required />
-    <input class="email-signup-field email-signup-submit" type="submit" value="Subscribe" />
+    <input class="email-signup-field email-signup-submit text-ui" type="submit" value="Subscribe" />
   </div>
 
   <div id="success-message" class="email-signup-alert email-signup-success">
@@ -2237,5 +2189,5 @@ Scope</a>
 
 <!-- !DEMOS -->
   </div>
-<script src="/assets/js/scripts.js?v=4.4.1"></script></body>
+<script src="/assets/js/docs.js?v=1787347425" type="module"></script></body>
 </html>

@@ -17,7 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://animejs.com/media/pages/documentation/text/splittext/textsplitter-settings/words/7f958df49e-1782139870/generated-og-image.en.png">
   <meta name="twitter:description" content="A fast, multipurpose and lightweight JavaScript animation library">
-  <link href="/assets/css/styles.css?v=4.4.1" rel="stylesheet"></head>
+    <link href="/assets/css/core.css?v=1787347425" rel="stylesheet">  <link href="/assets/css/docs.css?v=1787347425" rel="stylesheet"></head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-16LTPBS8QC"></script>
 <script>
   window.paths = {
@@ -43,7 +43,7 @@
         <img src="/assets/images/anime-js-logo-v4.svg" alt="anime.js logo v4" width="580" height="118" />
         <span>Anime.js | JavaScript Animation Engine</span>
       </a>
-      <label id="docs-versions" class="ui-select ui-input docs-info-version">
+      <label id="docs-versions" class="ui-select ui-input">
         <select class="ui-input" name="docs-versions" aria-label="Anime.js versions">
           <option value="/documentation">4.0.0</option>
           <option value="/v3/documentation">3.2.2</option>
@@ -1956,8 +1956,8 @@
                     
     <div class="docs-info is-active" data-color="10" data-id="text-splittext-textsplitter-settings-words">
 
-      <div class="docs-info-content text-layout">
-                <div class="docs-breadcrumb" data-color="10">
+      <div class="docs-info-content formatted-text">
+                <div class="docs-breadcrumb text-ui" data-color="10">
           <p>
             <a title="Text" href="/documentation/text">Text</a>
 
@@ -1981,7 +1981,7 @@
         <p>Defines if and how the words should be split.<br>
 Split word elements are accessed via an array returned by the <code>words</code> property of a <code>TextSplit</code> instance.</p>
 <pre><code class="language-js">const { words } = splitText(target, { words: true });</code></pre>
-<div class="block info">
+<div class="notice info">
 <p>Internally, for browsers that support it, word splitting is done using the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter#examples" target="*blank" title="Intl.Segmenter"><code>Intl.Segmenter</code></a> object, allowing splitting words for languages that don't use spaces, like Japanese, Chinese, Thai, Lao, Khmer, Myanmar, etc, and falls back to using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split" rel="noreferrer" target="_blank" title="String.prototype.split()"><code>String.prototype.split()</code></a> for older browsers.</p>
 </div>
 <h2 id="default-split-wrappers" class="heading-anchor"><a href="#default-split-wrappers">Default split wrappers</a></h2>
@@ -1991,7 +1991,7 @@ Split word elements are accessed via an array returned by the <code>words</code>
 &lt;span style="display: inline-block;" data-line="0" data-word="2"&gt;words&lt;/span&gt;</code></pre>
 <h2 id="custom-split-wrappers" class="heading-anchor"><a href="#custom-split-wrappers">Custom split wrappers</a></h2>
 <p>Split wrappers can be configured by passing an <code>Object</code> of <a href="/documentation/text/splittext/split-parameters" title="Split parameters">Split parameters</a> or by passing a custom <a href="/documentation/text/splittext/html-template" title="HTML template">HTML template</a> <code>String</code>.</p>
-<div class="block warning">
+<div class="notice warning">
 <h2 id="animating-words-when-also-splitting-by-lines" class="heading-anchor"><a href="#animating-words-when-also-splitting-by-lines">Animating words when also splitting by lines</a></h2>
 <p>Each line split overrides existing word elements, which causes running word animations to stop once the fonts have loaded or every time the text element resizes.<br>
 Declaring an animation within the <a href="/documentation/text/splittext/textsplitter-methods/addeffect" title="split.addEffect()"><code>split.addEffect()</code></a> method ensures continuous playback between resizes and automatically reverts it when using <a href="/documentation/text/splittext/textsplitter-methods/revert" title="split.revert()"><code>split.revert()</code></a>.</p>
@@ -2049,34 +2049,37 @@ animate(words, {
         </div>
       </section>
       
-                        <div class="links-list-heading prev-next-heading">
-          <strong class="text-ui">Previous</strong>
-          <strong class="text-ui">Next</strong>
+                        <div class="prev-next-heading text-ui">
+          <h6 class="links-list-heading">Previous</h6>
+          <h6 class="links-list-heading">Next</h6>
         </div>
-        <ul class="links-list prev-next-links">
+        <ul class="links-list links-list-boxed prev-next-links">
           <li class="prev-link">
-                        <a class="text-ui" data-color="10" data-id="text-splittext-textsplitter-settings-lines" title="lines" href="/documentation/text/splittext/textsplitter-settings/lines">lines<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui" data-color="10" data-id="text-splittext-textsplitter-settings-lines" title="lines" href="/documentation/text/splittext/textsplitter-settings/lines"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g id="arrow-left" fill="none" fill-rule="evenodd">
     <polygon id="Path" fill="#FFFFFF" fill-rule="nonzero" points="6.5 11.987 11.737 17.225 12.975 15.987 9.849 12.862 17.737 12.862 17.737 11.112 9.849 11.112 12.975 7.987 11.737 6.75"/>
   </g>
 </svg>
-</a>
+lines</a>
                       </li>
           <li class="next-link">
-                        <a class="text-ui" data-color="10" data-id="text-splittext-textsplitter-settings-chars" title="chars" href="/documentation/text/splittext/textsplitter-settings/chars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
+                        <a class="text-ui" data-color="10" data-id="text-splittext-textsplitter-settings-chars" title="chars" href="/documentation/text/splittext/textsplitter-settings/chars">chars<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
   <g fill="none" fill-rule="evenodd">
     <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
   </g>
 </svg>
-chars</a>
+</a>
                       </li>
         </ul>
 
-        <footer id="site-footer" class="layout-container" data-color="fg">
+        <footer id="site-footer" class="layout-container text-ui" data-color="fg">
   <div id="site-footer-content">
     <div class="footer-row">
       <div class="footer-block footer-block-sponsors">
-        <strong class="links-list-heading">Platinum sponsors</strong>
+        <h6 class="links-list-heading">Sponsors</h6>
+        <div id="carbon-responsive" class="carbon-ad">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CWBITK77&placement=animejscom&format=responsive" id="_carbonads_js"></script>
+</div>
                   <ul class="links-list">
                                           <li>  <a
     class="sponsor"
@@ -2094,78 +2097,27 @@ chars</a>
         loading="lazy"
       >
         <span>Become a sponsor</span>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
   </a>
 </li>
-                                      <li><sponsor-button><a href="https://github.com/sponsors/juliangarnier" target="_blank">Become a sponsor <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></sponsor-button></li>
-          </ul>
+                                    </ul>
               </div>
       <div class="footer-block footer-block-links">
         <div class="footer-block">
-          <strong class="links-list-heading">Site</strong>
+          <h6 class="links-list-heading">Site</h6>
           <ul class="links-list">
-            <li><a href="/" title="Documentation">Home<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/documentation" title="Documentation">Documentation<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/easing-editor" title="Easing functions editor">Easings editor<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a href="/learn" title="Learn">Learn<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
+            <li><a href="/" title="Documentation">Home</a></li>
+            <li><a href="/documentation" title="Documentation">Documentation</a></li>
+            <li><a href="/easing-editor" title="Easing functions editor">Easings editor</a></li>
+            <li><a href="/learn" title="Learn">Learn</a></li>
           </ul>
         </div>
         <div class="footer-block">
-          <strong class="links-list-heading">Socials</strong>
+          <h6 class="links-list-heading">Socials</h6>
           <ul class="links-list">
-            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
-            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon">
-  <g fill="none" fill-rule="evenodd">
-    <polygon fill="currentColor" fill-rule="nonzero" points="17.737 11.987 12.5 17.225 11.263 15.987 14.388 12.862 6.5 12.862 6.5 11.112 14.388 11.112 11.263 7.987 12.5 6.75"/>
-  </g>
-</svg>
-</a></li>
+            <li><a target="_blank" href="https://x.com/juliangarnier">X / Twitter</a></li>
+            <li><a target="_blank" href="https://bsky.app/profile/animejs.com">Bluesky</a></li>
+            <li><a target="_blank" href="https://github.com/juliangarnier/anime">GitHub</a></li>
+            <li><a target="_blank" href="https://codepen.io/collection/Poerqa">CodePen</a></li>
           </ul>
         </div>
       </div>
@@ -2183,12 +2135,12 @@ chars</a>
         </div>
       </div>
       <div class="footer-block">
-        <strong class="links-list-heading">Stay in the loop</strong>
+        <h6 class="links-list-heading">Stay in the loop</h6>
         <email-signup url="https://buttondown.com/api/emails/embed-subscribe/juliangarnier?tag=footer" class="email-signup-form">
           <form>
   <div id="form-fields" class="email-signup-fields is-active">
     <input class="email-signup-field email-signup-input" type="email" name="email" placeholder="Enter your email" required />
-    <input class="email-signup-field email-signup-submit" type="submit" value="Subscribe" />
+    <input class="email-signup-field email-signup-submit text-ui" type="submit" value="Subscribe" />
   </div>
 
   <div id="success-message" class="email-signup-alert email-signup-success">
@@ -2255,5 +2207,5 @@ chars</a>
 
 <!-- !DEMOS -->
   </div>
-<script src="/assets/js/scripts.js?v=4.4.1"></script></body>
+<script src="/assets/js/docs.js?v=1787347425" type="module"></script></body>
 </html>
