@@ -24,4 +24,23 @@ suite('Scroll', () => {
     animation.revert();
     expect(scrollContainers.get($container)).to.equal(undefined);
   });
+
+  test('Window ScrollContainer restarts its resize ticker on window resize events until reverted', () => {
+    const observer = onScroll({ target: '#target-id' });
+    const container = observer.container;
+    const originalRestart = container.resizeTicker.restart;
+    let restarts = 0;
+    container.resizeTicker.restart = () => { restarts++; };
+    try {
+      expect(container.useWin).to.equal(true);
+      window.dispatchEvent(new Event('resize'));
+      expect(restarts).to.equal(1);
+      container.revert();
+      window.dispatchEvent(new Event('resize'));
+      expect(restarts).to.equal(1);
+    } finally {
+      container.resizeTicker.restart = originalRestart;
+      observer.revert();
+    }
+  });
 });
