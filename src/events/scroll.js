@@ -220,6 +220,7 @@ class ScrollContainer {
     this.resizeObserver = new ResizeObserver(() => this.resizeTicker.restart());
     this.resizeObserver.observe(this.element);
     (this.useWin ? win : this.element).addEventListener('scroll', this, false);
+    if (this.useWin) win.addEventListener('resize', this, false);
   }
 
   updateScrollCoords() {
@@ -291,6 +292,9 @@ class ScrollContainer {
       case 'scroll':
         this.handleScroll();
         break;
+      case 'resize':
+        this.resizeTicker.restart();
+        break;
     }
   }
 
@@ -301,6 +305,7 @@ class ScrollContainer {
     this.wakeTicker.cancel();
     this.resizeObserver.disconnect();
     (this.useWin ? win : this.element).removeEventListener('scroll', this);
+    if (this.useWin) win.removeEventListener('resize', this);
     scrollContainers.delete(this.element);
   }
 }
