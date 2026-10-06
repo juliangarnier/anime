@@ -93,7 +93,7 @@ import {
  */
 
 /**
- * @typedef {LayoutStateAnimationProperties & LayoutAnimationTimingsParams} LayoutStateParams
+ * @typedef {LayoutAnimationTimingsParams & {[property: string]: Number|String|FunctionValue|EasingParam|undefined}} LayoutStateParams
  */
 
 /**

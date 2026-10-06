@@ -72,7 +72,9 @@ export type LayoutAnimationTimingsParams = {
     ease?: EasingParam | FunctionValue;
 };
 export type LayoutStateAnimationProperties = Record<string, number | string | FunctionValue>;
-export type LayoutStateParams = LayoutStateAnimationProperties & LayoutAnimationTimingsParams;
+export type LayoutStateParams = LayoutAnimationTimingsParams & {
+    [property: string]: number | string | FunctionValue | EasingParam | undefined;
+};
 export type LayoutSpecificAnimationParams = {
     id?: number | string;
     delay?: number | FunctionValue;

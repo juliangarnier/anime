@@ -72,7 +72,7 @@ import { scope, defaults, globals } from '../core/globals.js';
  */
 
 /**
- * @typedef {LayoutStateAnimationProperties & LayoutAnimationTimingsParams} LayoutStateParams
+ * @typedef {LayoutAnimationTimingsParams & {[property: string]: Number|String|FunctionValue|EasingParam|undefined}} LayoutStateParams
  */
 
 /**
