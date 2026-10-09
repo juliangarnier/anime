@@ -634,10 +634,17 @@ export class Draggable {
         this.containerBounds[2] = this.containerArray[2] - cpb;
         this.containerBounds[3] = this.containerArray[3] + cpl;
       } else {
-        this.containerBounds[0] = -round(targetRect.top - (fx ? clamp(top, 0, ih) : top) + hiddenTop - cpt, 0);
-        this.containerBounds[1] = -round(targetRect.right - (fx ? clamp(right, 0, iw) : right) - hiddenRight + cpr, 0);
-        this.containerBounds[2] = -round(targetRect.bottom - (fx ? clamp(bottom, 0, ih) : bottom) - hiddenBottom + cpb, 0);
-        this.containerBounds[3] = -round(targetRect.left - (fx ? clamp(left, 0, iw) : left) + hiddenLeft - cpl, 0);
+        // When a custom container is set, its bounds must win over the viewport
+        // even if the target is position:fixed (fixes #1157). Only clamp to the
+        // viewport when the scroll container is the window (document.body).
+        const ct = (fx && uw) ? clamp(top, 0, ih) : top;
+        const cr = (fx && uw) ? clamp(right, 0, iw) : right;
+        const cb = (fx && uw) ? clamp(bottom, 0, ih) : bottom;
+        const cl = (fx && uw) ? clamp(left, 0, iw) : left;
+        this.containerBounds[0] = -round(targetRect.top - ct + hiddenTop - cpt, 0);
+        this.containerBounds[1] = -round(targetRect.right - cr - hiddenRight + cpr, 0);
+        this.containerBounds[2] = -round(targetRect.bottom - cb - hiddenBottom + cpb, 0);
+        this.containerBounds[3] = -round(targetRect.left - cl + hiddenLeft - cpl, 0);
       }
     }
     this.transforms.revert();
