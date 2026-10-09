@@ -193,5 +193,26 @@ suite('Draggables', () => {
     });
   });
 
+  test('Fixed target with oversized container should not clamp bounds to viewport (#1157)', () => {
+    const $container = document.createElement('div');
+    $container.style.cssText = 'position:fixed;left:-200px;top:0;width:2000px;height:400px;';
+    document.body.appendChild($container);
+
+    const $target = document.createElement('div');
+    $target.style.cssText = 'position:fixed;left:0;top:0;width:40px;height:40px;';
+    $container.appendChild($target);
+
+    const draggable = createDraggable($target, { container: $container });
+    const [bt, br, bb, bl] = draggable.containerBounds;
+    // Container extends 200px left of the viewport; left bound must allow
+    // moving into that off-screen region (bl < 0), not stop at the viewport.
+    expect(bl).to.be.below(0);
+    // Right bound should reach past the viewport into the oversized container.
+    expect(br).to.be.above(window.innerWidth - 40);
+
+    draggable.revert();
+    $container.remove();
+  });
+
 });
 
