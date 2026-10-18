@@ -1,11 +1,12 @@
 /**
  * Anime.js - utils - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { clamp, lerp, round, snap } from '../core/helpers.js';
+import { lerp } from '../core/helpers.js';
+export { clamp, round, snap } from '../core/helpers.js';
 
 /**
  * Rounds a number to fixed decimal places
@@ -81,4 +82,4 @@ const damp = (start, end, deltaTime, factor) => {
   return !factor ? start : factor === 1 ? end : lerp(start, end, 1 - Math.exp(-factor * deltaTime * .1));
 };
 
-export { clamp, damp, degToRad, lerp, mapRange, padEnd, padStart, radToDeg, round, roundPad, snap, wrap };
+export { damp, degToRad, lerp, mapRange, padEnd, padStart, radToDeg, roundPad, wrap };

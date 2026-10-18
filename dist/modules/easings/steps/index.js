@@ -1,11 +1,11 @@
 /**
  * Anime.js - easings - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { clamp, ceil, floor } from '../../core/helpers.js';
+import { ceil, floor, clamp } from '../../core/helpers.js';
 
 /**
  * @import {

@@ -18,8 +18,8 @@ export const easeInPower: PowerEasing;
 /** @type {Record<String, EaseType>} */
 export const easeTypes: Record<string, EaseType>;
 export namespace eases {
-    export let linear: typeof import("../none.js").none;
-    export let none: typeof import("../none.js").none;
+    export let linear: EasingFunction;
+    export let none: EasingFunction;
     let _in: PowerEasing;
     export { _in as in };
     export let out: PowerEasing;
@@ -70,8 +70,8 @@ export function parseEaseString(string: string): EasingFunction;
 export function parseEase(ease: EasingParam): EasingFunction;
 export type EaseType = (Ease: EasingFunction) => EasingFunction;
 export type EasesFunctions = {
-    linear: typeof none;
-    none: typeof none;
+    linear: EasingFunction;
+    none: EasingFunction;
     in: PowerEasing;
     out: PowerEasing;
     inOut: PowerEasing;
@@ -122,4 +122,3 @@ import type { EasingFunction } from '../../types/index.js';
 import type { BackEasing } from '../../types/index.js';
 import type { ElasticEasing } from '../../types/index.js';
 import type { EasingParam } from '../../types/index.js';
-import { none as none_1 } from '../none.js';

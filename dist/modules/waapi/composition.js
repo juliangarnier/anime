@@ -1,11 +1,11 @@
 /**
  * Anime.js - waapi - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { addChild, removeChild } from '../core/helpers.js';
+import { removeChild, addChild } from '../core/helpers.js';
 
 /**
  * @import {

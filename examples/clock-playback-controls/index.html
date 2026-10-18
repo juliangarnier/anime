@@ -15,8 +15,7 @@
       overflow: hidden;
       width: 100%;
       height: 100%;
-      background: #1a1a1a;
-      font-family: BerkeleyMono-Regular, monospace;
+      background: var(--bg-1);
     }
     #clock {
       font-size: 32px;
@@ -46,13 +45,13 @@
       left: -50%;
       width: 200%;
       height: 400%;
-      background-image: linear-gradient(180deg, #1a1a1a 10%, #1a1a1a66 30%, #1a1a1a00 40%, #1a1a1a00 60%,#1a1a1a66 70%, #1a1a1a 90%);
+      background-image: linear-gradient(180deg, var(--bg-1) 10%, rgba(37,36,35,.4) 30%, transparent 40%, transparent 60%, rgba(37,36,35,.4) 70%, var(--bg-1) 90%);
     }
     .slot {
       position: relative;
       width: 1ch;
       height: 2ch;
-      color: #fff;
+      color: var(--fg-1);
       display: flex;
       transform-style: preserve-3d;
       align-items: center;
@@ -91,8 +90,8 @@
     fieldset > input {
       min-width: 0;
       border-radius: .1ch;
-      accent-color: white;
-      color: white;
+      accent-color: var(--fg-1);
+      color: var(--fg-1);
       text-align: right;
       background: transparent;
     }
@@ -124,15 +123,15 @@
       min-width: 0;
       border-radius: 1ch;
       margin: .5ch;
-      background-color: #2A2A2A;
-      color: #FFF;
+      background-color: var(--bg-4);
+      color: var(--fg-1);
     }
     #controls button:hover {
-      background-color: #3A3A3A;
+      background-color: var(--bg-5);
     }
     #controls button:focus {
-      background-color: #FFF;
-      color: #2A2A2A;
+      background-color: var(--fg-1);
+      color: var(--bg-3);
     }
   </style>
 </head>

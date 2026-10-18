@@ -35,8 +35,6 @@ export class Clock {
     /** @type {Number} */
     this._lastTime = initTime;
     /** @type {Number} */
-    this._scheduledTime = 0;
-    /** @type {Number} */
     this._frameDuration = K / maxFps;
     /** @type {Number} */
     this._fps = maxFps;
@@ -55,14 +53,12 @@ export class Clock {
   }
 
   set fps(frameRate) {
-    const previousFrameDuration = this._frameDuration;
     const fr = +frameRate;
     const fps = fr < minValue ? minValue : fr;
     const frameDuration = K / fps;
     if (fps > defaults.frameRate) defaults.frameRate = fps;
     this._fps = fps;
     this._frameDuration = frameDuration;
-    this._scheduledTime += frameDuration - previousFrameDuration;
   }
 
   get speed() {
@@ -79,17 +75,17 @@ export class Clock {
    * @return {tickModes}
    */
   requestTick(time) {
-    const scheduledTime = this._scheduledTime;
-    this._lastTickTime = time;
-    // If the current time is lower than the scheduled time
-    // this means not enough time has passed to hit one frameDuration
-    // so skip that frame
-    if (time < scheduledTime) return tickModes.NONE;
     const frameDuration = this._frameDuration;
-    const frameDelta = time - scheduledTime;
-    // Ensures that _scheduledTime progresses in steps of at least 1 frameDuration.
-    // Skips ahead if the actual elapsed time is higher.
-    this._scheduledTime += frameDelta < frameDuration ? frameDuration : frameDelta;
+    const elapsed = time - this._lastTickTime;
+    const scaled = frameDuration * .25;
+    const tolerance = scaled < 4 ? scaled : 4;
+    // Tolerance prevents dropping frames that arrive a bit early due to RAF jitter
+    // typically <= ~25% of frame duration and capped at 4ms so it doesn't dominate at high fps.
+    // e.g. at 60fps (frameDuration=16.667ms) a frame arriving after 15ms:
+    // - without tolerance: 15 < 16.667 -> skip
+    // - with tolerance: 15 + 4 >= 16.667 -> tick
+    if (elapsed + tolerance < frameDuration) return tickModes.NONE;
+    this._lastTickTime = elapsed >= frameDuration ? time - (elapsed % frameDuration) : time;
     return tickModes.AUTO;
   }
 

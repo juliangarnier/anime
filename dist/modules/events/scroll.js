@@ -1,13 +1,13 @@
 /**
  * Anime.js - events - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { noop, doc, isDomSymbol, win, relativeValuesExecRgx } from '../core/consts.js';
+import { noop, doc, isDomSymbol, relativeValuesExecRgx, win } from '../core/consts.js';
 import { scope, globals } from '../core/globals.js';
-import { isUnd, addChild, forEachChildren, round, isStr, isObj, isNum, removeChild, clamp, lerp, isFnc } from '../core/helpers.js';
+import { isUnd, isNum, addChild, forEachChildren, round, isStr, isObj, removeChild, clamp, lerp, isFnc } from '../core/helpers.js';
 import { parseTargets } from '../core/targets.js';
 import { setValue, getRelativeValue, decomposeRawValue, decomposedOriginalValue } from '../core/values.js';
 import { convertValueUnit } from '../core/units.js';
@@ -214,12 +214,14 @@ class ScrollContainer {
 
   refreshScrollObservers() {
     forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+      if (!child.ready) return;
       if (child._debug) {
         child.removeDebug();
       }
     });
     this.updateBounds();
     forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+      if (!child.ready) return;
       child.refresh();
       child.onResize(child);
       if (child._debug) {

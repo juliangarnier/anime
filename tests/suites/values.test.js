@@ -377,7 +377,7 @@ suite('Values', () => {
 
     /** @type {HTMLElement} */
     const $target = document.querySelector('#target-id');
-    expect($target.style.transform).to.equal('translateX(100px) translateY(100px) translateZ(100px) rotate(360deg) rotateX(360deg) rotateY(360deg) rotateZ(360deg) skew(45deg) skewX(45deg) skewY(45deg) scale(10) scaleX(10) scaleY(10) scaleZ(10) perspective(1000px)');
+    expect($target.style.transform).to.equal('perspective(1000px) translate3d(100px, 100px, 100px) rotate(360deg) rotateX(360deg) rotateY(360deg) rotateZ(360deg) scale(10) scaleX(10) scaleY(10) scaleZ(10) skew(45deg) skewX(45deg) skewY(45deg)');
   });
 
   test('Get inline transforms values', () => {
@@ -390,7 +390,9 @@ suite('Values', () => {
       translateX: 100,
       translateY: 100,
       scale: 10,
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect(utils.get($target, 'translateX')).to.equal('10px');
@@ -399,41 +401,14 @@ suite('Values', () => {
 
   });
 
-  test('Transforms shorthand properties values', () => {
-
-    /** @type {HTMLElement} */
-    const $target = document.querySelector('#target-id');
-
-    $target.style.transform = 'translateX(10px) translateY(calc(-100px + 10vh)) translateZ(50px) scale(0.75)';
-
-    const animation = animate('#target-id', {
-      x: 100,
-      y: 100,
-      z: 100,
-      scale: 10,
-      duration: 10,
-    });
-
-    expect(utils.get('#target-id', 'x')).to.equal('10px');
-    expect(utils.get('#target-id', 'y')).to.equal('calc(-100px + 10vh)');
-    expect(utils.get('#target-id', 'z')).to.equal('50px');
-    expect(utils.get('#target-id', 'scale')).to.equal('0.75');
-
-    animation.pause().seek(animation.duration);
-
-    expect(utils.get('#target-id', 'x')).to.equal('100px');
-    expect(utils.get('#target-id', 'y')).to.equal('calc(100px + 100vh)');
-    expect(utils.get('#target-id', 'z')).to.equal('100px');
-    expect(utils.get('#target-id', 'scale')).to.equal('10');
-
-  });
-
   test('Values with white space', () => {
     /** @type {HTMLElement} */
     const $target = document.querySelector('#target-id');
     const animation = animate($target, {
       backgroundSize: ['auto 100%', 'auto 200%'],
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COMPLEX);
@@ -459,7 +434,9 @@ suite('Values', () => {
       filter: 'blur(10px) contrast(200)',
       translateX: 'calc(calc(15px * 2) - 42rem)',
       zIndex: {to: 10, modifier: utils.round(1)},
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect($target.style.zIndex).to.equal('0');
@@ -478,7 +455,9 @@ suite('Values', () => {
     expect(getComputedStyle($target).getPropertyValue('--width')).to.equal('100px');
     const animation = animate($target, {
       '--width': 200,
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect(getComputedStyle($target).getPropertyValue('--width')).to.equal('100px'); // Anime.js removes the first white space to get a simpler (number + unit) animation type instead of commplex type (string + number + string)
@@ -513,7 +492,9 @@ suite('Values', () => {
       '--x': x2,
       '--rx': rx2,
       '--s': s2,
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     animation.pause().seek(animation.duration);
@@ -533,7 +514,9 @@ suite('Values', () => {
     $target.style.transform = 'translateX(100px)';
     const animation = animate($target, {
       translateX: {from: 50},
-      duration: 10,
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect($target.style.transform).to.equal('translateX(50px)');
@@ -547,7 +530,9 @@ suite('Values', () => {
     $target.style.transform = 'translateX(100px)';
     const animation = animate($target, {
       translateX: {from: 50, to: 150},
-      duration: 10,
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect($target.style.transform).to.equal('translateX(50px)');
@@ -561,7 +546,9 @@ suite('Values', () => {
     $target.style.transform = 'translateX(100px)';
     const animation = animate($target, {
       translateX: {from: 50, to: 0},
-      duration: 10,
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect($target.style.transform).to.equal('translateX(50px)');
@@ -576,7 +563,9 @@ suite('Values', () => {
     $target.style.transform = 'translateX(100px)';
     const animation = animate($target, {
       translateX: [50, 150],
-      duration: 10,
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect($target.style.transform).to.equal('translateX(50px)');
@@ -593,7 +582,9 @@ suite('Values', () => {
       translateX: '*=2.5', // 100px * 2.5 = '250px',
       width: '-=20px', // 28 - 20 = '8px',
       rotate: '+=2turn', // 0 + 2 = '2turn',
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect(relativeEl.style.transform).to.equal('translateX(100px) rotate(0turn)');
@@ -614,7 +605,9 @@ suite('Values', () => {
       translateX: { from: '*=2.5' },
       width: { from: '-=20px' },
       rotate: { from: '+=2turn' },
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect(relativeEl.style.transform).to.equal('translateX(250px) rotate(4turn)');
@@ -635,7 +628,9 @@ suite('Values', () => {
       translateX: ['*=2.5', 10], // Relative from value
       width: [100, '-=20px'], // Relative to value
       rotate: ['+=2turn', '-=1turn'], // Relative from and to values
-      duration: 10
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
     });
 
     expect(relativeEl.style.transform).to.equal('translateX(250px) rotate(4turn)');
@@ -654,7 +649,8 @@ suite('Values', () => {
     const animation = animate(relativeEl, {
       translateX: [{to: '+=10'}, {to: '-=10'}],
       rotate: [{from: '+=2turn', to: '-=1turn'}, {from: '+=5turn', to: '-=2turn'}],
-      duration: 10,
+      duration: 100,
+      autoplay: false,
       ease: 'linear',
     });
 
@@ -665,6 +661,31 @@ suite('Values', () => {
     expect(relativeEl.style.transform).to.equal('translateX(110px) rotate(8turn)');
     animation.pause().seek(animation.duration);
     expect(relativeEl.style.transform).to.equal('translateX(100px) rotate(6turn)');
+  });
+
+  test('Renders next keyframe at exact boundary when animation _offset has float rounding drift', () => {
+    /** @type {HTMLElement} */
+    const relativeEl = document.querySelector('#target-id');
+    relativeEl.style.transform = 'rotate(2turn)';
+    const animation = animate(relativeEl, {
+      rotate: [{from: '+=2turn', to: '-=1turn'}, {from: '+=5turn', to: '-=2turn'}],
+      duration: 100,
+      autoplay: false,
+      ease: 'linear',
+    });
+    // Reproduce the floating point drift that occurs in real runs when engine timing produces an _offset
+    // whose round-to-12-decimal value is strictly greater than the float itself. animation.js
+    // rounds _absoluteStartTime, render.js does not round absoluteTime, so the boundary check
+    // absoluteTime >= prev._absoluteStartTime + prev._changeDuration flips at the exact tween end.
+    const drifted = 0.49999999999999;
+    animation._offset = drifted;
+    let tween = animation._head;
+    while (tween) {
+      tween._absoluteStartTime = Math.round((drifted + tween._startTime) * 1e12) / 1e12;
+      tween = tween._next;
+    }
+    animation.seek(animation.duration * .5);
+    expect(relativeEl.style.transform).to.equal('rotate(8turn)');
   });
 
 });

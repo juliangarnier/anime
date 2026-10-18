@@ -1,6 +1,6 @@
 {
   "name": "animejs",
-  "version": "4.3.6",
+  "version": "4.5.0",
   "description": "JavaScript animation engine",
   "homepage": "https://animejs.com",
   "author": "Julian Garnier <julian@animejs.com>",
@@ -36,12 +36,17 @@
     "SVG",
     "WAAPI",
     "Canvas",
-    "WebGL"
+    "WebGL",
+    "treejs",
+    "tree.js"
   ],
   "files": [
     "dist"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/modules/adapters/**",
+    "./src/adapters/**"
+  ],
   "type": "module",
   "main": "./dist/modules/index.cjs",
   "module": "./dist/modules/index.js",
@@ -175,6 +180,30 @@
       "require": "./dist/modules/waapi/index.cjs",
       "import": "./dist/modules/waapi/index.js",
       "default": "./dist/modules/waapi/index.cjs"
+    },
+    "./adapters": {
+      "types": "./dist/modules/adapters/index.d.ts",
+      "require": "./dist/modules/adapters/index.cjs",
+      "import": "./dist/modules/adapters/index.js",
+      "default": "./dist/modules/adapters/index.cjs"
+    },
+    "./adapters/three": {
+      "types": "./dist/modules/adapters/three/index.d.ts",
+      "require": "./dist/modules/adapters/three/index.cjs",
+      "import": "./dist/modules/adapters/three/index.js",
+      "default": "./dist/modules/adapters/three/index.cjs"
+    }
+  },
+  "peerDependencies": {
+    "three": ">=0.150.0",
+    "@types/three": ">=0.150.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    },
+    "@types/three": {
+      "optional": true
     }
   },
   "devDependencies": {
@@ -186,7 +215,9 @@
     "mocha": "^10.2.0",
     "nodemon": "^3.1.10",
     "rollup": "^4.9.1",
-    "three": "^0.160.0",
+    "three": "^0.184.0",
+    "@types/three": "^0.184.0",
+    "tweaks": "^0.3.4",
     "typescript": "^5.9.2"
   },
   "scripts": {
@@ -195,6 +226,9 @@
     "build": "rm -rf dist && build=true rollup -c && tsc -p tsconfig.types.json && echo '\\n\\033[32m✓ build completed\\n\\033[0m'",
     "test:browser": "browser-sync start --startPath tests/index.html --server --files 'dist/modules/**/*.js' 'tests/suites/**/*.js' --no-notify --directory",
     "test:node": "node --allow-natives-syntax \"node_modules/.bin/mocha\" -u tdd --timeout 20000 \"./tests/suites/node.test.js\"",
-    "open:examples": "browser-sync start --startPath examples --server --no-notify --directory --files '**/*.js'"
+    "open:examples": "browser-sync start --startPath examples --server --no-notify --directory --files '**/*.js'",
+    "typecheck": "tsc -p . && tsc -p tests && tsc -p examples",
+    "typecheck:examples": "tsc -p examples",
+    "typecheck:tests": "tsc -p tests"
   }
 }

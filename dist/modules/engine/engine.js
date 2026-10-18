@@ -1,6 +1,6 @@
 /**
  * Anime.js - engine - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -101,7 +101,9 @@ class Engine extends Clock {
   }
 
   set speed(playbackRate) {
-    this._speed = playbackRate * globals.timeScale;
+    const speed = playbackRate * globals.timeScale;
+    if (this._speed === speed) return;
+    this._speed = speed;
     forEachChildren(this, (/** @type {Tickable} */child) => child.speed = child._speed);
   }
 

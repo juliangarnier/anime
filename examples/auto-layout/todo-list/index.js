@@ -1,5 +1,13 @@
 import { createLayout, spring, stagger, $ } from '../../../dist/modules/index.js';
 
+const $container = /** @type {HTMLElement} */(document.getElementById('$container'));
+const $todoTemplate = /** @type {HTMLTemplateElement} */(document.getElementById('$todoTemplate'));
+const $new = /** @type {HTMLElement} */(document.getElementById('$new'));
+const $pending = /** @type {HTMLElement} */(document.getElementById('$pending'));
+const $completed = /** @type {HTMLElement} */(document.getElementById('$completed'));
+const $addInput = /** @type {HTMLInputElement} */(document.getElementById('$addInput'));
+const $createForm = /** @type {HTMLFormElement} */(document.getElementById('$createForm'));
+
 const layout = createLayout($container, {
   properties: ['backgroundColor', 'color', 'accent-color'],
   ease: spring({ bounce: .3, duration: 450 }),
@@ -67,5 +75,5 @@ $createForm.addEventListener('submit', event => {
 });
 
 document.addEventListener('click', event => {
-  if (event.target.classList.contains('action')) handleAction(event);
+  if (/** @type {HTMLElement} */(event.target).classList.contains('action')) handleAction(event);
 });

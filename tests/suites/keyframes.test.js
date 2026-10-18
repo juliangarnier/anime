@@ -4,7 +4,7 @@ import {
   getTweenDelay,
 } from '../utils.js';
 
-import { animate, utils } from '../../dist/modules/index.js';
+import { animate, createTimeline, engine, stagger, utils } from '../../dist/modules/index.js';
 
 import {
   valueTypes,
@@ -284,11 +284,11 @@ suite('Keyframes', () => {
 
     // Easing should be continuous throughout the sequence
     animation.seek(250);
-    expect($target.style.transform).to.equal('translateY(-25px) translateX(0px)');
+    expect($target.style.transform).to.equal('translate(0px, -25px)');
     animation.seek(500);
-    expect($target.style.transform).to.equal('translateY(0px) translateX(250px)');
+    expect($target.style.transform).to.equal('translate(250px, 0px)');
     animation.seek(750);
-    expect($target.style.transform).to.equal('translateY(25px) translateX(0px)');
+    expect($target.style.transform).to.equal('translate(0px, 25px)');
   });
 
   test('Percentage based keyframes values', () => {
@@ -309,15 +309,15 @@ suite('Keyframes', () => {
 
     // Easing should be continuous throughout the sequence
     animation.seek(0);
-    expect($target.style.transform).to.equal('translateX(100px) translateY(100px)');
+    expect($target.style.transform).to.equal('translate(100px, 100px)');
     animation.seek(200);
-    expect($target.style.transform).to.equal('translateX(-100px) translateY(60px)');
+    expect($target.style.transform).to.equal('translate(-100px, 60px)');
     animation.seek(500);
-    expect($target.style.transform).to.equal('translateX(100px) translateY(0px)');
+    expect($target.style.transform).to.equal('translate(100px, 0px)');
     animation.seek(800);
-    expect($target.style.transform).to.equal('translateX(-100px) translateY(-60px)');
+    expect($target.style.transform).to.equal('translate(-100px, -60px)');
     animation.seek(1000);
-    expect($target.style.transform).to.equal('translateX(100px) translateY(-100px)');
+    expect($target.style.transform).to.equal('translate(100px, -100px)');
   });
 
   test('Percentage based keyframes with float percentage values', () => {
@@ -362,6 +362,235 @@ suite('Keyframes', () => {
     expect($target.style.transform).to.equal('translateX(300px)');
     animation.seek(keyDuration * 3);
     expect($target.style.transform).to.equal('translateX(400px)');
+  });
+
+  test('Forward seek skipping a short trailing keyframe restores the last keyframe\'s to value', () => {
+    const a = { y: 0 };
+    const b = { y: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add([a, b], {
+        y: [
+          { to: 1, duration: stagger([100, 50]) },
+          { to: 2, duration: stagger([100, 50]) },
+          { to: 3, duration: 10 },
+        ],
+        ease: 'linear',
+      }, 0);
+
+    // Saturate.
+    tl.seek(250);
+    expect(a.y).to.equal(3);
+    expect(b.y).to.equal(3);
+
+    // Backward into b's second keyframe range (also a's first).
+    tl.seek(75);
+    expect(b.y).to.equal(1.5);
+
+    // Forward jumping over b's tiny last keyframe range [100, 110]. b's last keyframe must still write its to value.
+    tl.seek(115);
+    expect(b.y).to.equal(3);
+  });
+
+  test('Backward seek into the delay gap between two staggered keyframes restores the first keyframe\'s to value', () => {
+    const N = 31;
+    const targets = Array.from({ length: N }, () => ({ y: 1 }));
+    const tl = createTimeline({ autoplay: false }).add(targets, {
+      y: [
+        { to: -1, duration: 300, delay: stagger([0, 196], { from: 'center' }) },
+        { to: 2, duration: 200, delay: stagger(90, { from: 'center' }) },
+      ],
+      ease: 'linear',
+    });
+
+    const inGap = [];
+    let i = 0;
+    let tw = tl._head._head;
+    while (tw) {
+      const kf1End = tw._absoluteStartTime + tw._changeDuration;
+      tw = tw._next;
+      const kf2Start = tw._absoluteStartTime;
+      if (kf1End < 700 && kf2Start > 700) inGap.push(i);
+      tw = tw._next;
+      i++;
+    }
+
+    tl.seek(tl.duration);
+    tl.seek(700);
+    for (const j of inGap) expect(targets[j].y).to.equal(-1);
+
+    tl.seek(0);
+    tl.seek(700);
+    for (const j of inGap) expect(targets[j].y).to.equal(-1);
+  });
+
+  test('Sequential staggered keyframes stay non-overlapping under arbitrary engine offsets', () => {
+    // The global setup.js pin keeps the offset at 0 by default. Sweep several non-zero offsets to make sure the precision-matched _absoluteUpdateStartTime holds for the values a long-running browser session can hit.
+    const N = 31;
+    for (const offset of [173.27, 1000, 5234.5, 17300, 50000]) {
+      engine._startTime = engine._lastTickTime - offset;
+      const targets = Array.from({ length: N }, () => ({ y: 1 }));
+      const tl = createTimeline({ autoplay: false }).add(targets, {
+        y: [
+          { to: -1, duration: 300, delay: stagger([0, 196], { from: 'center' }) },
+          { to: 2, duration: 200, delay: stagger(90, { from: 'center' }) },
+        ],
+      });
+      let tw = tl._head._head;
+      while (tw) {
+        expect(tw._isOverlapped, `kf1 overlap at offset=${offset}`).to.equal(0);
+        tw = tw._next;
+        tw = tw._next;
+      }
+    }
+  });
+
+  test('Backward seek past the start of a keyframe sequence restores the first keyframe\'s from value', () => {
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, {
+        y: [
+          { to: 1, duration: 10 },
+          { to: 0.5, duration: 200 },
+        ],
+        ease: 'linear',
+      }, 100);
+
+    // Forward past the entire sequence so both tween _currentTimes land at their ends.
+    tl.seek(400);
+    expect(target.y).to.equal(0.5);
+
+    // Jump backward into the second keyframe's range (mid kf 1).
+    tl.seek(150);
+    expect(target.y).to.equal(0.9);
+
+    // Jump backward across the first keyframe's tiny range to before its start.
+    tl.seek(50);
+    expect(target.y).to.equal(0);
+  });
+
+  test('Backward seek updates a single from-to keyframe inside a timeline with delay', () => {
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .label('START')
+      .add(target, {
+        y: [-8, 0],
+        duration: 100,
+        delay: 1763,
+        ease: 'linear',
+      });
+    tl.seek(tl.duration);
+    expect(target.y).to.equal(0);
+    tl.seek(tl.duration - 50);
+    expect(target.y).to.equal(-4);
+    tl.seek(tl.duration - 100);
+    expect(target.y).to.equal(-8);
+  });
+
+  test('Backward seek across loop iterations updates a delayed keyframe', () => {
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false }).add(target, {
+      y: [-8, 0],
+      duration: 100,
+      delay: 100,
+      loop: 2,
+      ease: 'linear',
+    });
+    expect(tl.duration).to.equal(400);
+    tl.seek(400);
+    expect(target.y).to.equal(0);
+    tl.seek(350); expect(target.y).to.equal(-4);
+    tl.seek(300); expect(target.y).to.equal(-8);
+    tl.seek(250); expect(target.y).to.equal(-4);
+    tl.seek(200); expect(target.y).to.equal(-8);
+    tl.seek(150); expect(target.y).to.equal(-4);
+    tl.seek(100); expect(target.y).to.equal(-8);
+  });
+
+  test('Backward seek across alternate loop iterations updates a delayed keyframe', () => {
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false }).add(target, {
+      y: [-8, 0],
+      duration: 100,
+      delay: 100,
+      loop: 1,
+      alternate: true,
+      ease: 'linear',
+    });
+    expect(tl.duration).to.equal(300);
+    tl.seek(300);
+    expect(target.y).to.equal(-8);
+    tl.seek(250); expect(target.y).to.equal(-4);
+    tl.seek(200); expect(target.y).to.equal(0);
+    tl.seek(150); expect(target.y).to.equal(-4);
+    tl.seek(100); expect(target.y).to.equal(-8);
+  });
+
+  test('Backward seek updates a multi-keyframe property with delay', () => {
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false }).add(target, {
+      y: [{ to: 50, duration: 50 }, { to: 0, duration: 50 }],
+      delay: 100,
+      ease: 'linear',
+    });
+    expect(tl.duration).to.equal(200);
+    tl.seek(200);
+    expect(target.y).to.equal(0);
+    tl.seek(175); expect(target.y).to.equal(25);
+    tl.seek(150); expect(target.y).to.equal(50);
+    tl.seek(125); expect(target.y).to.equal(25);
+    tl.seek(100); expect(target.y).to.equal(0);
+  });
+
+  test('Seeking past the end and back into a delayed keyframe restores the active value', () => {
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false }).add(target, {
+      y: [-8, 0],
+      duration: 100,
+      delay: 100,
+      ease: 'linear',
+    });
+    expect(tl.duration).to.equal(200);
+    tl.seek(500);
+    expect(target.y).to.equal(0);
+    tl.seek(150);
+    expect(target.y).to.equal(-4);
+    tl.seek(100);
+    expect(target.y).to.equal(-8);
+  });
+
+  test('Backward seek updates a single object-form keyframe in a timeline', () => {
+    const target = { x: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, { x: { to: 100 }, duration: 100, ease: 'linear' }, 100);
+    tl.seek(200);
+    expect(target.x).to.equal(100);
+    tl.seek(150);
+    expect(target.x).to.equal(50);
+    tl.seek(50);
+    expect(target.x).to.equal(0);
+  });
+
+  test('Backward seek updates a single object-form keyframe alongside a multi-keyframe property', () => {
+    const target = { x: 0, y: 0 };
+    const animation = animate(target, {
+      x: { to: 100 },
+      y: [
+        { to: 50, duration: 50 },
+        { to: 100, duration: 50 },
+      ],
+      duration: 100,
+      ease: 'linear',
+      autoplay: false,
+    });
+    animation.seek(100);
+    expect(target.x).to.equal(100);
+    expect(target.y).to.equal(100);
+    animation.seek(50);
+    expect(target.x).to.equal(50);
+    expect(target.y).to.equal(50);
+    animation.seek(0);
+    expect(target.x).to.equal(0);
+    expect(target.y).to.equal(0);
   });
 
 });

@@ -54,10 +54,11 @@ export const randomPick = items => items[random(0, items.length - 1)];
  * Adapted from https://bost.ocks.org/mike/shuffle/
  *
  * @param  {Array} items - The array to shuffle (will be modified in-place)
+ * @param  {RandomNumberGenerator} [rnd] - Optional RNG matching the random() signature (defaults to random)
  * @return {Array} The same array reference, now shuffled
  */
-export const shuffle = items => {
+export const shuffle = (items, rnd = random) => {
   let m = items.length, t, i;
-  while (m) { i = random(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
+  while (m) { i = rnd(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
   return items;
 }

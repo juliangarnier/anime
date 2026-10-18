@@ -8,11 +8,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "tweaks": "../../../node_modules/tweaks/tweaks.js",
+        "tweaks/gui": "../../../node_modules/tweaks/gui/index.js"
+      }
+    }
+  </script>
   <style>
     body {
       opacity: 0;
       display: flex;
       flex-direction: row;
+      justify-content: center;
       gap: 2rem;
       width: 100%;
       min-height: 100dvh;
@@ -23,52 +32,11 @@
       opacity: 1;
     }
 
-    aside {
-      --border-radius: .75rem;
-      justify-self: flex-end;
-      width: 12rem;
-      border-radius: var(--border-radius);
-    }
-
-    aside li {
-      list-style: none;
-      padding: 1rem;
-      background-color: #404040;
-      margin-bottom: 1px;
-    }
-
-    aside li:first-child {
-      border-top-left-radius: var(--border-radius);
-      border-top-right-radius: var(--border-radius);
-    }
-
-    aside li:last-child {
-      border-bottom-left-radius: var(--border-radius);
-      border-bottom-right-radius: var(--border-radius);
-    }
-
-    .field input,
-    .field select {
-      width: 50%;
-    }
-
-    .field {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    fieldset:disabled .field {
-      opacity: .5;
-    }
-
     main {
       display: flex;
       flex-direction: row;
       justify-content: center;
-      gap: 2rem;
-      width: calc(100% - 12rem);
+      width: 100%;
     }
 
     article {
@@ -101,7 +69,7 @@
     }
 
     article a {
-      color: var(--red);
+      color: var(--red-1);
       text-decoration: underline;
     }
 
@@ -129,10 +97,9 @@
     article span:has(p) + span:has(ul) {
       margin-top: 1rem;
     }
-
   </style>
 </head>
-<body class="is-debug">
+<body>
   <main>
     <article>
       <h1>An all-in-one text splitter function to easily split, wrap, and clone text<br></h1>
@@ -155,155 +122,6 @@
       </p>
     </article>
   </main>
-  <aside id="parameters">
-    <form id="splitForm">
-      <ul>
-        <li>
-          <fieldset class="vertical" id="lines-options">
-            <legend>
-              <label for="lines"><input type="checkbox" id="lines" name="lines"> lines</label>
-            </legend>
-            <div class="field">
-              <label for="lines-wrap">wrap</label>
-              <select id="lines-wrap" name="lines-wrap">
-                <option value="false">false</option>
-                <option value="clip">clip</option>
-                <option value="visible">visible</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="lines-clone">clone</label>
-              <select id="lines-clone" name="lines-clone">
-                <option value="false">false</option>
-                <option value="top">top</option>
-                <option value="right">right</option>
-                <option value="bottom">bottom</option>
-                <option value="left">left</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="lines-animate">animate</label>
-              <select id="lines-animate" name="lines-animate">
-                <option value="false">false</option>
-                <option value="250">200ms</option>
-                <option value="500">500ms</option>
-                <option value="750">750ms</option>
-                <option value="1000">1000ms</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="lines-stagger">stagger</label>
-              <select id="lines-stagger" name="lines-stagger">
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="200">200</option>
-                <option value="random">random</option>
-              </select>
-            </div>
-          </fieldset>
-        </li>
-        <li>
-          <fieldset class="vertical" id="words-options">
-            <legend>
-              <label for="words"><input type="checkbox" id="words" name="words" checked> words</label>
-            </legend>
-            <div class="field">
-              <label for="words-wrap">wrap</label>
-              <select id="words-wrap" name="words-wrap">
-                <option value="false">false</option>
-                <option value="clip">clip</option>
-                <option value="visible">visible</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="words-clone">clone</label>
-              <select id="words-clone" name="words-clone">
-                <option value="false">false</option>
-                <option value="top">top</option>
-                <option value="right">right</option>
-                <option value="bottom">bottom</option>
-                <option value="left">left</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="words-animate">animate</label>
-              <select id="words-animate" name="words-animate">
-                <option value="false">false</option>
-                <option value="250">250ms</option>
-                <option value="500">500ms</option>
-                <option value="750">750ms</option>
-                <option value="1000">1000ms</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="words-stagger">stagger</label>
-              <select id="words-stagger" name="words-stagger">
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="200">200</option>
-                <option value="random">random</option>
-              </select>
-            </div>
-          </fieldset>
-        </li>
-        <li>
-          <fieldset class="vertical" id="chars-options">
-            <legend>
-              <label for="chars"><input type="checkbox" id="chars" name="chars"> chars</label>
-            </legend>
-            <div class="field">
-              <label for="chars-wrap">wrap</label>
-              <select id="chars-wrap" name="chars-wrap">
-                <option value="false">false</option>
-                <option value="clip">clip</option>
-                <option value="visible">visible</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="chars-clone">clone</label>
-              <select id="chars-clone" name="chars-clone">
-                <option value="false">false</option>
-                <option value="top">top</option>
-                <option value="right">right</option>
-                <option value="bottom">bottom</option>
-                <option value="left">left</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="chars-animate">animate</label>
-              <select id="chars-animate" name="chars-animate">
-                <option value="false">false</option>
-                <option value="250">250ms</option>
-                <option value="500">500ms</option>
-                <option value="750">750ms</option>
-                <option value="1000">1000ms</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="chars-stagger">stagger</label>
-              <select id="chars-stagger" name="chars-stagger">
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="200">200</option>
-                <option value="random">random</option>
-              </select>
-            </div>
-          </fieldset>
-        </li>
-        <li>
-          <label for="includeSpaces"><input type="checkbox" id="includeSpaces" name="includeSpaces"> includeSpaces</label>
-          <label for="accessible"><input type="checkbox" id="accessible" name="accessible" checked> accessible</label>
-          <label for="debug"><input type="checkbox" id="debug" name="debug" checked> debug</label>
-        </li>
-        <li>
-          <fieldset>
-            <button type="button" class="button" id="revert" name="revert">Revert</button>
-            <button type="button" class="button" id="split" name="revert">Split</button>
-          </fieldset>
-        </li>
-      </ul>
-    </form>
-  </aside>
   <script type="module" src="./index.js"></script>
 </body>
 </html>

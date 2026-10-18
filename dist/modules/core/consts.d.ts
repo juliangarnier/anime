@@ -1,5 +1,5 @@
 export const isBrowser: boolean;
-/** @typedef {Window & {AnimeJS: Array} & {AnimeJSDevTools: any}|null} AnimeJSWindow
+/** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
 
 /** @type {AnimeJSWindow} */
 export const win: AnimeJSWindow;
@@ -36,7 +36,6 @@ export const isRegisteredTargetSymbol: unique symbol;
 export const isDomSymbol: unique symbol;
 export const isSvgSymbol: unique symbol;
 export const transformsSymbol: unique symbol;
-export const morphPointsSymbol: unique symbol;
 export const proxyTargetSymbol: unique symbol;
 export const minValue: 1e-11;
 export const maxValue: 1000000000000;
@@ -44,10 +43,12 @@ export const K: 1000;
 export const maxFps: 240;
 export const emptyString: "";
 export const cssVarPrefix: "var(";
+export const emptyArray: any[];
 export const shortTransforms: Map<any, any>;
 export const validTransforms: string[];
 export const transformsFragmentStrings: {};
 export function noop(): void;
+export function noopModifier<T>(v: T): T;
 export const validRgbHslRgx: RegExp;
 export const hexTestRgx: RegExp;
 export const rgbExecRgx: RegExp;
@@ -57,7 +58,6 @@ export const hslaExecRgx: RegExp;
 export const digitWithExponentRgx: RegExp;
 export const unitsExecRgx: RegExp;
 export const lowerCaseRgx: RegExp;
-export const transformsExecRgx: RegExp;
 export const relativeValuesExecRgx: RegExp;
 export const cssVariableMatchRgx: RegExp;
 /**
@@ -65,6 +65,4 @@ export const cssVariableMatchRgx: RegExp;
  */
 export type AnimeJSWindow = (Window & {
     AnimeJS: any[];
-} & {
-    AnimeJSDevTools: any;
 }) | null;

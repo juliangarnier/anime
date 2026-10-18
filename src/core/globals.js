@@ -1,6 +1,7 @@
 import {
   K,
   noop,
+  noopModifier,
   maxFps,
   compositionTypes,
   win,
@@ -19,6 +20,21 @@ import {
  * } from '../scope/index.js'
 */
 
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {Function} addAnimation
+ * @property {Function} addSet
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} addTimelineLabel
+ * @property {Function} addTimelineCall
+ * @property {Function} addTimelineSync
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
+
 /** @type {DefaultsParams} */
 export const defaults = {
   id: null,
@@ -36,7 +52,7 @@ export const defaults = {
   loopDelay: 0,
   ease: 'out(2)',
   composition: compositionTypes.replace,
-  modifier: v => v,
+  modifier: noopModifier,
   onBegin: noop,
   onBeforeUpdate: noop,
   onUpdate: noop,
@@ -62,9 +78,9 @@ export const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 }
-
-export const devTools = isBrowser && win.AnimeJSDevTools;
 
 export const globalVersions = { version: '__packageVersion__', engine: null };
 

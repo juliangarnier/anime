@@ -1,6 +1,6 @@
 /**
  * Anime.js - UMD bundle
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -39,6 +39,12 @@
 /** @typedef {Timer&JSAnimation&Timeline} CallbackArgument */
 /** @typedef {Animatable|Tickable|WAAPIAnimation|Draggable|ScrollObserver|TextSplitter|Scope|AutoLayout} Revertible */
 
+/**
+ * @typedef {Object} TweakRegister
+ * @property {String} type
+ * @property {*} defaultValue
+ */
+
 // Stagger types
 
 /**
@@ -46,7 +52,8 @@
  * @callback StaggerFunction
  * @param {Target} [target]
  * @param {Number} [index]
- * @param {Number} [length]
+ * @param {TargetsArray} [targets]
+ * @param {Tween|null} [prevTween]
  * @param {Timeline} [tl]
  * @return {T}
  */
@@ -54,14 +61,21 @@
 /**
  * @typedef  {Object} StaggerParams
  * @property {Number|String} [start]
- * @property {Number|'first'|'center'|'last'|'random'} [from]
+ * @property {Number|'first'|'center'|'last'|'random'|Array.<Number>} [from]
  * @property {Boolean} [reversed]
- * @property {Array.<Number>} [grid]
- * @property {('x'|'y')} [axis]
- * @property {String|((target: Target, i: Number, length: Number) => Number)} [use]
+ * @property {Array.<Number>|Boolean} [grid]
+ * @property {('x'|'y'|'z')} [axis]
+ * @property {String | { method(target: Target, i: Number, length: Number): Number }['method']} [use]
  * @property {Number} [total]
  * @property {EasingParam} [ease]
  * @property {TweenModifier} [modifier]
+ * @property {Number|[Number, Number]} [jitter] Additive uniform noise on the
+ *   computed stagger value. Number form gives flat `+/-jitter`; tuple form
+ *   ramps the magnitude `start -> end` across the from/axis/grid ordering
+ *   and respects `ease`.
+ * @property {Boolean|Number} [seed] Seed for jitter draws and `from: 'random'`
+ *   shuffling. `false` (default) uses Math.random. `true` seeds with `0`. A
+ *   number is used directly as the seed.
  */
 
 // Targets types
@@ -117,8 +131,8 @@
 
 // A hack to get both ease names suggestions AND allow any strings
 // https://github.com/microsoft/TypeScript/issues/29729#issuecomment-460346421
-/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring} EasingParam */
-/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring} WAAPIEasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring|TweakRegister} EasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring|TweakRegister} WAAPIEasingParam */
 
 // Spring types
 
@@ -137,10 +151,7 @@
 
 /**
  * @template T
- * @callback Callback
- * @param {T} self - Returns itself
- * @param {PointerEvent} [e]
- * @return {*}
+ * @typedef {{ method(self: T): * }['method']} Callback
  */
 
 /**
@@ -174,6 +185,7 @@
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number} [frameRate]
  * @property {Number} [playbackRate]
+ * @property {Number} [priority]
  */
 
 /**
@@ -183,11 +195,17 @@
 // Tween types
 
 /**
+ * @typedef {Number|String|TweenKeyValue|EasingParam|Array.<Number|String|TweenKeyValue>} FunctionValueReturn
+ */
+
+/**
+ * @template [T=FunctionValueReturn]
  * @callback FunctionValue
- * @param {Target} target - The animated target
- * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
- * @return {Number|String|TweenObjectValue|EasingParam|Array.<Number|String|TweenObjectValue>}
+ * @param {Target} [target] - The animated target
+ * @param {Number} [index] - The target index
+ * @param {TargetsArray} [targets] - The array of all animated targets
+ * @param {Tween|null} [prevTween] - The previous sibling tween for the same target and property
+ * @return {T}
  */
 
 /**
@@ -204,7 +222,7 @@
  * @property {JSAnimation} parent
  * @property {String} property
  * @property {Target} target
- * @property {String|Number} _value
+ * @property {String|Number|Object} _value
  * @property {Function|null} _toFunc
  * @property {Function|null} _fromFunc
  * @property {EasingFunction} _ease
@@ -223,7 +241,11 @@
  * @property {Number} _startTime
  * @property {Number} _changeDuration
  * @property {Number} _absoluteStartTime
+ * @property {Number} _absoluteUpdateStartTime
+ * @property {Number} _absoluteEndTime
+ * @property {Number} _hasFromValue
  * @property {tweenTypes} _tweenType
+ * @property {((target: any, value: number, tween: Tween) => void) | null} _setter
  * @property {valueTypes} _valueType
  * @property {Number} _composition
  * @property {Number} _isOverlapped
@@ -244,8 +266,8 @@
  * @property {Number} n - Single number value
  * @property {String} u - Value unit
  * @property {String} o - Value operator
- * @property {Array.<Number>} d - Array of Numbers (in case of complex value type)
- * @property {Array.<String>} s - Strings (in case of complex value type)
+ * @property {Array.<Number>} d - Array of Numbers (complex / color value type)
+ * @property {Array.<String>} s - Strings (complex value type)
  */
 
 /** @typedef {{_head: null|Tween, _tail: null|Tween}} TweenPropertySiblings */
@@ -256,7 +278,7 @@
 // JSAnimation types
 
 /**
- * @typedef {Number|String|FunctionValue|EasingParam} TweenParamValue
+ * @typedef {Number|String|FunctionValue|EasingParam|TweakRegister} TweenParamValue
  */
 
 /**
@@ -355,7 +377,7 @@
  * - `'label'` - Label: Position animation at a named label position (e.g., `'My Label'`)<br>
  * - `stagger(String|Nummber)` - Stagger multi-elements animation positions (e.g., 10, 20, 30...)
  *
- * @typedef {TimelinePosition | StaggerFunction<Number|String>} TimelineAnimationPosition
+ * @typedef {TimelinePosition | StaggerFunction<Number|String> | TweakRegister} TimelineAnimationPosition
  */
 
 /**
@@ -379,7 +401,7 @@
  * @callback WAAPIFunctionValue
  * @param {DOMTarget} target - The animated target
  * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
+ * @param {DOMTargetsArray} targets - The array of all animated targets
  * @return {WAAPITweenValue|WAAPIEasingParam}
  */
 
@@ -449,7 +471,7 @@
  */
 
 /**
- * @typedef {Record<String, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions> & AnimatablePropertyParamsOptions} AnimatableParams
+ * @typedef {Record<String, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions | Callback<JSAnimation>> & AnimatablePropertyParamsOptions & TickableCallbacks<JSAnimation> & RenderableCallbacks<JSAnimation>} AnimatableParams
  */
 
 // Scope types
@@ -492,7 +514,7 @@
 /**
  * @callback ScopeMethod
  * @param {...*} args
- * @return {ScopeCleanupCallback|void}
+ * @return {*}
  */
 
 // Scroll types
@@ -626,6 +648,26 @@
  * @property {Boolean} [debug]
  */
 
+/**
+ * @typedef {Object} ScrambleTextParams
+ * @property {String|function(Target, Number, TargetsArray): String} [text] - the text to transition to, otherwise uses the original text
+ * @property {String|function(Target, Number, TargetsArray): String} [chars] - the characters used for scramble; named sets: 'lowercase', 'uppercase', 'numbers', 'symbols', 'braille', 'blocks', 'shades'; range syntax: 'A-Z', 'a-z0-9'; defaults to 'a-zA-Z0-9!%#_'
+ * @property {EasingParam} [ease] - the easing applied to the scramble animation
+ * @property {Number|'left'|'center'|'right'|'random'|'auto'} [from] - where the reveal wave starts from, 'auto' (default) uses 'left' when text grows and 'right' when it shrinks
+ * @property {Boolean} [reversed] - reverses the reveal order, so 'center' reveals from edges inward instead of center outward
+ * @property {Boolean|Number|String} [cursor] - characters displayed at the leading edge of the reveal wave; true uses '_', a number is a char code, a string is used directly
+ * @property {Number} [perturbation] - adds random timing offsets to each character's start and end, creating a more organic reveal
+ * @property {Number} [seed] - a seed for the random number generator to produce reproducible scramble sequences
+ * @property {Boolean|String} [override] - controls the starting appearance: false shows original text, true scrambles it (default), '' starts from blank, ' ' replaces characters with spaces, a custom string (supports range syntax like 'A-Z') uses its characters as scramble set
+ * @property {Number} [revealRate] - characters per second entering the active zone; higher values make the reveal wave move faster (default: 60)
+ * @property {Number} [settleDuration] - time in ms each character spends scrambling before settling into its final glyph (default: 300)
+ * @property {Number} [settleRate] - how many times per second scramble characters cycle in the active zone (default: 30)
+ * @property {Number|function(Target, Number, TargetsArray): Number} [duration] - if set to a value greater than 0, overrides the computed duration from interval and settle; if unset or 0, duration is calculated automatically from text length and timing parameters
+ * @property {Number|function(Target, Number, TargetsArray): Number} [revealDelay] - delay in ms before the reveal wave starts within the scramble animation
+ * @property {Number|function(Target, Number, TargetsArray): Number} [delay] - delay in ms before the entire scramble animation starts
+ * @property {function(String, Number): void} [onChange] - callback fired each time a character changes during scramble; receives the current scrambled text and the eased progress (0-1)
+ */
+
 // SVG types
 
 /**
@@ -647,7 +689,7 @@
   // TODO: Do we need to check if we're running inside a worker ?
   const isBrowser = typeof window !== 'undefined';
 
-  /** @typedef {Window & {AnimeJS: Array} & {AnimeJSDevTools: any}|null} AnimeJSWindow
+  /** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
 
   /** @type {AnimeJSWindow} */
   const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
@@ -694,7 +736,6 @@
   const isDomSymbol = Symbol();
   const isSvgSymbol = Symbol();
   const transformsSymbol = Symbol();
-  const morphPointsSymbol = Symbol();
   const proxyTargetSymbol = Symbol();
 
   // Numbers
@@ -709,6 +750,11 @@
   const emptyString = '';
   const cssVarPrefix = 'var(';
 
+  // Arrays
+
+  // Shared sentinel for tween slots that don't hold array data. Never mutated, only read; COMPLEX and COLOR tweens always replace the slot before writing.
+  const emptyArray = [];
+
   const shortTransforms = /*#__PURE__*/ (() => {
     const map = new Map();
     map.set('x', 'translateX');
@@ -718,6 +764,7 @@
   })();
 
   const validTransforms = [
+    'perspective',
     'translateX',
     'translateY',
     'translateZ',
@@ -732,9 +779,6 @@
     'skew',
     'skewX',
     'skewY',
-    'matrix',
-    'matrix3d',
-    'perspective',
   ];
 
   const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) => ({...a, [v]: v + '('}), {});
@@ -743,6 +787,13 @@
 
   /** @return {void} */
   const noop = () => {};
+
+  /**
+   * @template T
+   * @param  {T} v
+   * @return {T}
+   */
+  const noopModifier = v => v;
 
   // Regex
 
@@ -757,11 +808,25 @@
   // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
   const unitsExecRgx = /^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)([a-z]+|%)$/i;
   const lowerCaseRgx = /([a-z])([A-Z])/g;
-  const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
   const relativeValuesExecRgx = /(\*=|\+=|-=)/;
   const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
 
   
+
+  /**
+   * @typedef {Object} EditorGlobals
+   * @property {boolean} showPanel
+   * @property {Function} addAnimation
+   * @property {Function} addSet
+   * @property {Function} addTimeline
+   * @property {Function} addTimelineChild
+   * @property {Function} addTimelineLabel
+   * @property {Function} addTimelineCall
+   * @property {Function} addTimelineSync
+   * @property {Function} resolveStagger
+   * @property {Object|null} _head
+   * @property {Object|null} _tail
+   */
 
   /** @type {DefaultsParams} */
   const defaults = {
@@ -780,7 +845,7 @@
     loopDelay: 0,
     ease: 'out(2)',
     composition: compositionTypes.replace,
-    modifier: v => v,
+    modifier: noopModifier,
     onBegin: noop,
     onBeforeUpdate: noop,
     onUpdate: noop,
@@ -806,11 +871,11 @@
     timeScale: 1,
     /** @type {Number} */
     tickThreshold: 200,
+    /** @type {EditorGlobals|null} */
+    editor: null,
   };
 
-  const devTools = isBrowser && win.AnimeJSDevTools;
-
-  const globalVersions = { version: '4.3.6', engine: null };
+  const globalVersions = { version: '4.5.0', engine: null };
 
   if (isBrowser) {
     if (!win.AnimeJS) win.AnimeJS = [];
@@ -926,8 +991,6 @@
    */
   const clamp$1 = (v, min, max) => v < min ? min : v > max ? max : v;
 
-  const powCache = {};
-
   /**
    * Rounds a number to specified decimal places
    *
@@ -935,13 +998,12 @@
    * @param  {Number} decimalLength - Number of decimal places
    * @return {Number}
    */
-  const round$1 = (v, decimalLength) => {
-    if (decimalLength < 0) return v;
-    if (!decimalLength) return _round(v);
-    let p = powCache[decimalLength];
-    if (!p) p = powCache[decimalLength] = 10 ** decimalLength;
-    return _round(v * p) / p;
-  };
+   const round$1 = (v, decimalLength) => {
+     if (decimalLength < 0) return v;
+     if (!decimalLength) return _round(v);
+     const p = 10 ** decimalLength;
+     return _round(v * p) / p;
+   };
 
   /**
    * Snaps a value to nearest increment or array value
@@ -960,7 +1022,7 @@
    * @param  {Number} factor - Interpolation factor in the range [0, 1]
    * @return {Number} The interpolated value
    */
-  const lerp$1 = (start, end, factor) => start + (end - start) * factor;
+  const lerp$1 = (start, end, factor) => factor === 1 ? end : factor === 0 ? start : start + (end - start) * factor;
 
   /**
    * Replaces infinity with maximum safe value
@@ -1080,27 +1142,197 @@
    */
   const parseInlineTransforms = (target, propName, animationInlineStyles) => {
     const inlineTransforms = target.style.transform;
-    let inlinedStylesPropertyValue;
     if (inlineTransforms) {
       const cachedTransforms = target[transformsSymbol];
-      let t; while (t = transformsExecRgx.exec(inlineTransforms)) {
-        const inlinePropertyName = t[1];
-        // const inlinePropertyValue = t[2];
-        const inlinePropertyValue = t[2].slice(1, -1);
-        cachedTransforms[inlinePropertyName] = inlinePropertyValue;
-        if (inlinePropertyName === propName) {
-          inlinedStylesPropertyValue = inlinePropertyValue;
-          // Store the new parsed inline styles if animationInlineStyles is provided
-          if (animationInlineStyles) {
-            animationInlineStyles[propName] = inlinePropertyValue;
+      let pos = 0;
+      const len = inlineTransforms.length;
+      let fullTranslateValue;
+      while (pos < len) {
+        // Skip whitespace
+        while (pos < len && inlineTransforms.charCodeAt(pos) === 32) pos++;
+        if (pos >= len) break;
+        // Read function name
+        const nameStart = pos;
+        while (pos < len && inlineTransforms.charCodeAt(pos) !== 40) pos++;
+        if (pos >= len) break;
+        const name = inlineTransforms.substring(nameStart, pos);
+        // Scan to closing paren, recording top-level comma positions
+        let depth = 1;
+        const valueStart = pos + 1;
+        let c1 = -1, c2 = -1;
+        pos++;
+        while (pos < len && depth > 0) {
+          const c = inlineTransforms.charCodeAt(pos);
+          if (c === 40) depth++;
+          else if (c === 41) depth--;
+          else if (c === 44 && depth === 1) {
+            if (c1 === -1) c1 = pos;
+            else if (c2 === -1) c2 = pos;
           }
+          pos++;
+        }
+        const valueEnd = pos - 1;
+        // Decompose multi-arg functions into individual axis properties
+        if (name === 'translate' || name === 'translate3d') {
+          if (c1 === -1) {
+            cachedTransforms.translateX = inlineTransforms.substring(valueStart, valueEnd).trim();
+          } else {
+            cachedTransforms.translateX = inlineTransforms.substring(valueStart, c1).trim();
+            if (c2 === -1) {
+              cachedTransforms.translateY = inlineTransforms.substring(c1 + 1, valueEnd).trim();
+            } else {
+              cachedTransforms.translateY = inlineTransforms.substring(c1 + 1, c2).trim();
+              cachedTransforms.translateZ = inlineTransforms.substring(c2 + 1, valueEnd).trim();
+            }
+          }
+          fullTranslateValue = inlineTransforms.substring(valueStart, valueEnd);
+        } else if (name === 'scale' || name === 'scale3d') {
+          if (c1 === -1) {
+            cachedTransforms.scale = inlineTransforms.substring(valueStart, valueEnd).trim();
+          } else {
+            cachedTransforms.scaleX = inlineTransforms.substring(valueStart, c1).trim();
+            if (c2 === -1) {
+              cachedTransforms.scaleY = inlineTransforms.substring(c1 + 1, valueEnd).trim();
+            } else {
+              cachedTransforms.scaleY = inlineTransforms.substring(c1 + 1, c2).trim();
+              cachedTransforms.scaleZ = inlineTransforms.substring(c2 + 1, valueEnd).trim();
+            }
+          }
+        } else {
+          cachedTransforms[name] = inlineTransforms.substring(valueStart, valueEnd);
         }
       }
+      // Resolve the requested property from the cache
+      if (propName === 'translate3d' && fullTranslateValue) {
+        if (animationInlineStyles) animationInlineStyles[propName] = fullTranslateValue;
+        return fullTranslateValue;
+      }
+      const cached = cachedTransforms[propName];
+      if (!isUnd(cached)) {
+        if (animationInlineStyles) animationInlineStyles[propName] = cached;
+        return cached;
+      }
     }
-    return inlineTransforms && !isUnd(inlinedStylesPropertyValue) ? inlinedStylesPropertyValue :
+    return propName === 'translate3d' ? '0px, 0px, 0px' :
+      propName === 'rotate3d' ? '0, 0, 0, 0deg' :
       stringStartsWith(propName, 'scale') ? '1' :
       stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew') ? '0deg' : '0px';
   };
+
+  /**
+   * Builds a CSS transform string from the target's cached transform properties.
+   * Iterates validTransforms in order (perspective > translate > rotate > scale > skew > matrix).
+   * When adjacent axis properties are all present, emits a shorter shorthand (translateX + translateY -> translate(x, y))
+   * The index is advanced past consumed properties so they are not emitted twice.
+   * Properties without a grouping partner (e.g. translateY alone, scaleZ alone) emit individually.
+   *
+   * @param  {Record<String, String>} props
+   * @return {String}
+   */
+  const buildTransformString = (props) => {
+    let str = emptyString;
+    for (let i = 0, l = validTransforms.length; i < l; i++) {
+      const key = validTransforms[i];
+      const val = props[key];
+      if (val !== undefined) {
+        // Group translateX with adjacent translateY / translateZ
+        if (key === 'translateX') {
+          const next = props.translateY;
+          if (next !== undefined) {
+            const next2 = props.translateZ;
+            if (next2 !== undefined) {
+              str += `translate3d(${val},${next},${next2}) `;
+              i += 2;
+            } else {
+              str += `translate(${val},${next}) `;
+              i += 1;
+            }
+            continue;
+          }
+        }
+        // Group scaleX with adjacent scaleY / scaleZ (only when standalone scale is absent)
+        if (key === 'scaleX' && props.scale === undefined) {
+          const next = props.scaleY;
+          if (next !== undefined) {
+            const next2 = props.scaleZ;
+            if (next2 !== undefined) {
+              str += `scale3d(${val},${next},${next2}) `;
+              i += 2;
+            } else {
+              str += `scale(${val},${next}) `;
+              i += 1;
+            }
+            continue;
+          }
+        }
+        // All other properties: emit individually using pre-built fragment string
+        str += `${transformsFragmentStrings[key]}${val}) `;
+      }
+      // Preserve non-animatable rotate3d in correct position (after rotateZ, before scale)
+      if (key === 'rotateZ') {
+        if (props.rotate3d !== undefined) str += `rotate3d(${props.rotate3d}) `;
+      }
+    }
+    // Preserve non-animatable matrix/matrix3d from inline styles
+    if (props.matrix !== undefined) str += `matrix(${props.matrix}) `;
+    if (props.matrix3d !== undefined) str += `matrix3d(${props.matrix3d}) `;
+    return str;
+  };
+
+  /**
+   * Anime.js adapter API. Each library or class group that wants to extend `animate()` and `utils.set()` calls `registerAdapter()` to create its own `Adapter`. The returned `Adapter` exposes `registerTargetAdapter(detect)` for per-class detection and `registerPropertyResolver(fn)` for global Color / Vector / pattern-based fallbacks.
+   *
+   *   import { registerAdapter } from 'animejs/adapters';
+   *
+   *   const myAdapter = registerAdapter();
+   *   const widget = myAdapter.registerTargetAdapter((t) => t instanceof MyWidget);
+   *   widget.registerProperty('value',
+   *     (t) => t.getValue(),
+   *     (target, value) => target.setValue(value),
+   *   );
+   *
+   * For scalar tweens, `value` is the interpolated number. For color and complex tweens it is `undefined`; read `tween._numbers` instead. `gate(target)` scopes the prop to a subset of matching targets.
+   *
+   * Resolution order: every Adapter's target adapters in registration order (first match wins) then every Adapter's property resolvers (first non-null wins) then engine direct property path.
+   */
+
+
+  const adapters = /** @type {Adapter[]} */([]);
+
+  /**
+   * Internal resolution. Tries every Adapter's target adapters first (in registration order, first match wins), then every Adapter's property resolvers.
+   *
+   * @param {any} target
+   * @param {string} name
+   * @return {TargetAdapterEntry | null}
+   */
+  function resolveAdapterEntry(target, name) {
+    if (!target) return null;
+    const al = adapters.length;
+    outer: for (let i = 0; i < al; i++) {
+      const a = adapters[i];
+      if (a.detect && !a.detect(target)) continue;
+      const tas = a.targetAdapters;
+      for (let j = 0, m = tas.length; j < m; j++) {
+        const ta = tas[j];
+        if (ta.detect(target)) {
+          const entry = ta.props[name];
+          if (entry && (!entry.gate || entry.gate(target))) return entry;
+          break outer;
+        }
+      }
+    }
+    for (let i = 0; i < al; i++) {
+      const a = adapters[i];
+      if (a.detect && !a.detect(target)) continue;
+      const rs = a.propertyResolvers;
+      for (let j = 0, m = rs.length; j < m; j++) {
+        const entry = rs[j](target, name);
+        if (entry) return entry;
+      }
+    }
+    return null;
+  }
 
   
 
@@ -1200,38 +1432,50 @@
   };
 
   /**
+   * Resolve against the target when it's a DOM element, otherwise fall back to :root so non-DOM targets like three.js meshes and custom adapters still pick up CSS variables defined on the document.
+   *
+   * @param  {String} value
+   * @param  {Target} target
+   * @return {String|Number}
+   */
+  const resolveCssVar = (value, target) => {
+    const match = value.match(cssVariableMatchRgx);
+    const el = target[isDomSymbol] ? target : document.documentElement;
+    let computed = getComputedStyle(/** @type {HTMLElement} */(el))?.getPropertyValue(match[1]);
+    if ((!computed || computed.trim() === emptyString) && match[2]) computed = match[2].trim();
+    return computed || 0;
+  };
+
+  /**
    * @param  {TweenPropValue} value
    * @param  {Target} target
    * @param  {Number} index
-   * @param  {Number} total
-   * @param  {Object} [store]
+   * @param  {TargetsArray} targets
+   * @param  {Object|null} store
+   * @param  {Tween|null} prevTween
    * @return {any}
    */
-  const getFunctionValue = (value, target, index, total, store) => {
-    let func;
+  const getFunctionValue = (value, target, index, targets, store, prevTween) => {
     if (isFnc(value)) {
-      func = () => {
-        const computed = /** @type {Function} */(value)(target, index, total);
-        // Fallback to 0 if the function returns undefined / NaN / null / false / 0
+      if (!store) {
+        const computed = /** @type {Function} */(value)(target, index, targets, prevTween);
+        // Fallback to 0 if the function returns undefined, NaN, null, false or 0
+        return !isNaN(+computed) ? +computed : computed || 0;
+      }
+      const func = () => {
+        const computed = /** @type {Function} */(value)(target, index, targets, prevTween);
         return !isNaN(+computed) ? +computed : computed || 0;
       };
-    } else if (isStr(value) && stringStartsWith(value, cssVarPrefix)) {
-      func = () => {
-        const match = value.match(cssVariableMatchRgx);
-        const cssVarName = match[1];
-        const fallbackValue = match[2];
-        let computed = getComputedStyle(/** @type {HTMLElement} */(target))?.getPropertyValue(cssVarName);
-        // Use fallback if CSS variable is not set or empty
-        if ((!computed || computed.trim() === emptyString) && fallbackValue) {
-          computed = fallbackValue.trim();
-        }
-        return computed || 0;
-      };
-    } else {
-      return value;
+      store.func = func;
+      return func();
     }
-    if (store) store.func = func;
-    return func();
+    if (isStr(value) && stringStartsWith(value, cssVarPrefix)) {
+      if (!store) return resolveCssVar(/** @type {String} */(value), target);
+      const func = () => resolveCssVar(/** @type {String} */(value), target);
+      store.func = func;
+      return func();
+    }
+    return value;
   };
 
   /**
@@ -1278,9 +1522,23 @@
    */
   const getOriginalAnimatableValue = (target, propName, tweenType, animationInlineStyles) => {
     const type = !isUnd(tweenType) ? tweenType : getTweenType(target, propName);
-    return type === tweenTypes.OBJECT ? target[propName] || 0 :
-           type === tweenTypes.ATTRIBUTE ? /** @type {DOMTarget} */(target).getAttribute(propName) :
-           type === tweenTypes.TRANSFORM ? parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
+    const adapterProp = resolveAdapterEntry(target, propName);
+    if (adapterProp) {
+      const value = adapterProp.get(target);
+      if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+      return value == null ? 0 : value;
+    }
+    if (type === tweenTypes.OBJECT) {
+      const value = target[propName];
+      if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+      return value || 0;
+    }
+    if (type === tweenTypes.ATTRIBUTE) {
+      const value = /** @type {DOMTarget} */(target).getAttribute(propName);
+      if (value && animationInlineStyles) animationInlineStyles[propName] = value;
+      return value;
+    }
+    return type === tweenTypes.TRANSFORM ? parseInlineTransforms(/** @type {DOMTarget} */(target), propName, animationInlineStyles) :
            type === tweenTypes.CSS_VAR ? getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles).trimStart() :
            getCSSValue(/** @type {DOMTarget} */(target), propName, animationInlineStyles);
   };
@@ -1311,7 +1569,7 @@
   };
 
   /**
-   * @param  {String|Number} rawValue
+   * @param  {String|Number|Object} rawValue
    * @param  {TweenDecomposedValue} targetObject
    * @return {TweenDecomposedValue}
    */
@@ -1329,39 +1587,38 @@
       // It's a number
       targetObject.n = num;
       return targetObject;
+    }
+    // let str = /** @type {String} */(rawValue).trim();
+    let str = /** @type {String} */(rawValue);
+    // Parsing operators (+=, -=, *=) manually is much faster than using regex here
+    if (str[1] === '=') {
+      targetObject.o = str[0];
+      str = str.slice(2);
+    }
+    // Skip exec regex if the value type is complex or color to avoid long regex backtracking
+    const unitMatch = str.includes(' ') ? false : unitsExecRgx.exec(str);
+    if (unitMatch) {
+      // Has a number and a unit
+      targetObject.t = valueTypes.UNIT;
+      targetObject.n = +unitMatch[1];
+      targetObject.u = unitMatch[2];
+      return targetObject;
+    } else if (targetObject.o) {
+      // Has an operator (+=, -=, *=)
+      targetObject.n = +str;
+      return targetObject;
+    } else if (isCol(str)) {
+      // Color string
+      targetObject.t = valueTypes.COLOR;
+      targetObject.d = convertColorStringValuesToRgbaArray(str);
+      return targetObject;
     } else {
-      // let str = /** @type {String} */(rawValue).trim();
-      let str = /** @type {String} */(rawValue);
-      // Parsing operators (+=, -=, *=) manually is much faster than using regex here
-      if (str[1] === '=') {
-        targetObject.o = str[0];
-        str = str.slice(2);
-      }
-      // Skip exec regex if the value type is complex or color to avoid long regex backtracking
-      const unitMatch = str.includes(' ') ? false : unitsExecRgx.exec(str);
-      if (unitMatch) {
-        // Has a number and a unit
-        targetObject.t = valueTypes.UNIT;
-        targetObject.n = +unitMatch[1];
-        targetObject.u = unitMatch[2];
-        return targetObject;
-      } else if (targetObject.o) {
-        // Has an operator (+=, -=, *=)
-        targetObject.n = +str;
-        return targetObject;
-      } else if (isCol(str)) {
-        // Is a color
-        targetObject.t = valueTypes.COLOR;
-        targetObject.d = convertColorStringValuesToRgbaArray(str);
-        return targetObject;
-      } else {
-        // Is a more complex string (generally svg coords, calc() or filters CSS values)
-        const matchedNumbers = str.match(digitWithExponentRgx);
-        targetObject.t = valueTypes.COMPLEX;
-        targetObject.d = matchedNumbers ? matchedNumbers.map(Number) : [];
-        targetObject.s = str.split(digitWithExponentRgx) || [];
-        return targetObject;
-      }
+      // Is a more complex string (generally svg coords, calc() or filters CSS values)
+      const matchedNumbers = str.match(digitWithExponentRgx);
+      targetObject.t = valueTypes.COMPLEX;
+      targetObject.d = matchedNumbers ? matchedNumbers.map(Number) : [];
+      targetObject.s = str.split(digitWithExponentRgx) || [];
+      return targetObject;
     }
   };
 
@@ -1381,6 +1638,29 @@
   };
 
   const decomposedOriginalValue = createDecomposedValueTargetObject();
+
+  /**
+   * @param  {Tween} tween
+   * @param  {Number} progress
+   * @param  {Number} precision
+   * @return {String}
+   */
+  const composeComplexValue = (tween, progress, precision) => {
+    const mod = tween._modifier;
+    const fn = tween._fromNumbers;
+    const tn = tween._toNumbers;
+    const ts = tween._strings;
+    let v = ts[0];
+    for (let j = 0, l = tn.length; j < l; j++) {
+      const n = /** @type {Number} */(mod(round$1(lerp$1(fn[j], tn[j], progress), precision)));
+      const s = ts[j + 1];
+      v += `${s ? n + s : n}`;
+      // Keep _numbers fresh for every tween, not only composed ones, so a non-composition setter that reads the lerped triplet such as three transformOrigin still animates.
+      // Potential optimization, skip the write when nothing reads it: if (hasComposition || tween._setter) tween._numbers[j] = n;
+      tween._numbers[j] = n;
+    }
+    return v;
+  };
 
   
 
@@ -1410,7 +1690,6 @@
     const _hasChildren = tickable._hasChildren;
     const tickableDelay = tickable._delay;
     const tickablePrevAbsoluteTime = tickable._currentTime; // TODO: rename ._currentTime to ._absoluteCurrentTime
-
     const tickableEndTime = tickableDelay + iterationDuration;
     const tickableAbsoluteTime = time - tickableDelay;
     const tickablePrevTime = clamp$1(tickablePrevAbsoluteTime, -tickableDelay, duration);
@@ -1430,12 +1709,14 @@
     // Execute the "expensive" iterations calculations only when necessary
     if (iterationCount > 1) {
       // bitwise NOT operator seems to be generally faster than Math.floor() across browsers
-      const currentIteration = ~~(tickableCurrentTime / (iterationDuration + (isCurrentTimeEqualOrAboveDuration ? 0 : _loopDelay)));
+      const period = iterationDuration + (isCurrentTimeEqualOrAboveDuration ? 0 : _loopDelay);
+      const currentIteration = ~~(tickableCurrentTime / period);
       tickable._currentIteration = clamp$1(currentIteration, 0, iterationCount);
       // Prevent the iteration count to go above the max iterations when reaching the end of the animation
       if (isCurrentTimeEqualOrAboveDuration) tickable._currentIteration--;
       isOdd = tickable._currentIteration % 2;
-      iterationElapsedTime = tickableCurrentTime % (iterationDuration + _loopDelay) || 0;
+      // Derive elapsed from the same `~~` truncation that gave currentIteration. Using `% period` here can disagree with `~~(/period)` under float drift at iteration boundaries and write the wrong end of the tween for one frame.
+      iterationElapsedTime = tickableCurrentTime - currentIteration * period || 0;
     }
 
     // Checks if exactly one of _reversed and (_alternate && isOdd) is true
@@ -1467,12 +1748,14 @@
     if (
       forcedTick ||
       tickMode === tickModes.AUTO && (
-        time >= tickableDelay && time <= tickableEndTime || // Normal render
+        // Timeline children render from their offset instead of their delay so the gap left by a truncated sibling is covered on seek.
+        time >= (parent && tickableDelay > 0 ? 0 : tickableDelay) && time <= tickableEndTime || // Normal render
         time <= tickableDelay && tickablePrevTime > tickableDelay || // Playhead is before the animation start time so make sure the animation is at its initial state
         time >= tickableEndTime && tickablePrevTime !== duration // Playhead is after the animation end time so make sure the animation is at its end state
       ) ||
       iterationTime >= tickableEndTime && tickablePrevTime !== duration ||
-      iterationTime <= tickableDelay && tickablePrevTime > 0 ||
+      // iterationTime is per-iteration, compared to the delay to catch a backward seek into a looped iteration's delay region. Exclude the final settled end, where iterationTime clamps to duration and would falsely match the delay region when the delay exceeds the duration.
+      iterationTime <= tickableDelay && tickablePrevTime > 0 && !isCurrentTimeEqualOrAboveDuration ||
       time <= tickablePrevTime && tickablePrevTime === duration && completed || // Force a render if a seek occurs on an completed animation
       isCurrentTimeEqualOrAboveDuration && !completed && isSetter // This prevents 0 duration tickables to be skipped
     ) {
@@ -1488,7 +1771,8 @@
 
         // Time has jumped more than globals.tickThreshold so consider this tick manual
         const forcedRender = forcedTick || (isRunningBackwards ? deltaTime * -1 : deltaTime) >= globals.tickThreshold;
-        const absoluteTime = tickable._offset + (parent ? parent._offset : 0) + tickableDelay + iterationTime;
+        // Round to match the precision of tween._absoluteStartTime so equal-time boundary checks compare cleanly without floating point drift from the unrounded _offset.
+        const absoluteTime = round$1(tickable._offset + (parent ? parent._offset : 0) + tickableDelay + iterationTime, 12);
 
         // Only Animation can have tweens, Timer returns undefined
         let tween = /** @type {Tween} */(/** @type {JSAnimation} */(tickable)._head);
@@ -1507,15 +1791,38 @@
           const tweenNextRep = tween._nextRep;
           const tweenPrevRep = tween._prevRep;
           const tweenHasComposition = tweenComposition !== compositionTypes.none;
+          // The previous sibling stops writing at its truncated end, so this tween takes over the hold from that point.
+          const tweenPrevRepEndTime = tweenPrevRep ? tweenPrevRep._absoluteStartTime + tweenPrevRep._changeDuration : 0;
+          const tweenPrevRepIsCrossParent = tweenPrevRep && tweenPrevRep.parent !== tween.parent;
+          // Same parent keyframes take over at their own start, end plus delay equals the next start by construction.
+          // Cross parent siblings take over at their update start.
+          // Negative delay siblings take over at their own start instead.
+          const tweenNextRepTakeover = !tweenNextRep || tweenNextRep._isOverridden ? tweenAbsEndTime :
+            tweenNextRep.parent === tween.parent ? tweenAbsEndTime + tweenNextRep._delay :
+            tweenNextRep._absoluteStartTime < tweenNextRep._absoluteUpdateStartTime ? tweenNextRep._absoluteStartTime : tweenNextRep._absoluteUpdateStartTime;
 
           if ((forcedRender || (
-              (tweenCurrentTime !== tweenChangeDuration || absoluteTime <= tweenAbsEndTime + (tweenNextRep ? tweenNextRep._delay : 0)) &&
-              (tweenCurrentTime !== 0 || absoluteTime >= tween._absoluteStartTime)
-            )) && (!tweenHasComposition || (
+              // Tail keyframes always re-evaluate the gate so an earlier keyframe cannot leave the target stale by writing past its own range after a backward seek.
+              (tweenCurrentTime !== tweenChangeDuration || absoluteTime <= tweenNextRepTakeover ||
+              (tweenPrevRep && !tweenPrevRepIsCrossParent && (!tweenNextRep || tweenNextRep.parent !== tween.parent))) &&
+              // A cross parent tween re-renders its from value from the previous sibling truncated end so the handoff gap holds.
+              // A keyframe re-renders its from revert while the next keyframe time is stale so a backward jump over its range cannot leave the next value in place.
+              (tweenCurrentTime !== 0 || absoluteTime >= tween._absoluteStartTime ||
+              (tweenPrevRepIsCrossParent && !tween._hasFromValue && !tweenPrevRep._isOverridden && absoluteTime >= tweenPrevRepEndTime) ||
+              (tweenNextRep && !tweenNextRep._isOverridden && tweenNextRep.parent === tween.parent && tweenNextRep._currentTime !== 0 && iterationTime < tweenNextRep._startTime))
+            )) &&
+            // Non-first keyframes wait until the iteration reaches their own start before rendering, so the previous keyframe can handle the from-revert when scrubbed backward past this tween's range.
+            (!tweenPrevRep || tweenPrevRepIsCrossParent || iterationTime >= tween._startTime) &&
+            (!tweenHasComposition || (
               !tween._isOverridden &&
               (!tween._isOverlapped || absoluteTime <= tweenAbsEndTime) &&
-              (!tweenNextRep || (tweenNextRep._isOverridden || absoluteTime <= tweenNextRep._absoluteStartTime)) &&
-              (!tweenPrevRep || (tweenPrevRep._isOverridden || (absoluteTime >= (tweenPrevRep._absoluteStartTime + tweenPrevRep._changeDuration) + tween._delay)))
+              // The next sibling owns the value past its takeover point, so yielding there keeps writes single owner in both directions.
+              (!tweenNextRep || tweenNextRep._isOverridden || absoluteTime <= tweenNextRepTakeover) &&
+              // The previous sibling owns the value up to its truncated end.
+              // Cross parent tweens take over the hold from that point, explicit from values wait for their own start.
+              (!tweenPrevRep || (tweenPrevRep._isOverridden || (!tweenPrevRepIsCrossParent ?
+                absoluteTime >= tweenPrevRepEndTime + tween._delay :
+                absoluteTime >= tween._absoluteStartTime || (!tween._hasFromValue && absoluteTime >= tweenPrevRepEndTime))))
             ))
           ) {
 
@@ -1526,7 +1833,7 @@
             const tweenType = tween._tweenType;
             const tweenIsObject = tweenType === tweenTypes.OBJECT;
             const tweenIsNumber = tweenValueType === valueTypes.NUMBER;
-            // Only round the in-between frames values if the final value is a string
+            // Only round the in-between frames values if the final value is a string. Object targets consume raw numbers, so rounding is dead work there.
             const tweenPrecision = (tweenIsNumber && tweenIsObject) || tweenProgress === 0 || tweenProgress === 1 ? -1 : globals.precision;
 
             // Recompose tween value
@@ -1542,30 +1849,24 @@
               number = /** @type {Number} */(tweenModifier(round$1(lerp$1(tween._fromNumber, tween._toNumber,  tweenProgress), tweenPrecision)));
               value = `${number}${tween._unit}`;
             } else if (tweenValueType === valueTypes.COLOR) {
+              const ns = tween._numbers;
               const fn = tween._fromNumbers;
               const tn = tween._toNumbers;
-              const r = round$1(clamp$1(/** @type {Number} */(tweenModifier(lerp$1(fn[0], tn[0], tweenProgress))), 0, 255), 0);
-              const g = round$1(clamp$1(/** @type {Number} */(tweenModifier(lerp$1(fn[1], tn[1], tweenProgress))), 0, 255), 0);
-              const b = round$1(clamp$1(/** @type {Number} */(tweenModifier(lerp$1(fn[2], tn[2], tweenProgress))), 0, 255), 0);
-              const a = clamp$1(/** @type {Number} */(tweenModifier(round$1(lerp$1(fn[3], tn[3], tweenProgress), tweenPrecision))), 0, 1);
-              value = `rgba(${r},${g},${b},${a})`;
-              if (tweenHasComposition) {
-                const ns = tween._numbers;
-                ns[0] = r;
-                ns[1] = g;
-                ns[2] = b;
-                ns[3] = a;
+              const omt = 1 - tweenProgress;
+              const fr = fn[0], fg = fn[1], fb = fn[2];
+              const tr = tn[0], tg = tn[1], tb = tn[2];
+              // RGB channels lerp in pseudo-linear space (square inputs, sqrt result) to approximate gamma-correct blending.
+              // See https://developer.nvidia.com/gpugems/gpugems3/part-iv-image-effects/chapter-24-importance-being-linear.
+              ns[0] = /** @type {Number} */(tweenModifier(Math.sqrt(fr * fr * omt + tr * tr * tweenProgress)));
+              ns[1] = /** @type {Number} */(tweenModifier(Math.sqrt(fg * fg * omt + tg * tg * tweenProgress)));
+              ns[2] = /** @type {Number} */(tweenModifier(Math.sqrt(fb * fb * omt + tb * tb * tweenProgress)));
+              ns[3] = /** @type {Number} */(tweenModifier(lerp$1(fn[3], tn[3], tweenProgress)));
+              // The rgba string is built only for the dispatch path or the internalRender composition tick (setters handles the color comp)
+              if (!tween._setter || internalRender) {
+                value = `rgba(${round$1(ns[0], 0)},${round$1(ns[1], 0)},${round$1(ns[2], 0)},${ns[3]})`;
               }
             } else if (tweenValueType === valueTypes.COMPLEX) {
-              value = tween._strings[0];
-              for (let j = 0, l = tween._toNumbers.length; j < l; j++) {
-                const n = /** @type {Number} */(tweenModifier(round$1(lerp$1(tween._fromNumbers[j], tween._toNumbers[j], tweenProgress), tweenPrecision)));
-                const s = tween._strings[j + 1];
-                value += `${s ? n + s : n}`;
-                if (tweenHasComposition) {
-                  tween._numbers[j] = n;
-                }
-              }
+              value = composeComplexValue(tween, tweenProgress, tweenPrecision);
             }
 
             // For additive tweens and Animatables
@@ -1578,7 +1879,9 @@
               const tweenProperty = tween.property;
               tweenTarget = tween.target;
 
-              if (tweenIsObject) {
+              if (tween._setter) {
+                tween._setter(tweenTarget, number, tween);
+              } else if (tweenIsObject) {
                 tweenTarget[tweenProperty] = value;
               } else if (tweenType === tweenTypes.ATTRIBUTE) {
                 /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(value));
@@ -1606,16 +1909,13 @@
               tween._value = value;
             }
 
+          } else if (tweenCurrentTime && tweenPrevRep && !tweenPrevRepIsCrossParent && iterationTime < tween._startTime) {
+            // Mark the keyframe as reverted when the playhead moves before its start, the previous keyframe owns the from revert and writes it once.
+            tween._currentTime = 0;
           }
 
-          // NOTE: Possible improvement: Use translate(x,y) / translate3d(x,y,z) syntax
-          // to reduce memory usage on string composition
           if (tweenTransformsNeedUpdate && tween._renderTransforms) {
-            let str = emptyString;
-            for (let key in tweenTargetTransformsProperties) {
-              str += `${transformsFragmentStrings[key]}${tweenTargetTransformsProperties[key]}) `;
-            }
-            tweenStyle.transform = str;
+            tweenStyle.transform = buildTransformString(tweenTargetTransformsProperties);
             tweenTransformsNeedUpdate = 0;
           }
 
@@ -1719,6 +2019,8 @@
 
       forEachChildren(tl, (/** @type {JSAnimation} */child) => {
         const childTime = round$1((tlChildrenTime - child._offset) * child._speed, 12); // Rounding is needed when using seconds
+        // Skip past-end siblings on backward iteration so their progress=1 to-values don't render last and overwrite the active sibling's write. Compare against _delay + duration so children with a normalized delay are not skipped while still inside their active range.
+        if (tlIsRunningBackwards && childTime > child._delay + child.duration) return;
         const childTickMode = child._fps < tl._fps ? child.requestTick(tlCildrenTickTime) : tickMode;
         tlChildrenHasRendered += render(child, childTime, muteCallbacks, internalRender, childTickMode);
         if (!child.completed && tlChildrenHaveCompleted) tlChildrenHaveCompleted = false;
@@ -1726,7 +2028,6 @@
 
       // Renders on timeline are triggered by its children so it needs to be set after rendering the children
       if (!muteCallbacks && tlChildrenHasRendered) tl.onRender(/** @type {CallbackArgument} */(tl));
-
       // Triggers the timeline onComplete() once all chindren all completed and the current time has reached the end
       if ((tlChildrenHaveCompleted || tlIsRunningBackwards) && tl._currentTime >= tl.duration) {
         // Make sure the paused flag is false in case it has been skipped in the render function
@@ -1780,58 +2081,90 @@
   /**
    * @template {Renderable} T
    * @param {T} renderable
+   * @param {Boolean} [inlineStylesOnly]
    * @return {T}
    */
-  const cleanInlineStyles = renderable => {
-    // Allow cleanInlineStyles() to be called on timelines
+  const revertValues = (renderable, inlineStylesOnly = false) => {
+    // Allow revertValues() to be called on timelines
     if (renderable._hasChildren) {
-      forEachChildren(renderable, cleanInlineStyles, true);
+      forEachChildren(renderable, (/** @type {Renderable} */child) => revertValues(child, inlineStylesOnly), true);
     } else {
       const animation = /** @type {JSAnimation} */(renderable);
       animation.pause();
       forEachChildren(animation, (/** @type {Tween} */tween) => {
         const tweenProperty = tween.property;
         const tweenTarget = tween.target;
-        if (tweenTarget[isDomSymbol]) {
-          const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
-          const originalInlinedValue = tween._inlineValue;
-          const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
-          if (tween._tweenType === tweenTypes.TRANSFORM) {
-            const cachedTransforms = tweenTarget[transformsSymbol];
-            if (tweenHadNoInlineValue) {
-              delete cachedTransforms[tweenProperty];
+        const tweenType = tween._tweenType;
+        const originalInlinedValue = tween._inlineValue;
+        const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
+        if (tween._setter) {
+          if (!inlineStylesOnly && !tweenHadNoInlineValue) {
+            // Re-seed the original value to the _number / _numbers props so the setter can write the original state instead of re-applying the current frame.
+            decomposeRawValue(originalInlinedValue, decomposedOriginalValue);
+            if (decomposedOriginalValue.d) {
+              const src = decomposedOriginalValue.d;
+              const dst = tween._numbers;
+              for (let i = 0, l = src.length; i < l; i++) dst[i] = src[i];
             } else {
-              cachedTransforms[tweenProperty] = originalInlinedValue;
+              tween._number = decomposedOriginalValue.n;
             }
-            if (tween._renderTransforms) {
-              if (!Object.keys(cachedTransforms).length) {
-                targetStyle.removeProperty('transform');
+            tween._setter(tween.target, tween._number, tween);
+          }
+        } else if (tweenType === tweenTypes.OBJECT) {
+          if (!inlineStylesOnly && !tweenHadNoInlineValue) {
+            tweenTarget[tweenProperty] = originalInlinedValue;
+          }
+        } else if (tweenTarget[isDomSymbol]) {
+          if (tweenType === tweenTypes.ATTRIBUTE) {
+            if (!inlineStylesOnly) {
+              if (tweenHadNoInlineValue) {
+                /** @type {DOMTarget} */(tweenTarget).removeAttribute(tweenProperty);
               } else {
-                let str = emptyString;
-                for (let key in cachedTransforms) {
-                  str += transformsFragmentStrings[key] + cachedTransforms[key] + ') ';
-                }
-                targetStyle.transform = str;
+                /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(originalInlinedValue));
               }
             }
           } else {
-            if (tweenHadNoInlineValue) {
-              targetStyle.removeProperty(toLowerCase(tweenProperty));
+            const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
+            if (tweenType === tweenTypes.TRANSFORM) {
+              const cachedTransforms = tweenTarget[transformsSymbol];
+              if (tweenHadNoInlineValue) {
+                delete cachedTransforms[tweenProperty];
+              } else {
+                cachedTransforms[tweenProperty] = originalInlinedValue;
+              }
+              if (tween._renderTransforms) {
+                if (!Object.keys(cachedTransforms).length) {
+                  targetStyle.removeProperty('transform');
+                } else {
+                  targetStyle.transform = buildTransformString(cachedTransforms);
+                }
+              }
             } else {
-              targetStyle[tweenProperty] = originalInlinedValue;
+              if (tweenHadNoInlineValue) {
+                targetStyle.removeProperty(toLowerCase(tweenProperty));
+              } else {
+                targetStyle[tweenProperty] = originalInlinedValue;
+              }
             }
           }
-          if (animation._tail === tween) {
-            animation.targets.forEach(t => {
-              if (t.getAttribute && t.getAttribute('style') === emptyString) {
-                t.removeAttribute('style');
-              }          });
-          }
+        }
+        if (tweenTarget[isDomSymbol] && animation._tail === tween) {
+          animation.targets.forEach(t => {
+            if (t.getAttribute && t.getAttribute('style') === emptyString) {
+              t.removeAttribute('style');
+            }        });
         }
       });
     }
     return renderable;
   };
+
+  /**
+   * @template {Renderable} T
+   * @param {T} renderable
+   * @return {T}
+   */
+  const cleanInlineStyles = renderable => revertValues(renderable, true);
 
   
 
@@ -1854,8 +2187,6 @@
       /** @type {Number} */
       this._lastTime = initTime;
       /** @type {Number} */
-      this._scheduledTime = 0;
-      /** @type {Number} */
       this._frameDuration = K / maxFps;
       /** @type {Number} */
       this._fps = maxFps;
@@ -1874,14 +2205,12 @@
     }
 
     set fps(frameRate) {
-      const previousFrameDuration = this._frameDuration;
       const fr = +frameRate;
       const fps = fr < minValue ? minValue : fr;
       const frameDuration = K / fps;
       if (fps > defaults.frameRate) defaults.frameRate = fps;
       this._fps = fps;
       this._frameDuration = frameDuration;
-      this._scheduledTime += frameDuration - previousFrameDuration;
     }
 
     get speed() {
@@ -1898,17 +2227,17 @@
      * @return {tickModes}
      */
     requestTick(time) {
-      const scheduledTime = this._scheduledTime;
-      this._lastTickTime = time;
-      // If the current time is lower than the scheduled time
-      // this means not enough time has passed to hit one frameDuration
-      // so skip that frame
-      if (time < scheduledTime) return tickModes.NONE;
       const frameDuration = this._frameDuration;
-      const frameDelta = time - scheduledTime;
-      // Ensures that _scheduledTime progresses in steps of at least 1 frameDuration.
-      // Skips ahead if the actual elapsed time is higher.
-      this._scheduledTime += frameDelta < frameDuration ? frameDuration : frameDelta;
+      const elapsed = time - this._lastTickTime;
+      const scaled = frameDuration * .25;
+      const tolerance = scaled < 4 ? scaled : 4;
+      // Tolerance prevents dropping frames that arrive a bit early due to RAF jitter
+      // typically <= ~25% of frame duration and capped at 4ms so it doesn't dominate at high fps.
+      // e.g. at 60fps (frameDuration=16.667ms) a frame arriving after 15ms:
+      // - without tolerance: 15 < 16.667 -> skip
+      // - with tolerance: 15 + 4 >= 16.667 -> tick
+      if (elapsed + tolerance < frameDuration) return tickModes.NONE;
+      this._lastTickTime = elapsed >= frameDuration ? time - (elapsed % frameDuration) : time;
       return tickModes.AUTO;
     }
 
@@ -2068,7 +2397,9 @@
     }
 
     set speed(playbackRate) {
-      this._speed = playbackRate * globals.timeScale;
+      const speed = playbackRate * globals.timeScale;
+      if (this._speed === speed) return;
+      this._speed = speed;
       forEachChildren(this, (/** @type {Tickable} */child) => child.speed = child._speed);
     }
 
@@ -2201,7 +2532,7 @@
       if (prevSibling) {
 
         const prevParent = prevSibling.parent;
-        const prevAbsEndTime = prevSibling._absoluteStartTime + prevSibling._changeDuration;
+        const prevAbsEndTime = prevSibling._absoluteEndTime;
 
         // Handle looped animations tween
 
@@ -2227,7 +2558,8 @@
 
         }
 
-        const absoluteUpdateStartTime = tweenAbsStartTime - tween._delay;
+        // Read the precision-matched update-start instead of subtracting tween._delay live so sequential keyframes touching at a boundary don't trigger a phantom overlap from float drift.
+        const absoluteUpdateStartTime = tween._absoluteUpdateStartTime;
 
         if (prevAbsEndTime > absoluteUpdateStartTime) {
 
@@ -2247,37 +2579,41 @@
           }
         }
 
-        // Pause (and cancel) the parent if it only contains overlapped tweens
+        // Skip the cancel cascade when both tweens share the same parent timeline, a timeline cannot replace itself.
+        const tweenParentTL = tween.parent.parent;
+        if (!tweenParentTL || tweenParentTL !== prevParent.parent) {
 
-        let pausePrevParentAnimation = true;
+          let pausePrevParentAnimation = true;
 
-        forEachChildren(prevParent, (/** @type Tween */t) => {
-          if (!t._isOverlapped) pausePrevParentAnimation = false;
-        });
+          forEachChildren(prevParent, (/** @type Tween */t) => {
+            if (!t._isOverlapped) pausePrevParentAnimation = false;
+          });
 
-        if (pausePrevParentAnimation) {
-          const prevParentTL = prevParent.parent;
-          if (prevParentTL) {
-            let pausePrevParentTL = true;
-            forEachChildren(prevParentTL, (/** @type JSAnimation */a) => {
-              if (a !== prevParent) {
-                forEachChildren(a, (/** @type Tween */t) => {
-                  if (!t._isOverlapped) pausePrevParentTL = false;
-                });
+          if (pausePrevParentAnimation) {
+            const prevParentTL = prevParent.parent;
+            if (prevParentTL) {
+              let pausePrevParentTL = true;
+              forEachChildren(prevParentTL, (/** @type JSAnimation */a) => {
+                if (a !== prevParent) {
+                  forEachChildren(a, (/** @type Tween */t) => {
+                    if (!t._isOverlapped) pausePrevParentTL = false;
+                  });
+                }
+              });
+              if (pausePrevParentTL) {
+                prevParentTL.cancel();
               }
-            });
-            if (pausePrevParentTL) {
-              prevParentTL.cancel();
+            } else {
+              prevParent.cancel();
+              // Previously, calling .cancel() on a timeline child would affect the render order of other children
+              // Worked around this by marking it as .completed and using .pause() for safe removal in the engine loop
+              // This is no longer needed since timeline tween composition is now handled separately
+              // Keeping this here for reference
+              // prevParent.completed = true;
+              // prevParent.pause();
             }
-          } else {
-            prevParent.cancel();
-            // Previously, calling .cancel() on a timeline child would affect the render order of other children
-            // Worked around this by marking it as .completed and using .pause() for safe removal in the engine loop
-            // This is no longer needed since timeline tween composition is now handled separately
-            // Keeping this here for reference
-            // prevParent.completed = true;
-            // prevParent.pause();
           }
+
         }
 
       }
@@ -2332,14 +2668,12 @@
       tween._number = 0;
       lookupTween._fromNumber = toNumber;
 
-      if (tween._toNumbers) {
+      if (tween._toNumbers.length) {
         const toNumbers = cloneArray(tween._toNumbers);
-        if (toNumbers) {
-          toNumbers.forEach((value, i) => {
-            tween._fromNumbers[i] = lookupTween._fromNumbers[i] - value;
-            tween._toNumbers[i] = 0;
-          });
-        }
+        toNumbers.forEach((value, i) => {
+          tween._fromNumbers[i] = lookupTween._fromNumbers[i] - value;
+          tween._toNumbers[i] = 0;
+        });
         lookupTween._fromNumbers = toNumbers;
       }
 
@@ -2517,6 +2851,9 @@
 
   let timerId = 0;
 
+  /** @param {Timer} prev @param {Timer} child */
+  const sortByPriority = (prev, child) => prev._priority > child._priority;
+
   /**
    * Base class used to create Timers, Animations and Timelines
    */
@@ -2543,6 +2880,7 @@
         autoplay,
         frameRate,
         playbackRate,
+        priority,
         onComplete,
         onLoop,
         onPause,
@@ -2563,16 +2901,6 @@
                                 timerLoop === Infinity ||
                                 /** @type {Number} */(timerLoop) < 0 ? Infinity :
                                 /** @type {Number} */(timerLoop) + 1;
-
-      if (devTools) {
-        const isInfinite = timerIterationCount === Infinity;
-        const registered = devTools.register(this, parameters, isInfinite);
-        if (registered && isInfinite) {
-          const minIterations = alternate ? 2 : 1;
-          const iterations = parent ? devTools.maxNestedInfiniteLoops : devTools.maxInfiniteLoops;
-          timerIterationCount = Math.max(iterations, minIterations);
-        }
-      }
 
       let offsetPosition = 0;
 
@@ -2657,6 +2985,8 @@
       this._fps = setValue(frameRate, timerDefaults.frameRate);
       /** @type {Number} */
       this._speed = setValue(playbackRate, timerDefaults.playbackRate);
+      /** @type {Number} */
+      this._priority = +setValue(priority, 1);
     }
 
     get cancelled() {
@@ -2801,7 +3131,7 @@
         tick(this, minValue, 0, 0, tickModes.FORCE);
       } else {
         if (!this._running) {
-          addChild(engine, this);
+          addChild(engine, this, sortByPriority);
           engine._hasChildren = true;
           this._running = true;
         }
@@ -3044,18 +3374,16 @@
   function registerTargets(targets) {
     const parsedTargetsArray = parseTargets(targets);
     const parsedTargetsLength = parsedTargetsArray.length;
-    if (parsedTargetsLength) {
-      for (let i = 0; i < parsedTargetsLength; i++) {
-        const target = parsedTargetsArray[i];
-        if (!target[isRegisteredTargetSymbol]) {
-          target[isRegisteredTargetSymbol] = true;
-          const isSvgType = isSvg(target);
-          const isDom = /** @type {DOMTarget} */(target).nodeType || isSvgType;
-          if (isDom) {
-            target[isDomSymbol] = true;
-            target[isSvgSymbol] = isSvgType;
-            target[transformsSymbol] = {};
-          }
+    for (let i = 0; i < parsedTargetsLength; i++) {
+      const target = parsedTargetsArray[i];
+      if (!target[isRegisteredTargetSymbol]) {
+        target[isRegisteredTargetSymbol] = true;
+        const isSvgType = isSvg(target);
+        const isDom = /** @type {DOMTarget} */(target).nodeType || isSvgType;
+        if (isDom) {
+          target[isDomSymbol] = true;
+          target[isSvgSymbol] = isSvgType;
+          target[transformsSymbol] = {};
         }
       }
     }
@@ -3177,8 +3505,8 @@
 
   /**
    * @typedef  {Object} EasesFunctions
-   * @property {typeof none} linear
-   * @property {typeof none} none
+   * @property {EasingFunction} linear
+   * @property {EasingFunction} none
    * @property {PowerEasing} in
    * @property {PowerEasing} out
    * @property {PowerEasing} inOut
@@ -3396,7 +3724,7 @@
      * @param {Number} [parentPosition]
      * @param {Boolean} [fastSet=false]
      * @param {Number} [index=0]
-     * @param {Number} [length=0]
+     * @param {TargetsArray} [allTargets]
      */
     constructor(
       targets,
@@ -3405,10 +3733,15 @@
       parentPosition,
       fastSet = false,
       index = 0,
-      length = 0
+      allTargets
     ) {
 
       super(/** @type {TimerParams & AnimationParams} */(parameters), parent, parentPosition);
+
+      /** @type {Tween} */
+      this._head;
+      /** @type {Tween} */
+      this._tail;
 
       ++JSAnimationId;
 
@@ -3456,7 +3789,7 @@
 
         const target = parsedTargets[targetIndex];
         const ti = index || targetIndex;
-        const tl = length || targetsLength;
+        const tl = allTargets || parsedTargets;
 
         let lastTransformGroupIndex = NaN;
         let lastTransformGroupLength = NaN;
@@ -3466,6 +3799,7 @@
           if (isKey(p)) {
 
             const tweenType = getTweenType(target, p);
+            const adapterProp = resolveAdapterEntry(target, p);
 
             const propName = sanitizePropertyName(p, target, tweenType);
 
@@ -3532,7 +3866,14 @@
               toFunctionStore.func = null;
               fromFunctionStore.func = null;
 
-              const computedToValue = getFunctionValue(key.to, target, ti, tl, toFunctionStore);
+              const computedComposition = getFunctionValue(setValue(key.composition, tComposition), target, ti, tl, null, null);
+              const tweenComposition = isNum(computedComposition) ? computedComposition : compositionTypes[computedComposition];
+              if (!siblings && tweenComposition !== compositionTypes.none) siblings = getTweenSiblings(target, propName);
+              // Timelines pass the last sibling tween if it belongs to the same timeline
+              // Standalone animations only pass prevTween when the property has multiple keyframes
+              const tailTween = siblings ? siblings._tail : null;
+              const prevSiblingTween = parent && tailTween && tailTween.parent.parent === parent ? tailTween : prevTween;
+              const computedToValue = getFunctionValue(key.to, target, ti, tl, toFunctionStore, prevSiblingTween);
 
               let tweenToValue;
               // Allows function based values to return an object syntax value ({to: v})
@@ -3542,29 +3883,31 @@
               } else {
                 tweenToValue = computedToValue;
               }
-              const tweenFromValue = getFunctionValue(key.from, target, ti, tl);
+              const tweenFromValue = getFunctionValue(key.from, target, ti, tl, fromFunctionStore, prevSiblingTween);
               const easeToParse = key.ease || tEasing;
 
-              const easeFunctionResult = getFunctionValue(easeToParse, target, ti, tl);
+              const easeFunctionResult = getFunctionValue(easeToParse, target, ti, tl, null, prevSiblingTween);
               const keyEasing = isFnc(easeFunctionResult) || isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
 
               const hasSpring = !isUnd(keyEasing) && !isUnd(/** @type {Spring} */(keyEasing).ease);
               const tweenEasing = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
               // Calculate default individual keyframe duration by dividing the tl of keyframes
-              const tweenDuration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(setValue(key.duration, (l > 1 ? getFunctionValue(tDuration, target, ti, tl) / l : tDuration)), target, ti, tl);
+              const tweenDuration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(setValue(key.duration, (l > 1 ? getFunctionValue(tDuration, target, ti, tl, null, prevSiblingTween) / l : tDuration)), target, ti, tl, null, prevSiblingTween);
               // Default delay value should only be applied to the first tween
-              const tweenDelay = getFunctionValue(setValue(key.delay, (!tweenIndex ? tDelay : 0)), target, ti, tl);
-              const computedComposition = getFunctionValue(setValue(key.composition, tComposition), target, ti, tl);
-              const tweenComposition = isNum(computedComposition) ? computedComposition : compositionTypes[computedComposition];
+              const tweenDelay = getFunctionValue(setValue(key.delay, (!tweenIndex ? tDelay : 0)), target, ti, tl, null, prevSiblingTween);
               // Modifiers are treated differently and don't accept function based value to prevent having to pass a function wrapper
               const tweenModifier = key.modifier || tModifier;
               const hasFromvalue = !isUnd(tweenFromValue);
               const hasToValue = !isUnd(tweenToValue);
               const isFromToArray = isArr(tweenToValue);
               const isFromToValue = isFromToArray || (hasFromvalue && hasToValue);
+              // Capture the update-start in local time, the previous sibling's end for keyframes after the first, zero for the first keyframe. Used to derive a precision-matched _absoluteUpdateStartTime below.
+              const tweenUpdateStartLocal = prevTween ? lastTweenChangeEndTime : 0;
               const tweenStartTime = prevTween ? lastTweenChangeEndTime + tweenDelay : tweenDelay;
               // Rounding is necessary here to minimize floating point errors when working in seconds
               const absoluteStartTime = round$1(absoluteOffsetTime + tweenStartTime, 12);
+              // Match the rounding pattern of prevSibling._absoluteEndTime so the composition overlap check compares cleanly when keyframes touch at a boundary.
+              const absoluteUpdateStartTime = round$1(absoluteOffsetTime + tweenUpdateStartLocal, 12);
 
               // Force a onRender callback if the animation contains at least one from value and autoplay is set to false
               if (!shouldTriggerRender && (hasFromvalue || isFromToArray)) shouldTriggerRender = 1;
@@ -3572,11 +3915,10 @@
               let prevSibling = prevTween;
 
               if (tweenComposition !== compositionTypes.none) {
-                if (!siblings) siblings = getTweenSiblings(target, propName);
                 let nextSibling = siblings._head;
-                // Iterate trough all the next siblings until we find a sibling with an equal or inferior start time
-                while (nextSibling && !nextSibling._isOverridden && nextSibling._absoluteStartTime <= absoluteStartTime) {
-                  prevSibling = nextSibling;
+                // Walk prior siblings up to the new tween, skipping overridden ones so the chain resolves to the latest live value instead of stopping at the first override.
+                while (nextSibling && nextSibling._absoluteStartTime <= absoluteStartTime) {
+                  if (!nextSibling._isOverridden) prevSibling = nextSibling;
                   nextSibling = nextSibling._nextRep;
                   // Overrides all the next siblings if the next sibling starts at the same time of after as the new tween start time
                   if (nextSibling && nextSibling._absoluteStartTime >= absoluteStartTime) {
@@ -3591,8 +3933,8 @@
 
               // Decompose values
               if (isFromToValue) {
-                decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[0], target, ti, tl, fromFunctionStore) : tweenFromValue, fromTargetObject);
-                decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[1], target, ti, tl, toFunctionStore) : tweenToValue, toTargetObject);
+                decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[0], target, ti, tl, fromFunctionStore, prevSiblingTween) : tweenFromValue, fromTargetObject);
+                decomposeRawValue(isFromToArray ? getFunctionValue(tweenToValue[1], target, ti, tl, toFunctionStore, prevSiblingTween) : tweenToValue, toTargetObject);
                 // Needed to force an inline style registration
                 const originalValue = getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore);
                 if (fromTargetObject.t === valueTypes.NUMBER) {
@@ -3630,8 +3972,8 @@
                   if (prevTween) {
                     decomposeTweenValue(prevTween, fromTargetObject);
                   } else {
-                    decomposeRawValue(parent && prevSibling && prevSibling.parent.parent === parent ? prevSibling._value :
                     // No need to get and parse the original value if the tween is part of a timeline and has a previous sibling part of the same timeline
+                    decomposeRawValue(parent && prevSibling && prevSibling.parent.parent === parent ? prevSibling._value :
                     getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore), fromTargetObject);
                   }
                 }
@@ -3670,8 +4012,7 @@
                   const colorValue = fromTargetObject.t === valueTypes.COLOR ? fromTargetObject : toTargetObject;
                   const notColorValue = fromTargetObject.t === valueTypes.COLOR ? toTargetObject : fromTargetObject;
                   notColorValue.t = valueTypes.COLOR;
-                  notColorValue.s = colorValue.s;
-                  notColorValue.d = [0, 0, 0, 1];
+                  notColorValue.d = colorValue.d.map(() => 0);
                 }
               }
 
@@ -3701,6 +4042,16 @@
               let inlineValue = inlineStylesStore[propName];
               if (!isNil(inlineValue)) inlineStylesStore[propName] = null;
 
+              // Resolve the adapter setter once so render skips the lookup per frame.
+              const tweenSetter = adapterProp ? adapterProp.set : null;
+
+              // Rounding is necessary here to minimize floating point errors when working in seconds
+              lastTweenChangeEndTime = round$1(tweenStartTime + tweenUpdateDuration, 12);
+
+              const fromD = fromTargetObject.d;
+              const toD = toTargetObject.d;
+              const toS = toTargetObject.s;
+
               /** @type {Tween} */
               const tween = {
                 parent: this,
@@ -3711,12 +4062,12 @@
                 _toFunc: toFunctionStore.func,
                 _fromFunc: fromFunctionStore.func,
                 _ease: parseEase(tweenEasing),
-                _fromNumbers: cloneArray(fromTargetObject.d),
-                _toNumbers: cloneArray(toTargetObject.d),
-                _strings: cloneArray(toTargetObject.s),
+                _fromNumbers: fromD ? cloneArray(fromD) : emptyArray,
+                _toNumbers: toD ? cloneArray(toD) : emptyArray,
+                _strings: toS ? cloneArray(toS) : emptyArray,
                 _fromNumber: fromTargetObject.n,
                 _toNumber: toTargetObject.n,
-                _numbers: cloneArray(fromTargetObject.d), // For additive tween and animatables
+                _numbers: fromD ? cloneArray(fromD) : emptyArray, // For additive tween and animatables
                 _number: fromTargetObject.n, // For additive tween and animatables
                 _unit: toTargetObject.u,
                 _modifier: tweenModifier,
@@ -3726,8 +4077,12 @@
                 _updateDuration: tweenUpdateDuration,
                 _changeDuration: tweenUpdateDuration,
                 _absoluteStartTime: absoluteStartTime,
+                _absoluteUpdateStartTime: absoluteUpdateStartTime,
+                _absoluteEndTime: round$1(absoluteOffsetTime + lastTweenChangeEndTime, 12),
+                _hasFromValue: hasFromvalue || isFromToArray ? 1 : 0,
                 // NOTE: Investigate bit packing to stores ENUM / BOOL
                 _tweenType: tweenType,
+                _setter: tweenSetter,
                 _valueType: toTargetObject.t,
                 _composition: tweenComposition,
                 _isOverlapped: 0,
@@ -3746,11 +4101,23 @@
                 composeTween(tween, siblings);
               }
 
+              // Pre-compute the tween end value for function-based value chaining (ie morphTo / scrambleText in keyframe arrays and timelines)
+              const vt = tween._valueType;
+              if (vt === valueTypes.COMPLEX) {
+                tween._value = composeComplexValue(tween, 1, -1);
+              } else if (vt === valueTypes.UNIT) {
+                tween._value = `${tweenModifier(tween._toNumber)}${tween._unit}`;
+              } else if (vt === valueTypes.COLOR) {
+                const d = toTargetObject.d;
+                tween._value = `rgba(${round$1(d[0], 0)},${round$1(d[1], 0)},${round$1(d[2], 0)},${d[3]})`;
+              } else {
+                tween._value = tweenModifier(tween._toNumber);
+              }
+
               if (isNaN(firstTweenChangeStartTime)) {
                 firstTweenChangeStartTime = tween._startTime;
               }
-              // Rounding is necessary here to minimize floating point errors when working in seconds
-              lastTweenChangeEndTime = round$1(tweenStartTime + tweenUpdateDuration, 12);
+
               prevTween = tween;
               animationAnimationLength++;
 
@@ -3856,8 +4223,11 @@
         tween._updateDuration = normalizeTime(tween._updateDuration * timeScale);
         tween._changeDuration = normalizeTime(tween._changeDuration * timeScale);
         tween._currentTime *= timeScale;
+        tween._delay *= timeScale;
         tween._startTime *= timeScale;
         tween._absoluteStartTime *= timeScale;
+        tween._absoluteUpdateStartTime *= timeScale;
+        tween._absoluteEndTime *= timeScale;
       });
       return super.stretch(newDuration);
     }
@@ -3903,7 +4273,7 @@
      */
     revert() {
       super.revert();
-      return cleanInlineStyles(this);
+      return revertValues(this);
     }
 
     /**
@@ -3925,170 +4295,12 @@
    * @param {AnimationParams} parameters
    * @return {JSAnimation}
    */
-  const animate = (targets, parameters) => new JSAnimation(targets, parameters, null, 0, false).init();
-
-  
-
-  
-
-  const WAAPIAnimationsLookups = {
-    _head: null,
-    _tail: null,
-  };
-
-  /**
-   * @param {DOMTarget} $el
-   * @param {String} [property]
-   * @param {WAAPIAnimation} [parent]
-   * @return {globalThis.Animation}
-   */
-  const removeWAAPIAnimation = ($el, property, parent) => {
-    let nextLookup = WAAPIAnimationsLookups._head;
-    let anim;
-    while (nextLookup) {
-      const next = nextLookup._next;
-      const matchTarget = nextLookup.$el === $el;
-      const matchProperty = !property || nextLookup.property === property;
-      const matchParent = !parent || nextLookup.parent === parent;
-      if (matchTarget && matchProperty && matchParent) {
-        anim = nextLookup.animation;
-        try { anim.commitStyles(); } catch {}      anim.cancel();
-        removeChild(WAAPIAnimationsLookups, nextLookup);
-        const lookupParent = nextLookup.parent;
-        if (lookupParent) {
-          lookupParent._completed++;
-          if (lookupParent.animations.length === lookupParent._completed) {
-            lookupParent.completed = true;
-            lookupParent.paused = true;
-            if (!lookupParent.muteCallbacks) {
-              lookupParent.onComplete(lookupParent);
-              lookupParent._resolve(lookupParent);
-            }
-          }
-        }
-      }
-      nextLookup = next;
-    }
-    return anim;
-  };
-
-  /**
-   * @param {WAAPIAnimation} parent
-   * @param {DOMTarget} $el
-   * @param {String} property
-   * @param {PropertyIndexedKeyframes} keyframes
-   * @param {KeyframeAnimationOptions} params
-   * @retun {globalThis.Animation}
-   */
-  const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
-    const animation = $el.animate(keyframes, params);
-    const animTotalDuration = params.delay + (+params.duration * params.iterations);
-    animation.playbackRate = parent._speed;
-    if (parent.paused) animation.pause();
-    if (parent.duration < animTotalDuration) {
-      parent.duration = animTotalDuration;
-      parent.controlAnimation = animation;
-    }
-    parent.animations.push(animation);
-    removeWAAPIAnimation($el, property);
-    addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
-    const handleRemove = () => removeWAAPIAnimation($el, property, parent);
-    animation.oncancel = handleRemove;
-    animation.onremove = handleRemove;
-    if (!parent.persist) {
-      animation.onfinish = handleRemove;
-    }
-    return animation;
-  };
-
-  
-
-  
-
-  /**
-   * @overload
-   * @param  {DOMTargetSelector} targetSelector
-   * @param  {String} propName
-   * @return {String}
-   *
-   * @overload
-   * @param  {JSTargetsParam} targetSelector
-   * @param  {String} propName
-   * @return {Number|String}
-   *
-   * @overload
-   * @param  {DOMTargetsParam} targetSelector
-   * @param  {String} propName
-   * @param  {String} unit
-   * @return {String}
-   *
-   * @overload
-   * @param  {TargetsParam} targetSelector
-   * @param  {String} propName
-   * @param  {Boolean} unit
-   * @return {Number}
-   *
-   * @param  {TargetsParam} targetSelector
-   * @param  {String} propName
-   * @param  {String|Boolean} [unit]
-   */
-  function get(targetSelector, propName, unit) {
-    const targets = registerTargets(targetSelector);
-    if (!targets.length) return;
-    const [ target ] = targets;
-    const tweenType = getTweenType(target, propName);
-    const normalizePropName = sanitizePropertyName(propName, target, tweenType);
-    let originalValue = getOriginalAnimatableValue(target, normalizePropName);
-    if (isUnd(unit)) {
-      return originalValue;
+  const animate = (targets, parameters) => {
+    if (globals.editor) {
+      return globals.editor.addAnimation(targets, parameters);
     } else {
-      decomposeRawValue(originalValue, decomposedOriginalValue);
-      if (decomposedOriginalValue.t === valueTypes.NUMBER || decomposedOriginalValue.t === valueTypes.UNIT) {
-        if (unit === false) {
-          return decomposedOriginalValue.n;
-        } else {
-          const convertedValue = convertValueUnit(/** @type {DOMTarget} */(target), decomposedOriginalValue, /** @type {String} */(unit), false);
-          return `${round$1(convertedValue.n, globals.precision)}${convertedValue.u}`;
-        }
-      }
+      return new JSAnimation(targets, parameters, null, 0, false).init();
     }
-  }
-
-  /**
-   * @param  {TargetsParam} targets
-   * @param  {AnimationParams} parameters
-   * @return {JSAnimation}
-   */
-  const set = (targets, parameters) => {
-    if (isUnd(parameters)) return;
-    parameters.duration = minValue;
-    // Do not overrides currently active tweens by default
-    parameters.composition = setValue(parameters.composition, compositionTypes.none);
-    // Skip init() and force rendering by playing the animation
-    return new JSAnimation(targets, parameters, null, 0, true).resume();
-  };
-
-  /**
-   * @param  {TargetsParam} targets
-   * @param  {Renderable|WAAPIAnimation} [renderable]
-   * @param  {String} [propertyName]
-   * @return {TargetsArray}
-   */
-  const remove = (targets, renderable, propertyName) => {
-    const targetsArray = parseTargets(targets);
-    for (let i = 0, l = targetsArray.length; i < l; i++) {
-      removeWAAPIAnimation(
-        /** @type {DOMTarget}  */(targetsArray[i]),
-        propertyName,
-        renderable && /** @type {WAAPIAnimation} */(renderable).controlAnimation && /** @type {WAAPIAnimation} */(renderable),
-      );
-    }
-    removeTargetsFromRenderable(
-      targetsArray,
-      /** @type {Renderable} */(renderable),
-      propertyName
-    );
-    return targetsArray;
   };
 
   
@@ -4165,7 +4377,7 @@
    * @param  {Number} timePosition
    * @param  {TargetsParam} targets
    * @param  {Number} [index]
-   * @param  {Number} [length]
+   * @param  {TargetsArray} [allTargets]
    * @return {Timeline}
    *
    * @param  {TimerParams|AnimationParams} childParams
@@ -4173,15 +4385,15 @@
    * @param  {Number} timePosition
    * @param  {TargetsParam} [targets]
    * @param  {Number} [index]
-   * @param  {Number} [length]
+   * @param  {TargetsArray} [allTargets]
    */
-  function addTlChild(childParams, tl, timePosition, targets, index, length) {
+  function addTlChild(childParams, tl, timePosition, targets, index, allTargets) {
     const isSetter = isNum(childParams.duration) && /** @type {Number} */(childParams.duration) <= minValue;
     // Offset the tl position with -minValue for 0 duration animations or .set() calls in order to align their end value with the defined position
     const adjustedPosition = isSetter ? timePosition - minValue : timePosition;
     if (tl.composition) tick(tl, adjustedPosition, 1, 1, tickModes.AUTO);
     const tlChild = targets ?
-      new JSAnimation(targets,/** @type {AnimationParams} */(childParams), tl, adjustedPosition, false, index, length) :
+      new JSAnimation(targets,/** @type {AnimationParams} */(childParams), tl, adjustedPosition, false, index, allTargets) :
       new Timer(/** @type {TimerParams} */(childParams), tl, adjustedPosition);
     if (tl.composition) tlChild.init(true);
     // TODO: Might be better to insert at a position relative to startTime?
@@ -4229,7 +4441,7 @@
      * @overload
      * @param {TargetsParam} a1
      * @param {AnimationParams} a2
-     * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+     * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
      * @return {this}
      *
      * @overload
@@ -4239,7 +4451,7 @@
      *
      * @param {TargetsParam|TimerParams} a1
      * @param {TimelinePosition|AnimationParams} a2
-     * @param {TimelinePosition|StaggerFunction<Number|String>} [a3]
+     * @param {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [a3]
      */
     add(a1, a2, a3) {
       const isAnim = isObj(a2);
@@ -4248,9 +4460,11 @@
         this._hasChildren = true;
         if (isAnim) {
           const childParams = /** @type {AnimationParams} */(a2);
-          // Check for function for children stagger positions
-          if (isFnc(a3)) {
-            const staggeredPosition = a3;
+          const editorHook = globals.editor && globals.editor.addTimelineChild;
+          const isStaggerType = a3 && /** @type {TweakRegister} */(a3).type === 'Stagger' && globals.editor;
+          // Check for function or Stagger type children positions
+          const staggeredPosition = isFnc(a3) ? a3 : null;
+          if (staggeredPosition || isStaggerType) {
             const parsedTargetsArray = parseTargets(/** @type {TargetsParam} */(a1));
             // Store initial duration before adding new children that will change the duration
             const tlDuration = this.duration;
@@ -4261,28 +4475,36 @@
             let i = 0;
             /** @type {Number} */
             const parsedLength = (parsedTargetsArray.length);
+            // Call editor hook once for the entire stagger group instead of per target
+            const resolvedParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3, parsedLength) : null;
+            // Resolve stagger AFTER editor hook so tweaked position value (a3.defaultValue) is used
+            const staggerFn = staggeredPosition || globals.editor.resolveStagger(/** @type {TweakRegister} */(a3).defaultValue);
             parsedTargetsArray.forEach((/** @type {Target} */target) => {
               // Create a new parameter object for each staggered children
-              const staggeredChildParams = { ...childParams };
+              const staggeredChildParams = { ...(resolvedParams || childParams) };
               // Reset the duration of the timeline iteration before each stagger to prevent wrong start value calculation
               this.duration = tlDuration;
               this.iterationDuration = tlIterationDuration;
               if (!isUnd(id)) staggeredChildParams.id = id + '-' + i;
+              const staggeredTimePosition = parseTimelinePosition(this, staggerFn(target, i, parsedTargetsArray, null, this));
               addTlChild(
                 staggeredChildParams,
                 this,
-                parseTimelinePosition(this, staggeredPosition(target, i, parsedLength, this)),
+                staggeredTimePosition,
                 target,
                 i,
-                parsedLength
+                parsedTargetsArray,
               );
               i++;
             });
           } else {
+            // Call editor hook before resolving position so tweaked values are applied
+            const resolvedChildParams = editorHook ? editorHook(/** @type {TargetsParam} */(a1), childParams, this.id, a3) : childParams;
+            const resolvedPosition = a3 && /** @type {*} */(a3).type ? /** @type {*} */(a3).defaultValue : a3;
             addTlChild(
-              childParams,
+              resolvedChildParams,
               this,
-              parseTimelinePosition(this, a3),
+              parseTimelinePosition(this, resolvedPosition),
               /** @type {TargetsParam} */(a1),
             );
           }
@@ -4326,13 +4548,21 @@
       if (!isUnd(synced) && !isUnd(/** @type {WAAPIAnimation} */(synced).persist)) {
         /** @type {WAAPIAnimation} */(synced).persist = true;
       }
-      return this.add(synced, { currentTime: [0, duration], duration, delay: 0, ease: 'linear', playbackEase: 'linear' }, position);
+      const editor = globals.editor;
+      const childHook = editor && editor.addTimelineChild;
+      if (editor && editor.addTimelineSync) {
+        position = editor.addTimelineSync(synced, position, this.id);
+        editor.addTimelineChild = null; // Suppress the per-child hook for the internal .add, sync already registered.
+      }
+      const result = this.add(synced, { currentTime: [0, duration], duration, delay: 0, ease: 'linear', playbackEase: 'linear' }, position);
+      if (editor) editor.addTimelineChild = childHook;
+      return result;
     }
 
     /**
      * @param  {TargetsParam} targets
      * @param  {AnimationParams} parameters
-     * @param  {TimelinePosition} [position]
+     * @param  {TimelinePosition|StaggerFunction<Number|String>|TweakRegister} [position]
      * @return {this}
      */
     set(targets, parameters, position) {
@@ -4349,6 +4579,7 @@
      */
     call(callback, position) {
       if (isUnd(callback) || callback && !isFnc(callback)) return this;
+      if (globals.editor && globals.editor.addTimelineCall) position = globals.editor.addTimelineCall(callback, position, this.id);
       return this.add({ duration: 0, delay: 0, onComplete: () => callback(this) }, position);
     }
 
@@ -4360,6 +4591,7 @@
      */
     label(labelName, position) {
       if (isUnd(labelName) || labelName && !isStr(labelName)) return this;
+      if (globals.editor && globals.editor.addTimelineLabel) position = globals.editor.addTimelineLabel(labelName, position, this.id);
       this.labels[labelName] = parseTimelinePosition(this, position);
       return this;
     }
@@ -4404,7 +4636,7 @@
     revert() {
       super.revert();
       forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert, true);
-      return cleanInlineStyles(this);
+      return revertValues(this);
     }
 
     /**
@@ -4424,7 +4656,12 @@
    * @param {TimelineParams} [parameters]
    * @return {Timeline}
    */
-  const createTimeline = parameters => new Timeline(parameters).init();
+  const createTimeline = parameters => {
+    if (globals.editor) {
+      return /** @type {Timeline} */(/** @type {unknown} */(globals.editor.addTimeline(parameters)));
+    }
+    return new Timeline(parameters).init();
+  };
 
   
 
@@ -4463,6 +4700,7 @@
       const callbacksAnimationParams = { v: 1, autoplay: false };
       const properties = {};
       this.targets = [];
+      /** @type {Record<String, JSAnimation>} */
       this.animations = {};
       /** @type {JSAnimation|null} */
       this.callbacks = null;
@@ -4865,6 +5103,173 @@
   const createSpring = (parameters) => {
     console.warn('createSpring() is deprecated use spring() instead');
     return new Spring(parameters);
+  };
+
+  
+
+  
+
+  const WAAPIAnimationsLookups = {
+    _head: null,
+    _tail: null,
+  };
+
+  /**
+   * @param {DOMTarget} $el
+   * @param {String} [property]
+   * @param {WAAPIAnimation} [parent]
+   * @return {globalThis.Animation}
+   */
+  const removeWAAPIAnimation = ($el, property, parent) => {
+    let nextLookup = WAAPIAnimationsLookups._head;
+    let anim;
+    while (nextLookup) {
+      const next = nextLookup._next;
+      const matchTarget = nextLookup.$el === $el;
+      const matchProperty = !property || nextLookup.property === property;
+      const matchParent = !parent || nextLookup.parent === parent;
+      if (matchTarget && matchProperty && matchParent) {
+        anim = nextLookup.animation;
+        try { anim.commitStyles(); } catch {}      anim.cancel();
+        removeChild(WAAPIAnimationsLookups, nextLookup);
+        const lookupParent = nextLookup.parent;
+        if (lookupParent) {
+          lookupParent._completed++;
+          if (lookupParent.animations.length === lookupParent._completed) {
+            lookupParent.completed = true;
+            lookupParent.paused = true;
+            if (!lookupParent.muteCallbacks) {
+              lookupParent.onComplete(lookupParent);
+              lookupParent._resolve(lookupParent);
+            }
+          }
+        }
+      }
+      nextLookup = next;
+    }
+    return anim;
+  };
+
+  /**
+   * @param {WAAPIAnimation} parent
+   * @param {DOMTarget} $el
+   * @param {String} property
+   * @param {PropertyIndexedKeyframes} keyframes
+   * @param {KeyframeAnimationOptions} params
+   * @retun {globalThis.Animation}
+   */
+  const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
+    const animation = $el.animate(keyframes, params);
+    const animTotalDuration = params.delay + (+params.duration * params.iterations);
+    animation.playbackRate = parent._speed;
+    if (parent.paused) animation.pause();
+    if (parent.duration < animTotalDuration) {
+      parent.duration = animTotalDuration;
+      parent.controlAnimation = animation;
+    }
+    parent.animations.push(animation);
+    removeWAAPIAnimation($el, property);
+    addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
+    const handleRemove = () => removeWAAPIAnimation($el, property, parent);
+    animation.oncancel = handleRemove;
+    animation.onremove = handleRemove;
+    if (!parent.persist) {
+      animation.onfinish = handleRemove;
+    }
+    return animation;
+  };
+
+  
+
+  
+
+  /**
+   * @overload
+   * @param  {DOMTargetSelector} targetSelector
+   * @param  {String} propName
+   * @return {String}
+   *
+   * @overload
+   * @param  {JSTargetsParam} targetSelector
+   * @param  {String} propName
+   * @return {Number|String}
+   *
+   * @overload
+   * @param  {DOMTargetsParam} targetSelector
+   * @param  {String} propName
+   * @param  {String} unit
+   * @return {String}
+   *
+   * @overload
+   * @param  {TargetsParam} targetSelector
+   * @param  {String} propName
+   * @param  {Boolean} unit
+   * @return {Number}
+   *
+   * @param  {TargetsParam} targetSelector
+   * @param  {String} propName
+   * @param  {String|Boolean} [unit]
+   */
+  function get(targetSelector, propName, unit) {
+    const targets = registerTargets(targetSelector);
+    if (!targets.length) return;
+    const [ target ] = targets;
+    const tweenType = getTweenType(target, propName);
+    const normalizePropName = sanitizePropertyName(propName, target, tweenType);
+    let originalValue = getOriginalAnimatableValue(target, normalizePropName);
+    if (isUnd(unit)) {
+      return originalValue;
+    } else {
+      decomposeRawValue(originalValue, decomposedOriginalValue);
+      if (decomposedOriginalValue.t === valueTypes.NUMBER || decomposedOriginalValue.t === valueTypes.UNIT) {
+        if (unit === false) {
+          return decomposedOriginalValue.n;
+        } else {
+          const convertedValue = convertValueUnit(/** @type {DOMTarget} */(target), decomposedOriginalValue, /** @type {String} */(unit), false);
+          return `${round$1(convertedValue.n, globals.precision)}${convertedValue.u}`;
+        }
+      }
+    }
+  }
+
+  /**
+   * @param  {TargetsParam} targets
+   * @param  {AnimationParams} parameters
+   * @return {JSAnimation}
+   */
+  const set = (targets, parameters) => {
+    if (isUnd(parameters)) return;
+    if (globals.editor && globals.editor.addSet) {
+      return globals.editor.addSet(targets, parameters);
+    }
+    parameters.duration = minValue;
+    // Do not overrides currently active tweens by default
+    parameters.composition = setValue(parameters.composition, compositionTypes.none);
+    // Skip init() and force rendering by playing the animation
+    return new JSAnimation(targets, parameters, null, 0, true).resume();
+  };
+
+  /**
+   * @param  {TargetsParam} targets
+   * @param  {Renderable|WAAPIAnimation} [renderable]
+   * @param  {String} [propertyName]
+   * @return {TargetsArray}
+   */
+  const remove = (targets, renderable, propertyName) => {
+    const targetsArray = parseTargets(targets);
+    for (let i = 0, l = targetsArray.length; i < l; i++) {
+      removeWAAPIAnimation(
+        /** @type {DOMTarget}  */(targetsArray[i]),
+        propertyName,
+        renderable && /** @type {WAAPIAnimation} */(renderable).controlAnimation && /** @type {WAAPIAnimation} */(renderable),
+      );
+    }
+    removeTargetsFromRenderable(
+      targetsArray,
+      /** @type {Renderable} */(renderable),
+      propertyName
+    );
+    return targetsArray;
   };
 
   
@@ -6073,19 +6478,21 @@
   };
 
   /**
-   * @param  {(...args: any[]) => Tickable | ((...args: any[]) => void)} constructor
-   * @return {(...args: any[]) => Tickable | ((...args: any[]) => void)}
+   * @template {Tickable | ((...args: any[]) => void) | void} T
+   * @param  {(...args: any[]) => T} constructor
+   * @return {(...args: any[]) => T extends void ? () => void : T}
    */
   const keepTime = constructor => {
     /** @type {Tickable} */
     let tracked;
-    return (...args) => {
-      let currentIteration, currentIterationProgress, reversed, alternate;
+    return /** @type {(...args: any[]) => T extends void ? () => void : T} */(/** @type {*} */((...args) => {
+      let currentIteration, currentIterationProgress, reversed, alternate, startTime;
       if (tracked) {
         currentIteration = tracked.currentIteration;
         currentIterationProgress = tracked.iterationProgress;
         reversed = tracked.reversed;
         alternate = tracked._alternate;
+        startTime = tracked._startTime;
         tracked.revert();
       }
       const cleanup = constructor(...args);
@@ -6093,9 +6500,10 @@
       if (!isUnd(currentIterationProgress)) {
         /** @type {Tickable} */(tracked).currentIteration = currentIteration;
         /** @type {Tickable} */(tracked).iterationProgress = (alternate ? !(currentIteration % 2) ? reversed : !reversed : reversed) ? 1 - currentIterationProgress : currentIterationProgress;
+        /** @type {Tickable} */(tracked)._startTime = startTime;
       }
       return cleanup || noop;
-    }
+    }));
   };
 
   
@@ -6493,12 +6901,14 @@
 
     refreshScrollObservers() {
       forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+        if (!child.ready) return;
         if (child._debug) {
           child.removeDebug();
         }
       });
       this.updateBounds();
       forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+        if (!child.ready) return;
         child.refresh();
         child.onResize(child);
         if (child._debug) {
@@ -7438,12 +7848,12 @@
    * @param  {WAAPIKeyframeValue} value
    * @param  {DOMTarget} $el
    * @param  {Number} i
-   * @param  {Number} targetsLength
+   * @param  {DOMTargetsArray} parsedTargets
    * @return {String}
    */
-  const normalizeTweenValue = (propName, value, $el, i, targetsLength) => {
+  const normalizeTweenValue = (propName, value, $el, i, parsedTargets) => {
     // Do not try to compute strings with getFunctionValue otherwise it will convert CSS variables
-    let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, targetsLength);
+    let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, parsedTargets, null, null);
     if (!isNum(v)) return v;
     if (commonDefaultPXProperties.includes(propName) || stringStartsWith(propName, 'translate')) return `${v}px`;
     if (stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew')) return `${v}deg`;
@@ -7456,18 +7866,18 @@
    * @param  {WAAPIKeyframeValue} from
    * @param  {WAAPIKeyframeValue} to
    * @param  {Number} i
-   * @param  {Number} targetsLength
+   * @param  {DOMTargetsArray} parsedTargets
    * @return {WAAPITweenValue}
    */
-  const parseIndividualTweenValue = ($el, propName, from, to, i, targetsLength) => {
+  const parseIndividualTweenValue = ($el, propName, from, to, i, parsedTargets) => {
     /** @type {WAAPITweenValue} */
     let tweenValue = '0';
-    const computedTo = !isUnd(to) ? normalizeTweenValue(propName, to, $el, i, targetsLength) : getComputedStyle($el)[propName];
+    const computedTo = !isUnd(to) ? normalizeTweenValue(propName, to, $el, i, parsedTargets) : getComputedStyle($el)[propName];
     if (!isUnd(from)) {
-      const computedFrom = normalizeTweenValue(propName, from, $el, i, targetsLength);
+      const computedFrom = normalizeTweenValue(propName, from, $el, i, parsedTargets);
       tweenValue = [computedFrom, computedTo];
     } else {
-      tweenValue = isArr(to) ? to.map((/** @type {any} */v) => normalizeTweenValue(propName, v, $el, i, targetsLength)) : computedTo;
+      tweenValue = isArr(to) ? to.map((/** @type {any} */v) => normalizeTweenValue(propName, v, $el, i, parsedTargets)) : computedTo;
     }
     return tweenValue;
   };
@@ -7506,9 +7916,8 @@
       }
 
       const parsedTargets = registerTargets(targets);
-      const targetsLength = parsedTargets.length;
 
-      if (!targetsLength) {
+      if (!parsedTargets.length) {
         console.warn(`No target found. Make sure the element you're trying to animate is accessible before creating your animation.`);
       }
 
@@ -7564,7 +7973,7 @@
 
         const easeToParse = setValue(params.ease, globals.defaults.ease);
 
-        const easeFunctionResult = getFunctionValue(easeToParse, $el, i, targetsLength);
+        const easeFunctionResult = getFunctionValue(easeToParse, $el, i, parsedTargets, null, null);
         const keyEasing = isFnc(easeFunctionResult) || isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
 
         const spring = /** @type {Spring} */(easeToParse).ease && easeToParse;
@@ -7572,9 +7981,9 @@
         const easing = parseWAAPIEasing(keyEasing);
 
         /** @type {Number} */
-        const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, targetsLength)) * timeScale;
+        const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, parsedTargets, null, null)) * timeScale;
         /** @type {Number} */
-        const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, targetsLength) * timeScale;
+        const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, parsedTargets, null, null) * timeScale;
         /** @type {CompositeOperation} */
         const composite = /** @type {CompositeOperation} */(setValue(params.composition, 'replace'));
 
@@ -7600,19 +8009,19 @@
             const to = /** @type {WAAPITweenOptions} */(tweenOptions).to;
             const from = /** @type {WAAPITweenOptions} */(tweenOptions).from;
             /** @type {Number} */
-            tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, targetsLength)) * timeScale;
+            tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, parsedTargets, null, null)) * timeScale;
             /** @type {Number} */
-            tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, targetsLength) * timeScale;
+            tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, parsedTargets, null, null) * timeScale;
             /** @type {CompositeOperation} */
             tweenParams.composite = /** @type {CompositeOperation} */(setValue(tweenOptions.composition, composite));
             /** @type {String} */
             tweenParams.easing = parseWAAPIEasing(tweenOptionsEase);
-            parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
+            parsedPropertyValue = parseIndividualTweenValue($el, name, from, to, i, parsedTargets);
             if (individualTransformProperty) {
               keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
               cachedTransforms[individualTransformProperty] = parsedPropertyValue;
             } else {
-              keyframes[name] = parseIndividualTweenValue($el, name, from, to, i, targetsLength);
+              keyframes[name] = parseIndividualTweenValue($el, name, from, to, i, parsedTargets);
             }
             addWAAPIAnimation(this, $el, name, keyframes, tweenParams);
             if (!isUnd(from)) {
@@ -7625,8 +8034,8 @@
             }
           } else {
             parsedPropertyValue = isArr(propertyValue) ?
-                                  propertyValue.map((/** @type {any} */v) => normalizeTweenValue(name, v, $el, i, targetsLength)) :
-                                  normalizeTweenValue(name, /** @type {any} */(propertyValue), $el, i, targetsLength);
+                                  propertyValue.map((/** @type {any} */v) => normalizeTweenValue(name, v, $el, i, parsedTargets)) :
+                                  normalizeTweenValue(name, /** @type {any} */(propertyValue), $el, i, parsedTargets);
             if (individualTransformProperty) {
               keyframes[`--${individualTransformProperty}`] = parsedPropertyValue;
               cachedTransforms[individualTransformProperty] = parsedPropertyValue;
@@ -7859,6 +8268,7 @@
 
   /**
    * @typedef {Object} LayoutSpecificAnimationParams
+   * @property {Number|String} [id]
    * @property {Number|FunctionValue} [delay]
    * @property {Number|FunctionValue} [duration]
    * @property {EasingParam|FunctionValue} [ease]
@@ -7901,7 +8311,7 @@
    * @property {String} id
    * @property {DOMTarget} $el
    * @property {Number} index
-   * @property {Number} total
+   * @property {Array<DOMTarget>} targets
    * @property {Number} delay
    * @property {Number} duration
    * @property {EasingParam} ease
@@ -8045,7 +8455,7 @@
     node.$measure = $el;
     node.id = dataId;
     node.index = 0;
-    node.total = 1;
+    node.targets = null;
     node.delay = 0;
     node.duration = 0;
     node.ease = null;
@@ -8231,12 +8641,12 @@
    * @param  {LayoutAnimationTimingsParams} params
    */
   const updateNodeTimingParams = (node, params) => {
-    const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.total);
+    const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.targets, null, null);
     const keyEasing = isFnc(easeFunctionResult) ? easeFunctionResult : params.ease;
     const hasSpring = !isUnd(keyEasing) && !isUnd(/** @type {Spring} */(keyEasing).ease);
     node.ease = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
-    node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.total);
-    node.delay = getFunctionValue(params.delay, node.$el, node.index, node.total);
+    node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.targets, null, null);
+    node.delay = getFunctionValue(params.delay, node.$el, node.index, node.targets, null, null);
   };
 
   /**
@@ -8609,10 +9019,12 @@
 
       const inRootNodeIds = new Set();
       // Update index and total for inital timing calculation
-      let index = 0, total = this.nodes.size;
+      let index = 0;
+      const allNodeTargets = [];
+      this.nodes.forEach((node) => { allNodeTargets.push(node.$el); });
       this.nodes.forEach((node, id) => {
         node.index = index++;
-        node.total = total;
+        node.targets = allNodeTargets;
         // Track ids of nodes that belong to the current root to filter detached matches
         if (node && node.measuredIsInsideRoot) {
           inRootNodeIds.add(id);
@@ -8724,8 +9136,8 @@
       this.params = params;
       /** @type {DOMTarget} */
       this.root = /** @type {DOMTarget} */(registerTargets(root)[0]);
-      /** @type {Number} */
-      this.id = layoutId++;
+      /** @type {Number|String} */
+      this.id = params.id || layoutId++;
       /** @type {LayoutChildrenParam} */
       this.children = params.children || '*';
       /** @type {Boolean} */
@@ -8848,7 +9260,9 @@
         duration: setValue(params.duration, this.params.duration),
       };
       /** @type {TimelineParams} */
-      const tlParams = {};
+      const tlParams = {
+        id: this.id
+      };
       const onComplete = setValue(params.onComplete, this.params.onComplete);
       const onPause = setValue(params.onPause, this.params.onPause);
       for (let name in defaults) {
@@ -8862,7 +9276,8 @@
       }
       tlParams.onComplete = () => {
         const ap = /** @type {ScrollObserver} */(params.autoplay);
-        const isScrollControled = ap && ap.linked;
+        const ed = globals.editor;
+        const isScrollControled = (ap && ap.linked) || (ed && ed.showPanel);
         if (isScrollControled) {
           if (onComplete) onComplete(this.timeline);
           return;
@@ -9061,41 +9476,39 @@
           animatedParent = animatedParent.parentNode;
         }
 
-        const animatingTotal = animating.length;
-
         // Root is always animated first in sync with the first child (animating.length is the total of children)
         if (node === rootNode) {
           node.index = 0;
-          node.total = animatingTotal;
+          node.targets = animating;
           updateNodeTimingParams(node, animationTimings);
         } else if (node.isEntering) {
           node.index = animatedParent ? animatedParent.index : enteringIndex;
-          node.total = animatedParent ? animatingTotal : entering.length;
+          node.targets = animatedParent ? animating : entering;
           updateNodeTimingParams(node, enterFromTimings);
           enteringIndex++;
         } else if (node.isLeaving) {
           node.index = animatedParent ? animatedParent.index : leavingIndex;
-          node.total = animatedParent ? animatingTotal : leaving.length;
+          node.targets = animatedParent ? animating : leaving;
           leavingIndex++;
           updateNodeTimingParams(node, leaveToTimings);
         } else if (node.isTarget) {
           node.index = animatingIndex++;
-          node.total = animatingTotal;
+          node.targets = animating;
           updateNodeTimingParams(node, animationTimings);
         } else {
           node.index = animatedParent ? animatedParent.index : 0;
-          node.total = animatingTotal;
+          node.targets = animating;
           updateNodeTimingParams(node, swapAtTimings);
         }
 
         // Make sure the old state node has its inex and total values up to date for valid "from" function values calculation
         oldStateNode.index = node.index;
-        oldStateNode.total = node.total;
+        oldStateNode.targets = node.targets;
 
         // Computes all values up front so we can check for changes and we don't have to re-compute them inside the animation props
         for (let prop in nodeProperties) {
-          nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.total);
-          oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.total);
+          nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.targets, null, null);
+          oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.targets, null, null);
         }
 
         // Use a 1px tolerance to detect dimensions changes to prevent width / height animations on barelly visible elements
@@ -9321,8 +9734,8 @@
           }
           $el.style.transform = oldState.getComputedValue($el, 'transform');
           if (animatedSwap.includes($el)) {
-            node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.total);
-            node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.total);
+            node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.targets, null, null);
+            node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.targets, null, null);
           }
         }
         this.transformAnimation = waapi.animate(transformed, {
@@ -9337,7 +9750,7 @@
             if (!animatedSwap.includes($el)) return newValue;
             const oldValue = oldState.getComputedValue($el, 'transform');
             const node = newState.getNode($el);
-            return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.total), newValue]
+            return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.targets, null, null), newValue]
           },
           autoplay: false,
           // persist: true,
@@ -9394,10 +9807,13 @@
       const result = fn(...args);
       return new Proxy(noop, {
         apply: (_, __, [v]) => result(v),
-        get: (_, prop) => chain(/**@param {...Number|String} nextArgs */(...nextArgs) => {
-          const nextResult = chainables[prop](...nextArgs);
-          return (/**@type {Number|String} */v) => nextResult(result(v));
-        })
+        get: (_, prop) => {
+          if (!chainables[prop]) return undefined;
+          return chain(/**@param {...Number|String} nextArgs */(...nextArgs) => {
+            const nextResult = chainables[prop](...nextArgs);
+            return (/**@type {Number|String} */v) => nextResult(result(v));
+          })
+        }
       });
     }
   };
@@ -9590,11 +10006,12 @@
    * Adapted from https://bost.ocks.org/mike/shuffle/
    *
    * @param  {Array} items - The array to shuffle (will be modified in-place)
+   * @param  {RandomNumberGenerator} [rnd] - Optional RNG matching the random() signature (defaults to random)
    * @return {Array} The same array reference, now shuffled
    */
-  const shuffle = items => {
+  const shuffle = (items, rnd = random) => {
     let m = items.length, t, i;
-    while (m) { i = random(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
+    while (m) { i = rnd(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
     return items;
   };
 
@@ -9608,24 +10025,28 @@
    * @param {StaggerParams} [params]
    * @return {StaggerFunction<Number>}
    */
+
   /**
    * @overload
    * @param {String} val
    * @param {StaggerParams} [params]
    * @return {StaggerFunction<String>}
    */
+
   /**
    * @overload
    * @param {[Number, Number]} val
    * @param {StaggerParams} [params]
    * @return {StaggerFunction<Number>}
    */
+
   /**
    * @overload
    * @param {[String, String]} val
    * @param {StaggerParams} [params]
    * @return {StaggerFunction<String>}
    */
+
   /**
    * @param {Number|String|[Number, Number]|[String, String]} val The staggered value or range
    * @param {StaggerParams} [params] The stagger parameters
@@ -9634,6 +10055,8 @@
   const stagger = (val, params = {}) => {
     let values = [];
     let maxValue = 0;
+    let cachedOffset;
+    let jitterSamples = null;
     const from = params.from;
     const reversed = params.reversed;
     const ease = params.ease;
@@ -9641,53 +10064,197 @@
     const hasSpring = hasEasing && !isUnd(/** @type {Spring} */(ease).ease);
     const staggerEase = hasSpring ? /** @type {Spring} */(ease).ease : hasEasing ? parseEase(ease) : null;
     const grid = params.grid;
+    const autoGrid = grid === true;
     const axis = params.axis;
     const customTotal = params.total;
     const fromFirst = isUnd(from) || from === 0 || from === 'first';
     const fromCenter = from === 'center';
     const fromLast = from === 'last';
     const fromRandom = from === 'random';
+    const fromArr = isArr(from);
     const isRange = isArr(val);
     const useProp = params.use;
     const val1 = isRange ? parseNumber(val[0]) : parseNumber(val);
     const val2 = isRange ? parseNumber(val[1]) : 0;
     const unitMatch = unitsExecRgx.exec((isRange ? val[1] : val) + emptyString);
     const start = params.start || 0 + (isRange ? val1 : 0);
+    const seed = params.seed;
+    const hasSeed = !isUnd(seed) && seed !== false;
+    const rng = hasSeed ? createSeededRandom(seed === true ? 0 : /** @type {Number} */(seed)) : random;
+    const jitter = params.jitter;
+    const hasJitter = !isUnd(jitter);
+    const jitterIsArr = isArr(jitter);
+    const jitterStart = jitterIsArr ? /** @type {[Number,Number]} */(jitter)[0] : /** @type {Number} */(jitter) || 0;
+    const jitterEnd = jitterIsArr ? /** @type {[Number,Number]} */(jitter)[1] : /** @type {Number} */(jitter) || 0;
     let fromIndex = fromFirst ? 0 : isNum(from) ? from : 0;
-    return (target, i, t, tl) => {
+    return (target, i, t, _, tl) => {
       const [ registeredTarget ] = registerTargets(target);
-      const total = isUnd(customTotal) ? t : customTotal;
+      const total = isUnd(customTotal) ? t.length : customTotal;
       const customIndex = !isUnd(useProp) ? isFnc(useProp) ? useProp(registeredTarget, i, total) : getOriginalAnimatableValue(registeredTarget, useProp) : false;
-      const staggerIndex = isNum(customIndex) || isStr(customIndex) && isNum(+customIndex) ? +customIndex : i;
+      const customIdx = isNum(customIndex) || isStr(customIndex) && isNum(+customIndex) ? +customIndex : i;
+      // Fall back to the natural index when the resolved value lands outside [0, total) so values[staggerIndex] never reads undefined.
+      const staggerIndex = customIdx >= 0 && customIdx < total ? customIdx : i;
       if (fromCenter) fromIndex = (total - 1) / 2;
       if (fromLast) fromIndex = total - 1;
       if (!values.length) {
-        for (let index = 0; index < total; index++) {
-          if (!grid) {
-            values.push(abs(fromIndex - index));
-          } else {
-            const fromX = !fromCenter ? fromIndex % grid[0] : (grid[0] - 1) / 2;
-            const fromY = !fromCenter ? floor(fromIndex / grid[0]) : (grid[1] - 1) / 2;
-            const toX = index % grid[0];
-            const toY = floor(index / grid[0]);
-            const distanceX = fromX - toX;
-            const distanceY = fromY - toY;
-            let value = sqrt(distanceX * distanceX + distanceY * distanceY);
-            if (axis === 'x') value = -distanceX;
-            if (axis === 'y') value = -distanceY;
-            values.push(value);
+        if (autoGrid) {
+          let hasPositions = true;
+          let has3D = false;
+          let minPosX = Infinity;
+          let minPosY = Infinity;
+          let minPosZ = Infinity;
+          let maxPosX = -Infinity;
+          let maxPosY = -Infinity;
+          let maxPosZ = -Infinity;
+          const pxArr = [];
+          const pyArr = [];
+          const pzArr = [];
+          for (let index = 0; index < total; index++) {
+            const el = t[index];
+            let px = 0;
+            let py = 0;
+            let pz = 0;
+            let found = false;
+            if (el && isFnc(el.getBoundingClientRect)) {
+              const rect = el.getBoundingClientRect();
+              px = rect.left + rect.width / 2;
+              py = rect.top + rect.height / 2;
+              found = true;
+            } else {
+              const obj = /** @type {JSTarget} */(el);
+              if (obj && isNum(obj.x) && isNum(obj.y)) {
+                px = obj.x;
+                py = obj.y;
+                if (isNum(obj.z)) {
+                  pz = obj.z;
+                  has3D = true;
+                }
+                found = true;
+              }
+            }
+            if (!found) {
+              hasPositions = false;
+              break;
+            }
+            pxArr.push(px);
+            pyArr.push(py);
+            pzArr.push(pz);
+            if (px < minPosX) minPosX = px;
+            if (py < minPosY) minPosY = py;
+            if (pz < minPosZ) minPosZ = pz;
+            if (px > maxPosX) maxPosX = px;
+            if (py > maxPosY) maxPosY = py;
+            if (pz > maxPosZ) maxPosZ = pz;
           }
-          maxValue = max(...values);
+          if (hasPositions) {
+            let fX = pxArr[0];
+            let fY = pyArr[0];
+            let fZ = pzArr[0];
+            if (fromArr) {
+              fX = minPosX + from[0] * (maxPosX - minPosX);
+              fY = minPosY + from[1] * (maxPosY - minPosY);
+              fZ = has3D ? minPosZ + (from.length >= 3 ? from[2] : 0.5) * (maxPosZ - minPosZ) : 0;
+            } else if (fromCenter) {
+              fX = (minPosX + maxPosX) / 2;
+              fY = (minPosY + maxPosY) / 2;
+              fZ = (minPosZ + maxPosZ) / 2;
+            } else if (fromLast) {
+              fX = pxArr[total - 1];
+              fY = pyArr[total - 1];
+              fZ = pzArr[total - 1];
+            } else if (isNum(from)) {
+              fX = pxArr[from];
+              fY = pyArr[from];
+              fZ = pzArr[from];
+            }
+            for (let index = 0; index < total; index++) {
+              const distanceX = fX - pxArr[index];
+              const distanceY = fY - pyArr[index];
+              const distanceZ = fZ - pzArr[index];
+              let value = sqrt(distanceX * distanceX + distanceY * distanceY + (has3D ? distanceZ * distanceZ : 0));
+              if (axis === 'x') value = -distanceX;
+              if (axis === 'y') value = -distanceY;
+              if (axis === 'z') value = -distanceZ;
+              values.push(value);
+            }
+            let minDist = Infinity;
+            for (let index = 0; index < total; index++) {
+              const absVal = abs(values[index]);
+              if (absVal > 0 && absVal < minDist) minDist = absVal;
+            }
+            if (minDist > 0 && minDist < Infinity) {
+              for (let index = 0; index < total; index++) {
+                values[index] = values[index] / minDist;
+              }
+            }
+          } else {
+            for (let index = 0; index < total; index++) {
+              values.push(abs(fromIndex - index));
+            }
+          }
+        } else {
+          for (let index = 0; index < total; index++) {
+            if (!grid) {
+              values.push(abs(fromIndex - index));
+            } else {
+              const dims = grid.length;
+              const wh = grid[0] * grid[1];
+              let fromX, fromY, fromZ;
+              if (fromArr) {
+                fromX = from[0] * (grid[0] - 1);
+                fromY = from[1] * (grid[1] - 1);
+                fromZ = dims === 3 ? (from.length >= 3 ? from[2] : 0.5) * (grid[2] - 1) : 0;
+              } else if (fromCenter) {
+                fromX = (grid[0] - 1) / 2;
+                fromY = (grid[1] - 1) / 2;
+                fromZ = dims === 3 ? (grid[2] - 1) / 2 : 0;
+              } else {
+                fromX = fromIndex % grid[0];
+                fromY = floor(fromIndex / grid[0]) % grid[1];
+                fromZ = dims === 3 ? floor(fromIndex / wh) : 0;
+              }
+              const toX = index % grid[0];
+              const toY = floor(index / grid[0]) % grid[1];
+              const toZ = dims === 3 ? floor(index / wh) : 0;
+              const distanceX = fromX - toX;
+              const distanceY = fromY - toY;
+              const distanceZ = fromZ - toZ;
+              let value = sqrt(distanceX * distanceX + distanceY * distanceY + (dims === 3 ? distanceZ * distanceZ : 0));
+              if (axis === 'x') value = -distanceX;
+              if (axis === 'y') value = -distanceY;
+              if (axis === 'z') value = -distanceZ;
+              values.push(value);
+            }
+          }
         }
-        if (staggerEase) values = values.map(val => staggerEase(val / maxValue) * maxValue);
-        if (reversed) values = values.map(val => axis ? (val < 0) ? val * -1 : -val : abs(maxValue - val));
-        if (fromRandom) values = shuffle(values);
+        maxValue = values[0];
+        for (let k = 1; k < total; k++) if (values[k] > maxValue) maxValue = values[k];
+        if (staggerEase || reversed) {
+          for (let k = 0; k < total; k++) {
+            let v = values[k];
+            if (staggerEase) v = staggerEase(v / maxValue) * maxValue;
+            if (reversed) v = axis ? -v : abs(maxValue - v);
+            values[k] = v;
+          }
+        }
+        if (hasJitter) {
+          jitterSamples = new Array(total);
+          for (let k = 0; k < total; k++) jitterSamples[k] = rng(-1, 1, 4);
+        }
+        if (fromRandom) values = shuffle(values, rng);
       }
       const spacing = isRange ? (val2 - val1) / maxValue : val1;
-      const offset = tl ? parseTimelinePosition(tl, isUnd(params.start) ? tl.iterationDuration : start) : /** @type {Number} */(start);
+      if (isUnd(cachedOffset)) {
+        cachedOffset = tl ? parseTimelinePosition(tl, isUnd(params.start) ? tl.iterationDuration : start) : /** @type {Number} */(start);
+      }
       /** @type {String|Number} */
-      let output = offset + ((spacing * round$1(values[staggerIndex], 2)) || 0);
-      if (params.modifier) output = params.modifier(output);
+      let output = cachedOffset + ((spacing * round$1(values[staggerIndex], 2)) || 0);
+      if (hasJitter) {
+        const progress = maxValue ? values[staggerIndex] / maxValue : 0;
+        const mag = jitterStart + (jitterEnd - jitterStart) * progress;
+        output = /** @type {Number} */(output) + jitterSamples[staggerIndex] * mag;
+      }
+      if (params.modifier) output = params.modifier(/** @type {Number} */(output));
       if (unitMatch) output = `${output}${unitMatch[2]}`;
       return output;
     }
@@ -9696,11 +10263,13 @@
   var index$2 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     $: registerTargets,
+    addChild: addChild,
     clamp: clamp,
     cleanInlineStyles: cleanInlineStyles,
     createSeededRandom: createSeededRandom,
     damp: damp,
     degToRad: degToRad,
+    forEachChildren: forEachChildren,
     get: get,
     keepTime: keepTime,
     lerp: lerp,
@@ -9711,6 +10280,7 @@
     random: random,
     randomPick: randomPick,
     remove: remove,
+    removeChild: removeChild,
     round: round,
     roundPad: roundPad,
     set: set,
@@ -9910,7 +10480,7 @@
    * @param  {Number} [precision]
    * @return {FunctionValue}
    */
-  const morphTo = (path2, precision = .33) => ($path1) => {
+  const morphTo = (path2, precision = .33) => ($path1, index, total, prevTween) => {
     const tagName1 = ($path1.tagName || '').toLowerCase();
     if (!tagName1.match(/^(path|polygon|polyline)$/)) {
       throw new Error(`Can't morph a <${$path1.tagName}> SVG element. Use <path>, <polygon> or <polyline>.`);
@@ -9925,7 +10495,7 @@
     }
     const isPath = $path1.tagName === 'path';
     const separator = isPath ? ' ' : ',';
-    const previousPoints = $path1[morphPointsSymbol];
+    const previousPoints = prevTween ? prevTween._value : null;
     if (previousPoints) $path1.setAttribute(isPath ? 'd' : 'points', previousPoints);
 
     let v1 = '', v2 = '';
@@ -9946,8 +10516,6 @@
         v2 += prefix + round$1(pointOnPath2.x, 3) + separator + pointOnPath2.y + ' ';
       }
     }
-
-    $path1[morphPointsSymbol] = v2;
 
     return [v1, v2];
   };
@@ -10055,6 +10623,7 @@
    */
   const generateTemplate = (type, params = {}) => {
     let template = ``;
+    if (!params) params = {};
     const classString = isStr(params.class) ? ` class="${params.class}"` : '';
     const cloneType = setValue(params.clone, false);
     const wrapType = setValue(params.wrap, false);
@@ -10134,7 +10703,7 @@
    */
   class TextSplitter {
     /**
-     * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+     * @param  {Element|NodeList|String|Array<Element>} target
      * @param  {TextSplitterParams} [parameters]
      */
     constructor(target, parameters = {}) {
@@ -10206,11 +10775,11 @@
     }
 
     /**
-     * @param  {(...args: any[]) => Tickable | (() => void)} effect
+     * @param  {(...args: any[]) => Tickable | (() => void) | void} effect
      * @return this
      */
     addEffect(effect) {
-      if (!isFnc(effect)) return console.warn('Effect must return a function.');
+      if (!isFnc(effect)) { console.warn('Effect must return a function.'); return this; }
       const refreshableEffect = keepTime(effect);
       this.effects.push(refreshableEffect);
       if (this.ready) this.effectsCleanups[this.effects.length - 1] = refreshableEffect(this);
@@ -10416,7 +10985,7 @@
   }
 
   /**
-   * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+   * @param  {Element|NodeList|String|Array<Element>} target
    * @param  {TextSplitterParams} [parameters]
    * @return {TextSplitter}
    */
@@ -10434,9 +11003,271 @@
     return new TextSplitter(target, parameters);
   };
 
+  
+
+  /**
+   * @typedef {Object} ScrambleTextTween
+   * @property {Number} from
+   * @property {Number} to
+   * @property {Number} duration
+   * @property {Number} delay
+   * @property {String} ease
+   * @property {(v: Number) => String} modifier
+   */
+
+  /**
+   * '-' is the range operator; place it at the start or end of the string to use it as a literal (e.g. '-abc' or 'abc-')
+   * @param {String} str
+   * @return {String}
+   */
+  const expandCharRanges = (str) => {
+    let result = '';
+    for (let i = 0, l = str.length; i < l; i++) {
+      if (i + 2 < l && str[i + 1] === '-' && str.charCodeAt(i) < str.charCodeAt(i + 2)) {
+        const start = str.charCodeAt(i);
+        const end = str.charCodeAt(i + 2);
+        for (let c = start; c <= end; c++) result += String.fromCharCode(c);
+        i += 2;
+      } else {
+        result += str[i];
+      }
+    }
+    return result;
+  };
+
+  const charSets = {
+    lowercase: 'a-z',
+    uppercase: 'A-Z',
+    numbers: '0-9',
+    symbols: '!%#_|*+=',
+    braille: '⠀-⣿',
+    blocks: '▀-▟',
+    shades: '░-▓',
+  };
+
+  const originalTexts = new WeakMap();
+
+  /**
+   * Returns a function-based tween value that scrambles the target's text content,
+   * progressively revealing the original text.
+   *
+   * @param {ScrambleTextParams} [params]
+   * @return {FunctionValue<ScrambleTextTween>}
+   */
+  const scrambleText = (params = {}) => {
+    if (!params) params = {};
+    const charsParam = params.chars;
+    const easeFn = parseEase(params.ease || 'linear');
+    const text = params.text;
+    const fromParam = params.from;
+    const reversed = params.reversed || false;
+    const perturbation = params.perturbation || 0;
+    const cursorParam = params.cursor;
+    const cursorChars = cursorParam === true ? '_'
+                      : typeof cursorParam === 'number' ? String.fromCharCode(cursorParam)
+                      : typeof cursorParam === 'string' ? cursorParam
+                      : '';
+    const cursorLen = cursorChars.length;
+    const seed = params.seed || 0;
+    const override = params.override !== undefined ? params.override : true;
+    const revealRate = params.revealRate || 60;
+    const interval = 1000 * globals.timeScale / revealRate;
+    const settleDuration = params.settleDuration || 300 * globals.timeScale;
+    const settleRate = params.settleRate || 30;
+    const durationParam = params.duration;
+    const revealDelayParam = params.revealDelay;
+    const delayParam = params.delay;
+    const onChange = params.onChange || noop;
+
+    return (target, index, targets, prevTween) => {
+      const rawChars = typeof charsParam === 'function' ? charsParam(target, index, targets) : (charsParam || 'a-zA-Z0-9!%#_');
+      const characters = expandCharRanges(charSets[rawChars] || rawChars);
+      const totalChars = characters.length - 1;
+      const duration = typeof durationParam === 'function' ? durationParam(target, index, targets) : durationParam;
+      const revealDelay = typeof revealDelayParam === 'function' ? revealDelayParam(target, index, targets) : (revealDelayParam || 0);
+      const delay = typeof delayParam === 'function' ? delayParam(target, index, targets) : (delayParam || 0);
+      const rng = seed ? createSeededRandom(seed) : createSeededRandom();
+      if (!originalTexts.has(target)) originalTexts.set(target, target.textContent);
+      const startingText = prevTween ? prevTween._value : target.textContent;
+      const targetText = text !== undefined
+                         ? (typeof text === 'function' ? text(target, index, targets) : text)
+                         : prevTween ? prevTween._value
+                         : originalTexts.get(target);
+      const settledText = targetText === ' ' || targetText === '&nbsp;' ? ' ' : targetText;
+      const startLength = startingText === ' ' ? 0 : startingText.length;
+      const endLength = settledText.length;
+      const overrideChars = override === true ? characters
+                          : typeof override === 'string' && override.length > 0 ? expandCharRanges(charSets[/** @type {String} */(override)] || /** @type {String} */(override))
+                          : null;
+      const totalOverrideChars = overrideChars ? overrideChars.length - 1 : 0;
+      // Space override uses &nbsp; so the browser doesn't collapse consecutive spaces in innerHTML
+      const overrideChar = override === ' ' ? ' ' : null;
+      // When starting from blank, only animate the target text length to avoid padding beyond it
+      const animLength = override === '' ? endLength : Math.max(startLength, endLength);
+      // Compute total duration from interval spacing and settle time, or use the explicit duration
+      const animDuration = duration > 0 ? duration : (animLength - 1) * interval + settleDuration;
+      const computedDuration = round$1((animDuration + revealDelay) / globals.timeScale, 0) * globals.timeScale;
+      const revealDelayRatio = revealDelay > 0 ? round$1(revealDelay / computedDuration, 12) : 0;
+      // Auto-resolve reveal direction: shrinking text reveals from right, growing from left
+      const resolvedFrom = fromParam === undefined || fromParam === 'auto' ? (endLength < startLength ? 'right' : 'left') : fromParam;
+      const charOrder = new Int32Array(animLength);
+      if (resolvedFrom === 'random') {
+        for (let i = 0; i < animLength; i++) charOrder[i] = i;
+        for (let i = animLength - 1; i > 0; i--) {
+          const j = rng(0, i);
+          const t = charOrder[i]; charOrder[i] = charOrder[j]; charOrder[j] = t;
+        }
+      } else {
+        const ref = resolvedFrom === 'right' ? (override === '' || !startLength ? animLength : startLength) - 1
+                  : resolvedFrom === 'center' ? ((override === '' || !startLength ? animLength : startLength) - 1) / 2
+                  : typeof resolvedFrom === 'number' ? resolvedFrom
+                  : 0;
+        const abs = Math.abs;
+        const indices = new Array(animLength);
+        for (let i = 0; i < animLength; i++) indices[i] = i;
+        indices.sort((a, b) => abs(a - ref) - abs(b - ref));
+        for (let i = 0; i < animLength; i++) charOrder[indices[i]] = i;
+      }
+      if (reversed) {
+        const last = animLength - 1;
+        for (let i = 0; i < animLength; i++) charOrder[i] = last - charOrder[i];
+      }
+      // settleRatio is the fraction of the animation each character spends in the active scrambling zone
+      const settleRatio = round$1(settleDuration / animDuration, 12);
+      // settleSpacing is the time gap between consecutive characters entering the active zone
+      const settleSpacing = round$1((1 - settleRatio) / animLength, 12);
+      const cursorZone = cursorLen * settleSpacing;
+      // stepRatio controls how often scramble characters refresh (based on settleRate)
+      const stepRatio = round$1(1000 * globals.timeScale / (settleRate * computedDuration), 12);
+      // Pre-compute per-character start and settle times
+      const charStarts = new Float32Array(animLength);
+      const charEnds = new Float32Array(animLength);
+      const scale = perturbation > 0 ? perturbation * settleRatio : 0;
+      for (let c = 0; c < animLength; c++) {
+        const so = scale > 0 ? (rng(0, 2000) - 1000) / 1000 * scale : 0;
+        const eo = scale > 0 ? (rng(0, 2000) - 1000) / 1000 * scale : 0;
+        charStarts[c] = charOrder[c] * settleSpacing + so;
+        charEnds[c] = Math.ceil((charStarts[c] + settleRatio + eo) / stepRatio) * stepRatio;
+      }
+      // When text shrinks with non-sequential from modes, delay target settle times past all extras
+      if (endLength < animLength && resolvedFrom !== 'left' && resolvedFrom !== 'right' && resolvedFrom !== 'random') {
+        let maxExtraEnd = 0;
+        for (let c = endLength; c < animLength; c++) {
+          if (charEnds[c] > maxExtraEnd) maxExtraEnd = charEnds[c];
+        }
+        const targets = new Array(endLength);
+        for (let c = 0; c < endLength; c++) targets[c] = c;
+        targets.sort((a, b) => charOrder[a] - charOrder[b]);
+        const targetSpacing = (1 - maxExtraEnd) / endLength;
+        for (let i = 0; i < endLength; i++) {
+          const revealTime = maxExtraEnd + i * targetSpacing;
+          if (revealTime > charEnds[targets[i]]) {
+            charEnds[targets[i]] = revealTime;
+          }
+        }
+      }
+      // charCache holds the current scramble character for each position, refreshed at settleRate
+      const charCache = new Array(animLength);
+      for (let c = 0; c < animLength; c++) {
+        charCache[c] = characters[rng(0, totalChars)];
+      }
+      // overrideCache holds scramble characters for the starting text (override: true or custom string)
+      const overrideCache = overrideChars ? (overrideChars === characters ? charCache : new Array(animLength)) : null;
+      if (overrideCache && overrideCache !== charCache) {
+        for (let c = 0; c < animLength; c++) {
+          overrideCache[c] = overrideChar || /** @type {String} */(overrideChars)[rng(0, overrideChars.length - 1)];
+        }
+      }
+      // Build the initial display text based on override mode
+      let fillStartText = startingText;
+      if (!prevTween) {
+        if (override === '') {
+          fillStartText = '';
+        } else if (overrideChars) {
+          fillStartText = '';
+          for (let c = 0; c < startLength; c++) {
+            fillStartText += startingText[c] === ' ' ? ' ' : /** @type {Array<String>} */(overrideCache)[c];
+          }
+        }
+      }
+
+      let lastValue = -1;
+      let lastStep = -1;
+      let scrambled = '';
+      const hasOverride = override !== '';
+      const hasOverrideChars = !!overrideChars;
+      const hasCursor = cursorLen > 0;
+
+      return {
+        from: 0,
+        to: 1,
+        duration: computedDuration,
+        delay: delay,
+        ease: 'linear',
+        modifier: (v) => {
+          if (v === lastValue) return scrambled;
+          lastValue = v;
+          if (delay > 0 && v <= 0) { scrambled = startingText; return startingText; }
+          if (v <= 0) { scrambled = fillStartText; return fillStartText; }
+          if (v >= 1) { scrambled = settledText; return settledText; }
+          scrambled = '';
+          // Only refresh scramble characters when we cross a settleRate step boundary
+          const currentStep = (v / stepRatio) | 0;
+          const refreshChars = currentStep !== lastStep;
+          if (refreshChars) lastStep = currentStep;
+          // Subtract delay ratio to get the effective animation progress
+          const linear = revealDelayRatio > 0 ? (v - revealDelayRatio) / (1 - revealDelayRatio) : v;
+          const t = linear > 0 ? easeFn(linear) : 0;
+          for (let c = 0; c < animLength; c++) {
+            // Each character has its own start/end window based on its reveal order
+            const charStart = charStarts[c];
+            const charEnd = charEnds[c];
+            // Settled zone: character has finished its transition
+            if (t >= charEnd) {
+              if (c < endLength) scrambled += settledText[c];
+              continue;
+            }
+            // Pre-transition zone: reveal wave hasn't reached this character yet
+            if (t <= 0 || t < charStart) {
+              if (hasOverride && c < startLength) {
+                if (hasOverrideChars) {
+                  if (startingText[c] === ' ') {
+                    scrambled += ' ';
+                  } else {
+                    if (refreshChars) /** @type {Array<String>} */(overrideCache)[c] = overrideChar || /** @type {String} */(overrideChars)[rng(0, totalOverrideChars)];
+                    scrambled += /** @type {Array<String>} */(overrideCache)[c];
+                  }
+                } else {
+                  // Default (override: false): show the original starting text
+                  scrambled += startingText[c];
+                }
+              }
+              continue;
+            }
+            // Active zone: character is between charStart and charEnd
+            const isSpace = (c < endLength && settledText[c] === ' ') || (c < startLength && startingText[c] === ' ');
+            if (isSpace) {
+              scrambled += ' ';
+            } else if (hasCursor && t - charStart < cursorZone) {
+              // Cursor sub-zone: show cursor character based on position within cursor width
+              scrambled += cursorChars[cursorLen - 1 - (((t - charStart) / settleSpacing) | 0)];
+            } else {
+              // Scramble zone: show cycling random characters
+              if (refreshChars) charCache[c] = characters[rng(0, totalChars)];
+              scrambled += charCache[c];
+            }
+          }
+          if (refreshChars) onChange(scrambled, t);
+          return scrambled;
+        }
+      }
+    }
+  };
+
   var index = /*#__PURE__*/Object.freeze({
     __proto__: null,
     TextSplitter: TextSplitter,
+    scrambleText: scrambleText,
     split: split,
     splitText: splitText
   });
@@ -10453,6 +11284,7 @@
   exports.Timeline = Timeline;
   exports.Timer = Timer;
   exports.WAAPIAnimation = WAAPIAnimation;
+  exports.addChild = addChild;
   exports.animate = animate;
   exports.clamp = clamp;
   exports.cleanInlineStyles = cleanInlineStyles;
@@ -10472,7 +11304,9 @@
   exports.eases = eases;
   exports.easings = index$3;
   exports.engine = engine;
+  exports.forEachChildren = forEachChildren;
   exports.get = get;
+  exports.globals = globals;
   exports.irregular = irregular;
   exports.keepTime = keepTime;
   exports.lerp = lerp;
@@ -10486,8 +11320,10 @@
   exports.random = random;
   exports.randomPick = randomPick;
   exports.remove = remove;
+  exports.removeChild = removeChild;
   exports.round = round;
   exports.roundPad = roundPad;
+  exports.scrambleText = scrambleText;
   exports.scrollContainers = scrollContainers;
   exports.set = set;
   exports.shuffle = shuffle;

@@ -1,7 +1,7 @@
 import { animate, createTimer, utils } from '../../dist/modules/index.js';
 
-const $animationWrapper = document.querySelector('#animation-wrapper');
-const $circle = document.querySelector('#circle');
+const $animationWrapper = /** @type {HTMLElement} */ (document.querySelector('#animation-wrapper'));
+const $circle = /** @type {HTMLElement} */ (document.querySelector('#circle'));
 const viewport = {w: window.innerWidth * .5, h: window.innerHeight * .5};
 const rows = 15;
 const baseRadius = $circle.offsetWidth / 1.85;
@@ -49,7 +49,7 @@ document.addEventListener('mouseup', e => {
   animate($circle, { scale: 1, opacity: .3, filter: 'saturate(1)' });
 });
 
-const colors = ['red', 'orange', 'lightorange'];
+const colors = ['red-1', 'corail-1', 'orange-1'];
 
 for (let i = 0; i < (rows * rows); i++) {
   const $particle = document.createElement('div');

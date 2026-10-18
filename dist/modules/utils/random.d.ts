@@ -15,7 +15,7 @@
 export const random: RandomNumberGenerator;
 export function createSeededRandom(seed?: number, seededMin?: number, seededMax?: number, seededDecimalLength?: number): RandomNumberGenerator;
 export function randomPick<T>(items: string | Array<T>): string | T;
-export function shuffle(items: any[]): any[];
+export function shuffle(items: any[], rnd?: RandomNumberGenerator): any[];
 /**
  * Generate a random number between optional min and max (inclusive) and decimal precision
  */

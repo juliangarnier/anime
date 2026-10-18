@@ -1,13 +1,13 @@
 /**
  * Anime.js - core - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { scope } from './globals.js';
 import { isRegisteredTargetSymbol, isDomSymbol, isSvgSymbol, transformsSymbol, isBrowser } from './consts.js';
-import { isNil, isArr, isSvg, isStr } from './helpers.js';
+import { isSvg, isNil, isArr, isStr } from './helpers.js';
 
 /**
 * @import {
@@ -111,18 +111,16 @@ function parseTargets(targets) {
 function registerTargets(targets) {
   const parsedTargetsArray = parseTargets(targets);
   const parsedTargetsLength = parsedTargetsArray.length;
-  if (parsedTargetsLength) {
-    for (let i = 0; i < parsedTargetsLength; i++) {
-      const target = parsedTargetsArray[i];
-      if (!target[isRegisteredTargetSymbol]) {
-        target[isRegisteredTargetSymbol] = true;
-        const isSvgType = isSvg(target);
-        const isDom = /** @type {DOMTarget} */(target).nodeType || isSvgType;
-        if (isDom) {
-          target[isDomSymbol] = true;
-          target[isSvgSymbol] = isSvgType;
-          target[transformsSymbol] = {};
-        }
+  for (let i = 0; i < parsedTargetsLength; i++) {
+    const target = parsedTargetsArray[i];
+    if (!target[isRegisteredTargetSymbol]) {
+      target[isRegisteredTargetSymbol] = true;
+      const isSvgType = isSvg(target);
+      const isDom = /** @type {DOMTarget} */(target).nodeType || isSvgType;
+      if (isDom) {
+        target[isDomSymbol] = true;
+        target[isSvgSymbol] = isSvgType;
+        target[transformsSymbol] = {};
       }
     }
   }

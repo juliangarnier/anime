@@ -1,12 +1,12 @@
 /**
  * Anime.js - easings - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { emptyString, minValue } from '../../core/consts.js';
-import { isStr, stringStartsWith, isFnc, pow, sin, sqrt, cos, clamp, asin, PI } from '../../core/helpers.js';
+import { pow, sin, sqrt, cos, isStr, stringStartsWith, isFnc, clamp, asin, PI } from '../../core/helpers.js';
 import { none } from '../none.js';
 
 /**
@@ -79,8 +79,8 @@ const easeInFunctions = {
 
 /**
  * @typedef  {Object} EasesFunctions
- * @property {typeof none} linear
- * @property {typeof none} none
+ * @property {EasingFunction} linear
+ * @property {EasingFunction} none
  * @property {PowerEasing} in
  * @property {PowerEasing} out
  * @property {PowerEasing} inOut

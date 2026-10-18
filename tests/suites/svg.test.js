@@ -1,12 +1,12 @@
 import {
   expect,
-  getChildAtIndex,
 } from '../utils.js';
 
 import {
   animate,
   utils,
   svg,
+  createTimeline,
 } from '../../dist/modules/index.js';
 
 suite('SVG', () => {
@@ -153,7 +153,7 @@ suite('SVG', () => {
     });
 
     // Scale property should be set as a CSS transform on non SVG filter elements
-    expect(filterPolygonEl.style.transform).to.equal('translateX(430px) translateY(35px) scale(0.75)');
+    expect(filterPolygonEl.style.transform).to.equal('translate(430px, 35px) scale(0.75)');
 
     // Non stylistic SVG attribute should be declared in came case
     expect(feTurbulenceEl.hasAttribute('baseFrequency')).to.equal(true);
@@ -163,6 +163,7 @@ suite('SVG', () => {
   });
 
   test('svg.createMotionPath with offset', resolve => {
+    /** @type {HTMLElement} */
     const squareEl = document.querySelector('#square');
     const [pathEl] = utils.$('#tests path');
     const pathSelector = 'motion-path-offset-test';
@@ -192,6 +193,86 @@ suite('SVG', () => {
     const finalOffsetTransform = squareEl.style.transform;
     expect(finalOffsetTransform).to.equal(offsetTransform);
 
+    resolve();
+  });
+
+  test('morphTo morphs path d attribute from one shape to another', resolve => {
+    const $path = document.querySelector('#path');
+    const originalD = $path.getAttribute('d');
+    const anim = animate($path, {
+      d: svg.morphTo('#polygon'),
+      duration: 10,
+      autoplay: false,
+    });
+    anim.seek(0);
+    expect($path.getAttribute('d')).to.not.equal(originalD);
+    anim.seek(anim.duration);
+    const endD = $path.getAttribute('d');
+    expect(endD).to.not.equal(originalD);
+    resolve();
+  });
+
+  test('morphTo morphs polygon points attribute', resolve => {
+    const $polygon = document.querySelector('#polygon');
+    const originalPoints = $polygon.getAttribute('points');
+    const anim = animate($polygon, {
+      points: svg.morphTo('#polyline', 0),
+      duration: 10,
+      autoplay: false,
+    });
+    anim.seek(anim.duration);
+    expect($polygon.getAttribute('points')).to.not.equal(originalPoints);
+    resolve();
+  });
+
+  test('morphTo timeline chaining reads previous end value', resolve => {
+    const $polygon = document.querySelector('#polygon');
+    const originalPoints = $polygon.getAttribute('points');
+    // Set polygon points to match polyline so DOM-based reads produce a polyline->polyline no-op
+    $polygon.setAttribute('points', document.querySelector('#polyline').getAttribute('points'));
+    const tl = createTimeline({ defaults: { duration: 10 }, autoplay: false });
+    tl.add($polygon, { points: svg.morphTo('#path') });
+    tl.add($polygon, { points: svg.morphTo('#polyline') });
+    tl.seek(15);
+    const midPoints = $polygon.getAttribute('points');
+    tl.seek(tl.duration);
+    const endPoints = $polygon.getAttribute('points');
+    // If prevTween works, second morph goes path->polyline (different mid vs end)
+    // If broken, second morph goes polyline->polyline (mid equals end)
+    expect(midPoints).to.not.equal(endPoints);
+    $polygon.setAttribute('points', originalPoints);
+    resolve();
+  });
+
+  test('morphTo keyframe array reads prevTween value between keyframes', resolve => {
+    const $path = document.querySelector('#path');
+    const originalD = $path.getAttribute('d');
+    const anim = animate($path, {
+      d: [{ to: svg.morphTo('#polygon') }, { to: svg.morphTo('#polyline') }],
+      duration: 100,
+      autoplay: false,
+    });
+    anim.seek(50);
+    const midD = $path.getAttribute('d');
+    anim.seek(anim.duration);
+    const endD = $path.getAttribute('d');
+    // Both keyframes produce different endpoints (second morph starts from polygon, not original)
+    expect(midD).to.not.equal(originalD);
+    expect(endD).to.not.equal(originalD);
+    expect(midD).to.not.equal(endD);
+    $path.setAttribute('d', originalD);
+    resolve();
+  });
+
+  test('morphTo revert restores original path', resolve => {
+    const $path = document.querySelector('#path');
+    const originalD = $path.getAttribute('d');
+    const tl = createTimeline({ defaults: { duration: 10 }, autoplay: false });
+    tl.add($path, { d: svg.morphTo('#polygon') });
+    tl.seek(tl.duration);
+    expect($path.getAttribute('d')).to.not.equal(originalD);
+    tl.revert();
+    expect($path.getAttribute('d')).to.equal(originalD);
     resolve();
   });
 

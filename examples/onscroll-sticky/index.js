@@ -6,11 +6,27 @@ import {
   animate,
 } from '../../dist/modules/index.js';
 
-utils.set('.card', {
-  rotate: () => utils.random(-1, 1, 2),
-  rotateZ: () => utils.random(-1, 1, 2),
-  y: stagger(-.5, { from: 'last' }),
-  z: stagger(1),
+const $cards = utils.$('.card');
+const $spinners = $cards.map($card => {
+  const $spinner = document.createElement('div');
+  $spinner.className = 'spinner';
+  $spinner.style.position = 'absolute';
+  $spinner.style.top = '0';
+  $spinner.style.left = '0';
+  $spinner.style.width = '100%';
+  $spinner.style.height = '100%';
+  $spinner.style.transformStyle = 'preserve-3d';
+  $card.parentElement?.insertBefore($spinner, $card);
+  $spinner.appendChild($card);
+  return $spinner;
+});
+
+$spinners.forEach(($spinner, i) => {
+  const rotate = utils.random(-1, 1, 2);
+  const rotateZ = utils.random(-1, 1, 2);
+  const yOffset = -.5 * ($spinners.length - 1 - i);
+  utils.set($spinner, { rotate, rotateZ, z: i });
+  utils.set($cards[i], { translateY: yOffset });
 });
 
 const brightness = v => `brightness(${v})`;
@@ -36,16 +52,19 @@ createTimeline({
   rotateY: [-180, 0],
   ease: 'in(2)',
 }, 0)
-.add('.card', {
+.add('.spinner', {
   rotate: 0,
   rotateZ: { to: stagger([0, -360], { from: 'last' }), ease: 'inOut(2)' },
-  y: { to: '-60%', duration: 400 },
   transformOrigin: ['50% 100%', '50% 50%'],
+  delay: stagger(1, { from: 'first' }),
+}, 0)
+.add('.card', {
+  y: { to: '-60%', duration: 400 },
   delay: stagger(1, { from: 'first' }),
 }, 0)
 .init()
 
-utils.$('.card').forEach($card => {
+$cards.forEach($card => {
   $card.onmouseenter = () => animate($card, {
     y: '-70%', duration: 350, composition: 'blend',
   });

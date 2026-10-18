@@ -1,6 +1,6 @@
 /**
  * Anime.js - draggable - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -8,7 +8,7 @@
 import { globals, scope } from '../core/globals.js';
 import { doc, win, noop, maxValue, compositionTypes } from '../core/consts.js';
 import { parseTargets } from '../core/targets.js';
-import { isUnd, isObj, isArr, now, atan2, round, max, snap, clamp, isNum, abs, cos, sin, isFnc, sqrt } from '../core/helpers.js';
+import { isUnd, isObj, isArr, now, atan2, round, max, snap, clamp, isNum, abs, sqrt, cos, sin, isFnc } from '../core/helpers.js';
 import { setValue } from '../core/values.js';
 import { mapRange } from '../utils/number.js';
 import { Timer } from '../timer/timer.js';

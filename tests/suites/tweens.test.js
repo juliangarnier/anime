@@ -18,6 +18,8 @@ import {
   valueTypes,
 } from '../../dist/modules/core/consts.js';
 
+/** @import { Tween, JSAnimation } from '../../dist/modules/index.js' */
+
 suite('Tweens', () => {
   test('Single tween timings', () => {
     const delay = 200;
@@ -476,8 +478,8 @@ suite('Tweens', () => {
       delay: stagger(100),
     }, '-=' + duration)
 
-    const animA = /** @type {$Animation} */(tl._head._next._next._next._next._next._next);
-    const animB = /** @type {$Animation} */(animA._next._next._next._next);
+    const animA = /** @type {JSAnimation} */(tl._head._next._next._next._next._next._next);
+    const animB = /** @type {JSAnimation} */(animA._next._next._next._next);
 
     expect(animA._head._fromNumber).to.equal(75);
     expect(animB._head._fromNumber).to.equal(50);

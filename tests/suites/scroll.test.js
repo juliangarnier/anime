@@ -149,6 +149,15 @@ suite('Scroll', () => {
     });
   });
 
+  test('ScrollObserver resizeTicker completing before target is resolved should not throw', () => {
+    const observer = onScroll({
+      target: '#target-id',
+    });
+    expect(observer.target).to.equal(null);
+    expect(() => observer.container.resizeTicker.complete()).to.not.throw();
+    observer.revert();
+  });
+
   test('ScrollObserver onResize callback is triggered on container refresh', resolve => {
     let resizeCount = 0;
     const observer = onScroll({

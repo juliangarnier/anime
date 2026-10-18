@@ -1,6 +1,6 @@
 /**
  * Anime.js - events - CJS
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -216,12 +216,14 @@ class ScrollContainer {
 
   refreshScrollObservers() {
     helpers.forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+      if (!child.ready) return;
       if (child._debug) {
         child.removeDebug();
       }
     });
     this.updateBounds();
     helpers.forEachChildren(this, (/** @type {ScrollObserver} */child) => {
+      if (!child.ready) return;
       child.refresh();
       child.onResize(child);
       if (child._debug) {

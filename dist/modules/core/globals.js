@@ -1,11 +1,11 @@
 /**
  * Anime.js - core - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { isBrowser, win, noop, compositionTypes, K, maxFps, doc } from './consts.js';
+import { isBrowser, win, noop, noopModifier, compositionTypes, K, maxFps, doc } from './consts.js';
 
 /**
  * @import {
@@ -17,6 +17,21 @@ import { isBrowser, win, noop, compositionTypes, K, maxFps, doc } from './consts
  *   Scope,
  * } from '../scope/index.js'
 */
+
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {Function} addAnimation
+ * @property {Function} addSet
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} addTimelineLabel
+ * @property {Function} addTimelineCall
+ * @property {Function} addTimelineSync
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
 
 /** @type {DefaultsParams} */
 const defaults = {
@@ -35,7 +50,7 @@ const defaults = {
   loopDelay: 0,
   ease: 'out(2)',
   composition: compositionTypes.replace,
-  modifier: v => v,
+  modifier: noopModifier,
   onBegin: noop,
   onBeforeUpdate: noop,
   onUpdate: noop,
@@ -61,15 +76,15 @@ const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 };
 
-const devTools = isBrowser && win.AnimeJSDevTools;
-
-const globalVersions = { version: '4.3.6', engine: null };
+const globalVersions = { version: '4.5.0', engine: null };
 
 if (isBrowser) {
   if (!win.AnimeJS) win.AnimeJS = [];
   win.AnimeJS.push(globalVersions);
 }
 
-export { defaults, devTools, globalVersions, globals, scope };
+export { defaults, globalVersions, globals, scope };

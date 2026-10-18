@@ -111,7 +111,7 @@ export const composeTween = (tween, siblings) => {
     if (prevSibling) {
 
       const prevParent = prevSibling.parent;
-      const prevAbsEndTime = prevSibling._absoluteStartTime + prevSibling._changeDuration;
+      const prevAbsEndTime = prevSibling._absoluteEndTime;
 
       // Handle looped animations tween
 
@@ -137,7 +137,8 @@ export const composeTween = (tween, siblings) => {
 
       }
 
-      const absoluteUpdateStartTime = tweenAbsStartTime - tween._delay;
+      // Read the precision-matched update-start instead of subtracting tween._delay live so sequential keyframes touching at a boundary don't trigger a phantom overlap from float drift.
+      const absoluteUpdateStartTime = tween._absoluteUpdateStartTime;
 
       if (prevAbsEndTime > absoluteUpdateStartTime) {
 
@@ -157,37 +158,41 @@ export const composeTween = (tween, siblings) => {
         }
       }
 
-      // Pause (and cancel) the parent if it only contains overlapped tweens
+      // Skip the cancel cascade when both tweens share the same parent timeline, a timeline cannot replace itself.
+      const tweenParentTL = tween.parent.parent;
+      if (!tweenParentTL || tweenParentTL !== prevParent.parent) {
 
-      let pausePrevParentAnimation = true;
+        let pausePrevParentAnimation = true;
 
-      forEachChildren(prevParent, (/** @type Tween */t) => {
-        if (!t._isOverlapped) pausePrevParentAnimation = false;
-      });
+        forEachChildren(prevParent, (/** @type Tween */t) => {
+          if (!t._isOverlapped) pausePrevParentAnimation = false;
+        });
 
-      if (pausePrevParentAnimation) {
-        const prevParentTL = prevParent.parent;
-        if (prevParentTL) {
-          let pausePrevParentTL = true;
-          forEachChildren(prevParentTL, (/** @type JSAnimation */a) => {
-            if (a !== prevParent) {
-              forEachChildren(a, (/** @type Tween */t) => {
-                if (!t._isOverlapped) pausePrevParentTL = false;
-              });
+        if (pausePrevParentAnimation) {
+          const prevParentTL = prevParent.parent;
+          if (prevParentTL) {
+            let pausePrevParentTL = true;
+            forEachChildren(prevParentTL, (/** @type JSAnimation */a) => {
+              if (a !== prevParent) {
+                forEachChildren(a, (/** @type Tween */t) => {
+                  if (!t._isOverlapped) pausePrevParentTL = false;
+                });
+              }
+            });
+            if (pausePrevParentTL) {
+              prevParentTL.cancel();
             }
-          });
-          if (pausePrevParentTL) {
-            prevParentTL.cancel();
+          } else {
+            prevParent.cancel();
+            // Previously, calling .cancel() on a timeline child would affect the render order of other children
+            // Worked around this by marking it as .completed and using .pause() for safe removal in the engine loop
+            // This is no longer needed since timeline tween composition is now handled separately
+            // Keeping this here for reference
+            // prevParent.completed = true;
+            // prevParent.pause();
           }
-        } else {
-          prevParent.cancel();
-          // Previously, calling .cancel() on a timeline child would affect the render order of other children
-          // Worked around this by marking it as .completed and using .pause() for safe removal in the engine loop
-          // This is no longer needed since timeline tween composition is now handled separately
-          // Keeping this here for reference
-          // prevParent.completed = true;
-          // prevParent.pause();
         }
+
       }
 
     }
@@ -242,14 +247,12 @@ export const composeTween = (tween, siblings) => {
     tween._number = 0;
     lookupTween._fromNumber = toNumber;
 
-    if (tween._toNumbers) {
+    if (tween._toNumbers.length) {
       const toNumbers = cloneArray(tween._toNumbers);
-      if (toNumbers) {
-        toNumbers.forEach((value, i) => {
-          tween._fromNumbers[i] = lookupTween._fromNumbers[i] - value;
-          tween._toNumbers[i] = 0;
-        });
-      }
+      toNumbers.forEach((value, i) => {
+        tween._fromNumbers[i] = lookupTween._fromNumbers[i] - value;
+        tween._toNumbers[i] = 0;
+      });
       lookupTween._fromNumbers = toNumbers;
     }
 

@@ -6,9 +6,13 @@ export class JSAnimation extends Timer {
      * @param {Number} [parentPosition]
      * @param {Boolean} [fastSet=false]
      * @param {Number} [index=0]
-     * @param {Number} [length=0]
+     * @param {TargetsArray} [allTargets]
      */
-    constructor(targets: TargetsParam, parameters: AnimationParams, parent?: Timeline, parentPosition?: number, fastSet?: boolean, index?: number, length?: number);
+    constructor(targets: TargetsParam, parameters: AnimationParams, parent?: Timeline, parentPosition?: number, fastSet?: boolean, index?: number, allTargets?: TargetsArray);
+    /** @type {Tween} */
+    _head: Tween;
+    /** @type {Tween} */
+    _tail: Tween;
     /** @type {TargetsArray} */
     targets: TargetsArray;
     /** @type {Callback<this>} */
@@ -42,6 +46,7 @@ export class JSAnimation extends Timer {
 }
 export function animate(targets: TargetsParam, parameters: AnimationParams): JSAnimation;
 import { Timer } from '../timer/timer.js';
+import type { Tween } from '../types/index.js';
 import type { TargetsArray } from '../types/index.js';
 import type { Callback } from '../types/index.js';
 import type { EasingFunction } from '../types/index.js';

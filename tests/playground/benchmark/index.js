@@ -19,11 +19,11 @@ import {
 const noop = () => {};
 const url = new URL(window.location.href);
 const urlParams = url.searchParams;
-const $particlesContainer = document.querySelector('#particles-container');
-const $countRange = document.querySelector('#count-range');
-const $restartButton = document.querySelector('#restart-button');
+const $particlesContainer = /** @type {HTMLElement} */ (document.querySelector('#particles-container'));
+const $countRange = /** @type {HTMLInputElement} */ (document.querySelector('#count-range'));
+const $restartButton = /** @type {HTMLButtonElement} */ (document.querySelector('#restart-button'));
 const $activeTweens = document.querySelector('#active-tweens');
-const $configItems = document.querySelectorAll('.config-item');
+const $configItems = /** @type {NodeListOf<HTMLInputElement>} */ (document.querySelectorAll('.config-item'));
 const startedSymbol = Symbol();
 const reversedSymbol = Symbol();
 const duration = 4000;
@@ -470,7 +470,7 @@ function updateUI() {
       $item.checked = $item.value === config[$item.name];
     }
     if ($item.name === 'count') {
-      $item.value = config.count;
+      $item.value = `${config.count}`;
     }
     if ($item.name === 'tween') {
       $item.checked = config[$item.value];
@@ -536,7 +536,7 @@ function onConfigItemChange() {
 }
 
 function onRangeInput() {
-  config.count = $countRange.value;
+  config.count = +$countRange.value;
   updateUrl();
   updateUI();
 }
@@ -559,8 +559,8 @@ window.onresize = onResize;
 // Calculating FPS past requestAnimationFrame limit with requestIdleCallback
 // https://www.clicktorelease.com/blog/calculating-fps-with-requestIdleCallback/
 
-const $fps = document.getElementById('fps');
-const $avg = document.getElementById('avg');
+const $fps = /** @type {HTMLInputElement} */ (document.getElementById('fps'));
+const $avg = /** @type {HTMLInputElement} */ (document.getElementById('avg'));
 
 let t = Date.now();
 let hasrICBeenCalledForThisFrame = null;

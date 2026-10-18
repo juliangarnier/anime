@@ -140,22 +140,22 @@ const elements = [
 // Genetate the table html
 
 const [ $sceneContent ] = utils.$('#scene-content');
-const [ $template ] = utils.$('#element');
+const [ $template ] = /** @type {[HTMLTemplateElement]} */(utils.$('#element'));
 
 for (let i = 0, l = elements.length / ELEMENT_STRIDE; i < l; i += 1) {
   const offset = i * ELEMENT_STRIDE;
-  const $el = $template.content.cloneNode(true);
-  const $element = $el.querySelector('.element');
+  const $el = /** @type {DocumentFragment} */($template.content.cloneNode(true));
+  const $element = /** @type {HTMLElement} */($el.querySelector('.element'));
   const $number = $element.querySelector('.element-number');
   const $symbol = $element.querySelector('.element-symbol');
   const $title = $element.querySelector('.element-title');
   const $description = $element.querySelector('.element-description');
-  $number.textContent = i + 1;
-  $symbol.textContent = elements[offset + ELEMENT_FIELDS.SYMBOL];
-  $title.textContent = elements[offset + ELEMENT_FIELDS.NAME];
-  $element.dataset.color = elements[offset + ELEMENT_FIELDS.COLOR];
-  $element.style.gridColumn = elements[offset + ELEMENT_FIELDS.COLUMN];
-  $element.style.gridRow = elements[offset + ELEMENT_FIELDS.ROW];
+  $number.textContent = `${i + 1}`;
+  $symbol.textContent = `${elements[offset + ELEMENT_FIELDS.SYMBOL]}`;
+  $title.textContent = `${elements[offset + ELEMENT_FIELDS.NAME]}`;
+  $element.dataset.color = `${elements[offset + ELEMENT_FIELDS.COLOR]}`;
+  $element.style.gridColumn = `${elements[offset + ELEMENT_FIELDS.COLUMN]}`;
+  $element.style.gridRow = `${elements[offset + ELEMENT_FIELDS.ROW]}`;
   $description.innerHTML = [
     `Atomic mass: ${elements[offset + ELEMENT_FIELDS.ATOMIC_MASS]} u`,
     `Density: ${elements[offset + ELEMENT_FIELDS.DENSITY]} g/cm3`,
@@ -194,7 +194,7 @@ const transformLayout = {
     pointer.rotateX = 15;
     pointer.rotateY = 20;
     cards.forEach($el => {
-      $el.style.opacity = 1;
+      $el.style.opacity = '1';
       $el.style.transform = $el.classList.contains('is-expanded') ? 'translateZ(50px)' : 'translateZ(10px)';
     });
   },
@@ -272,7 +272,7 @@ document.addEventListener('pointermove', event => {
 const toggles = utils.$('.controls button.toggle');
 
 document.addEventListener('click', event => {
-  const $toggle = event.target.closest('.controls button.toggle');
+  const $toggle = /** @type {HTMLElement} */(event.target).closest('.controls button.toggle');
   if ($toggle) {
     toggles.forEach(button => button.classList.remove('is-active'));
     $toggle.classList.add('is-active');
@@ -286,7 +286,7 @@ document.addEventListener('click', event => {
     });
     return;
   }
-  const $card = event.target.closest('#scene-content .element');
+  const $card = /** @type {HTMLElement} */(event.target).closest('#scene-content .element');
   const shouldExpand = $card && !$card.classList.contains('is-expanded');
   elementsLayout.update(() => {
     cards.forEach($el => $el.classList.remove('is-expanded'));

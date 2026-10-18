@@ -22,7 +22,6 @@ import {
 import {
   scope,
   globals,
-  devTools,
 } from '../core/globals.js';
 
 import {
@@ -100,6 +99,9 @@ const reviveTimer = timer => {
 
 let timerId = 0;
 
+/** @param {Timer} prev @param {Timer} child */
+const sortByPriority = (prev, child) => prev._priority > child._priority;
+
 /**
  * Base class used to create Timers, Animations and Timelines
  */
@@ -126,6 +128,7 @@ export class Timer extends Clock {
       autoplay,
       frameRate,
       playbackRate,
+      priority,
       onComplete,
       onLoop,
       onPause,
@@ -146,16 +149,6 @@ export class Timer extends Clock {
                               timerLoop === Infinity ||
                               /** @type {Number} */(timerLoop) < 0 ? Infinity :
                               /** @type {Number} */(timerLoop) + 1;
-
-    if (devTools) {
-      const isInfinite = timerIterationCount === Infinity;
-      const registered = devTools.register(this, parameters, isInfinite);
-      if (registered && isInfinite) {
-        const minIterations = alternate ? 2 : 1;
-        const iterations = parent ? devTools.maxNestedInfiniteLoops : devTools.maxInfiniteLoops;
-        timerIterationCount = Math.max(iterations, minIterations);
-      }
-    }
 
     let offsetPosition = 0;
 
@@ -240,6 +233,8 @@ export class Timer extends Clock {
     this._fps = setValue(frameRate, timerDefaults.frameRate);
     /** @type {Number} */
     this._speed = setValue(playbackRate, timerDefaults.playbackRate);
+    /** @type {Number} */
+    this._priority = +setValue(priority, 1);
   }
 
   get cancelled() {
@@ -384,7 +379,7 @@ export class Timer extends Clock {
       tick(this, minValue, 0, 0, tickModes.FORCE);
     } else {
       if (!this._running) {
-        addChild(engine, this);
+        addChild(engine, this, sortByPriority);
         engine._hasChildren = true;
         this._running = true;
       }

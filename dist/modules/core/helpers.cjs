@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -124,8 +124,6 @@ const _round = Math.round;
  */
 const clamp = (v, min, max) => v < min ? min : v > max ? max : v;
 
-const powCache = {};
-
 /**
  * Rounds a number to specified decimal places
  *
@@ -133,13 +131,12 @@ const powCache = {};
  * @param  {Number} decimalLength - Number of decimal places
  * @return {Number}
  */
-const round = (v, decimalLength) => {
-  if (decimalLength < 0) return v;
-  if (!decimalLength) return _round(v);
-  let p = powCache[decimalLength];
-  if (!p) p = powCache[decimalLength] = 10 ** decimalLength;
-  return _round(v * p) / p;
-};
+ const round = (v, decimalLength) => {
+   if (decimalLength < 0) return v;
+   if (!decimalLength) return _round(v);
+   const p = 10 ** decimalLength;
+   return _round(v * p) / p;
+ };
 
 /**
  * Snaps a value to nearest increment or array value
@@ -158,7 +155,7 @@ const snap = (v, increment) => isArr(increment) ? increment.reduce((closest, cv)
  * @param  {Number} factor - Interpolation factor in the range [0, 1]
  * @return {Number} The interpolated value
  */
-const lerp = (start, end, factor) => start + (end - start) * factor;
+const lerp = (start, end, factor) => factor === 1 ? end : factor === 0 ? start : start + (end - start) * factor;
 
 /**
  * Replaces infinity with maximum safe value

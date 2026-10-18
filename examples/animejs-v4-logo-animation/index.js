@@ -4,7 +4,7 @@ const [ $dot1 ] = utils.$('#dot-1');
 const onions = [];
 
 for (let i = 0; i < 4; i++) {
-  const $clone = $dot1.cloneNode();
+  const $clone = /** @type {HTMLElement} */ ($dot1.cloneNode());
   $clone.id = 'dot-1-' + i;
   utils.set($clone, { opacity: 0 });
   $dot1.parentNode.appendChild($clone);

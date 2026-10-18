@@ -123,6 +123,9 @@ export function get(targetSelector, propName, unit) {
  */
 export const set = (targets, parameters) => {
   if (isUnd(parameters)) return;
+  if (globals.editor && globals.editor.addSet) {
+    return globals.editor.addSet(targets, parameters);
+  }
   parameters.duration = minValue;
   // Do not overrides currently active tweens by default
   parameters.composition = setValue(parameters.composition, compositionTypes.none);

@@ -125,8 +125,6 @@ export const _round = Math.round;
  */
 export const clamp = (v, min, max) => v < min ? min : v > max ? max : v;
 
-const powCache = {};
-
 /**
  * Rounds a number to specified decimal places
  *
@@ -134,13 +132,12 @@ const powCache = {};
  * @param  {Number} decimalLength - Number of decimal places
  * @return {Number}
  */
-export const round = (v, decimalLength) => {
-  if (decimalLength < 0) return v;
-  if (!decimalLength) return _round(v);
-  let p = powCache[decimalLength];
-  if (!p) p = powCache[decimalLength] = 10 ** decimalLength;
-  return _round(v * p) / p;
-};
+ export const round = (v, decimalLength) => {
+   if (decimalLength < 0) return v;
+   if (!decimalLength) return _round(v);
+   const p = 10 ** decimalLength;
+   return _round(v * p) / p;
+ }
 
 /**
  * Snaps a value to nearest increment or array value
@@ -159,7 +156,7 @@ export const snap = (v, increment) => isArr(increment) ? increment.reduce((close
  * @param  {Number} factor - Interpolation factor in the range [0, 1]
  * @return {Number} The interpolated value
  */
-export const lerp = (start, end, factor) => start + (end - start) * factor;
+export const lerp = (start, end, factor) => factor === 1 ? end : factor === 0 ? start : start + (end - start) * factor;
 
 /**
  * Replaces infinity with maximum safe value

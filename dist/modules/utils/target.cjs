@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -93,6 +93,9 @@ function get(targetSelector, propName, unit) {
  */
 const set = (targets, parameters) => {
   if (helpers.isUnd(parameters)) return;
+  if (globals.globals.editor && globals.globals.editor.addSet) {
+    return globals.globals.editor.addSet(targets, parameters);
+  }
   parameters.duration = consts.minValue;
   // Do not overrides currently active tweens by default
   parameters.composition = values.setValue(parameters.composition, consts.compositionTypes.none);

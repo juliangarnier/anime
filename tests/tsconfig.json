@@ -6,5 +6,6 @@
       "animejs": ["dist/modules/index.js"],
     }
   },
-  "include": ["**/*.js"]
+  "include": ["**/*.js"],
+  "exclude": ["run.js", "suites/node.test.js", "suites/build.test.js", "playground/assets/**"]
 }

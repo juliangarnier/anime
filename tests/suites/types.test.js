@@ -1,4 +1,4 @@
-import { animate, createTimer, createTimeline, utils } from '../../dist/modules/index.js';
+import { animate, createTimer, createTimeline, utils, Timer, Timeline, JSAnimation } from '../../dist/modules/index.js';
 
 animate('.anime-css', {
   keyframes: {
@@ -7,7 +7,7 @@ animate('.anime-css', {
       b: 'string',
       c0: (el) => el.dataset.index,
       c1: (el, i) => el.dataset.index + i,
-      c2: (el, i, t) => t - (el.dataset.index + i),
+      c2: (el, i, targets) => targets.length - (el.dataset.index + i),
     },
     '20%' : { x: '0rem', y: '-2.5rem', rotate: 45, ease: 'out' },
     '40%' : { x: '17rem', y: '-2.5rem' },
@@ -35,13 +35,14 @@ const animation = animate('#target-id', {
   b: 'string',
   c0: (el) => el.dataset.index, // el should be of type target
   c1: (el, i) => el.dataset.index + i,
-  c2: (el, i, t) => { t - (el.dataset.index + i) }, // Should throw because not returing a valid value
+  // @ts-expect-error - returns void, not a valid tween value
+  c2: (el, i, targets) => { targets.length - (el.dataset.index + i) },
   d: {
     to: 100,
     duration: 10,
   },
   e: {
-    from: (el, i, t) => t - (el.dataset.index + i),
+    from: (el, i, targets) => targets.length - (el.dataset.index + i),
     delay: 10,
   },
   f: [0, 100],
@@ -50,8 +51,8 @@ const animation = animate('#target-id', {
     { to: [0, 1], duration: 200, ease: 'outBack' },
     { to: 1, duration: 100, delay: 500, ease: 'inQuart' },
   ],
-  delay: (_, i, t) => i * t,
-  duration: (_, i, t) => i * t,
+  delay: (_, i, targets) => i * targets.length,
+  duration: (_, i, targets) => i * targets.length,
   modifier: v => v * 100,
   loopDelay: 100,
   loop: true,
@@ -89,23 +90,24 @@ const tl = createTimeline({
     duration: 100
   }
 })
-.add('label', 10000)
+.label('label', 10000)
 .add('#target-id', {
   a: 100,
   b: 'string',
-  c: (el, i, t) => { t - (el.dataset.index + i) }, // Should throw
+  // @ts-expect-error - returns void, not a valid tween value
+  c: (el, i, targets) => { targets.length - (el.dataset.index + i) },
   d: {
     to: 100,
     duration: 10,
   },
   e: {
-    from: (el, i, t) => t - (el.dataset.index + i),
+    from: (el, i, targets) => targets.length - (el.dataset.index + i),
     delay: 10,
   },
   f: [0, 100],
   g: (el) => el.dataset.index, // el should be of type target
-  delay: (_, i, t) => i * t,
-  duration: (_, i, t) => i * t,
+  delay: (_, i, targets) => i * targets.length,
+  duration: (_, i, targets) => i * targets.length,
   modifier: v => v * 100,
   loopDelay: 100,
   loop: true,
@@ -135,15 +137,15 @@ const tl = createTimeline({
   onLoop: self => console.log(self.currentTime),
   onComplete: self => console.log(self.currentTime),
 }, 10000)
-.add(self => {
+.call(self => {
   console.log(self.currentTime)
 }, 10000)
 
 
-/** @param {String} v */
+/** @param {JSAnimation} v */
 animation.onComplete = (v) => v;
 
-/** @param {Animation} v */
+/** @param {Timer} v */
 timer.onComplete = (v) => v;
 
 /** @param {Timeline} v */

@@ -16,7 +16,8 @@ export class Animatable {
      */
     constructor(targets: TargetsParam, parameters: AnimatableParams);
     targets: (HTMLElement | SVGElement | import("../types/index.js").JSTarget)[];
-    animations: {};
+    /** @type {Record<String, JSAnimation>} */
+    animations: Record<string, JSAnimation>;
     /** @type {JSAnimation|null} */
     callbacks: JSAnimation | null;
     revert(): this;

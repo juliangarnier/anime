@@ -500,13 +500,13 @@ suite('Timelines', () => {
     }, '-=5')
 
     tl.seek(15)
-    expect($target.style.transform).to.equal('translateX(200px) translateY(100px)');
+    expect($target.style.transform).to.equal('translate(200px, 100px)');
     tl.seek(16)
-    expect($target.style.transform).to.equal('translateX(185px) translateY(90px)');
+    expect($target.style.transform).to.equal('translate(185px, 90px)');
     tl.seek(15)
-    expect($target.style.transform).to.equal('translateX(200px) translateY(100px)');
+    expect($target.style.transform).to.equal('translate(200px, 100px)');
     tl.seek(14)
-    expect($target.style.transform).to.equal('translateX(185px) translateY(90px)');
+    expect($target.style.transform).to.equal('translate(185px, 90px)');
   });
 
   test('Previous tween before last shouln\'t render on loop', resolve => {
@@ -760,6 +760,81 @@ suite('Timelines', () => {
 
   });
 
+  test('Seek does not re-fire .call() when not crossing its position', () => {
+    let timer1Log = 0;
+    let timer2Log = 0;
+    let timer3Log = 0;
+    const tl = createTimeline({ autoplay: false })
+      .call(() => { timer1Log += 1; }, 0)
+      .call(() => { timer2Log += 1; }, 500)
+      .call(() => { timer3Log += 1; }, 1000);
+
+    tl.seek(600);
+    expect(timer1Log).to.equal(1);
+    expect(timer2Log).to.equal(1);
+    expect(timer3Log).to.equal(0);
+
+    tl.seek(550);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(540);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(501);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(800);
+    expect(timer2Log).to.equal(1);
+    expect(timer3Log).to.equal(0);
+
+    tl.seek(600);
+    expect(timer2Log).to.equal(1);
+    expect(timer3Log).to.equal(0);
+  });
+
+  test('Repeated seek to the same position does not re-fire .call()', () => {
+    let timer1Log = 0;
+    let timer2Log = 0;
+    const tl = createTimeline({ autoplay: false })
+      .call(() => { timer1Log += 1; }, 0)
+      .call(() => { timer2Log += 1; }, 500);
+
+    tl.seek(600);
+    expect(timer1Log).to.equal(1);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(600);
+    expect(timer1Log).to.equal(1);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(600);
+    expect(timer1Log).to.equal(1);
+    expect(timer2Log).to.equal(1);
+  });
+
+  test('Seek direction reversal past a .call() in the middle of a timeline does not re-fire it', () => {
+    const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
+    let timer2Log = 0;
+    const tl = createTimeline({ autoplay: false })
+      .add($target, { x: 100, duration: 1000 }, 0)
+      .call(() => { timer2Log += 1; }, 500);
+
+    tl.seek(600);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(550);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(580);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(560);
+    expect(timer2Log).to.equal(1);
+
+    tl.seek(700);
+    expect(timer2Log).to.equal(1);
+  });
+
   test('Call callbaks with alternate loops', () => {
     let timer1Log = 0;
     let timer2Log = 0;
@@ -944,6 +1019,173 @@ suite('Timelines', () => {
     expect(+$target.style.transform.replace(/[^\d.-]/g, '')).to.equal(0);
 
     tl.remove(animation);
+  });
+
+  test('Animating a child timeline progress should not corrupt parent render state via nested tick', () => {
+    const [ $target1, $target2 ] = utils.$('.target-class');
+
+    const innerTL = createTimeline({
+      autoplay: false,
+      defaults: { duration: 100, ease: 'linear' },
+    })
+    .add($target1, { translateX: 200 });
+
+    let call1Count = 0;
+    let call2Count = 0;
+
+    const parentTL = createTimeline({
+      autoplay: false,
+      defaults: { ease: 'linear' },
+    })
+    .call(() => { call1Count += 1; }, 0)
+    .add(innerTL, { progress: 1, duration: 200 })
+    .add($target2, { translateY: 200, duration: 200 }, 0)
+    .call(() => { call2Count += 1; }, 200);
+
+    parentTL.seek(100);
+    expect(call1Count).to.equal(1);
+    expect($target1.style.transform).to.equal('translateX(100px)');
+    expect($target2.style.transform).to.equal('translateY(100px)');
+
+    parentTL.seek(200);
+    expect(call2Count).to.equal(1);
+    expect($target1.style.transform).to.equal('translateX(200px)');
+    expect($target2.style.transform).to.equal('translateY(200px)');
+
+    parentTL.seek(100);
+    expect($target1.style.transform).to.equal('translateX(100px)');
+    expect($target2.style.transform).to.equal('translateY(100px)');
+    expect(call2Count).to.equal(2);
+
+    parentTL.seek(0);
+    expect(call1Count).to.equal(2);
+  });
+
+  test('Backward seek through a sibling-chain timeline writes the active child value, not the stale to-value of an earlier past-end sibling', () => {
+    const target = { x: 0 };
+    const tl = createTimeline({ autoplay: false, loop: true, defaults: { duration: 1000, ease: 'linear' } })
+      .add(target, { x: 10 })
+      .add(target, { x: 20 })
+      .add(target, { x: 30 });
+    // Forward seek to mid of the last segment so siblings 0/1 become past-end.
+    tl.seek(3000.01);
+    expect(target.x).to.equal(0.0001);
+    // Backward seek (still inside last segment's range, but iteration order is now reversed). Without the fix, past-end siblings render at progress=1 in backward iteration order and segment 0 writes its to-value (10) last, masking the active segment's correct value.
+    tl.seek(3000);
+    expect(target.x).to.equal(0);
+    // Continue backward into the dead-zone of segment 0 (still past the end of segments 0 / 1 in a hypothetical longer chain, but here we just verify segment 0 wins legitimately).
+    tl.seek(2999.99);
+    expect(target.x).to.equal(29.9999);
+  });
+
+  test('Seek into the gap between a truncated child and a delayed child writes the hold value', () => {
+    const target = { x: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, { x: { from: 0, to: 100, duration: 1000 }, ease: 'linear' }, 0)
+      .add(target, { x: { to: 200, duration: 500, delay: 300 }, ease: 'linear' }, 500);
+    tl.seek(400);
+    expect(target.x).to.equal(40);
+    // First forward entry into the gap left by the truncated first child
+    tl.seek(600);
+    expect(target.x).to.equal(50);
+    tl.seek(900);
+    expect(target.x).to.equal(80);
+    tl.seek(600);
+    expect(target.x).to.equal(50);
+    tl.seek(1300);
+    expect(target.x).to.equal(200);
+    tl.seek(650);
+    expect(target.x).to.equal(50);
+    tl.seek(400);
+    expect(target.x).to.equal(40);
+    tl.seek(0);
+    tl.seek(700);
+    expect(target.x).to.equal(50);
+  });
+
+  test('Backward seek before a negative delay sibling start restores the previous child end value', () => {
+    const targets = [{ y: 0 }, { y: 0 }, { y: 0 }];
+    const tl = createTimeline({ autoplay: false })
+      .add(targets, { y: { to: 1, duration: 100 }, ease: 'linear' }, 0)
+      .add(targets, { y: { to: 2, duration: 100, delay: (t, i) => [-50, 0, 300][i] }, ease: 'linear' }, 200);
+    expect(tl.duration).to.equal(600);
+    tl.seek(600);
+    expect(targets[0].y).to.equal(2);
+    expect(targets[1].y).to.equal(2);
+    expect(targets[2].y).to.equal(2);
+    // The last target tween spans 500 to 600, seeking back before its start must restore the first child end value
+    tl.seek(400);
+    expect(targets[0].y).to.equal(2);
+    expect(targets[1].y).to.equal(2);
+    expect(targets[2].y).to.equal(1);
+    tl.seek(175);
+    expect(targets[0].y).to.equal(1.25);
+    expect(targets[1].y).to.equal(1);
+    expect(targets[2].y).to.equal(1);
+    tl.seek(50);
+    expect(targets[0].y).to.equal(0.5);
+    expect(targets[1].y).to.equal(0.5);
+    expect(targets[2].y).to.equal(0.5);
+    tl.seek(550);
+    expect(targets[0].y).to.equal(2);
+    expect(targets[1].y).to.equal(2);
+    expect(targets[2].y).to.equal(1.5);
+  });
+
+  test('Backward seek re-entering an earlier child range keeps the active child value', () => {
+    const target = { v: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, { v: [{ to: 1, duration: 100 }, { to: 2, duration: 100 }, { to: 3, duration: 200 }], ease: 'linear' }, 0)
+      .add(target, { v: { to: 4.5, duration: 300 }, ease: 'linear' }, 300);
+    expect(tl.duration).to.equal(600);
+    tl.seek(600);
+    expect(target.v).to.equal(4.5);
+    // The first child re-renders on backward re-entry, its keyframes must yield to the second child write
+    tl.seek(360);
+    expect(target.v).to.be.closeTo(2.9, 1e-12);
+    tl.seek(250);
+    expect(target.v).to.equal(2.25);
+    tl.seek(150);
+    expect(target.v).to.equal(1.5);
+  });
+
+  test('A past-end child whose delay exceeds its duration must not overwrite a later sibling on a forward seek', () => {
+    // The dot pop child animates to 14.5 by 1250, then holds it until the outro at 1600, so y is 14.5 across [1250,1600].
+    // The expand child has delay 300 greater than its 200 duration, so once past its end its iteration time equals its
+    // duration, which is below its delay. That used to re-trigger a render of the finished tween on a forward seek and
+    // overwrite dot pop's held value with expand's 0.75. A fresh seek was always correct, only a sequential seek broke.
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, { y: [{ to: -2.5, duration: 150 }, { to: -2.53, duration: 150 }], ease: 'linear' }, 500)
+      .add(target, { y: { to: 0.75, duration: 200, delay: 300 }, ease: 'linear' }, 550)
+      .add(target, { y: { to: 14.5, duration: 150 }, ease: 'linear' }, 1100)
+      .add(target, { y: 5.5, duration: 200, ease: 'linear' }, 1600);
+    // Seek forward into the hold so the previous time is set, then step forward again across it.
+    tl.seek(1250);
+    expect(target.y).to.equal(14.5);
+    tl.seek(1300);
+    expect(target.y).to.equal(14.5);
+    tl.seek(1450);
+    expect(target.y).to.equal(14.5);
+  });
+
+  test('An implicit from chains from the latest live sibling, skipping an overridden mid-chain keyframe', () => {
+    // The dot pop child leaves y at 14.5 before the outro, so the outro's bare to value must start from 14.5.
+    // expand squeeze-overrides recover's last keyframe in place, so that keyframe sits overridden mid-chain before dot pop.
+    // The from walk must skip the overridden keyframe and reach dot pop, not stop at it and chain from the stale -2.5.
+    const target = { y: 0 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, { y: [{ to: -2.5, duration: 200 }, { to: -2.53, duration: 200 }], ease: 'linear' }, 1000)
+      .add(target, { y: { to: 0.75, duration: 2000, delay: 700 }, ease: 'linear' }, 1100)
+      .add(target, { y: { to: 14.5, duration: 200 }, ease: 'linear' }, 5000)
+      .add(target, { y: 5.5, duration: 200, ease: 'linear' }, 8000)
+      .init();
+    tl.seek(5200);
+    expect(target.y).to.equal(14.5); // dot pop landed, the live value before the outro
+    tl.seek(8000);
+    expect(target.y).to.equal(14.5); // outro starts continuous, the bug chained from the stale -2.5
+    tl.seek(8100);
+    expect(target.y).to.equal(10); // midpoint of 14.5 down to 5.5, the bug gives 1.5 from the snapped start
   });
 
 });

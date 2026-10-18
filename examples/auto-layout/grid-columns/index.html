@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto layout / Grid columns / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 4rem 1rem;
+      min-height: 100lvh;
+      gap: 2rem;
+    }
+    .controls fieldset button {
+      width: 3rem;
+      background-color: var(--bg-4);
+      color: var(--fg-1);
+    }
+    .controls fieldset button:hover {
+      background-color: var(--bg-5);
+    }
+    .controls fieldset button.is-active {
+      background-color: var(--fg-1);
+      color: var(--bg-3);
+    }
+    .container {
+      width: 100%;
+      max-width: 48rem;
+    }
+    .grid-cards {
+      --cols: 4;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), 1fr);
+      gap: 1rem;
+    }
+    .card {
+      aspect-ratio: 1 / 1;
+      border-radius: 1rem;
+      padding: 1rem;
+      background-color: var(--color-5);
+      border: 1px solid var(--color-4);
+      color: var(--color-1);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+    }
+    .card p {
+      display: none;
+      font-size: .75rem;
+      color: var(--color-2);
+      line-height: 1.3;
+    }
+    .grid-cards.cols-3 .card p {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <fieldset>
+      <button data-cols="3">3</button>
+      <button data-cols="4" class="is-active">4</button>
+      <button data-cols="5">5</button>
+    </fieldset>
+  </div>
+  <div class="container">
+    <div class="grid-cards cols-4" id="cards"></div>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

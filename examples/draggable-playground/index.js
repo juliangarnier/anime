@@ -209,15 +209,24 @@ const flickAnimatable = createAnimatable($flickCarousel, {
 const flickDraggable = createDraggable(flickData, {
   trigger: '#infinite-flick',
   y: false,
-  onGrab: () => animate(flickData, { speedX: 0, duration: 500 }),
-  onRelease: () => animate(flickData, { speedX: 2, duration: 500 }),
-  releaseStiffness: 10,
+  onGrab: () => {
+    isGrabbing = true;
+    animate(flickData, { speedX: 0, duration: 200, ease: 'out(2)' });
+  },
+  onRelease: self => {
+    isGrabbing = false;
+    flickData.speedX = -self.deltaX;
+    animate(flickData, { speedX: 2, duration: 2000, ease: 'out(3)' });
+  },
 });
+
+let isGrabbing = false;
 
 createTimer({
   onUpdate: () => {
     const { x } = flickAnimatable;
-    x(/** @type {Number} */(x()) - flickData.speedX + flickDraggable.deltaX - flickData.wheelY);
+    const drag = isGrabbing ? flickDraggable.deltaX : 0;
+    x(/** @type {Number} */(x()) - flickData.speedX + drag - flickData.wheelY);
   }
 });
 

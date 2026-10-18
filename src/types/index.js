@@ -55,6 +55,12 @@ export {}
 /** @typedef {Timer&JSAnimation&Timeline} CallbackArgument */
 /** @typedef {Animatable|Tickable|WAAPIAnimation|Draggable|ScrollObserver|TextSplitter|Scope|AutoLayout} Revertible */
 
+/**
+ * @typedef {Object} TweakRegister
+ * @property {String} type
+ * @property {*} defaultValue
+ */
+
 // Stagger types
 
 /**
@@ -62,7 +68,8 @@ export {}
  * @callback StaggerFunction
  * @param {Target} [target]
  * @param {Number} [index]
- * @param {Number} [length]
+ * @param {TargetsArray} [targets]
+ * @param {Tween|null} [prevTween]
  * @param {Timeline} [tl]
  * @return {T}
  */
@@ -70,14 +77,21 @@ export {}
 /**
  * @typedef  {Object} StaggerParams
  * @property {Number|String} [start]
- * @property {Number|'first'|'center'|'last'|'random'} [from]
+ * @property {Number|'first'|'center'|'last'|'random'|Array.<Number>} [from]
  * @property {Boolean} [reversed]
- * @property {Array.<Number>} [grid]
- * @property {('x'|'y')} [axis]
- * @property {String|((target: Target, i: Number, length: Number) => Number)} [use]
+ * @property {Array.<Number>|Boolean} [grid]
+ * @property {('x'|'y'|'z')} [axis]
+ * @property {String | { method(target: Target, i: Number, length: Number): Number }['method']} [use]
  * @property {Number} [total]
  * @property {EasingParam} [ease]
  * @property {TweenModifier} [modifier]
+ * @property {Number|[Number, Number]} [jitter] Additive uniform noise on the
+ *   computed stagger value. Number form gives flat `+/-jitter`; tuple form
+ *   ramps the magnitude `start -> end` across the from/axis/grid ordering
+ *   and respects `ease`.
+ * @property {Boolean|Number} [seed] Seed for jitter draws and `from: 'random'`
+ *   shuffling. `false` (default) uses Math.random. `true` seeds with `0`. A
+ *   number is used directly as the seed.
  */
 
 // Targets types
@@ -133,8 +147,8 @@ export {}
 
 // A hack to get both ease names suggestions AND allow any strings
 // https://github.com/microsoft/TypeScript/issues/29729#issuecomment-460346421
-/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring} EasingParam */
-/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring} WAAPIEasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|EasingFunction|Spring|TweakRegister} EasingParam */
+/** @typedef {(String & {})|EaseStringParamNames|WAAPIEaseStringParamNames|EasingFunction|Spring|TweakRegister} WAAPIEasingParam */
 
 // Spring types
 
@@ -153,10 +167,7 @@ export {}
 
 /**
  * @template T
- * @callback Callback
- * @param {T} self - Returns itself
- * @param {PointerEvent} [e]
- * @return {*}
+ * @typedef {{ method(self: T): * }['method']} Callback
  */
 
 /**
@@ -190,6 +201,7 @@ export {}
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number} [frameRate]
  * @property {Number} [playbackRate]
+ * @property {Number} [priority]
  */
 
 /**
@@ -199,11 +211,17 @@ export {}
 // Tween types
 
 /**
+ * @typedef {Number|String|TweenKeyValue|EasingParam|Array.<Number|String|TweenKeyValue>} FunctionValueReturn
+ */
+
+/**
+ * @template [T=FunctionValueReturn]
  * @callback FunctionValue
- * @param {Target} target - The animated target
- * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
- * @return {Number|String|TweenObjectValue|EasingParam|Array.<Number|String|TweenObjectValue>}
+ * @param {Target} [target] - The animated target
+ * @param {Number} [index] - The target index
+ * @param {TargetsArray} [targets] - The array of all animated targets
+ * @param {Tween|null} [prevTween] - The previous sibling tween for the same target and property
+ * @return {T}
  */
 
 /**
@@ -220,7 +238,7 @@ export {}
  * @property {JSAnimation} parent
  * @property {String} property
  * @property {Target} target
- * @property {String|Number} _value
+ * @property {String|Number|Object} _value
  * @property {Function|null} _toFunc
  * @property {Function|null} _fromFunc
  * @property {EasingFunction} _ease
@@ -239,7 +257,11 @@ export {}
  * @property {Number} _startTime
  * @property {Number} _changeDuration
  * @property {Number} _absoluteStartTime
+ * @property {Number} _absoluteUpdateStartTime
+ * @property {Number} _absoluteEndTime
+ * @property {Number} _hasFromValue
  * @property {tweenTypes} _tweenType
+ * @property {((target: any, value: number, tween: Tween) => void) | null} _setter
  * @property {valueTypes} _valueType
  * @property {Number} _composition
  * @property {Number} _isOverlapped
@@ -260,8 +282,8 @@ export {}
  * @property {Number} n - Single number value
  * @property {String} u - Value unit
  * @property {String} o - Value operator
- * @property {Array.<Number>} d - Array of Numbers (in case of complex value type)
- * @property {Array.<String>} s - Strings (in case of complex value type)
+ * @property {Array.<Number>} d - Array of Numbers (complex / color value type)
+ * @property {Array.<String>} s - Strings (complex value type)
  */
 
 /** @typedef {{_head: null|Tween, _tail: null|Tween}} TweenPropertySiblings */
@@ -272,7 +294,7 @@ export {}
 // JSAnimation types
 
 /**
- * @typedef {Number|String|FunctionValue|EasingParam} TweenParamValue
+ * @typedef {Number|String|FunctionValue|EasingParam|TweakRegister} TweenParamValue
  */
 
 /**
@@ -371,7 +393,7 @@ export {}
  * - `'label'` - Label: Position animation at a named label position (e.g., `'My Label'`)<br>
  * - `stagger(String|Nummber)` - Stagger multi-elements animation positions (e.g., 10, 20, 30...)
  *
- * @typedef {TimelinePosition | StaggerFunction<Number|String>} TimelineAnimationPosition
+ * @typedef {TimelinePosition | StaggerFunction<Number|String> | TweakRegister} TimelineAnimationPosition
  */
 
 /**
@@ -395,7 +417,7 @@ export {}
  * @callback WAAPIFunctionValue
  * @param {DOMTarget} target - The animated target
  * @param {Number} index - The target index
- * @param {Number} length - The total number of animated targets
+ * @param {DOMTargetsArray} targets - The array of all animated targets
  * @return {WAAPITweenValue|WAAPIEasingParam}
  */
 
@@ -465,7 +487,7 @@ export {}
  */
 
 /**
- * @typedef {Record<String, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions> & AnimatablePropertyParamsOptions} AnimatableParams
+ * @typedef {Record<String, TweenParamValue | EasingParam | TweenModifier | TweenComposition | AnimatablePropertyParamsOptions | Callback<JSAnimation>> & AnimatablePropertyParamsOptions & TickableCallbacks<JSAnimation> & RenderableCallbacks<JSAnimation>} AnimatableParams
  */
 
 // Scope types
@@ -508,7 +530,7 @@ export {}
 /**
  * @callback ScopeMethod
  * @param {...*} args
- * @return {ScopeCleanupCallback|void}
+ * @return {*}
  */
 
 // Scroll types
@@ -640,6 +662,26 @@ export {}
  * @property {Boolean} [accessible]
  * @property {Boolean} [includeSpaces]
  * @property {Boolean} [debug]
+ */
+
+/**
+ * @typedef {Object} ScrambleTextParams
+ * @property {String|function(Target, Number, TargetsArray): String} [text] - the text to transition to, otherwise uses the original text
+ * @property {String|function(Target, Number, TargetsArray): String} [chars] - the characters used for scramble; named sets: 'lowercase', 'uppercase', 'numbers', 'symbols', 'braille', 'blocks', 'shades'; range syntax: 'A-Z', 'a-z0-9'; defaults to 'a-zA-Z0-9!%#_'
+ * @property {EasingParam} [ease] - the easing applied to the scramble animation
+ * @property {Number|'left'|'center'|'right'|'random'|'auto'} [from] - where the reveal wave starts from, 'auto' (default) uses 'left' when text grows and 'right' when it shrinks
+ * @property {Boolean} [reversed] - reverses the reveal order, so 'center' reveals from edges inward instead of center outward
+ * @property {Boolean|Number|String} [cursor] - characters displayed at the leading edge of the reveal wave; true uses '_', a number is a char code, a string is used directly
+ * @property {Number} [perturbation] - adds random timing offsets to each character's start and end, creating a more organic reveal
+ * @property {Number} [seed] - a seed for the random number generator to produce reproducible scramble sequences
+ * @property {Boolean|String} [override] - controls the starting appearance: false shows original text, true scrambles it (default), '' starts from blank, ' ' replaces characters with spaces, a custom string (supports range syntax like 'A-Z') uses its characters as scramble set
+ * @property {Number} [revealRate] - characters per second entering the active zone; higher values make the reveal wave move faster (default: 60)
+ * @property {Number} [settleDuration] - time in ms each character spends scrambling before settling into its final glyph (default: 300)
+ * @property {Number} [settleRate] - how many times per second scramble characters cycle in the active zone (default: 30)
+ * @property {Number|function(Target, Number, TargetsArray): Number} [duration] - if set to a value greater than 0, overrides the computed duration from interval and settle; if unset or 0, duration is calculated automatically from text length and timing parameters
+ * @property {Number|function(Target, Number, TargetsArray): Number} [revealDelay] - delay in ms before the reveal wave starts within the scramble animation
+ * @property {Number|function(Target, Number, TargetsArray): Number} [delay] - delay in ms before the entire scramble animation starts
+ * @property {function(String, Number): void} [onChange] - callback fired each time a character changes during scramble; receives the current scrambled text and the eased progress (0-1)
  */
 
 // SVG types

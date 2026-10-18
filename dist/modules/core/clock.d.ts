@@ -18,8 +18,6 @@ export class Clock {
     /** @type {Number} */
     _lastTime: number;
     /** @type {Number} */
-    _scheduledTime: number;
-    /** @type {Number} */
     _frameDuration: number;
     /** @type {Number} */
     _fps: number;

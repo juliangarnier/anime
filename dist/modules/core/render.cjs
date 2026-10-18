@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -10,9 +10,11 @@
 var globals = require('./globals.cjs');
 var consts = require('./consts.cjs');
 var helpers = require('./helpers.cjs');
+var transforms = require('./transforms.cjs');
+var values = require('./values.cjs');
 
 /**
- *   @import {
+ * @import {
  *   Tickable,
  *   Renderable,
  *   CallbackArgument,
@@ -55,7 +57,6 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
   const _hasChildren = tickable._hasChildren;
   const tickableDelay = tickable._delay;
   const tickablePrevAbsoluteTime = tickable._currentTime; // TODO: rename ._currentTime to ._absoluteCurrentTime
-
   const tickableEndTime = tickableDelay + iterationDuration;
   const tickableAbsoluteTime = time - tickableDelay;
   const tickablePrevTime = helpers.clamp(tickablePrevAbsoluteTime, -tickableDelay, duration);
@@ -75,12 +76,14 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
   // Execute the "expensive" iterations calculations only when necessary
   if (iterationCount > 1) {
     // bitwise NOT operator seems to be generally faster than Math.floor() across browsers
-    const currentIteration = ~~(tickableCurrentTime / (iterationDuration + (isCurrentTimeEqualOrAboveDuration ? 0 : _loopDelay)));
+    const period = iterationDuration + (isCurrentTimeEqualOrAboveDuration ? 0 : _loopDelay);
+    const currentIteration = ~~(tickableCurrentTime / period);
     tickable._currentIteration = helpers.clamp(currentIteration, 0, iterationCount);
     // Prevent the iteration count to go above the max iterations when reaching the end of the animation
     if (isCurrentTimeEqualOrAboveDuration) tickable._currentIteration--;
     isOdd = tickable._currentIteration % 2;
-    iterationElapsedTime = tickableCurrentTime % (iterationDuration + _loopDelay) || 0;
+    // Derive elapsed from the same `~~` truncation that gave currentIteration. Using `% period` here can disagree with `~~(/period)` under float drift at iteration boundaries and write the wrong end of the tween for one frame.
+    iterationElapsedTime = tickableCurrentTime - currentIteration * period || 0;
   }
 
   // Checks if exactly one of _reversed and (_alternate && isOdd) is true
@@ -112,12 +115,14 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
   if (
     forcedTick ||
     tickMode === consts.tickModes.AUTO && (
-      time >= tickableDelay && time <= tickableEndTime || // Normal render
+      // Timeline children render from their offset instead of their delay so the gap left by a truncated sibling is covered on seek.
+      time >= (parent && tickableDelay > 0 ? 0 : tickableDelay) && time <= tickableEndTime || // Normal render
       time <= tickableDelay && tickablePrevTime > tickableDelay || // Playhead is before the animation start time so make sure the animation is at its initial state
       time >= tickableEndTime && tickablePrevTime !== duration // Playhead is after the animation end time so make sure the animation is at its end state
     ) ||
     iterationTime >= tickableEndTime && tickablePrevTime !== duration ||
-    iterationTime <= tickableDelay && tickablePrevTime > 0 ||
+    // iterationTime is per-iteration, compared to the delay to catch a backward seek into a looped iteration's delay region. Exclude the final settled end, where iterationTime clamps to duration and would falsely match the delay region when the delay exceeds the duration.
+    iterationTime <= tickableDelay && tickablePrevTime > 0 && !isCurrentTimeEqualOrAboveDuration ||
     time <= tickablePrevTime && tickablePrevTime === duration && completed || // Force a render if a seek occurs on an completed animation
     isCurrentTimeEqualOrAboveDuration && !completed && isSetter // This prevents 0 duration tickables to be skipped
   ) {
@@ -133,7 +138,8 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
 
       // Time has jumped more than globals.tickThreshold so consider this tick manual
       const forcedRender = forcedTick || (isRunningBackwards ? deltaTime * -1 : deltaTime) >= globals.globals.tickThreshold;
-      const absoluteTime = tickable._offset + (parent ? parent._offset : 0) + tickableDelay + iterationTime;
+      // Round to match the precision of tween._absoluteStartTime so equal-time boundary checks compare cleanly without floating point drift from the unrounded _offset.
+      const absoluteTime = helpers.round(tickable._offset + (parent ? parent._offset : 0) + tickableDelay + iterationTime, 12);
 
       // Only Animation can have tweens, Timer returns undefined
       let tween = /** @type {Tween} */(/** @type {JSAnimation} */(tickable)._head);
@@ -152,15 +158,38 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
         const tweenNextRep = tween._nextRep;
         const tweenPrevRep = tween._prevRep;
         const tweenHasComposition = tweenComposition !== consts.compositionTypes.none;
+        // The previous sibling stops writing at its truncated end, so this tween takes over the hold from that point.
+        const tweenPrevRepEndTime = tweenPrevRep ? tweenPrevRep._absoluteStartTime + tweenPrevRep._changeDuration : 0;
+        const tweenPrevRepIsCrossParent = tweenPrevRep && tweenPrevRep.parent !== tween.parent;
+        // Same parent keyframes take over at their own start, end plus delay equals the next start by construction.
+        // Cross parent siblings take over at their update start.
+        // Negative delay siblings take over at their own start instead.
+        const tweenNextRepTakeover = !tweenNextRep || tweenNextRep._isOverridden ? tweenAbsEndTime :
+          tweenNextRep.parent === tween.parent ? tweenAbsEndTime + tweenNextRep._delay :
+          tweenNextRep._absoluteStartTime < tweenNextRep._absoluteUpdateStartTime ? tweenNextRep._absoluteStartTime : tweenNextRep._absoluteUpdateStartTime;
 
         if ((forcedRender || (
-            (tweenCurrentTime !== tweenChangeDuration || absoluteTime <= tweenAbsEndTime + (tweenNextRep ? tweenNextRep._delay : 0)) &&
-            (tweenCurrentTime !== 0 || absoluteTime >= tween._absoluteStartTime)
-          )) && (!tweenHasComposition || (
+            // Tail keyframes always re-evaluate the gate so an earlier keyframe cannot leave the target stale by writing past its own range after a backward seek.
+            (tweenCurrentTime !== tweenChangeDuration || absoluteTime <= tweenNextRepTakeover ||
+            (tweenPrevRep && !tweenPrevRepIsCrossParent && (!tweenNextRep || tweenNextRep.parent !== tween.parent))) &&
+            // A cross parent tween re-renders its from value from the previous sibling truncated end so the handoff gap holds.
+            // A keyframe re-renders its from revert while the next keyframe time is stale so a backward jump over its range cannot leave the next value in place.
+            (tweenCurrentTime !== 0 || absoluteTime >= tween._absoluteStartTime ||
+            (tweenPrevRepIsCrossParent && !tween._hasFromValue && !tweenPrevRep._isOverridden && absoluteTime >= tweenPrevRepEndTime) ||
+            (tweenNextRep && !tweenNextRep._isOverridden && tweenNextRep.parent === tween.parent && tweenNextRep._currentTime !== 0 && iterationTime < tweenNextRep._startTime))
+          )) &&
+          // Non-first keyframes wait until the iteration reaches their own start before rendering, so the previous keyframe can handle the from-revert when scrubbed backward past this tween's range.
+          (!tweenPrevRep || tweenPrevRepIsCrossParent || iterationTime >= tween._startTime) &&
+          (!tweenHasComposition || (
             !tween._isOverridden &&
             (!tween._isOverlapped || absoluteTime <= tweenAbsEndTime) &&
-            (!tweenNextRep || (tweenNextRep._isOverridden || absoluteTime <= tweenNextRep._absoluteStartTime)) &&
-            (!tweenPrevRep || (tweenPrevRep._isOverridden || (absoluteTime >= (tweenPrevRep._absoluteStartTime + tweenPrevRep._changeDuration) + tween._delay)))
+            // The next sibling owns the value past its takeover point, so yielding there keeps writes single owner in both directions.
+            (!tweenNextRep || tweenNextRep._isOverridden || absoluteTime <= tweenNextRepTakeover) &&
+            // The previous sibling owns the value up to its truncated end.
+            // Cross parent tweens take over the hold from that point, explicit from values wait for their own start.
+            (!tweenPrevRep || (tweenPrevRep._isOverridden || (!tweenPrevRepIsCrossParent ?
+              absoluteTime >= tweenPrevRepEndTime + tween._delay :
+              absoluteTime >= tween._absoluteStartTime || (!tween._hasFromValue && absoluteTime >= tweenPrevRepEndTime))))
           ))
         ) {
 
@@ -171,7 +200,7 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
           const tweenType = tween._tweenType;
           const tweenIsObject = tweenType === consts.tweenTypes.OBJECT;
           const tweenIsNumber = tweenValueType === consts.valueTypes.NUMBER;
-          // Only round the in-between frames values if the final value is a string
+          // Only round the in-between frames values if the final value is a string. Object targets consume raw numbers, so rounding is dead work there.
           const tweenPrecision = (tweenIsNumber && tweenIsObject) || tweenProgress === 0 || tweenProgress === 1 ? -1 : globals.globals.precision;
 
           // Recompose tween value
@@ -187,30 +216,24 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
             number = /** @type {Number} */(tweenModifier(helpers.round(helpers.lerp(tween._fromNumber, tween._toNumber,  tweenProgress), tweenPrecision)));
             value = `${number}${tween._unit}`;
           } else if (tweenValueType === consts.valueTypes.COLOR) {
+            const ns = tween._numbers;
             const fn = tween._fromNumbers;
             const tn = tween._toNumbers;
-            const r = helpers.round(helpers.clamp(/** @type {Number} */(tweenModifier(helpers.lerp(fn[0], tn[0], tweenProgress))), 0, 255), 0);
-            const g = helpers.round(helpers.clamp(/** @type {Number} */(tweenModifier(helpers.lerp(fn[1], tn[1], tweenProgress))), 0, 255), 0);
-            const b = helpers.round(helpers.clamp(/** @type {Number} */(tweenModifier(helpers.lerp(fn[2], tn[2], tweenProgress))), 0, 255), 0);
-            const a = helpers.clamp(/** @type {Number} */(tweenModifier(helpers.round(helpers.lerp(fn[3], tn[3], tweenProgress), tweenPrecision))), 0, 1);
-            value = `rgba(${r},${g},${b},${a})`;
-            if (tweenHasComposition) {
-              const ns = tween._numbers;
-              ns[0] = r;
-              ns[1] = g;
-              ns[2] = b;
-              ns[3] = a;
+            const omt = 1 - tweenProgress;
+            const fr = fn[0], fg = fn[1], fb = fn[2];
+            const tr = tn[0], tg = tn[1], tb = tn[2];
+            // RGB channels lerp in pseudo-linear space (square inputs, sqrt result) to approximate gamma-correct blending.
+            // See https://developer.nvidia.com/gpugems/gpugems3/part-iv-image-effects/chapter-24-importance-being-linear.
+            ns[0] = /** @type {Number} */(tweenModifier(Math.sqrt(fr * fr * omt + tr * tr * tweenProgress)));
+            ns[1] = /** @type {Number} */(tweenModifier(Math.sqrt(fg * fg * omt + tg * tg * tweenProgress)));
+            ns[2] = /** @type {Number} */(tweenModifier(Math.sqrt(fb * fb * omt + tb * tb * tweenProgress)));
+            ns[3] = /** @type {Number} */(tweenModifier(helpers.lerp(fn[3], tn[3], tweenProgress)));
+            // The rgba string is built only for the dispatch path or the internalRender composition tick (setters handles the color comp)
+            if (!tween._setter || internalRender) {
+              value = `rgba(${helpers.round(ns[0], 0)},${helpers.round(ns[1], 0)},${helpers.round(ns[2], 0)},${ns[3]})`;
             }
           } else if (tweenValueType === consts.valueTypes.COMPLEX) {
-            value = tween._strings[0];
-            for (let j = 0, l = tween._toNumbers.length; j < l; j++) {
-              const n = /** @type {Number} */(tweenModifier(helpers.round(helpers.lerp(tween._fromNumbers[j], tween._toNumbers[j], tweenProgress), tweenPrecision)));
-              const s = tween._strings[j + 1];
-              value += `${s ? n + s : n}`;
-              if (tweenHasComposition) {
-                tween._numbers[j] = n;
-              }
-            }
+            value = values.composeComplexValue(tween, tweenProgress, tweenPrecision);
           }
 
           // For additive tweens and Animatables
@@ -223,7 +246,9 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
             const tweenProperty = tween.property;
             tweenTarget = tween.target;
 
-            if (tweenIsObject) {
+            if (tween._setter) {
+              tween._setter(tweenTarget, number, tween);
+            } else if (tweenIsObject) {
               tweenTarget[tweenProperty] = value;
             } else if (tweenType === consts.tweenTypes.ATTRIBUTE) {
               /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(value));
@@ -251,16 +276,13 @@ const render = (tickable, time, muteCallbacks, internalRender, tickMode) => {
             tween._value = value;
           }
 
+        } else if (tweenCurrentTime && tweenPrevRep && !tweenPrevRepIsCrossParent && iterationTime < tween._startTime) {
+          // Mark the keyframe as reverted when the playhead moves before its start, the previous keyframe owns the from revert and writes it once.
+          tween._currentTime = 0;
         }
 
-        // NOTE: Possible improvement: Use translate(x,y) / translate3d(x,y,z) syntax
-        // to reduce memory usage on string composition
         if (tweenTransformsNeedUpdate && tween._renderTransforms) {
-          let str = consts.emptyString;
-          for (let key in tweenTargetTransformsProperties) {
-            str += `${consts.transformsFragmentStrings[key]}${tweenTargetTransformsProperties[key]}) `;
-          }
-          tweenStyle.transform = str;
+          tweenStyle.transform = transforms.buildTransformString(tweenTargetTransformsProperties);
           tweenTransformsNeedUpdate = 0;
         }
 
@@ -364,6 +386,8 @@ const tick = (tickable, time, muteCallbacks, internalRender, tickMode) => {
 
     helpers.forEachChildren(tl, (/** @type {JSAnimation} */child) => {
       const childTime = helpers.round((tlChildrenTime - child._offset) * child._speed, 12); // Rounding is needed when using seconds
+      // Skip past-end siblings on backward iteration so their progress=1 to-values don't render last and overwrite the active sibling's write. Compare against _delay + duration so children with a normalized delay are not skipped while still inside their active range.
+      if (tlIsRunningBackwards && childTime > child._delay + child.duration) return;
       const childTickMode = child._fps < tl._fps ? child.requestTick(tlCildrenTickTime) : tickMode;
       tlChildrenHasRendered += render(child, childTime, muteCallbacks, internalRender, childTickMode);
       if (!child.completed && tlChildrenHaveCompleted) tlChildrenHaveCompleted = false;
@@ -371,7 +395,6 @@ const tick = (tickable, time, muteCallbacks, internalRender, tickMode) => {
 
     // Renders on timeline are triggered by its children so it needs to be set after rendering the children
     if (!muteCallbacks && tlChildrenHasRendered) tl.onRender(/** @type {CallbackArgument} */(tl));
-
     // Triggers the timeline onComplete() once all chindren all completed and the current time has reached the end
     if ((tlChildrenHaveCompleted || tlIsRunningBackwards) && tl._currentTime >= tl.duration) {
       // Make sure the paused flag is false in case it has been skipped in the render function

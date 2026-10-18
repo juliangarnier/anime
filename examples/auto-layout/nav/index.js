@@ -19,7 +19,7 @@ const content = createLayout('.content', {
 });
 
 document.onclick = e => {
-  const $button = e.target.closest('button');
+  const $button = /** @type {HTMLElement} */(e.target).closest('button');
   if ($button) {
     nav.update(() => {
       content.record();

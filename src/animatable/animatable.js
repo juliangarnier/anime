@@ -73,6 +73,7 @@ export class Animatable {
     const callbacksAnimationParams = { v: 1, autoplay: false };
     const properties = {};
     this.targets = [];
+    /** @type {Record<String, JSAnimation>} */
     this.animations = {};
     /** @type {JSAnimation|null} */
     this.callbacks = null;

@@ -5,6 +5,15 @@
     <title>Anime.js tests</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+          "three/tsl": "https://unpkg.com/three@0.184.0/build/three.tsl.js",
+          "three/webgpu": "https://unpkg.com/three@0.184.0/build/three.webgpu.js"
+        }
+      }
+    </script>
     <link rel="icon" href="./assets/favicon.png?v=5">
     <style>
       @font-face {

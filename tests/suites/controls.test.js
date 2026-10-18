@@ -204,7 +204,7 @@ suite('Controls', () => {
     expect(tl.currentTime).to.equal(tl.duration);
     expect(getChildAtIndex(tl, 0).currentTime).to.equal(getChildAtIndex(tl, 0).duration);
     expect(getChildAtIndex(tl, 1).currentTime).to.equal(getChildAtIndex(tl, 1).duration);
-    expect($target.getAttribute('style')).to.equal('height: 400px; transform: translateY(200px) translateX(200px); width: 64px;');
+    expect($target.getAttribute('style')).to.equal('height: 400px; transform: translate(200px, 200px); width: 64px;');
   });
 
   test('Cancel a timer', () => {
@@ -251,7 +251,7 @@ suite('Controls', () => {
     expect(tl.paused).to.equal(true);
     expect(getChildAtIndex(tl, 0).paused).to.equal(true);
     expect(getChildAtIndex(tl, 1).paused).to.equal(true);
-    expect($target.getAttribute('style')).to.equal('height: 200px; transform: translateY(100px) translateX(0px); width: 32px;');
+    expect($target.getAttribute('style')).to.equal('height: 200px; transform: translate(0px, 100px); width: 32px;');
   });
 
   test('Revert a timeline', () => {
@@ -679,6 +679,28 @@ suite('Controls', () => {
     expect($target.style.width).to.equal('400px');
   });
 
+  test('Refresh an animation from value in object form', () => {
+    const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
+    $target.setAttribute('data-width', '200px');
+    const animation1 = animate($target, {
+      width: { from: () => $target.dataset.width, to: '400px' },
+      duration: 100,
+      ease: 'linear',
+      autoplay: false
+    });
+    animation1.seek(0);
+    expect($target.style.width).to.equal('200px');
+    animation1.seek(100);
+    expect($target.style.width).to.equal('400px');
+    $target.setAttribute('data-width', '100px');
+    animation1.refresh().restart().seek(0);
+    expect($target.style.width).to.equal('100px');
+    animation1.seek(50);
+    expect($target.style.width).to.equal('250px');
+    animation1.seek(100);
+    expect($target.style.width).to.equal('400px');
+  });
+
   test('Refresh an animation from value with unit conversion', () => {
     const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
     $target.setAttribute('data-width', '50vw');
@@ -852,6 +874,129 @@ suite('Controls', () => {
     expect(tl.duration).to.equal(300);
     expect(getChildAtIndex(tl, 0).duration).to.equal(150);
     expect(getChildAtIndex(tl, 1).duration).to.equal(150);
+  });
+
+  test('Stretch scales keyframe delays proportionally', () => {
+    const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
+    const animation1 = animate($target, {
+      width: [
+        { from: 0, to: 100, duration: 100 },
+        { to: 500, delay: 200, duration: 500 },
+        { to: 300, delay: 150, duration: 100 },
+      ],
+      autoplay: false,
+    });
+    expect(animation1.duration).to.equal(1050);
+    const tween0 = getChildAtIndex(animation1, 0);
+    const tween1 = getChildAtIndex(animation1, 1);
+    const tween2 = getChildAtIndex(animation1, 2);
+    expect(tween0._delay).to.equal(0);
+    expect(tween0._updateDuration).to.equal(100);
+    expect(tween0._startTime).to.equal(0);
+    expect(tween1._delay).to.equal(200);
+    expect(tween1._updateDuration).to.equal(500);
+    expect(tween1._startTime).to.equal(300);
+    expect(tween2._delay).to.equal(150);
+    expect(tween2._updateDuration).to.equal(100);
+    expect(tween2._startTime).to.equal(950);
+
+    animation1.stretch(2100);
+    expect(animation1.duration).to.equal(2100);
+    expect(tween0._delay).to.equal(0);
+    expect(tween0._updateDuration).to.equal(200);
+    expect(tween0._startTime).to.equal(0);
+    expect(tween1._delay).to.equal(400);
+    expect(tween1._updateDuration).to.equal(1000);
+    expect(tween1._startTime).to.equal(600);
+    expect(tween2._delay).to.equal(300);
+    expect(tween2._updateDuration).to.equal(200);
+    expect(tween2._startTime).to.equal(1900);
+
+    animation1.stretch(525);
+    expect(animation1.duration).to.equal(525);
+    expect(tween0._delay).to.equal(0);
+    expect(tween0._updateDuration).to.equal(50);
+    expect(tween1._delay).to.equal(100);
+    expect(tween1._updateDuration).to.equal(250);
+    expect(tween1._startTime).to.equal(150);
+    expect(tween2._delay).to.equal(75);
+    expect(tween2._updateDuration).to.equal(50);
+    expect(tween2._startTime).to.equal(475);
+  });
+
+  test('Stretch scales global delay and keyframe delays proportionally', () => {
+    const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
+    const animation1 = animate($target, {
+      width: [
+        { from: 0, to: 100, duration: 100 },
+        { to: 200, delay: 200, duration: 300 },
+      ],
+      delay: 50,
+      autoplay: false,
+    });
+    expect(animation1.duration).to.equal(600);
+    expect(animation1._delay).to.equal(50);
+    const tween0 = getChildAtIndex(animation1, 0);
+    const tween1 = getChildAtIndex(animation1, 1);
+    expect(tween0._delay).to.equal(0);
+    expect(tween0._updateDuration).to.equal(100);
+    expect(tween1._delay).to.equal(200);
+    expect(tween1._updateDuration).to.equal(300);
+    expect(tween1._startTime).to.equal(300);
+
+    animation1.stretch(1200);
+    expect(animation1.duration).to.equal(1200);
+    expect(animation1._delay).to.equal(100);
+    expect(tween0._delay).to.equal(0);
+    expect(tween0._updateDuration).to.equal(200);
+    expect(tween1._delay).to.equal(400);
+    expect(tween1._updateDuration).to.equal(600);
+    expect(tween1._startTime).to.equal(600);
+  });
+
+  test('Stretch a timeline scales keyframe delays of animation children', () => {
+    const $target = /** @type {HTMLElement} */(document.querySelector('#target-id'));
+    const tl = createTimeline({ autoplay: false })
+    .add($target, {
+      width: [
+        { from: 0, to: 100, duration: 100 },
+        { to: 200, delay: 200, duration: 300 },
+      ],
+    })
+    .add($target, {
+      height: [
+        { from: 0, to: 100, duration: 100 },
+        { to: 200, delay: 100, duration: 200 },
+      ],
+    });
+    const child0 = getChildAtIndex(tl, 0);
+    const child1 = getChildAtIndex(tl, 1);
+    expect(child0.duration).to.equal(600);
+    expect(child1.duration).to.equal(400);
+    expect(tl.duration).to.equal(1000);
+    const c0t0 = getChildAtIndex(child0, 0);
+    const c0t1 = getChildAtIndex(child0, 1);
+    const c1t0 = getChildAtIndex(child1, 0);
+    const c1t1 = getChildAtIndex(child1, 1);
+    expect(c0t1._delay).to.equal(200);
+    expect(c0t1._updateDuration).to.equal(300);
+    expect(c1t1._delay).to.equal(100);
+    expect(c1t1._updateDuration).to.equal(200);
+
+    tl.stretch(2000);
+    expect(tl.duration).to.equal(2000);
+    expect(child0.duration).to.equal(1200);
+    expect(child1.duration).to.equal(800);
+    expect(c0t0._delay).to.equal(0);
+    expect(c0t0._updateDuration).to.equal(200);
+    expect(c0t1._delay).to.equal(400);
+    expect(c0t1._updateDuration).to.equal(600);
+    expect(c0t1._startTime).to.equal(600);
+    expect(c1t0._delay).to.equal(0);
+    expect(c1t0._updateDuration).to.equal(200);
+    expect(c1t1._delay).to.equal(200);
+    expect(c1t1._updateDuration).to.equal(400);
+    expect(c1t1._startTime).to.equal(400);
   });
 
   test('Seek an animation', resolve => {

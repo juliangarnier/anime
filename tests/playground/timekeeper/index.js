@@ -19,7 +19,6 @@ createScope({
       alternate: true,
       loop: true,
       ease: 'inOutQuad',
-  mediaQueries: { minM: '(min-width: 800px)' }
-}).add(self => {
-  self.preserve(timekeeper);
+    });
+  });
 });

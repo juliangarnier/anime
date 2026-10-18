@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -20,6 +20,21 @@ var consts = require('./consts.cjs');
  * } from '../scope/index.js'
 */
 
+/**
+ * @typedef {Object} EditorGlobals
+ * @property {boolean} showPanel
+ * @property {Function} addAnimation
+ * @property {Function} addSet
+ * @property {Function} addTimeline
+ * @property {Function} addTimelineChild
+ * @property {Function} addTimelineLabel
+ * @property {Function} addTimelineCall
+ * @property {Function} addTimelineSync
+ * @property {Function} resolveStagger
+ * @property {Object|null} _head
+ * @property {Object|null} _tail
+ */
+
 /** @type {DefaultsParams} */
 const defaults = {
   id: null,
@@ -37,7 +52,7 @@ const defaults = {
   loopDelay: 0,
   ease: 'out(2)',
   composition: consts.compositionTypes.replace,
-  modifier: v => v,
+  modifier: consts.noopModifier,
   onBegin: consts.noop,
   onBeforeUpdate: consts.noop,
   onUpdate: consts.noop,
@@ -63,11 +78,11 @@ const globals = {
   timeScale: 1,
   /** @type {Number} */
   tickThreshold: 200,
+  /** @type {EditorGlobals|null} */
+  editor: null,
 };
 
-const devTools = consts.isBrowser && consts.win.AnimeJSDevTools;
-
-const globalVersions = { version: '4.3.6', engine: null };
+const globalVersions = { version: '4.5.0', engine: null };
 
 if (consts.isBrowser) {
   if (!consts.win.AnimeJS) consts.win.AnimeJS = [];
@@ -75,7 +90,6 @@ if (consts.isBrowser) {
 }
 
 exports.defaults = defaults;
-exports.devTools = devTools;
 exports.globalVersions = globalVersions;
 exports.globals = globals;
 exports.scope = scope;

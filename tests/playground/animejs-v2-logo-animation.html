@@ -190,8 +190,9 @@
 
     import { createTimeline, utils, stagger, svg } from '../../../dist/modules/index.js';
     
-
     utils.set(['.fill.out', '.line.out'], { opacity: 0 });
+
+    const fillDraggable = svg.createDrawable('.fill');
 
     const logoTimeline = createTimeline({
       alternate: true,
@@ -220,36 +221,32 @@
       ],
       delay: 1200
     }, 0)
-    .add(svg.createDrawable('.fill.in'), {
-      strokeDashoffset: {
-        draw: '0 1',
+    .add(fillDraggable, {
+      draw: {
+        to: '0 1',
         duration: 600,
         ease: 'outQuart',
       },
       stroke: {
         to: ['#FFF', el => utils.get(el.parentNode, 'stroke')],
         duration: 350,
-        ease: 'inQuad',
+        ease: 'inOutQuart',
       },
-      delay: stagger(100, { start: 700 }),
-    }, 0)
-    .add(svg.createDrawable('.fill.out'), {
-      strokeDashoffset: [
-        {
-          to: '1 1',
-          duration: 800,
-          delay: stagger(80),
-          ease: 'inQuart'
-        }
-      ]
-    }, 1890)
+    }, stagger(60, { start: 700 }))
+    .add(fillDraggable, {
+      draw: {
+        to: '1 1',
+        duration: 800,
+        ease: 'inQuart'
+      }
+    }, stagger(80, { start: 2000 }))
     .add(svg.createDrawable('.line.out'), {
       opacity: {
         to: 1,
         duration: 100,
       },
-      strokeDashoffset: {
-        draw: ['0 1', '1 1'],
+      draw: {
+        to: ['0 1', '1 1'],
         duration: 1200,
         delay: stagger(100, { start: 500 }),
         ease: 'inQuart'
@@ -268,8 +265,8 @@
       delay: 4200
     }, 0)
     .add(svg.createDrawable('.icon-line'), {
-      strokeDashoffset: {
-        draw: '0 1',
+      draw: {
+        to: '0 1',
         duration: 1200,
         ease: 'inOutQuart',
       },

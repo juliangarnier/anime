@@ -6,7 +6,7 @@ import {
   forEachChildren,
 } from '../dist/modules/core/helpers.js';
 
-export const { expect } = chai;
+export const { expect } = /** @type {any} */(globalThis).chai;
 
 export const getChildAtIndex = (parent, index) => {
   let next = parent._head;

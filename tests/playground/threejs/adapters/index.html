@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Three.js adapter / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #111; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+        "three/tsl": "https://unpkg.com/three@0.184.0/build/three.tsl.js",
+        "three/webgpu": "https://unpkg.com/three@0.184.0/build/three.webgpu.js"
+      }
+    }
+  </script>
+</head>
+<body>
+<script type="module" src="./index.js"></script>
+</body>
+</html>

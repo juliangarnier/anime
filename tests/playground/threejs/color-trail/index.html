@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Color trail three.js / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #111; overflow: hidden; font-family: system-ui, sans-serif; }
+    canvas { display: block; }
+    .label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      color: #888;
+      font-size: 12px;
+      pointer-events: none;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.184.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="label">three.js port: outer ball overlap -=500 mid-way handoff<br>inner ball: 4 simple sequential adds (no overlap)</div>
+
+  <script type="module">
+    import {
+      Scene, WebGLRenderer, PerspectiveCamera,
+      Mesh, SphereGeometry, MeshBasicMaterial, Color, BufferGeometry,
+      LineBasicMaterial, LineLoop, BufferAttribute,
+    } from 'three';
+
+    import { animate, createTimeline, createTimer } from '../../../../dist/modules/index.js';
+    import '../../../../dist/modules/adapters/three/index.js';
+
+    const colors = [
+      '#ff3b30',
+      '#ffcc00',
+      '#34c759',
+      '#0a84ff',
+    ];
+
+    const scene = new Scene();
+    scene.background = new Color(0x111111);
+
+    const camera = new PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 1000);
+    camera.position.z = 18;
+
+    const renderer = new WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    const ringRadius = 6;
+    const stationRadius = 0.8;
+    const ballRadius = 0.55;
+
+    // Station meshes at the cardinal points; Y is negated so the layout matches the canvas demo (canvas Y goes down, three.js Y goes up).
+    const stations = [];
+    for (let i = 0; i < 4; i++) {
+      const a = -Math.PI * 0.5 + (Math.PI * 2 * i) / 4;
+      const mesh = new Mesh(
+        new SphereGeometry(stationRadius, 24, 16),
+        new MeshBasicMaterial({ color: colors[i] }),
+      );
+      mesh.position.set(Math.cos(a) * ringRadius, -Math.sin(a) * ringRadius, 0);
+      scene.add(mesh);
+      stations.push(mesh);
+    }
+
+    // Ring outline
+    {
+      const segments = 128;
+      const positions = new Float32Array(segments * 3);
+      for (let i = 0; i < segments; i++) {
+        const a = (i / segments) * Math.PI * 2;
+        positions[i * 3]     = Math.cos(a) * ringRadius;
+        positions[i * 3 + 1] = Math.sin(a) * ringRadius;
+        positions[i * 3 + 2] = 0;
+      }
+      const geo = new BufferGeometry();
+      geo.setAttribute('position', new BufferAttribute(positions, 3));
+      scene.add(new LineLoop(geo, new LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 })));
+    }
+
+    // Trail ghost pool: each frame spawns a fading sphere at the ball's current position. Ghost meshes avoid the 8-bit precision artifacts of framebuffer-feedback fading.
+    const trailLifetime = 1500;
+    const trailGhostGeometry = new SphereGeometry(0.35, 12, 8);
+    const trailGhosts = [];
+
+    function spawnGhost(x, y, color, scaleMult) {
+      let ghost = trailGhosts.find(g => g.material.opacity <= 0);
+      if (!ghost) {
+        ghost = new Mesh(trailGhostGeometry, new MeshBasicMaterial({ transparent: true, depthWrite: false }));
+        scene.add(ghost);
+        trailGhosts.push(ghost);
+      }
+      ghost.position.set(x, y, 0);
+      ghost.scale.setScalar(scaleMult);
+      ghost.material.color.copy(color);
+      ghost.material.opacity = 0.85;
+      animate(ghost.material, { opacity: 0, duration: trailLifetime, ease: 'linear' });
+    }
+
+    // Square corners inscribed in the circle, between station pairs. Y negated to match the canvas layout.
+    const corners = [];
+    {
+      const angles = [-3 * Math.PI / 4, -Math.PI / 4, Math.PI / 4, 3 * Math.PI / 4];
+      for (let i = 0; i < 4; i++) {
+        const a = angles[i];
+        corners.push({ x: Math.cos(a) * ringRadius, y: -Math.sin(a) * ringRadius });
+      }
+    }
+
+    // Outer ball: traces the inscribed square with overshoot + -=500 handoffs (replace composition takes over mid-tween).
+    const outer = new Mesh(
+      new SphereGeometry(ballRadius, 24, 16),
+      new MeshBasicMaterial({ color: colors[0] }),
+    );
+    outer.position.set(corners[0].x, corners[0].y, 0);
+    scene.add(outer);
+
+    const tl = createTimeline({
+      autoplay: true,
+      loop: true,
+      defaults: { ease: 'linear', duration: 1000 },
+    });
+
+    for (let i = 1; i <= 4; i++) {
+      const isLast = i === 4;
+      const fromCorner = corners[i - 1];
+      const nextCorner = corners[i % 4];
+      const targetX = isLast ? nextCorner.x : 2 * nextCorner.x - fromCorner.x;
+      const targetY = isLast ? nextCorner.y : 2 * nextCorner.y - fromCorner.y;
+      tl.add(outer, {
+        x: targetX,
+        y: targetY,
+        color: colors[i % colors.length],
+        duration: isLast ? 500 : 1000,
+      }, i === 1 ? 0 : '-=500');
+    }
+
+    // Inner ball: 4 sequential non-overlapping adds. Exercises cross-add color sibling chaining through the three.js adapter setter.
+    const inner = new Mesh(
+      new SphereGeometry(ballRadius * 0.65, 24, 16),
+      new MeshBasicMaterial({ color: colors[0] }),
+    );
+    inner.position.set(stations[0].position.x, stations[0].position.y, 0);
+    scene.add(inner);
+
+    const tl2 = createTimeline({
+      autoplay: true,
+      loop: true,
+      defaults: { ease: 'linear', duration: 800 },
+    });
+
+    for (let i = 1; i <= 4; i++) {
+      const next = stations[i % stations.length];
+      tl2.add(inner, {
+        x: next.position.x,
+        y: next.position.y,
+        color: colors[i % colors.length],
+      });
+    }
+
+    // Render loop: spawn one ghost per frame at each ball's current position/color, then render. Ghosts fade themselves out via their own opacity animations.
+    createTimer({
+      autoplay: true,
+      onUpdate: () => {
+        spawnGhost(outer.position.x, outer.position.y, outer.material.color, 1);
+        spawnGhost(inner.position.x, inner.position.y, inner.material.color, 0.65);
+        renderer.render(scene, camera);
+      },
+    });
+  </script>
+</body>
+</html>

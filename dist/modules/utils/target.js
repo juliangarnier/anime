@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -92,6 +92,9 @@ function get(targetSelector, propName, unit) {
  */
 const set = (targets, parameters) => {
   if (isUnd(parameters)) return;
+  if (globals.editor && globals.editor.addSet) {
+    return globals.editor.addSet(targets, parameters);
+  }
   parameters.duration = minValue;
   // Do not overrides currently active tweens by default
   parameters.composition = setValue(parameters.composition, compositionTypes.none);

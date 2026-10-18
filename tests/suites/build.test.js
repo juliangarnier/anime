@@ -2,9 +2,9 @@ import {
   expect,
 } from '../utils.js';
 
-import * as esmModules from '../../../dist/modules/index.js';
-import * as esmBundle from '../../../dist/bundles/anime.esm.js';
-import * as minifiedEsmBundle from '../../../dist/bundles/anime.esm.min.js';
+import * as esmModules from '../../dist/modules/index.js';
+import * as esmBundle from '../../dist/bundles/anime.esm.js';
+import * as minifiedEsmBundle from '../../dist/bundles/anime.esm.min.js';
 
 const apiExports = [
   'animate',

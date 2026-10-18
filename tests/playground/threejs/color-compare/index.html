@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>three.js color compare / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #111; overflow: hidden; font-family: system-ui, sans-serif; color: #ddd; }
+    canvas { display: block; }
+    .label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 12px;
+      pointer-events: none;
+      line-height: 1.4;
+    }
+    .controls {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+    }
+    button {
+      background: #222;
+      color: #ddd;
+      border: 1px solid #444;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font: inherit;
+    }
+    button.active {
+      background: #444;
+      border-color: #888;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.184.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="label">
+    Top row: <code>material.color.set(hex)</code> (native three.js)<br>
+    Bottom row: <code>utils.set(mesh, { color: hex })</code> (anime adapter)<br>
+    Each column should look identical top vs bottom.
+  </div>
+  <div class="controls">
+    <span>outputColorSpace:</span>
+    <button id="srgb" class="active">SRGBColorSpace (default)</button>
+    <button id="linear">LinearSRGBColorSpace</button>
+  </div>
+  <script type="module">
+    import {
+      Scene, WebGLRenderer, PerspectiveCamera,
+      Mesh, BoxGeometry, MeshBasicMaterial, Color,
+      SRGBColorSpace, LinearSRGBColorSpace,
+    } from 'three';
+
+    import { utils } from '../../../../dist/modules/index.js';
+    import '../../../../dist/modules/adapters/three/index.js';
+
+    const swatches = [
+      '#ff3b30', '#ff8800', '#ffcc00', '#34c759',
+      '#0a84ff', '#5e5ce6', '#bf5af2', '#ff2d55',
+      '#ffffff', '#cccccc', '#888888', '#444444', '#111111',
+    ];
+
+    const scene = new Scene();
+    scene.background = new Color(0x111111);
+
+    const camera = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+    camera.position.z = 18;
+
+    const renderer = new WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = SRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
+
+    addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+
+    // Two rows of cubes. Top row sets material.color via three's own
+    // setStyle path; bottom row sets via the anime adapter.
+    const cubeSize = 1.4;
+    const stride = cubeSize;
+    const rowOffset = cubeSize * 0.5;
+    const xStart = -((swatches.length - 1) * stride) / 2;
+    const nativeMeshes = [];
+    const animeMeshes = [];
+    const geometry = new BoxGeometry(cubeSize, cubeSize, cubeSize);
+    for (let i = 0; i < swatches.length; i++) {
+      const native = new Mesh(geometry, new MeshBasicMaterial());
+      native.material.color.set(swatches[i]);
+      native.position.set(xStart + i * stride, rowOffset, 0);
+      scene.add(native);
+      nativeMeshes.push(native);
+
+      const anime = new Mesh(geometry, new MeshBasicMaterial());
+      anime.position.set(xStart + i * stride, -rowOffset, 0);
+      scene.add(anime);
+      utils.set(anime, { color: swatches[i] });
+      animeMeshes.push(anime);
+    }
+
+    function loop() {
+      requestAnimationFrame(loop);
+      renderer.render(scene, camera);
+    }
+    loop();
+
+    // outputColorSpace toggle. SRGBColorSpace is the default; LinearSRGBColorSpace skips gamma encoding so all swatches look darker, but native and adapter rows must still match each other.
+    const srgbBtn = document.getElementById('srgb');
+    const linearBtn = document.getElementById('linear');
+    function setSpace(space, activeBtn, inactiveBtn) {
+      renderer.outputColorSpace = space;
+      // Materials cache their compiled shaders; re-set the colors so the
+      // cached uniforms refresh against the new output space.
+      for (let i = 0; i < swatches.length; i++) {
+        nativeMeshes[i].material.color.set(swatches[i]);
+        utils.set(animeMeshes[i], { color: swatches[i] });
+      }
+      activeBtn.classList.add('active');
+      inactiveBtn.classList.remove('active');
+    }
+    srgbBtn.onclick = () => setSpace(SRGBColorSpace, srgbBtn, linearBtn);
+    linearBtn.onclick = () => setSpace(LinearSRGBColorSpace, linearBtn, srgbBtn);
+  </script>
+</body>
+</html>

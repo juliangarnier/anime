@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
-    "module": "ESNext",
+    "module": "esnext",
     "target": "ESNext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "allowJs": true,
     "checkJs": true,
     "noEmit": true

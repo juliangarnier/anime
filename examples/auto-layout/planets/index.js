@@ -38,7 +38,7 @@ let nextPlanetIndex = 0;
 const initialPlanets = 4;
 const toggles = utils.$('.controls button.toggle');
 const [ $root ] = utils.$('#root');
-const [ $overlay ] = utils.$('#overlay');
+const [ $overlay ] = /** @type {[HTMLDialogElement]} */(utils.$('#overlay'));
 
 const actions = {
   add: () => {
@@ -47,12 +47,12 @@ const actions = {
     if (visibleCardsLength) utils.set($visibleCards, { '--total': visibleCardsLength + 1 });
     nextPlanetIndex = visibleCardsLength * 8;
     if (nextPlanetIndex >= planets.length) return;
-    const template = utils.$('#card')[0];
+    const template = /** @type {HTMLTemplateElement} */(utils.$('#card')[0]);
     const $removed = utils.$('#root .card.is-removed')[0];
     let $cardTarget = $removed;
     if (!$cardTarget) {
-      const clone = template.content.cloneNode(true);
-      const $card = clone.querySelector('.card');
+      const clone = /** @type {DocumentFragment} */(template.content.cloneNode(true));
+      const $card = /** @type {HTMLElement} */(clone.querySelector('.card'));
       if (!$card) return;
       const $image = $card.querySelector('.card-image');
       const $title = $card.querySelector('.card-title');
@@ -64,14 +64,14 @@ const actions = {
       `;
       $image.innerHTML += `
         <svg class="rings" viewBox="0 0 600 600">
-          ${planets[nextPlanetIndex + 7].map(r => `<circle cx="300" cy="300" r="${r}"/>`).join('')}
+          ${/** @type {Number[]} */(planets[nextPlanetIndex + 7]).map(r => `<circle cx="300" cy="300" r="${r}"/>`).join('')}
         </svg>
       `;
       utils.set($card, { '--index': visibleCardsLength + 1 });
-      $card.dataset.title = $title.textContent = planets[nextPlanetIndex + 1];
-      $type.textContent = planetTypes[planets[nextPlanetIndex + 3]];
-      $intro.textContent = planets[nextPlanetIndex + 2];
-      $card.dataset.color = planets[nextPlanetIndex + 6];
+      $card.dataset.title = $title.textContent = `${planets[nextPlanetIndex + 1]}`;
+      $type.textContent = planetTypes[/** @type {Number} */(planets[nextPlanetIndex + 3])];
+      $intro.textContent = `${planets[nextPlanetIndex + 2]}`;
+      $card.dataset.color = `${planets[nextPlanetIndex + 6]}`;
       $description.textContent = loremIpsum(utils.random(100, 150));
       $cardTarget = $card;
       $root.appendChild(clone);
@@ -119,9 +119,9 @@ const closeModal = () => {
     $overlay.close();
     $card = utils.$('#root .card.is-open')[0];
     $card.classList.remove('is-open');
-    $card.focus();
+    $card.focus({ preventScroll: true });
   }).then(() => {
-    $card.focus();
+    $card.focus({ preventScroll: true });
   })
 };
 

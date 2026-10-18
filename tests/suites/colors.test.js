@@ -5,6 +5,7 @@ import {
 
 import {
   animate,
+  createTimeline,
   utils,
 } from '../../dist/modules/index.js';
 
@@ -131,6 +132,9 @@ function createColorConversionFromDOMTests() {
   });
 }
 
+// Mirrors the engine's gamma-correct sqrt-lerp on sRGB 0-255 channels (see src/core/render.js). Used to derive expected channel values without hard-coded magic numbers. CSS targets don't go through the sRGB->linear setter conversion, so the rounded sqrt-lerp output is what ends up in the rgba string written to style.
+const sqrtLerpChannel = (from255, to255, t) => Math.round(Math.sqrt(from255 * from255 * (1 - t) + to255 * to255 * t));
+
 suite('Colors', () => {
   test('boxShadow should not be parsed as color value', () => {
     const [ targetEl ] = utils.$('#target-id');
@@ -147,4 +151,47 @@ suite('Colors', () => {
   createColorTestsByType('rgb', 'rgba');
   createColorTestsByType('rgba', 'rgb');
   createColorTestsByType('rgba', 'rgba');
+
+  test('Timeline color sibling chain: each add starts from the previous add end-color', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    targetEl.style.backgroundColor = 'rgb(0, 0, 0)';
+    const tl = createTimeline({ autoplay: false, defaults: { duration: 100, ease: 'linear' } })
+      .add(targetEl, { backgroundColor: '#ff0000' })
+      .add(targetEl, { backgroundColor: '#00ff00' })
+      .add(targetEl, { backgroundColor: '#0000ff' });
+    tl.seek(100);
+    expect(targetEl.style.backgroundColor).to.equal('rgb(255, 0, 0)');
+    tl.seek(150);
+    const midRG_R = sqrtLerpChannel(255, 0, 0.5);
+    const midRG_G = sqrtLerpChannel(0, 255, 0.5);
+    expect(targetEl.style.backgroundColor).to.equal(`rgb(${midRG_R}, ${midRG_G}, 0)`);
+    tl.seek(200);
+    expect(targetEl.style.backgroundColor).to.equal('rgb(0, 255, 0)');
+    tl.seek(250);
+    const midGB_G = sqrtLerpChannel(255, 0, 0.5);
+    const midGB_B = sqrtLerpChannel(0, 255, 0.5);
+    expect(targetEl.style.backgroundColor).to.equal(`rgb(0, ${midGB_G}, ${midGB_B})`);
+    tl.seek(300);
+    expect(targetEl.style.backgroundColor).to.equal('rgb(0, 0, 255)');
+  });
+
+  test('Timeline color replace composition: overlapping add overrides previous', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    targetEl.style.backgroundColor = 'rgb(0, 0, 0)';
+    const tl = createTimeline({ autoplay: false, defaults: { duration: 200, ease: 'linear' } })
+      .add(targetEl, { backgroundColor: '#ff0000' })
+      .add(targetEl, { backgroundColor: '#00ff00', duration: 100 }, '-=100');
+    // First add at 25% of its 200ms updateDuration before the override kicks in.
+    tl.seek(50);
+    const earlyR = sqrtLerpChannel(0, 255, 0.25);
+    expect(targetEl.style.backgroundColor).to.equal(`rgb(${earlyR}, 0, 0)`);
+    // Override boundary at t=100 snapshots the first tween's mid-frame value (rounded by the rgba composition path) as the second tween's from-color.
+    tl.seek(150);
+    const overrideFromR = sqrtLerpChannel(0, 255, 0.5);
+    const midR = sqrtLerpChannel(overrideFromR, 0, 0.5);
+    const midG = sqrtLerpChannel(0, 255, 0.5);
+    expect(targetEl.style.backgroundColor).to.equal(`rgb(${midR}, ${midG}, 0)`);
+    tl.seek(tl.duration);
+    expect(targetEl.style.backgroundColor).to.equal('rgb(0, 255, 0)');
+  });
 });

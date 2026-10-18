@@ -6,28 +6,24 @@ import {
   utils,
 } from '../../../dist/modules/index.js';
 
-const coords = [];
-const [ $revert ] = utils.$('#revert');
-const [ $split ] = utils.$('#split');
-const [ $reorder ] = utils.$('#reorder');
-const [ $debug ] = utils.$('#debug');
+import { GUI } from 'tweaks/gui';
 
-$revert.disabled = true;
-$split.disabled = false;
-$reorder.disabled = true;
+const coords = [];
 
 let split;
+let isSplit = false;
+let canReorder = false;
 
-const splitAndAnimate = () => {
-  $revert.disabled = false;
-  $split.disabled = true;
+const splitAndAnimate = (debug = false) => {
+  isSplit = true;
+  canReorder = false;
 
   split = splitText('p', {
     lines: true,
+    debug,
   });
 
   split.addEffect(split => {
-    // Returning the timeline syncs it with the splitter between lines split
     return createTimeline({
       defaults: {
         alternate: true,
@@ -38,7 +34,7 @@ const splitAndAnimate = () => {
       },
     })
     .add(split.lines, {
-      color: { from: '#61C3FF' },
+      color: { from: 'var(--sega-1)' },
       y: -10,
       scale: 1.1,
     }, stagger(100, { start: 0 }))
@@ -53,7 +49,7 @@ const splitAndAnimate = () => {
       const c = coords[i];
       if (c) utils.set($el, { x: c.x, y: c.y });
       $el.addEventListener('pointerenter', () => {
-        $reorder.disabled = false;
+        canReorder = true;
         animate($el, {
           x: utils.random(-50, 50),
           y: utils.random(-50, 50),
@@ -61,32 +57,43 @@ const splitAndAnimate = () => {
       });
     });
     return () => {
-      // Store the words coordinates before the new split
       split.words.forEach((w, i) => coords[i] = { x: utils.get(w, 'x'), y: utils.get(w, 'y') });
     }
   });
-}
+};
+
+const revert = () => {
+  if (!split) return;
+  split.revert();
+  coords.length = 0;
+  isSplit = false;
+  canReorder = false;
+};
+
+const reorder = () => {
+  if (!split) return;
+  animate(split.words, { x: 0, y: 0, ease: 'inOutExpo' });
+  canReorder = false;
+};
 
 splitAndAnimate();
 
-$revert.addEventListener('click', () => {
-  split.revert();
-  coords.length = 0;
-  $revert.disabled = true;
-  $split.disabled = false;
-});
-
-$split.addEventListener('click', splitAndAnimate);
-
-$reorder.addEventListener('click', () => {
-  animate(split.words, {
-    x: 0, y: 0, ease: 'inOutExpo'
-  });
-  $reorder.disabled = true;
-});
-
-$debug.addEventListener('click', () => {
-  split.debug = !split.debug;
-  split.refresh();
-  $debug.innerText = split.debug ? 'HIDE DEBUG' : 'SHOW DEBUG';
+GUI.render(() => {
+  if (!GUI.BeginPanel('Split effects')) return;
+  const debugRef = GUI.Ref('debug', false);
+  GUI.BeginGroup('actions', 'div.row');
+    if (isSplit) {
+      if (GUI.ButtonInput('Revert')) revert();
+    } else {
+      if (GUI.ButtonInput('Split')) splitAndAnimate(debugRef());
+    }
+    if (canReorder) {
+      if (GUI.ButtonInput('Tidy up')) reorder();
+    }
+    if (GUI.ToggleButtonInput('Debug', debugRef) && split) {
+      split.debug = debugRef();
+      split.refresh();
+    }
+  GUI.EndGroup('actions');
+  GUI.EndPanel();
 });

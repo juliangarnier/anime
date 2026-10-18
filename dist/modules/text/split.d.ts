@@ -4,10 +4,10 @@
  */
 export class TextSplitter {
     /**
-     * @param  {HTMLElement|NodeList|String|Array<HTMLElement>} target
+     * @param  {Element|NodeList|String|Array<Element>} target
      * @param  {TextSplitterParams} [parameters]
      */
-    constructor(target: HTMLElement | NodeList | string | Array<HTMLElement>, parameters?: TextSplitterParams);
+    constructor(target: Element | NodeList | string | Array<Element>, parameters?: TextSplitterParams);
     debug: boolean;
     includeSpaces: boolean;
     accessible: boolean;
@@ -31,10 +31,10 @@ export class TextSplitter {
     resizeTimeout: NodeJS.Timeout;
     resizeObserver: ResizeObserver;
     /**
-     * @param  {(...args: any[]) => Tickable | (() => void)} effect
+     * @param  {(...args: any[]) => Tickable | (() => void) | void} effect
      * @return this
      */
-    addEffect(effect: (...args: any[]) => Tickable | (() => void)): void | this;
+    addEffect(effect: (...args: any[]) => Tickable | (() => void) | void): this;
     revert(): this;
     /**
      * Recursively processes a node and its children
@@ -48,7 +48,7 @@ export class TextSplitter {
     split(clearCache?: boolean): this;
     refresh(): void;
 }
-export function splitText(target: HTMLElement | NodeList | string | Array<HTMLElement>, parameters?: TextSplitterParams): TextSplitter;
+export function splitText(target: Element | NodeList | string | Array<Element>, parameters?: TextSplitterParams): TextSplitter;
 export function split(target: HTMLElement | NodeList | string | Array<HTMLElement>, parameters?: TextSplitterParams): TextSplitter;
 export type Segment = {
     segment: string;

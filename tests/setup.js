@@ -1,4 +1,5 @@
 import '../node_modules/mocha/mocha.js';
+import { engine } from '../dist/modules/index.js';
 
 export const testObject = {};
 export const anOtherTestObject = {};
@@ -13,6 +14,8 @@ mocha.setup({
   globals: ['___browserSync___'],
   rootHooks: {
     beforeEach(done) {
+      // Pin engine offset to 0 so timeline construction has deterministic FP precision across tests.
+      engine._startTime = engine._lastTickTime;
       testObject.plainValue = 10;
       testObject.valueWithUnit = '10px';
       testObject.multiplePLainValues = '16 32 64 128';
@@ -75,6 +78,9 @@ mocha.setup({
             Split text by characters, words, and lines, do-not-split-hyphens, split <a href="#"><strong>nested elements like</strong></a> <code>&lt;strong&gt;</code> tags and <span class="nested">any <span class="nested">level <span class="nested">of <span class="nested">nested <span class="nested">tags</span></span></span></span></span> and respect line breaks.<br> Split words in languages without spaces like この日本語の文のように, and properly handles ѕρє¢ιαℓ ¢нαяα¢тєяѕ & 🇪Ⓜ️🅾️🇯ℹ️s
           </p>
         </div>
+      </div>
+      <div id="scramble-text-tests" class="test small-test">
+        <div id="scramble-text">Hello World</div>
       </div>
       `;
       done();

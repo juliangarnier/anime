@@ -38,6 +38,7 @@ console.log(inputs);
 
 const tasks = [{
   input: inputs,
+  external: ['three'],
   output: [
     {
       dir: 'dist/modules/',

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Color trail canvas / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #111;
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      color: #888;
+      font-size: 12px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div class="label">top: overlap -=500 mid-way handoff<br>bottom: 4 simple sequential adds (no overlap)</div>
+
+  <script type="module">
+    import { animate, createTimeline, createTimer } from '../../dist/modules/index.js';
+
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    function resize() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = [
+      '#ff3b30',
+      '#ffcc00',
+      '#34c759',
+      '#0a84ff',
+    ];
+
+    const stationRadius = 22;
+    const ballRadius = 16;
+    const trailFadeAlpha = 0.00001;
+
+    function stationsLayout() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const cx = w * 0.5;
+      const cy = h * 0.5;
+      const radius = Math.min(w, h) * 0.35;
+      // Start at the top (-PI/2), step clockwise.
+      const startAngle = -Math.PI * 0.5;
+      return colors.map((_, i) => {
+        const a = startAngle + (Math.PI * 2 * i) / colors.length;
+        return { x: cx + Math.cos(a) * radius, y: cy + Math.sin(a) * radius };
+      });
+    }
+
+    let stations = stationsLayout();
+    window.addEventListener('resize', () => { stations = stationsLayout(); });
+
+    // The ball traces an axis-aligned square inscribed in the circle.
+    // Its 4 corners sit on the circle, at the arc-midpoints between
+    // pairs of color stations. The colored stations sit at the cardinal
+    // points (outside the square edges), as visual markers.
+    function squareCornersLayout() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const cx = w * 0.5;
+      const cy = h * 0.5;
+      const radius = Math.min(w, h) * 0.35;
+      // Corners at -3π/4, -π/4, π/4, 3π/4 — between left/top, top/right,
+      // right/bottom, bottom/left respectively.
+      const angles = [-3 * Math.PI / 4, -Math.PI / 4, Math.PI / 4, 3 * Math.PI / 4];
+      return angles.map(a => ({ x: cx + Math.cos(a) * radius, y: cy + Math.sin(a) * radius }));
+    }
+
+    let corners = squareCornersLayout();
+    window.addEventListener('resize', () => { corners = squareCornersLayout(); });
+
+    // Animated state. Plain object target. Color string animation goes through the COLOR value type. Without an adapter setter, render composes the rgba string and writes it straight to `state.color`.
+    const state = {
+      x: corners[0].x,
+      y: corners[0].y,
+      color: colors[0],
+    };
+
+    // Second ball: same circle, offset inward, walks station-to-station
+    // with 4 sequential, non-overlapping .add() calls. Exercises
+    // cross-add color sibling chaining (each tween's from-color is the
+    // previous tween's end-color, resolved via prevSibling._value).
+    const state2 = {
+      x: stations[0].x,
+      y: stations[0].y,
+      color: colors[0],
+    };
+
+    const tl = createTimeline({
+      autoplay: true,
+      loop: true,
+      defaults: { ease: 'linear', duration: 1000 },
+    });
+
+    const tl2 = createTimeline({
+      autoplay: true,
+      loop: true,
+      defaults: { ease: 'linear', duration: 800 },
+    });
+
+    // 4 simple sequential adds, one per station. Each new add only specifies the destination color, the from-color must come from the previous add via sibling chaining.
+    for (let i = 1; i <= 4; i++) {
+      const next = stations[i % stations.length];
+      tl2.add(state2, {
+        x: next.x,
+        y: next.y,
+        color: colors[i % colors.length],
+      });
+    }
+
+    // Tweens 1–3 overshoot the next corner by the same distance, so each
+    // tween's midpoint lands exactly on the corner. With -=250 overlap
+    // the next tween hands off at that midpoint and state-chains the
+    // ball off in a new straight line.
+    // Tween 4 is the *correct* distance (no overshoot): it runs to
+    // completion and lands the ball back on corner[0] to close the loop.
+    for (let i = 1; i <= 4; i++) {
+      const isLast = i === 4;
+      const fromCorner = corners[i - 1];
+      const nextCorner = corners[i % 4];
+      const targetX = isLast ? nextCorner.x : 2 * nextCorner.x - fromCorner.x;
+      const targetY = isLast ? nextCorner.y : 2 * nextCorner.y - fromCorner.y;
+      tl.add(state, {
+        x: targetX,
+        y: targetY,
+        color: colors[i % colors.length],
+        duration: isLast ? 500 : 1000,
+      }, i === 1 ? 0 : '-=500');
+    }
+
+    function drawStation(s, color) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, stationRadius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.stroke();
+    }
+
+    function drawBall(s) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+    }
+
+    createTimer({
+      autoplay: true,
+      onUpdate: () => {
+        // Fade prior frames to a soft trail. A small alpha overlay each
+        // frame attenuates pixels exponentially without fully clearing.
+        ctx.fillStyle = `rgba(17, 17, 17, ${trailFadeAlpha})`;
+        ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+        // Track ring + stations. Both static, redraw on top of the fade so they stay sharp.
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        const cx = w * 0.5;
+        const cy = h * 0.5;
+        const ringRadius = Math.min(w, h) * 0.35;
+        ctx.beginPath();
+        ctx.arc(cx, cy, ringRadius, 0, Math.PI * 2);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.stroke();
+        for (let i = 0; i < stations.length; i++) {
+          drawStation(stations[i], colors[i]);
+        }
+
+        drawBall(state);
+        drawBall(state2);
+      },
+    });
+
+
+  </script>
+</body>
+</html>

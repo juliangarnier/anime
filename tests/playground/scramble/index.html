@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scramble Text / Anime.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="../assets/css/styles.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .tests {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .test {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      min-height: 8rem;
+      border: 1px solid var(--bg-4);
+      margin-right: -1px;
+      margin-top: -1px;
+      padding: 2.5rem 1rem 1rem 1rem;
+    }
+    @media (min-width: 740px) {
+      .test { width: 50%; }
+    }
+    @media (min-width: 1200px) {
+      .test { width: 33.333%; }
+    }
+    .test-header {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: .5rem;
+      font-size: .7rem;
+      color: var(--fg-4);
+    }
+    .test-header button {
+      padding: 0 .5rem;
+      color: var(--fg-3);
+      background: none;
+      cursor: pointer;
+    }
+    .scramble {
+      font-size: 1rem;
+      line-height: 1.5;
+      hyphens: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="tests">
+    <div class="test" id="default">
+      <div class="test-header"><span>Default</span></div>
+      <div class="scramble">Each character cycles through random glyphs before settling into place</div>
+    </div>
+    <div class="test" id="from-end">
+      <div class="test-header"><span>From right</span></div>
+      <div class="scramble">The reveal wave starts from the rightmost character and sweeps left, unscrambling each glyph in reverse order until the full string has settled into place</div>
+    </div>
+    <div class="test" id="from-center">
+      <div class="test-header"><span>From center</span></div>
+      <div class="scramble">Characters resolve outward from the midpoint of the string, spreading symmetrically in both directions until the first and last characters settle into their final place</div>
+    </div>
+    <div class="test" id="from-random">
+      <div class="test-header"><span>From random</span></div>
+      <div class="scramble">Each character picks a random position in the reveal sequence, so the text resolves in an unpredictable order with no directional bias from left to right</div>
+    </div>
+    <div class="test" id="binary">
+      <div class="test-header"><span>Binary characters</span></div>
+      <div class="scramble">The scramble pool is limited to zeros and ones, replacing every unrevealed character with binary digits to create a data stream aesthetic before the final text appears</div>
+    </div>
+    <div class="test" id="eased">
+      <div class="test-header"><span>With ease</span></div>
+      <div class="scramble">An easing curve shapes the reveal progress, so characters settle slowly at first, accelerate through the middle, then slow down again toward the end of the animation</div>
+    </div>
+    <div class="test" id="staggered">
+      <div class="test-header"><span>Staggered</span></div>
+      <div class="scramble">Each element scrambles its characters before settling left to right</div>
+      <div class="scramble">A stagger delay offsets each animation from the one before it</div>
+      <div class="scramble">The sequence completes as the final line resolves into place</div>
+    </div>
+    <div class="test" id="low-cps">
+      <div class="test-header"><span>Low CPS</span></div>
+      <div class="scramble">A low characters per second rate means scramble glyphs refresh less often, so each random character lingers visibly before being replaced by the next one</div>
+    </div>
+    <div class="test" id="from-index">
+      <div class="test-header"><span>From index 20</span></div>
+      <div class="scramble">The reveal originates at character index twenty and spreads outward from that point, resolving characters in order of their distance from the chosen origin position</div>
+    </div>
+    <div class="test" id="cursor">
+      <div class="test-header"><span>Cursor</span></div>
+      <div class="scramble">An underscore character forms a leading cursor that sweeps just ahead of the reveal boundary, marking positions that are about to settle before the final glyph appears</div>
+    </div>
+    <div class="test" id="cursor-pattern">
+      <div class="test-header"><span>Cursor pattern (&#x2588;&#x2593;&#x2592;&#x2591;)</span></div>
+      <div class="scramble">A block gradient pattern forms a growing cursor front that sweeps across the string, fading from solid to light before each character settles into its final glyph</div>
+    </div>
+    <div class="test" id="low-perturbation">
+      <div class="test-header"><span>Perturbation 0.4</span></div>
+      <div class="scramble">With perturbation at 0.4, most characters follow the natural reveal order while a portion settle slightly ahead or behind their expected position in the sequence</div>
+    </div>
+    <div class="test" id="seeded">
+      <div class="test-header"><span>Seeded (42)</span></div>
+      <div class="scramble">Providing a numeric seed to the generator means the scramble pattern, reveal order, and character choices are all identical on every replay for fully reproducible animations</div>
+    </div>
+    <div class="test" id="combined">
+      <div class="test-header"><span>Cursor + perturbation + center</span></div>
+      <div class="scramble">Cursor, center origin, and perturbation combine so characters burst outward from the middle through a sweeping glyph front before resolving into the final text</div>
+    </div>
+    <div class="test" id="text-longer">
+      <div class="test-header"><span>Text longer</span></div>
+      <div class="scramble">Short text</div>
+    </div>
+    <div class="test" id="text-shorter">
+      <div class="test-header"><span>Text shorter</span></div>
+      <div class="scramble">This is a longer piece of text that will scramble down to a much shorter string</div>
+    </div>
+    <div class="test" id="text-longer-space">
+      <div class="test-header"><span>Text longer + space override</span></div>
+      <div class="scramble">Short text</div>
+    </div>
+    <div class="test" id="text-shorter-end">
+      <div class="test-header"><span>Text shorter + from right</span></div>
+      <div class="scramble">This text shrinks from right to left, with extra characters scrambling away before the shorter target settles into place</div>
+    </div>
+    <div class="test" id="reversed">
+      <div class="test-header"><span>Reversed</span></div>
+      <div class="scramble">Reversing a center origin makes characters settle from the outer edges inward, converging toward the middle instead of the usual outward spread from the center</div>
+    </div>
+    <div class="test" id="blank-start">
+      <div class="test-header"><span>Blank start</span></div>
+      <div class="scramble">Starting from a blank string, each character appears from nothing, cycling through random glyphs before settling into its final position</div>
+    </div>
+    <div class="test" id="duration-short">
+      <div class="test-header"><span>Duration 500ms</span></div>
+      <div class="scramble">A short duration makes the entire scramble resolve quickly, with characters cycling through fewer random glyphs before settling into place</div>
+    </div>
+    <div class="test" id="duration-long">
+      <div class="test-header"><span>Duration 3000ms</span></div>
+      <div class="scramble">A long duration stretches the scramble over more time, letting characters linger in their randomized state before gradually resolving</div>
+    </div>
+    <div class="test" id="settle-short">
+      <div class="test-header"><span>Settle duration 100ms</span></div>
+      <div class="scramble">A short settle duration means each character snaps into its final glyph almost instantly once the reveal front reaches its position</div>
+    </div>
+    <div class="test" id="settle-long">
+      <div class="test-header"><span>Settle duration 800ms</span></div>
+      <div class="scramble">A long settle duration lets each character keep cycling through random glyphs for a while after being reached by the reveal front</div>
+    </div>
+    <div class="test" id="interval-short">
+      <div class="test-header"><span>Reveal rate 100</span></div>
+      <div class="scramble">A high reveal rate means characters enter the active zone quickly, creating a fast sweeping reveal effect</div>
+    </div>
+    <div class="test" id="interval-long">
+      <div class="test-header"><span>Reveal rate 10</span></div>
+      <div class="scramble">A low reveal rate means characters enter the active zone slowly, so the reveal wave takes longer to sweep across the text</div>
+    </div>
+    <div class="test" id="resize-loop">
+      <div class="test-header"><span>Resize loop</span></div>
+      <div class="scramble">Hi</div>
+    </div>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

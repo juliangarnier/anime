@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - ESM
- * @version v4.3.6
+ * @version v4.5.0
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -10,7 +10,7 @@
 // TODO: Do we need to check if we're running inside a worker ?
 const isBrowser = typeof window !== 'undefined';
 
-/** @typedef {Window & {AnimeJS: Array} & {AnimeJSDevTools: any}|null} AnimeJSWindow
+/** @typedef {Window & {AnimeJS: Array}|null} AnimeJSWindow
 
 /** @type {AnimeJSWindow} */
 const win = isBrowser ? /** @type {AnimeJSWindow} */(/** @type {unknown} */(window)) : null;
@@ -57,7 +57,6 @@ const isRegisteredTargetSymbol = Symbol();
 const isDomSymbol = Symbol();
 const isSvgSymbol = Symbol();
 const transformsSymbol = Symbol();
-const morphPointsSymbol = Symbol();
 const proxyTargetSymbol = Symbol();
 
 // Numbers
@@ -72,6 +71,11 @@ const maxFps = 240;
 const emptyString = '';
 const cssVarPrefix = 'var(';
 
+// Arrays
+
+// Shared sentinel for tween slots that don't hold array data. Never mutated, only read; COMPLEX and COLOR tweens always replace the slot before writing.
+const emptyArray = [];
+
 const shortTransforms = /*#__PURE__*/ (() => {
   const map = new Map();
   map.set('x', 'translateX');
@@ -81,6 +85,7 @@ const shortTransforms = /*#__PURE__*/ (() => {
 })();
 
 const validTransforms = [
+  'perspective',
   'translateX',
   'translateY',
   'translateZ',
@@ -95,9 +100,6 @@ const validTransforms = [
   'skew',
   'skewX',
   'skewY',
-  'matrix',
-  'matrix3d',
-  'perspective',
 ];
 
 const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) => ({...a, [v]: v + '('}), {});
@@ -106,6 +108,13 @@ const transformsFragmentStrings = /*#__PURE__*/ validTransforms.reduce((a, v) =>
 
 /** @return {void} */
 const noop = () => {};
+
+/**
+ * @template T
+ * @param  {T} v
+ * @return {T}
+ */
+const noopModifier = v => v;
 
 // Regex
 
@@ -120,8 +129,7 @@ const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
 const unitsExecRgx = /^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)([a-z]+|%)$/i;
 const lowerCaseRgx = /([a-z])([A-Z])/g;
-const transformsExecRgx = /(\w+)(\([^)]+\)+)/g; // Match inline transforms with cacl() values, returns the value wrapped in ()
 const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
 
-export { K, compositionTypes, cssVarPrefix, cssVariableMatchRgx, digitWithExponentRgx, doc, emptyString, hexTestRgx, hslExecRgx, hslaExecRgx, isBrowser, isDomSymbol, isRegisteredTargetSymbol, isSvgSymbol, lowerCaseRgx, maxFps, maxValue, minValue, morphPointsSymbol, noop, proxyTargetSymbol, relativeValuesExecRgx, rgbExecRgx, rgbaExecRgx, shortTransforms, tickModes, transformsExecRgx, transformsFragmentStrings, transformsSymbol, tweenTypes, unitsExecRgx, validRgbHslRgx, validTransforms, valueTypes, win };
+export { K, compositionTypes, cssVarPrefix, cssVariableMatchRgx, digitWithExponentRgx, doc, emptyArray, emptyString, hexTestRgx, hslExecRgx, hslaExecRgx, isBrowser, isDomSymbol, isRegisteredTargetSymbol, isSvgSymbol, lowerCaseRgx, maxFps, maxValue, minValue, noop, noopModifier, proxyTargetSymbol, relativeValuesExecRgx, rgbExecRgx, rgbaExecRgx, shortTransforms, tickModes, transformsFragmentStrings, transformsSymbol, tweenTypes, unitsExecRgx, validRgbHslRgx, validTransforms, valueTypes, win };

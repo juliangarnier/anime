@@ -8,8 +8,8 @@ export class AutoLayout {
     params: AutoLayoutParams;
     /** @type {DOMTarget} */
     root: DOMTarget;
-    /** @type {Number} */
-    id: number;
+    /** @type {Number|String} */
+    id: number | string;
     /** @type {LayoutChildrenParam} */
     children: LayoutChildrenParam;
     /** @type {Boolean} */
@@ -74,6 +74,7 @@ export type LayoutAnimationTimingsParams = {
 export type LayoutStateAnimationProperties = Record<string, number | string | FunctionValue>;
 export type LayoutStateParams = LayoutStateAnimationProperties & LayoutAnimationTimingsParams;
 export type LayoutSpecificAnimationParams = {
+    id?: number | string;
     delay?: number | FunctionValue;
     duration?: number | FunctionValue;
     ease?: EasingParam | FunctionValue;
@@ -103,7 +104,7 @@ export type LayoutNode = {
     id: string;
     $el: DOMTarget;
     index: number;
-    total: number;
+    targets: Array<DOMTarget>;
     delay: number;
     duration: number;
     ease: EasingParam;

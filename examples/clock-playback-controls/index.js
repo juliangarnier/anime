@@ -21,7 +21,13 @@ const masterTL = createTimeline({ defaults: { ease: 'linear' }, autoplay: false 
     for (let i = 0; i < 10; i++) {
       const $num = document.createElement('div');
       $num.textContent = `${i}`;
-      utils.set($num, { rotateX: (i * 36), z: '3ch' });
+      const angle = i * 36;
+      const a = utils.degToRad(angle);
+      utils.set($num, {
+        translateY: -3 * Math.sin(a) + 'ch',
+        z: 3 * Math.cos(a) + 'ch',
+        rotateX: angle,
+      });
       $el.appendChild($num);
     }
     const canStop = d > 100;

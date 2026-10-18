@@ -4,6 +4,12 @@ import {
   utils,
 } from '../../dist/modules/index.js';
 
+/**
+ * @import {
+ *   JSAnimation,
+ * } from '../../dist/modules/index.js'
+ */
+
 const { random, cos, sin, sqrt, PI } = Math;
 const count = 2500;
 const duration = 3000;
@@ -26,7 +32,7 @@ const tl = createTimeline({
   defaults: {
     loop: true,
     ease: 'inOut(1.3)',
-    onLoop: self => self.refresh(),
+    onLoop: self => /** @type {JSAnimation} */(self).refresh(),
   },
 });
 

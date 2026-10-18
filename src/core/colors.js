@@ -101,3 +101,4 @@ export const convertColorStringValuesToRgbaArray = colorString => {
          isHsl(colorString) ? hslToRgba(colorString) :
          [0, 0, 0, 1];
 }
+
