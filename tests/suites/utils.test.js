@@ -231,6 +231,40 @@ suite('Utils', () => {
     expect(child1._next).to.equal(null);
   });
 
+  for (const [prevProp, nextProp] of [['_prev', '_next'], ['_prevRep', '_nextRep']]) {
+    for (const index of [0, 1, 2]) {
+      test(`Reinsert linked child ${index} with ${nextProp} pointers`, () => {
+        const parentList = { _head: null, _tail: null };
+        const children = [1, 2, 3].map(priority => ({ priority }));
+        const sortMethod = (prev, child) => prev.priority > child.priority;
+        for (const child of children) addChild(parentList, child, sortMethod, prevProp, nextProp);
+
+        const child = children[index];
+        child.priority = 4;
+        addChild(parentList, child, sortMethod, prevProp, nextProp);
+
+        const expected = children.filter(other => other !== child).concat(child);
+        expect(parentList._head).to.equal(expected[0]);
+        expect(parentList._tail).to.equal(child);
+        for (let i = 0; i < expected.length; i++) {
+          expect(expected[i][prevProp]).to.equal(expected[i - 1] || null);
+          expect(expected[i][nextProp]).to.equal(expected[i + 1] || null);
+        }
+      });
+    }
+
+    test(`Reinsert only child with ${nextProp} pointers`, () => {
+      const parentList = { _head: null, _tail: null };
+      const child = {};
+      addChild(parentList, child, undefined, prevProp, nextProp);
+      addChild(parentList, child, undefined, prevProp, nextProp);
+      expect(parentList._head).to.equal(child);
+      expect(parentList._tail).to.equal(child);
+      expect(child[prevProp]).to.equal(null);
+      expect(child[nextProp]).to.equal(null);
+    });
+  }
+
   test('Remove child from linked list', () => {
     const parentList = {
       _head: null,
