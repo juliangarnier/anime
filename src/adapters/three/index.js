@@ -32,16 +32,17 @@
  * Caveats:
  * - Rotation assumes Euler order `'XYZ'`.
  * - `opacity` writes `material.opacity`. Set `material.transparent = true` on materials meant to fade. `opacity = 0` flips `visible = false`.
+ * - On a target with no material, a `Group` or a bare `Object3D`, `opacity` is kept on the object and only drives `visible`: nothing fades, the branch is shown or hidden.
  * - `scaleX` / `Y` / `Z` / `scale` = 0 flips `visible = false`. Direct mutation of `mesh.scale.x` does not.
+ * - A scale or opacity above 0 shows the target again only when a 0 hid it, so a `visible = false` set by hand or by a tween stays. `visible` reads `true` on a target that only a 0 hides.
  * - Material-routed writes target `mesh.material` only (single material or array). Group / nested-mesh fades are not propagated, animate the materials directly or pass an array of meshes.
  * - Auto-detected names that also exist on the mesh itself (e.g. `mesh.foo = 1` and `mesh.material.foo = 2`) take the mesh value, leaving the material untouched.
  */
-
-export * from './adapter.js';
 
 import './resolvers.js';
 import './uniform.js';
 import './object3d.js';
 import './instance.js';
 
+export * from './adapter.js';
 export * from './instance.js';

@@ -1,17 +1,18 @@
 /**
  * Anime.js - timeline - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { relativeValuesExecRgx, minValue } from '../core/consts.js';
-import { isUnd, isNum, stringStartsWith, isNil } from '../core/helpers.js';
+import { minValue, relativeValuesExecRgx } from '../core/consts.js';
+import { isUnd, isNum, clampInfinity, stringStartsWith, isNil } from '../core/helpers.js';
 import { getRelativeValue } from '../core/values.js';
 
 /**
  * @import {
  *   Tickable,
+ *   Renderable,
  *   TimelinePosition,
  * } from '../types/index.js'
 */
@@ -21,6 +22,23 @@ import { getRelativeValue } from '../core/values.js';
  *   Timeline,
  * } from './timeline.js'
 */
+
+/**
+ * @param {Timeline} timeline
+ * @param {Number} [duration]
+ */
+const updateTimelineDuration = (timeline, duration) => {
+  if (isUnd(duration)) {
+    duration = 0;
+    for (let child = /** @type {Renderable} */(timeline._head); child; child = child._next) {
+      const end = child._offset + child._delay + child.duration;
+      if (end > duration) duration = end;
+    }
+  }
+  timeline.iterationDuration = duration;
+  timeline.duration = clampInfinity(((duration + timeline._loopDelay) * timeline.iterationCount) - timeline._loopDelay) || minValue;
+  if (timeline.parent) updateTimelineDuration(timeline.parent);
+};
 
 /**
  * Timeline's children offsets positions parser
@@ -67,4 +85,4 @@ const parseTimelinePosition = (timeline, timePosition) => {
   }
 };
 
-export { parseTimelinePosition };
+export { parseTimelinePosition, updateTimelineDuration };

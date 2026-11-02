@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -13,6 +13,8 @@ var helpers = require('./helpers.cjs');
 
 /**
 * @import {
+*   Target,
+*   TargetSelector,
 *   DOMTarget,
 *   DOMTargetsParam,
 *   JSTargetsArray,
@@ -20,8 +22,33 @@ var helpers = require('./helpers.cjs');
 *   JSTargetsParam,
 *   TargetsArray,
 *   DOMTargetsArray,
+*   TweenLookups,
 * } from '../types/index.js'
 */
+
+// Hold lookups for proxies that return new lookups per read and for copies that forward to a target.
+// A WeakMap for all targets slowed setup and render, so only those keep their lookups here.
+/** @type {WeakMap<Target, TweenLookups>} */
+const proxyLookups = new WeakMap();
+
+/**
+ * @param  {Target} target
+ * @return {TweenLookups}
+ */
+const getReplaceLookups = target => {
+  const lookups = target[consts.replaceLookupsSymbol];
+  // A spread, Object.assign, or prototype copy carries the lookups or proxy marker of its source.
+  // The owner and WeakMap checks cost less setup time than a non-enumerable defineProperty.
+  if (lookups !== true && lookups[consts.lookupsOwnerSymbol] === target) return lookups;
+  // Copies and proxies never write the slot, a forwarding proxy would replace the lookups of its target.
+  // Each keeps its own apart, as 4.5 kept every object apart.
+  let own = proxyLookups.get(target);
+  if (!own) proxyLookups.set(target, own = Object.create(null));
+  return own;
+};
+
+// Promote to a Set at 128 items, the linear scan benchmarks faster than Set lookups below that.
+const dedupeSetThreshold = 128;
 
 /**
  * @param  {DOMTargetsParam|TargetsParam} v
@@ -31,10 +58,6 @@ function getNodeList(v) {
   const n = helpers.isStr(v) ? globals.scope.root.querySelectorAll(v) : v;
   if (n instanceof NodeList || n instanceof HTMLCollection) return n;
 }
-
-// The linear duplicate scan benchmarks faster than Set lookups up to somewhere between 32 and
-// 128 items, so promoting at 128 keeps small target lists on the fastest path.
-const dedupeSetThreshold = 128;
 
 /**
  * @overload
@@ -55,12 +78,11 @@ function parseTargets(targets) {
   if (helpers.isNil(targets)) return /** @type {TargetsArray} */([]);
   if (!consts.isBrowser) return /** @type {JSTargetsArray} */(helpers.isArr(targets) && targets.flat(Infinity) || [targets]);
   if (helpers.isArr(targets)) {
-    const flattened = targets.flat(Infinity);
+    const flattened = /** @type {TargetSelector[]} */(targets.flat(Infinity));
     /** @type {TargetsArray} */
     const parsed = [];
-    // Dedupe by identity, scan parsed linearly for small results to skip the Set allocation, then
-    // promote to a Set so large target lists stay linear instead of quadratic.
-    /** @type {Set|null} */
+    // Dedupe by identity, promote to a Set past dedupeSetThreshold so large lists stay linear.
+    /** @type {Set<Target>|null} */
     let seen = null;
     for (let i = 0, l = flattened.length; i < l; i++) {
       const item = flattened[i];
@@ -74,9 +96,11 @@ function parseTargets(targets) {
           if (seen) seen.add(subItem);
           else if (parsed.length > dedupeSetThreshold) seen = new Set(parsed);
         }
-      } else if (!(seen ? seen.has(item) : parsed.includes(item))) {
-        parsed.push(item);
-        if (seen) seen.add(item);
+      } else {
+        const target = /** @type {Target} */(item);
+        if (seen ? seen.has(target) : parsed.includes(target)) continue;
+        parsed.push(target);
+        if (seen) seen.add(target);
         else if (parsed.length > dedupeSetThreshold) seen = new Set(parsed);
       }
     }
@@ -104,11 +128,18 @@ function parseTargets(targets) {
  */
 function registerTargets(targets) {
   const parsedTargetsArray = parseTargets(targets);
-  const parsedTargetsLength = parsedTargetsArray.length;
-  for (let i = 0; i < parsedTargetsLength; i++) {
+  for (let i = 0, l = parsedTargetsArray.length; i < l; i++) {
     const target = parsedTargetsArray[i];
-    if (!target[consts.isRegisteredTargetSymbol]) {
-      target[consts.isRegisteredTargetSymbol] = true;
+    if (!target[consts.replaceLookupsSymbol]) {
+      // Create lookups without a prototype so a property name like toString reads no inherited value.
+      /** @type {TweenLookups} */
+      const lookups = Object.create(null);
+      lookups[consts.lookupsOwnerSymbol] = target;
+      target[consts.replaceLookupsSymbol] = lookups;
+      if (target[consts.replaceLookupsSymbol] !== lookups) {
+        target[consts.replaceLookupsSymbol] = true;
+        proxyLookups.set(target, lookups);
+      }
       const isSvgType = helpers.isSvg(target);
       const isDom = /** @type {DOMTarget} */(target).nodeType || isSvgType;
       if (isDom) {
@@ -122,5 +153,6 @@ function registerTargets(targets) {
 }
 
 exports.getNodeList = getNodeList;
+exports.getReplaceLookups = getReplaceLookups;
 exports.parseTargets = parseTargets;
 exports.registerTargets = registerTargets;

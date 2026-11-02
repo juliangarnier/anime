@@ -4,6 +4,8 @@ import {
 
 import {
   animate,
+  createTimeline,
+  stagger,
   utils,
 } from '../../dist/modules/index.js';
 
@@ -1195,6 +1197,67 @@ suite('Transforms', () => {
     animation.pause().seek(animation.duration);
     animation.revert();
     expect($target.getAttribute('style')).to.equal('transform: translate(10px, 20px) rotate(45deg);');
+  });
+
+  test('Renders transform keyframes before following object properties', () => {
+    const targets = Array.from({ length: 3 }, () => Object.assign(document.createElement('div'), { value: 0 }));
+    document.querySelector('#tests').append(...targets);
+    const animation = animate(targets, {
+      x: 100,
+      y: [{ to: 100, duration: 50 }, { to: 200, duration: 50 }],
+      value: 100,
+      duration: 100, ease: 'linear', autoplay: false,
+    });
+    for (const [time, transform] of /** @type {const} */([
+      [25, 'translate(25px, 50px)'],
+      [75, 'translate(75px, 150px)'],
+      [25, 'translate(25px, 50px)'],
+    ])) {
+      animation.seek(time);
+      for (const target of targets) {
+        expect(target.style.transform).to.equal(transform);
+        expect(target.value).to.equal(time);
+      }
+    }
+    animation.cancel();
+  });
+
+  test('Renders staggered transform keyframes in both directions', () => {
+    const expected = [
+      [
+        'translateX(22.5px) rotate(56.25deg)',
+        'translateX(15px) rotate(33.75deg)',
+        'translateX(7.5px) rotate(11.25deg)',
+      ],
+      [
+        'translateX(85.5px) rotate(172.5deg)',
+        'translateX(57px) rotate(157.5deg)',
+        'translateX(28.5px) rotate(142.5deg)',
+      ],
+    ];
+    for (const timeline of [false, true]) {
+      for (const reversed of [false, true]) {
+        const targets = Array.from({ length: 3 }, () => Object.assign(document.createElement('div'), { value: 0 }));
+        document.querySelector('#tests').append(...targets);
+        const parameters = {
+          x: stagger([30, 90], { reversed: true }),
+          value: 100,
+          rotate: [
+            { to: 90, duration: 40, delay: stagger([0, 20]) },
+            { to: 180, duration: 60 },
+          ],
+          duration: 100, ease: 'linear', autoplay: false,
+        };
+        const animation = timeline ?
+          createTimeline({ autoplay: false, reversed }).add(targets, parameters, 0).init() :
+          animate(targets, { ...parameters, reversed });
+        animation.seek(25);
+        expect(targets.map(target => target.style.transform)).to.deep.equal(expected[+reversed]);
+        animation.seek(75).seek(25);
+        expect(targets.map(target => target.style.transform)).to.deep.equal(expected[+reversed]);
+        animation.cancel();
+      }
+    }
   });
 
 });

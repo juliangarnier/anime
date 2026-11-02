@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -14,27 +14,26 @@ const convertedValuesCache = {};
 /**
 * @import {
 *   DOMTarget,
-*   TweenDecomposedValue,
 * } from '../types/index.js'
 */
 
 /**
  * @param  {DOMTarget} el
- * @param  {TweenDecomposedValue} decomposedValue
+ * @param  {Number} currentNumber
+ * @param  {String} currentUnit
  * @param  {String} unit
+ * @param  {valueTypes} type
  * @param  {Boolean} [force]
- * @return {TweenDecomposedValue}
+ * @return {Number}
  */
-const convertValueUnit = (el, decomposedValue, unit, force = false) => {
-  const currentUnit = decomposedValue.u;
-  const currentNumber = decomposedValue.n;
-  if (decomposedValue.t === valueTypes.UNIT && currentUnit === unit) { // TODO: Check if checking against the same unit string is necessary
-    return decomposedValue;
+const convertValueUnit = (el, currentNumber, currentUnit, unit, type, force = false) => {
+  if (type === valueTypes.UNIT && currentUnit === unit) { // TODO: Check if checking against the same unit string is necessary
+    return currentNumber;
   }
   const cachedKey = currentNumber + currentUnit + unit;
   const cached = convertedValuesCache[cachedKey];
   if (!isUnd(cached) && !force) {
-    decomposedValue.n = cached;
+    return cached;
   } else {
     let convertedValue;
     if (currentUnit in angleUnitsMap) {
@@ -54,12 +53,9 @@ const convertValueUnit = (el, decomposedValue, unit, force = false) => {
       parentEl.removeChild(tempEl);
       convertedValue = factor * currentNumber;
     }
-    decomposedValue.n = convertedValue;
     convertedValuesCache[cachedKey] = convertedValue;
+    return convertedValue;
   }
-  decomposedValue.t === valueTypes.UNIT;
-  decomposedValue.u = unit;
-  return decomposedValue;
 };
 
 export { convertValueUnit };

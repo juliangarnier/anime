@@ -577,11 +577,12 @@ animate(shaderMesh, {
 // The playground uses WebGLRenderer so TSL is not rendered visibly here,
 // but the adapter wiring is exercised through `animate()`. Inspect the
 // uniforms in devtools to confirm `.value` ticks each frame.
-const tslMat = new MeshStandardNodeMaterial();
-tslMat.colorNode     = uniform(new Color('#ff0066'));
-tslMat.metalnessNode = uniform(0);
-tslMat.opacityNode   = uniform(1);
-tslMat.offsetNode    = uniform(new Vector3());
+const tslMat = Object.assign(new MeshStandardNodeMaterial(), {
+  colorNode: uniform(new Color('#ff0066')),
+  metalnessNode: uniform(0),
+  opacityNode: uniform(1),
+  offsetNode: uniform(new Vector3()),
+});
 
 animate(tslMat, {
   colorNode: ['#ff0066', '#33ff88', '#0033ff', '#ff0066'],
@@ -604,8 +605,7 @@ animate(uTimeNode, { value: [0, 60], duration: 12000, loop: true, ease: 'linear'
 animate(uTintNode, { color: ['#0033ff', '#33ff88', '#ff0066', '#0033ff'], duration: 9000, loop: true, ease: 'inOutSine' });
 animate(uOffNode,  { x: [-1, 1], y: [-0.5, 0.5], z: [0, 0.25], duration: 7000, loop: true, alternate: true, ease: 'inOutQuad' });
 
-window.tslMat = tslMat;
-window.tslUniforms = { uTimeNode, uTintNode, uOffNode };
+Object.assign(window, { tslMat, tslUniforms: { uTimeNode, uTintNode, uOffNode } });
 
 // render + helper updates
 createTimer({

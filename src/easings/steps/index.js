@@ -26,4 +26,5 @@ const stepsFactory = (steps = 10, fromStart) => {
   return t => roundMethod(clamp(t, 0, 1) * steps) * (1 / steps);
 }
 
+/** Creates an easing that moves in equal steps. */
 export const steps = /** @type {typeof stepsFactory} */(makeTweakable('Ease', 'steps', stepsFactory));

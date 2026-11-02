@@ -1,6 +1,6 @@
 /**
  * Anime.js - adapters - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -17,56 +17,101 @@ var helpers = require('./helpers.cjs');
  */
 
 
-const colorTarget = (t) => t.isLight ? t : t.material;
-
-// Per-mesh skew and transformOrigin state, stored under a private symbol so we add one hidden property instead of polluting the Object3D surface with seven underscored fields.
-const skewSymbol = Symbol('animejs.skewOrigin');
-
-// Fallback opacity storage for Object3D targets without a material such as Groups or CSS2DObjects.
-// Without it reads always return the default 1, so reverse-direction tweens between two non-default values collapse to a no-op delta and the visibility flip never fires on the way back.
-const opacitySymbol = Symbol('animejs.opacity');
+/** @import { Object3D, Material, Vector3 } from 'three' */
 
 /**
- * Sets `o.visible` based on opacity and current scale. If `opacity` is omitted, reads it from `o.material` (defaults to `1` when no material is present).
- *
- * @param {Object3D & { material?: import('three').Material | import('three').Material[] }} o
- * @param {number} [opacity]
+ * @typedef {Object} SkewOriginState
+ * @property {Number} skewX
+ * @property {Number} skewY
+ * @property {Number} skewZ
+ * @property {Number} originX
+ * @property {Number} originY
+ * @property {Number} originZ
  */
-function setVisibility(o, opacity) {
-  if (opacity === undefined) {
-    if (o.material) {
-      opacity = helpers.readScalar(o.material, 'opacity', helpers.PATH_DIRECT, 1);
-    } else {
-      const v = o[opacitySymbol];
-      opacity = v === undefined ? 1 : v;
-    }
-  }
-  const s = o.scale;
-  o.visible = !!(opacity && s.x && s.y && s.z);
+
+const colorTarget = (t) => t.isLight ? t : t.material;
+
+// Store the skew and transformOrigin state under one symbol so the Object3D keeps its own surface.
+const skewSymbol = Symbol('animejs.skewOrigin');
+
+// Store the opacity of a target without material such as a Group or a CSS2DObject, so reads return
+// the written value instead of the default 1.
+const opacitySymbol = Symbol('animejs.opacity');
+
+// Mark a target that a scale or opacity of 0 hid, so only such a target shows again when both leave 0, and its
+// visible property reads true.
+const isAutoHiddenSymbol = Symbol('animejs.isAutoHidden');
+
+/**
+ * Reads the opacity of `o` from its material, or the stored value when it has none.
+ *
+ * @param {Object3D & { material?: Material | Material[] }} o
+ * @return {number}
+ */
+function getOpacity(o) {
+  if (o.material) return helpers.readScalar(o.material, 'opacity', helpers.PATH_DIRECT, 1);
+  const v = o[opacitySymbol];
+  return v === undefined ? 1 : v;
 }
 
 /**
- * Installs a per-mesh `updateMatrix` override on first skew / transformOrigin write. The override calls the original three.js compose, then patches the result with `applySkewOrigin` whenever any axis is non-zero. Idempotent.
+ * @param {Vector3} s
+ * @return {boolean}
+ */
+const hasScale = (s) => !!(s.x && s.y && s.z);
+
+/**
+ * Hides `o` for a scale or opacity of 0, unless a visible tween or the user already hid it.
+ *
+ * @param {Object3D} o
+ */
+function autoHide(o) {
+  if (!o.visible) return;
+  o.visible = false;
+  o[isAutoHiddenSymbol] = true;
+}
+
+/**
+ * @param {Object3D} o
+ */
+function autoShow(o) {
+  o.visible = true;
+  o[isAutoHiddenSymbol] = false;
+}
+
+/**
+ * Hides `o` when its scale is 0 and shows it again when `autoHide` hid it and its scale and opacity are above 0.
+ *
+ * @param {Object3D & { material?: Material | Material[] }} o
+ */
+function updateScaleVisibility(o) {
+  if (!hasScale(o.scale)) autoHide(o);
+  else if (!o.visible && o[isAutoHiddenSymbol] && getOpacity(o)) autoShow(o);
+}
+
+/**
+ * Returns the skew and origin state of mesh and overrides mesh.updateMatrix on the first call.
  *
  * @param {any} mesh
- * @return {{ skewX: number, skewY: number, skewZ: number, originX: number, originY: number, originZ: number }}
+ * @return {SkewOriginState}
  */
 function installSkewMatrix(mesh) {
-  let s = mesh[skewSymbol];
-  if (s) return s;
-  s = mesh[skewSymbol] = { skewX: 0, skewY: 0, skewZ: 0, originX: 0, originY: 0, originZ: 0 };
+  let state = mesh[skewSymbol];
+  if (state) return state;
+  state = mesh[skewSymbol] = { skewX: 0, skewY: 0, skewZ: 0, originX: 0, originY: 0, originZ: 0 };
   const original = mesh.updateMatrix;
   mesh.updateMatrix = function () {
     original.call(this);
-    const st = this[skewSymbol];
-    if (st.skewX !== 0 || st.skewY !== 0 || st.skewZ !== 0 || st.originX !== 0 || st.originY !== 0 || st.originZ !== 0) {
-      helpers.applySkewOrigin(this.matrix.elements, st.skewX, st.skewY, st.skewZ, st.originX, st.originY, st.originZ);
+    const state = this[skewSymbol];
+    if (state.skewX !== 0 || state.skewY !== 0 || state.skewZ !== 0 || state.originX !== 0 || state.originY !== 0 || state.originZ !== 0) {
+      helpers.applySkewOrigin(this.matrix.elements, state.skewX, state.skewY, state.skewZ, state.originX, state.originY, state.originZ);
     }
   };
-  return s;
+  return state;
 }
 
-const threeObject3D = adapter.threeAdapter.registerTargetAdapter((t) => t instanceof three.Object3D);
+// Detect with isObject3D so targets built by a second copy of three still match.
+const threeObject3D = adapter.threeAdapter.registerTargetAdapter((t) => !!(t && t.isObject3D));
 
 // Position
 threeObject3D.registerProperty('x', (t) => t.position.x, (t, v) => { t.position.x = v; });
@@ -79,29 +124,39 @@ threeObject3D.registerProperty('rotateY', (t) => number.radToDeg(t.rotation.y), 
 threeObject3D.registerProperty('rotateZ', (t) => number.radToDeg(t.rotation.z), (t, v) => { t.rotation.z = number.degToRad(v); });
 
 // Scale per-axis and uniform
-threeObject3D.registerProperty('scaleX', (t) => t.scale.x, (t, v) => { t.scale.x = v; setVisibility(t); });
-threeObject3D.registerProperty('scaleY', (t) => t.scale.y, (t, v) => { t.scale.y = v; setVisibility(t); });
-threeObject3D.registerProperty('scaleZ', (t) => t.scale.z, (t, v) => { t.scale.z = v; setVisibility(t); });
+// A scale or opacity of 0 hides the target so three skips drawing it, and both above 0 show it again.
+// A target that a visible tween or the user hid stays hidden.
+threeObject3D.registerProperty('scaleX', (t) => t.scale.x, (t, v) => { t.scale.x = v; updateScaleVisibility(t); });
+threeObject3D.registerProperty('scaleY', (t) => t.scale.y, (t, v) => { t.scale.y = v; updateScaleVisibility(t); });
+threeObject3D.registerProperty('scaleZ', (t) => t.scale.z, (t, v) => { t.scale.z = v; updateScaleVisibility(t); });
 threeObject3D.registerProperty('scale',
   (t) => t.scale.x,
   (t, v) => {
-    t.scale.x = v; t.scale.y = v; t.scale.z = v;
-    setVisibility(t);
+    t.scale.x = v;
+    t.scale.y = v;
+    t.scale.z = v;
+    updateScaleVisibility(t);
   },
 );
 
 // Material
-threeObject3D.registerProperty('visible', (t) => t.visible, (t, v) => { t.visible = !!v; });
-threeObject3D.registerProperty('opacity',
-  (t) => {
-    if (t.material) return helpers.readScalar(t.material, 'opacity', helpers.PATH_DIRECT, 1);
-    const v = t[opacitySymbol];
-    return v === undefined ? 1 : v;
+threeObject3D.registerProperty('visible',
+  (t) => t.visible || !!t[isAutoHiddenSymbol],
+  (t, v) => {
+    // A true write keeps a shown target shown, so each frame of a visible tween skips the scale and opacity reads.
+    if (v && t.visible) return;
+    const canShow = hasScale(t.scale) && !!getOpacity(t);
+    t.visible = !!v && canShow;
+    t[isAutoHiddenSymbol] = !!v && !canShow;
   },
+);
+threeObject3D.registerProperty('opacity',
+  getOpacity,
   (t, v) => {
     if (t.material) helpers.writeScalar(t.material, 'opacity', v, helpers.PATH_DIRECT);
     else t[opacitySymbol] = v;
-    setVisibility(t, v);
+    if (!v) autoHide(t);
+    else if (!t.visible && t[isAutoHiddenSymbol] && hasScale(t.scale)) autoShow(t);
   },
   (t) => !t.isLight,
 );
@@ -117,14 +172,15 @@ threeObject3D.registerProperty('groundColor',
   (t) => !!t.groundColor,
 );
 
-// Scene background, lazily initializes scene background to a Color on first write so the user does not have to set one upfront.
+// Scene background
+// Create a Color on the first write so the user does not have to set scene.background upfront.
 threeObject3D.registerProperty('background',
   (t) => {
-    const bg = /** @type {any} */(t).background;
+    const bg = t.background;
     return bg && bg.isColor ? helpers.readColorHex(bg) : '#000000';
   },
   (t, _, tw) => {
-    const scene = /** @type {any} */(t);
+    const scene = t;
     let bg = scene.background;
     if (!bg || !bg.isColor) {
       bg = new three.Color();
@@ -137,11 +193,11 @@ threeObject3D.registerProperty('background',
 );
 
 // Method-bridged props for Audio and PerspectiveCamera focalLength, read via getXxx and write via setXxx.
-const registerMethodProp = (apiName, getter, setter, gate) => {
+const registerMethodProp = (apiName, getter, setter, detectMethod) => {
   threeObject3D.registerProperty(apiName,
     (t) => t[getter](),
     (t, v) => { t[setter](v); },
-    (t) => !!t[gate],
+    (t) => !!t[detectMethod],
   );
 };
 registerMethodProp('volume', 'getVolume', 'setVolume', 'setVolume');
@@ -160,25 +216,31 @@ const registerCameraProp = (apiName, gate) => {
     gate,
   );
 };
-const isPersp = (t) => !!t.isPerspectiveCamera;
-const isOrtho = (t) => !!t.isOrthographicCamera;
-registerCameraProp('fov', isPersp);
-registerCameraProp('aspect', isPersp);
-registerCameraProp('left', isOrtho);
-registerCameraProp('right', isOrtho);
-registerCameraProp('top', isOrtho);
-registerCameraProp('bottom', isOrtho);
+const isPerspective = (t) => !!t.isPerspectiveCamera;
+const isOrthographic = (t) => !!t.isOrthographicCamera;
+registerCameraProp('fov', isPerspective);
+registerCameraProp('aspect', isPerspective);
+registerCameraProp('left', isOrthographic);
+registerCameraProp('right', isOrthographic);
+registerCameraProp('top', isOrthographic);
+registerCameraProp('bottom', isOrthographic);
+// Register the props that both camera types share.
+const isCamera = (t) => !!t.isPerspectiveCamera || !!t.isOrthographicCamera;
+registerCameraProp('near', isCamera);
+registerCameraProp('far', isCamera);
+registerCameraProp('zoom', isCamera);
 
-// Skew in degrees and transform-origin in object-space.
-// Patches mesh updateMatrix on first write so the standard PRS compose is followed by an in-place skew and origin shift.
-// Reads default to 0 for meshes that have never been written.
+// Skew in degrees and transformOrigin in object space, a mesh that was never written reads 0.
 /**
  * @param {String} apiName
  * @param {String} key
  */
 const registerSkewProp = (apiName, key) => {
   threeObject3D.registerProperty(apiName,
-    (t) => { const s = /** @type {any} */(t)[skewSymbol]; return s ? s[key] : 0; },
+    (t) => {
+      const s = t[skewSymbol];
+      return s ? s[key] : 0;
+    },
     (t, v) => { installSkewMatrix(t)[key] = v; },
   );
 };
@@ -189,11 +251,10 @@ registerSkewProp('transformOriginX', 'originX');
 registerSkewProp('transformOriginY', 'originY');
 registerSkewProp('transformOriginZ', 'originZ');
 
-// Shorthand 3-token string x y z or 2-string from-to array routed via the engine COMPLEX path.
-// The setter reads tween _numbers for the per-frame lerped triplet.
+// Expose transformOrigin as a space separated string so the engine lerps its three numbers.
 threeObject3D.registerProperty('transformOrigin',
   (t) => {
-    const s = /** @type {any} */(t)[skewSymbol];
+    const s = t[skewSymbol];
     return s ? `${s.originX} ${s.originY} ${s.originZ}` : '0 0 0';
   },
   (t, _, tw) => {
@@ -205,10 +266,4 @@ threeObject3D.registerProperty('transformOrigin',
   },
 );
 
-// Shared by both camera types.
-const isCamera = (t) => !!t.isPerspectiveCamera || !!t.isOrthographicCamera;
-registerCameraProp('near', isCamera);
-registerCameraProp('far', isCamera);
-registerCameraProp('zoom', isCamera);
-
-// Auto-detection for material props on meshes and direct Vector / Color fields on the target is provided by the shared resolvers in resolvers.js.
+// Material props on meshes and direct Vector or Color fields on the target come from the shared resolvers in resolvers.js.

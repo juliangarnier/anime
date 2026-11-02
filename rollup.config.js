@@ -68,7 +68,7 @@ if (process.env.build) {
   const cleanupJSDocImports = replace(/\/\*\*(?:(?!\*\/|\/\*\*)[\s\S])*?@import(?:(?!\*\/|\/\*\*)[\s\S])*?\*\//g);
 
   const minify = terser({
-    compress: { passes: 10, module: false },
+    compress: { passes: 10 },
     mangle: true,
   });
 

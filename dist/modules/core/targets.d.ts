@@ -1,15 +1,4 @@
 /**
-* @import {
-*   DOMTarget,
-*   DOMTargetsParam,
-*   JSTargetsArray,
-*   TargetsParam,
-*   JSTargetsParam,
-*   TargetsArray,
-*   DOMTargetsArray,
-* } from '../types/index.js'
-*/
-/**
  * @param  {DOMTargetsParam|TargetsParam} v
  * @return {NodeList|HTMLCollection}
  */
@@ -110,9 +99,12 @@ export function registerTargets(targets: JSTargetsParam): JSTargetsArray;
  * @param  {DOMTargetsParam|JSTargetsParam|TargetsParam} targets
  */
 export function registerTargets(targets: TargetsParam): TargetsArray;
+export function getReplaceLookups(target: Target): TweenLookups;
 import type { DOMTargetsParam } from '../types/index.js';
 import type { TargetsParam } from '../types/index.js';
 import type { DOMTargetsArray } from '../types/index.js';
 import type { JSTargetsParam } from '../types/index.js';
 import type { JSTargetsArray } from '../types/index.js';
 import type { TargetsArray } from '../types/index.js';
+import type { Target } from '../types/index.js';
+import type { TweenLookups } from '../types/index.js';

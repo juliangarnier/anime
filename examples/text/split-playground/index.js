@@ -3,10 +3,8 @@ import {
   stagger,
   splitText,
 } from '../../../dist/modules/index.js';
-import { createTweaks, syncTweaks, Bool, Select } from 'tweaks';
+import { createTweaks, Bool, Select } from 'tweaks';
 import { GUI } from 'tweaks/gui';
-
-syncTweaks('localStorage');
 
 const wrapOptions = ['false', 'clip', 'visible'];
 const cloneOptions = ['false', 'top', 'right', 'bottom', 'left'];

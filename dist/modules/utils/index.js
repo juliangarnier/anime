@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -11,5 +11,6 @@ export { keepTime, sync } from './time.js';
 export { get, remove, set } from './target.js';
 export { stagger } from './stagger.js';
 export { addChild, forEachChildren, removeChild } from '../core/helpers.js';
-export { cleanInlineStyles } from '../core/styles.js';
+export { convertColorStringValuesToRgbaArray as parseColor } from '../core/colors.js';
 export { registerTargets as $ } from '../core/targets.js';
+export { cleanInlineStyles } from '../core/styles.js';

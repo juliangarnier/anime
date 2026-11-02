@@ -1,6 +1,6 @@
 /**
  * Anime.js - timeline - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -14,6 +14,7 @@ var values = require('../core/values.cjs');
 /**
  * @import {
  *   Tickable,
+ *   Renderable,
  *   TimelinePosition,
  * } from '../types/index.js'
 */
@@ -23,6 +24,23 @@ var values = require('../core/values.cjs');
  *   Timeline,
  * } from './timeline.js'
 */
+
+/**
+ * @param {Timeline} timeline
+ * @param {Number} [duration]
+ */
+const updateTimelineDuration = (timeline, duration) => {
+  if (helpers.isUnd(duration)) {
+    duration = 0;
+    for (let child = /** @type {Renderable} */(timeline._head); child; child = child._next) {
+      const end = child._offset + child._delay + child.duration;
+      if (end > duration) duration = end;
+    }
+  }
+  timeline.iterationDuration = duration;
+  timeline.duration = helpers.clampInfinity(((duration + timeline._loopDelay) * timeline.iterationCount) - timeline._loopDelay) || consts.minValue;
+  if (timeline.parent) updateTimelineDuration(timeline.parent);
+};
 
 /**
  * Timeline's children offsets positions parser
@@ -70,3 +88,4 @@ const parseTimelinePosition = (timeline, timePosition) => {
 };
 
 exports.parseTimelinePosition = parseTimelinePosition;
+exports.updateTimelineDuration = updateTimelineDuration;

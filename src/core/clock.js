@@ -77,13 +77,10 @@ export class Clock {
   requestTick(time) {
     const frameDuration = this._frameDuration;
     const elapsed = time - this._lastTickTime;
-    const scaled = frameDuration * .25;
-    const tolerance = scaled < 4 ? scaled : 4;
-    // Tolerance prevents dropping frames that arrive a bit early due to RAF jitter
-    // typically <= ~25% of frame duration and capped at 4ms so it doesn't dominate at high fps.
-    // e.g. at 60fps (frameDuration=16.667ms) a frame arriving after 15ms:
-    // - without tolerance: 15 < 16.667 -> skip
-    // - with tolerance: 15 + 4 >= 16.667 -> tick
+    const quarterFrame = frameDuration * .25;
+    const tolerance = quarterFrame < 4 ? quarterFrame : 4;
+    // Tick frames that arrive a little early so requestAnimationFrame jitter drops none.
+    // Cap the tolerance at 4ms so it stays small at high fps.
     if (elapsed + tolerance < frameDuration) return tickModes.NONE;
     this._lastTickTime = elapsed >= frameDuration ? time - (elapsed % frameDuration) : time;
     return tickModes.AUTO;

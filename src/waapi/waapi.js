@@ -10,6 +10,7 @@ import {
   toLowerCase,
   isNil,
   round,
+  getCompletionThen,
 } from '../core/helpers.js';
 
 import {
@@ -154,7 +155,7 @@ let transformsPropertiesRegistered = null;
  */
 const normalizeTweenValue = (propName, value, $el, i, parsedTargets) => {
   // Do not try to compute strings with getFunctionValue otherwise it will convert CSS variables
-  let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, parsedTargets, null, null);
+  let v = isStr(value) ? value : getFunctionValue(/** @type {any} */(value), $el, i, parsedTargets, null);
   if (!isNum(v)) return v;
   if (commonDefaultPXProperties.includes(propName) || stringStartsWith(propName, 'translate')) return `${v}px`;
   if (stringStartsWith(propName, 'rotate') || stringStartsWith(propName, 'skew')) return `${v}deg`;
@@ -275,7 +276,7 @@ export class WAAPIAnimation {
 
       const easeToParse = setValue(params.ease, globals.defaults.ease);
 
-      const easeFunctionResult = getFunctionValue(easeToParse, $el, i, parsedTargets, null, null);
+      const easeFunctionResult = getFunctionValue(easeToParse, $el, i, parsedTargets, null);
       const keyEasing = isFnc(easeFunctionResult) || isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
 
       const spring = /** @type {Spring} */(easeToParse).ease && easeToParse;
@@ -283,9 +284,9 @@ export class WAAPIAnimation {
       const easing = parseWAAPIEasing(keyEasing);
 
       /** @type {Number} */
-      const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, parsedTargets, null, null)) * timeScale;
+      const duration = (spring ? /** @type {Spring} */(spring).settlingDuration : getFunctionValue(setValue(params.duration, globals.defaults.duration), $el, i, parsedTargets, null)) * timeScale;
       /** @type {Number} */
-      const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, parsedTargets, null, null) * timeScale;
+      const delay = getFunctionValue(setValue(params.delay, globals.defaults.delay), $el, i, parsedTargets, null) * timeScale;
       /** @type {CompositeOperation} */
       const composite = /** @type {CompositeOperation} */(setValue(params.composition, 'replace'));
 
@@ -311,9 +312,9 @@ export class WAAPIAnimation {
           const to = /** @type {WAAPITweenOptions} */(tweenOptions).to;
           const from = /** @type {WAAPITweenOptions} */(tweenOptions).from;
           /** @type {Number} */
-          tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, parsedTargets, null, null)) * timeScale;
+          tweenParams.duration = (tweenOptionsSpring ? /** @type {Spring} */(tweenOptionsSpring).settlingDuration : getFunctionValue(setValue(tweenOptions.duration, duration), $el, i, parsedTargets, null)) * timeScale;
           /** @type {Number} */
-          tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, parsedTargets, null, null) * timeScale;
+          tweenParams.delay = getFunctionValue(setValue(tweenOptions.delay, delay), $el, i, parsedTargets, null) * timeScale;
           /** @type {CompositeOperation} */
           tweenParams.composite = /** @type {CompositeOperation} */(setValue(tweenOptions.composition, composite));
           /** @type {String} */
@@ -390,18 +391,31 @@ export class WAAPIAnimation {
   get currentTime() {
     const controlAnimation = this.controlAnimation;
     const timeScale = globals.timeScale;
-    return this.completed ? this.duration : controlAnimation ? +controlAnimation.currentTime * (timeScale === 1 ? 1 : timeScale) : 0;
+    if (this.completed) return controlAnimation && controlAnimation.playbackRate < 0 ? 0 : this.duration;
+    return controlAnimation ? +controlAnimation.currentTime * (timeScale === 1 ? 1 : timeScale) : 0;
   }
 
   set currentTime(time) {
     const t = time * (globals.timeScale === 1 ? 1 : K);
+    const mutedBoundary = !this.persist && this.muteCallbacks && (t <= 0 || t >= this.duration);
     this.forEach(anim => {
-      // Make sure the animation playState is not 'paused' in order to properly trigger an onfinish callback.
-      // The "paused" play state supersedes the "finished" play state; if the animation is both paused and finished, the "paused" state is the one that will be reported.
-      // https://developer.mozilla.org/en-US/docs/Web/API/Animation/finish_event
-      // This is not needed for persisting animations since they never finish.
-      if (!this.persist && t >= this.duration) anim.play();
+      // Pause before the seek so no finish event fires and a pending reverse applies on assignment.
+      if (mutedBoundary) {
+        anim.pause();
+      } else if (!this.persist && (t >= this.duration || anim.playbackRate < 0 && t <= 0)) {
+        // Paused native animations do not emit finish events, even at the end.
+        anim.play();
+      }
       anim.currentTime = t;
+      if (mutedBoundary) {
+        if (anim.playbackRate < 0 ? t <= 0 : t >= this.duration) {
+          this.completed = this.paused = true;
+        } else if (!this.paused) {
+          anim.play();
+          // Restore the requested time, play can rewind a negative time.
+          anim.currentTime = t;
+        }
+      }
     });
   }
 
@@ -416,6 +430,7 @@ export class WAAPIAnimation {
   resume() {
     if (!this.paused) return this;
     this.paused = false;
+    this.completed = false;
     // TODO: Store the current time, and seek back to the last position
     return this.forEach('play');
   }
@@ -448,7 +463,7 @@ export class WAAPIAnimation {
   * @param {Boolean} muteCallbacks
   */
   seek(time, muteCallbacks = false) {
-    if (muteCallbacks) this.muteCallbacks = true;
+    this.muteCallbacks = muteCallbacks;
     if (time < this.duration) this.completed = false;
     this.currentTime = time;
     this.muteCallbacks = false;
@@ -504,27 +519,10 @@ export class WAAPIAnimation {
     return this;
   }
 
-  /**
-   * @typedef {this & {then: null}} ResolvedWAAPIAnimation
-   */
-
-  /**
-   * @param  {Callback<ResolvedWAAPIAnimation>} [callback]
-   * @return Promise<this>
-   */
-  then(callback = noop) {
-    const then = this.then;
-    const onResolve = () => {
-      this.then = null;
-      callback(/** @type {ResolvedWAAPIAnimation} */(this));
-      this.then = then;
-      this._resolve = noop;
-    }
-    return new Promise(r => {
-      this._resolve = () => r(onResolve());
-      if (this.completed) this._resolve();
-      return this;
-    });
+  // Define then as a getter so getCompletionThen can hide it during resolution without a field on each WAAPIAnimation.
+  /** @return {<T = Omit<this, 'then'>>(callback?: (this: void, self: Omit<this, 'then'>) => T) => Promise<Awaited<T>>} */
+  get then() {
+    return /** @type {any} */(getCompletionThen(this));
   }
 }
 

@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -37,6 +37,7 @@ const irregularFactory = (length = 10, randomness = 1) => {
   return linearFactory(...values);
 };
 
+/** Creates an easing that moves in random steps. */
 const irregular = /** @type {typeof irregularFactory} */(makeTweakable('Ease', 'irregular', irregularFactory));
 
 export { irregular };

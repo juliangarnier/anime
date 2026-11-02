@@ -1,11 +1,11 @@
 /**
  * Anime.js - waapi - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
-import { removeChild, addChild } from '../core/helpers.js';
+import { addChild, removeChild } from '../core/helpers.js';
 
 /**
  * @import {
@@ -80,7 +80,12 @@ const addWAAPIAnimation = (parent, $el, property, keyframes, params) => {
   parent.animations.push(animation);
   removeWAAPIAnimation($el, property);
   addChild(WAAPIAnimationsLookups, { parent, animation, $el, property, _next: null, _prev: null });
-  const handleRemove = () => removeWAAPIAnimation($el, property, parent);
+  const handleRemove = event => {
+    // Drop a queued finish that outlives a seek, a normal pause at the finished time still completes.
+    if (event.type === 'finish' && animation.playState !== 'finished' &&
+        (parent.completed || animation.currentTime !== event.currentTime)) return;
+    removeWAAPIAnimation($el, property, parent);
+  };
   animation.oncancel = handleRemove;
   animation.onremove = handleRemove;
   if (!parent.persist) {

@@ -18,6 +18,8 @@ import {
   writeVectorAt,
 } from './helpers.js';
 
+/** @import { PropDescriptor } from './helpers.js' */
+
 const identity = (t) => t;
 const getMaterial = (t) => t.material;
 
@@ -29,16 +31,24 @@ const materialColorCache = [{}, {}, {}];
 const materialScalarCache = [{}, {}, {}];
 const materialVectorCache = [{}, {}, {}];
 
-const buildEntry = (name, d, getHost, colorCaches, scalarCaches, vectorCaches) => {
-  const path = d.path;
-  if (d.kind === KIND_COLOR) {
+const ANGLE_NAMES = { rotation: 1, angle: 1 };
+const angleEntryCache = {};
+const eulerAxisEntryCache = {};
+
+/**
+ * @param {String} name
+ * @param {PropDescriptor} descriptor
+ */
+const buildEntry = (name, descriptor, getHost, colorCaches, scalarCaches, vectorCaches) => {
+  const path = descriptor.path;
+  if (descriptor.kind === KIND_COLOR) {
     const cache = colorCaches[path];
     return cache[name] || (cache[name] = {
       get: (t) => readColorAt(getHost(t), name, path),
       set: (t, _, tw) => writeColorAt(getHost(t), name, tw._numbers, path),
     });
   }
-  if (d.kind === KIND_SCALAR) {
+  if (descriptor.kind === KIND_SCALAR) {
     const cache = scalarCaches[path];
     return cache[name] || (cache[name] = {
       get: (t) => readScalar(getHost(t), name, path),
@@ -46,8 +56,8 @@ const buildEntry = (name, d, getHost, colorCaches, scalarCaches, vectorCaches) =
     });
   }
   // KIND_VECTOR
-  const base = d.base;
-  const axis = d.axis;
+  const base = descriptor.base;
+  const axis = descriptor.axis;
   const cache = vectorCaches[path];
   return cache[name] || (cache[name] = {
     get: (t) => readVectorAt(getHost(t), base, axis, path),
@@ -58,10 +68,10 @@ const buildEntry = (name, d, getHost, colorCaches, scalarCaches, vectorCaches) =
 // Detect direct Color, Vector axis, uniforms, and UniformNode slots on the target.
 // Numeric or boolean direct fields fall through to the engine OBJECT path.
 threeAdapter.registerPropertyResolver((target, name) => {
-  const d = classifyTargetProp(target, name);
-  if (!d) return null;
-  if (d.kind === KIND_SCALAR && d.path === PATH_DIRECT) return null;
-  return buildEntry(name, d, identity, directColorCache, directScalarCache, directVectorCache);
+  const descriptor = classifyTargetProp(target, name);
+  if (!descriptor) return null;
+  if (descriptor.kind === KIND_SCALAR && descriptor.path === PATH_DIRECT) return null;
+  return buildEntry(name, descriptor, identity, directColorCache, directScalarCache, directVectorCache);
 });
 
 // Walk to target.material for meshes and other Object3D subclasses with a material field.
@@ -72,27 +82,24 @@ threeAdapter.registerPropertyResolver((target, name) => {
   if (!m) return null;
   const first = Array.isArray(m) ? m[0] : m;
   if (!first) return null;
-  const d = classifyTargetProp(first, name);
-  if (!d) return null;
-  return buildEntry(name, d, getMaterial, materialColorCache, materialScalarCache, materialVectorCache);
+  const descriptor = classifyTargetProp(first, name);
+  if (!descriptor) return null;
+  return buildEntry(name, descriptor, getMaterial, materialColorCache, materialScalarCache, materialVectorCache);
 });
 
-// Convert angle-named scalar fields between degrees and radians so users animate in degrees on any three.js target.
-// Object3D Euler rotation is excluded because Euler is not a number, the rotateX/Y/Z mappings handle it.
-const ANGLE_NAMES = { rotation: 1, angle: 1 };
-const angleEntries = {};
+// Convert angle named scalar fields between degrees and radians so users animate in degrees.
+// Skip the Object3D rotation since Euler is not a number, rotateX, rotateY and rotateZ handle it.
 threeAdapter.registerPropertyResolver((target, name) => {
   if (!ANGLE_NAMES[name]) return null;
   if (typeof target[name] !== 'number') return null;
-  return angleEntries[name] || (angleEntries[name] = {
+  return angleEntryCache[name] || (angleEntryCache[name] = {
     get: (t) => radToDeg(t[name]),
     set: (t, v) => { t[name] = degToRad(v); },
   });
 });
 
-// Decompose Euler-typed angle fields to axis components in degrees, like rotationX, rotationY, rotationZ when rotation is an Euler.
-// Object3D mappings win because static adapter props beat resolvers, so this only catches non-Object3D targets with an Euler rotation field.
-const eulerAxisEntries = {};
+// Decompose an Euler angle field into axis components in degrees, like rotationX on a non Object3D.
+// Object3D keeps its rotateX, rotateY and rotateZ mappings since static props beat resolvers.
 threeAdapter.registerPropertyResolver((target, name) => {
   const axis = AXIS_MAP[name[name.length - 1]];
   if (!axis) return null;
@@ -100,7 +107,7 @@ threeAdapter.registerPropertyResolver((target, name) => {
   if (!ANGLE_NAMES[base]) return null;
   const v = target[base];
   if (!v || !v.isEuler) return null;
-  return eulerAxisEntries[name] || (eulerAxisEntries[name] = {
+  return eulerAxisEntryCache[name] || (eulerAxisEntryCache[name] = {
     get: (t) => radToDeg(t[base][axis]),
     set: (t, v) => { t[base][axis] = degToRad(v); },
   });

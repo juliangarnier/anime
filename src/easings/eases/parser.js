@@ -31,7 +31,6 @@ import { makeTweakable } from '../../core/globals.js';
  * } from '../../types/index.js'
 */
 
-
 /** @type {PowerEasing} */
 export const easeInPower = (p = 1.68) => t => pow(t, +p);
 
@@ -150,18 +149,13 @@ export const eases = (/*#__PURE__ */ (() => {
     for (let name in easeInFunctions) {
       const easeIn = easeInFunctions[name];
       const easeType = easeTypes[type];
+      // Wrap the factory eases for the editor, the wrapper runs at the call so the curve stays raw.
+      // Use the plain eases directly so they stay raw.
       list[type + name] = /** @type {EasingFunctionWithParams|EasingFunction} */(
         name === emptyString || name === 'Back' || name === 'Elastic' ?
-        (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b)) :
+        makeTweakable('Ease', type + name, (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b))) :
         easeType(/** @type {EasingFunction} */(easeIn))
       );
-    }
-  }
-  // Wrap the factory eases for the editor, the wrapper runs at the call so the per frame curve stays
-  // raw. Plain eases are used directly and stay raw.
-  for (const name in list) {
-    if (name === 'in' || name === 'out' || name === 'inOut' || name === 'outIn' || name.endsWith('Back') || name.endsWith('Elastic')) {
-      list[name] = makeTweakable('Ease', name, list[name]);
     }
   }
   return /** @type {EasesFunctions} */(list);

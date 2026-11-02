@@ -120,6 +120,15 @@ suite('Parameters', () => {
     })
   });
 
+  test('playbackEase keeps the start value of an animation during its delay', () => {
+    const forward = animate(testObject, { plainValue: [0, 100], delay: 100, duration: 100, ease: 'linear', playbackEase: 'inOutSine', autoplay: false });
+    forward.seek(-50);
+    expect(testObject.plainValue).to.equal(0);
+    const reversed = animate(testObject, { plainValue: [0, 100], delay: 100, duration: 100, ease: 'linear', playbackEase: 'inOutSine', reversed: true, autoplay: false });
+    reversed.seek(-50);
+    expect(testObject.plainValue).to.equal(100);
+  });
+
   test('playbackRate on Timeline', resolve => {
     createTimeline({
       playbackEase: 'outQuad',

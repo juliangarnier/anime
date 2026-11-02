@@ -60,6 +60,22 @@ suite('Animatables', () => {
     });
   });
 
+  test('Keeps alpha opaque when setting a color with three values', resolve => {
+    const animatable = createAnimatable('#target-id', {
+      backgroundColor: 20,
+    });
+
+    animatable.backgroundColor([100, 200, 0]);
+
+    createTimer({
+      duration: 50,
+      onComplete: () => {
+        expect(animatable.backgroundColor()).deep.equal([100, 200, 0, 1]);
+        resolve();
+      }
+    });
+  });
+
   test('Get and set animatable values', () => {
     const animatable = createAnimatable('#target-id', {
       x: 0,

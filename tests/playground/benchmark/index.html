@@ -135,7 +135,13 @@
   </div>
 </body>
 <script type="importmap">
-{ "imports": { "three": "../../../node_modules/three/build/three.module.min.js" } }
+{
+  "imports": {
+    "animejs": "../../../dist/modules/index.js",
+    "animejs/adapters/three": "../../../dist/modules/adapters/three/index.js",
+    "three": "../../../node_modules/three/build/three.module.min.js"
+  }
+}
 </script>
 <script type="module" src="index.js"></script>
 </html>

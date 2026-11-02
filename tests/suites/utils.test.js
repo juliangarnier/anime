@@ -333,6 +333,33 @@ suite('Utils', () => {
     expect(new Set(sequence).size).to.be.above(1);
   });
 
+  test('Draws a separate value, delay and duration for each target with utils.random perTarget', () => {
+    const generators = () => ({
+      x: utils.random({ min: 100, max: 200, seed: 1, perTarget: true }),
+      delay: utils.random({ min: 0, max: 50, seed: 2, perTarget: true }),
+      duration: utils.random({ min: 100, max: 300, seed: 3, perTarget: true }),
+    });
+    const targets = [0, 1, 2, 3].map(() => ({ x: 0 }));
+    const drawn = generators();
+    const animation = animate(targets, { x: drawn.x, delay: drawn.delay, duration: drawn.duration, ease: 'inQuad', autoplay: false });
+    // The same seeds replay the draws, one per target in target order.
+    const expected = generators();
+    const xs = targets.map(() => expected.x());
+    const delays = targets.map(() => expected.delay());
+    const durations = targets.map(() => expected.duration());
+    expect(new Set(xs).size).to.equal(targets.length);
+    // The smallest delay becomes the animation delay, seek times start after it.
+    const firstDelay = Math.min(...delays);
+    for (const time of [30, 120, 250, 400, 120]) {
+      animation.seek(time);
+      targets.forEach((target, i) => {
+        const progress = Math.min(1, Math.max(0, (time - (delays[i] - firstDelay)) / durations[i]));
+        expect(target.x).to.be.closeTo(xs[i] * progress * progress, 1e-9);
+      });
+    }
+    animation.cancel();
+  });
+
   test('utils.createSeededRandom draws a reproducible varying sequence and honours per-call range', () => {
     const a = utils.createSeededRandom(42);
     const b = utils.createSeededRandom(42);
@@ -392,6 +419,34 @@ suite('Utils', () => {
     expect(utils.snap(200, array)).to.equal(100);
     expect(utils.snap(300, array)).to.equal(400);
     expect(utils.snap(1000, array)).to.equal(400);
+  });
+
+  test('utils.remove(target, animation) keeps the animation seekable', () => {
+    const target = { x: 0, y: 0 };
+    const partial = animate(target, { x: 100, y: 100, duration: 100, ease: 'linear', autoplay: false });
+    utils.remove(target, partial, 'x');
+    partial.seek(50);
+    expect([target.x, target.y]).to.deep.equal([0, 50]);
+    const emptied = animate(target, { x: 100, y: 100, duration: 100, ease: 'linear', autoplay: false });
+    utils.remove(target, emptied);
+    emptied.seek(75);
+    expect([target.x, target.y]).to.deep.equal([0, 50]);
+  });
+
+  test('Keeps updating the other transforms of an element after removing one of its transform properties', () => {
+    const [first, second, third, fourth] = [0, 1, 2, 3].map(() => document.body.appendChild(document.createElement('div')));
+    const transforms = animate([first, second], { x: 100, rotate: 90, duration: 100, ease: 'linear', autoplay: false });
+    utils.remove(first, transforms, 'rotate');
+    transforms.seek(50);
+    expect(first.style.transform).to.contain('translateX(50px)');
+    expect(second.style.transform).to.contain('translateX(50px)');
+    const mixed = animate([third, fourth], { x: 100, opacity: .5, rotate: 90, duration: 100, ease: 'linear', autoplay: false });
+    utils.remove(fourth, mixed, 'rotate');
+    mixed.seek(50);
+    expect(fourth.style.transform).to.contain('translateX(50px)');
+    transforms.revert();
+    mixed.revert();
+    [first, second, third, fourth].forEach(element => element.remove());
   });
 
   test('utils.remove(target)', () => {
@@ -602,4 +657,18 @@ suite('Utils', () => {
     expect(chain(5)).to.equal(50);
     expect(chain(50)).to.equal(100);
   });
+
+  test('Rounds values at standard and custom precisions', () => {
+    expect(utils.round(1.23456789, 4)).to.equal(1.2346);
+    expect(utils.round(1.23456789012345, 11)).to.equal(1.23456789012);
+    expect(utils.round(1.23456789012345, 12)).to.equal(1.234567890123);
+    expect(Object.is(utils.round(-0.0000000000001, 12), -0)).to.equal(true);
+    expect(utils.round(-1.23456789, 4)).to.equal(-1.2346);
+    expect(utils.round(1.23456789, -1)).to.equal(1.23456789);
+    expect(Object.is(utils.round(-0.00001, 4), -0)).to.equal(true);
+    expect(utils.round(1.5, 0)).to.equal(2);
+    expect(utils.round(1.2345e-22, 24)).to.equal(1.23e-22);
+    expect(utils.round(1.2, .5)).to.equal(4 / Math.sqrt(10));
+  });
+
 });

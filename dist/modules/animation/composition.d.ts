@@ -1,10 +1,11 @@
-export function getTweenSiblings(target: Target, property: string, lookup?: string): TweenPropertySiblings;
+export function getFirstKeyframe(tween: Tween): Tween;
 export function overrideTween(tween: Tween): void;
-export function composeTween(tween: Tween, siblings: TweenPropertySiblings): Tween;
-export function removeTweenSliblings(tween: Tween): Tween;
-export function removeTargetsFromRenderable(targetsArray: TargetsArray | Set<any>, renderable?: Renderable, propertyName?: string): void;
-import type { Target } from '../types/index.js';
-import type { TweenPropertySiblings } from '../types/index.js';
+export function getPreviousSibling(target: Target, property: string, animation: JSAnimation, tweenStartTime: number): Tween;
+export function composeTween(tween: Tween, tweenStartTime?: number): void;
+export function removeTweenSliblings(tween: Tween): void;
+export function removeTargetsFromRenderable(targets: TargetsArray | Set<any>, renderable?: Renderable, propertyName?: string): void;
 import type { Tween } from '../types/index.js';
+import type { Target } from '../types/index.js';
+import type { JSAnimation } from '../animation/animation.js';
 import type { TargetsArray } from '../types/index.js';
 import type { Renderable } from '../types/index.js';

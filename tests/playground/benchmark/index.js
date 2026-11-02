@@ -1,5 +1,5 @@
-import { waapi, animate, createTimer, utils, engine } from '../../../dist/modules/index.js';
-import { getInstances } from '../../../dist/modules/adapters/three/index.js';
+import { waapi, animate, createTimer, utils, engine } from 'animejs';
+import { getInstances } from 'animejs/adapters/three';
 
 import {
   Object3D,
@@ -334,7 +334,10 @@ webglThreejsMode.init = () => {
   scene.add(mesh);
 
   // Per instance adapters, anime animates these directly and the adapter flushes the matrices on render.
-  const instances = getInstances(mesh);
+  const instances = /** @type {(NonNullable<ReturnType<typeof getInstances>[number]> & {
+    started?: number,
+    reversed?: boolean | number,
+  })[]} */(getInstances(mesh));
 
   const renderer = new WebGLRenderer({
     antialias: false,

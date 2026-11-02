@@ -1,6 +1,6 @@
 /**
  * Anime.js - engine - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -87,7 +87,9 @@ class Engine extends clock.Clock {
   pause() {
     if (!this.reqId) return;
     this.paused = true;
-    return killEngine();
+    engineCancelMethod(/** @type {NodeJS.Immediate & Number} */(this.reqId));
+    this.reqId = 0;
+    return this;
   }
 
   resume() {
@@ -151,7 +153,6 @@ const engine = /*#__PURE__*/(() => {
   return engine;
 })();
 
-
 const tickEngine = () => {
   if (engine._head) {
     engine.reqId = engineTickMethod(tickEngine);
@@ -159,12 +160,6 @@ const tickEngine = () => {
   } else {
     engine.reqId = 0;
   }
-};
-
-const killEngine = () => {
-  engineCancelMethod(/** @type {NodeJS.Immediate & Number} */(engine.reqId));
-  engine.reqId = 0;
-  return engine;
 };
 
 exports.engine = engine;

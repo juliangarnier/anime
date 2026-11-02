@@ -8,8 +8,19 @@ import {
   utils,
 } from '../../dist/modules/index.js';
 
-const defaultEnginePauseState = engine.paused;
-const defaultEngineReqId = engine.reqId;
+// A broken scheduler must reject before Mocha times out, so each test can still clean up.
+/** @param {import('../../dist/modules/index.js').JSAnimation} animation */
+async function waitForCompletion(animation) {
+  let timeout;
+  try {
+    await Promise.race([
+      animation.then(),
+      new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('Animation did not complete')), 1000); }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 suite('Engine', () => {
 
@@ -34,98 +45,75 @@ suite('Engine', () => {
 
   });
 
-  test('Set useDefaultMainLoop to false should prevent animations from running', resolve => {
-
-    // Needed to kill the engine
+  test('Set useDefaultMainLoop to false should prevent animations from running', async () => {
     engine.pause();
-
-    // Needed to reset engine to its original state
-    engine.paused = defaultEnginePauseState;
-    engine.reqId = defaultEngineReqId;
-
+    const defaultLoop = engine.useDefaultMainLoop;
     engine.useDefaultMainLoop = false;
-
-    let renderCheck = 0;
-
-    const animation = animate('#target-id', {
-      x: 100,
-      duration: 20,
-      onUpdate: () => {
-        renderCheck++;
-      },
-    });
-
-    setTimeout(() => {
+    let renders = 0;
+    const animation = animate('#target-id', { x: 100, duration: 50, onRender: () => renders++ });
+    try {
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
       expect(animation.began).to.equal(false);
       expect(animation.currentTime).to.equal(0);
-      expect(renderCheck).to.equal(0);
-      engine.useDefaultMainLoop = true; // Reset
-      resolve();
-    }, 70);
+      expect(renders).to.equal(0);
+    } finally {
+      animation.cancel();
+      engine.useDefaultMainLoop = defaultLoop;
+      engine.resume();
+    }
   });
 
-  test('Manually tick the engine with an external loop', resolve => {
-
+  test('Manually tick the engine with an external loop', async () => {
+    engine.pause();
+    const defaultLoop = engine.useDefaultMainLoop;
     engine.useDefaultMainLoop = false;
-
     let raf = 0;
-
+    let renders = 0;
+    const animation = animate('#target-id', { translateX: 100, duration: 50, onRender: () => renders++ });
     function customLoop() {
       raf = requestAnimationFrame(customLoop);
       engine.update();
     }
-
-    customLoop();
-
-    let renderCheck = 0;
-
-    const animation = animate('#target-id', {
-      translateX: 100,
-      onRender: () => {
-        renderCheck++;
-      },
-      duration: 50,
-    });
-
-    setTimeout(() => {
+    try {
+      customLoop();
+      await waitForCompletion(animation);
       expect(animation.began).to.equal(true);
       expect(animation.completed).to.equal(true);
       expect(animation.currentTime).to.equal(50);
-      expect(renderCheck).to.be.above(2);
+      expect(/** @type {HTMLElement} */(document.querySelector('#target-id')).style.transform).to.equal('translateX(100px)');
+      // Exact per-frame counts are checked with controlled time in engine-scheduler.test.mjs.
+      expect(renders).to.be.above(0);
+    } finally {
       cancelAnimationFrame(raf);
-      engine.useDefaultMainLoop = true; // Reset
-      resolve();
-    }, 70);
+      animation.cancel();
+      engine.useDefaultMainLoop = defaultLoop;
+      engine.resume();
+    }
   });
 
-  test('Pause and resume the engine', resolve => {
-
-    let renderCheck = 0;
-
-    const animation = animate('#target-id', {
-      translateX: 100,
-      onRender: () => {
-        renderCheck++;
-      },
-      duration: 50,
-    });
-
-    engine.pause();
-
-    setTimeout(() => {
+  test('Pause and resume the engine', async () => {
+    let renders = 0;
+    const animation = animate('#target-id', { translateX: 100, duration: 50, onRender: () => renders++ });
+    try {
+      engine.pause();
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
       expect(animation.began).to.equal(false);
       expect(animation.completed).to.equal(false);
       expect(animation.currentTime).to.equal(0);
-      expect(renderCheck).to.equal(0);
+      expect(renders).to.equal(0);
       engine.resume();
-      setTimeout(() => {
-        expect(animation.began).to.equal(true);
-        expect(animation.completed).to.equal(true);
-        expect(animation.currentTime).to.equal(50);
-        expect(renderCheck).to.be.above(2);
-        resolve();
-      }, 100);
-    }, 50);
+      await waitForCompletion(animation);
+      expect(animation.began).to.equal(true);
+      expect(animation.completed).to.equal(true);
+      expect(animation.currentTime).to.equal(50);
+      expect(/** @type {HTMLElement} */(document.querySelector('#target-id')).style.transform).to.equal('translateX(100px)');
+      expect(renders).to.be.above(0);
+    } finally {
+      animation.cancel();
+      engine.resume();
+    }
   });
 
   test('Default precision should be 4', () => {

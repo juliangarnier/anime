@@ -22,18 +22,17 @@ import {
 
 /**
  * @typedef {Object} EditorGlobals
- * @property {boolean} showPanel
  * @property {Function} addAnimation
- * @property {Function} addSet
+ * @property {Function|null} addSet
  * @property {Function} addTimeline
  * @property {Function} addTimelineChild
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
  * @property {Function|null} addTimelineTimer
+ * @property {Function} addLayout
+ * @property {Function} addLayoutTransition
  * @property {Function} createTweak
- * @property {Object|null} _head
- * @property {Object|null} _tail
  */
 
 /** @type {DefaultsParams} */
@@ -47,6 +46,7 @@ export const defaults = {
   reversed: false,
   alternate: false,
   autoplay: true,
+  muted: false,
   persist: false,
   duration: K,
   delay: 0,
@@ -99,7 +99,11 @@ export const makeTweakable = (type, name, fn) => function() {
   return editor ? editor.createTweak(result, type, name, Array.prototype.slice.call(arguments)) : result;
 }
 
-export const globalVersions = { version: '__packageVersion__', engine: null };
+// The build writes the package version in place of the placeholder, the type stays a string.
+/** @type {string} */
+export const version = '__packageVersion__';
+
+export const globalVersions = { version, engine: null };
 
 if (isBrowser) {
   if (!win.AnimeJS) win.AnimeJS = [];

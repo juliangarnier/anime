@@ -162,6 +162,28 @@ suite('Targets', () => {
     expect(getChildLength(animation)).to.equal(200);
   });
 
+  test('Preserves target order across repeated animations', () => {
+    const objects = [];
+    for (let i = 0; i < 200; i++) objects.push({ x: 0 });
+    const reversed = objects.slice().reverse();
+    for (let repeat = 0; repeat < 2; repeat++) {
+      const ordered = repeat ? objects : reversed;
+      const animation = animate([ordered, null, ordered], {
+        x: (target, index) => index + 1,
+        duration: 100,
+        ease: 'linear',
+        autoplay: false,
+      });
+      animation.seek(100);
+      expect(animation.targets.length).to.equal(200);
+      for (let i = 0; i < 200; i++) {
+        expect(animation.targets[i]).to.equal(ordered[i]);
+        expect(ordered[i].x).to.equal(i + 1);
+      }
+      animation.cancel();
+    }
+  });
+
   test('Properly handle animations without targets', () => {
     const animation = animate(undefined, { duration: 10 });
     expect(animation.targets).to.deep.equal([]);

@@ -1,12 +1,14 @@
 import {
+  overrideTypes,
   compositionTypes,
   minValue,
-  tweenTypes,
 } from '../core/consts.js';
 
 import {
-  cloneArray,
-  addChild,
+  getReplaceLookups,
+} from '../core/targets.js';
+
+import {
   removeChild,
   forEachChildren,
   round,
@@ -22,15 +24,12 @@ import {
 } from '../engine/engine.js';
 
 import {
-  additive,
-  addAdditiveAnimation,
+  addAdditiveTween,
+  removeAdditiveTween,
 } from './additive.js';
 
 /**
  * @import {
- *   TweenReplaceLookups,
- *   TweenAdditiveLookups,
- *   TweenPropertySiblings,
  *   Tween,
  *   Target,
  *   TargetsArray,
@@ -40,59 +39,83 @@ import {
  * @import {
  *   JSAnimation,
  * } from '../animation/animation.js'
+ *
+ * @import {
+ *   Timeline,
+ * } from '../timeline/timeline.js'
 */
 
-const lookups = {
-  /** @type {TweenReplaceLookups} */
-  _rep: new WeakMap(),
-  /** @type {TweenAdditiveLookups} */
-  _add: new Map(),
-}
-
 /**
- * @param  {Target} target
- * @param  {String} property
- * @param  {String} lookup
- * @return {TweenPropertySiblings}
+ * @param  {Tween} tween
+ * @return {Tween} The first keyframe of the property of the tween in its animation
  */
-export const getTweenSiblings = (target, property, lookup = '_rep') => {
-  const lookupMap = lookups[lookup];
-  let targetLookup = lookupMap.get(target);
-  if (!targetLookup) {
-    targetLookup = {};
-    lookupMap.set(target, targetLookup);
+export const getFirstKeyframe = tween => {
+  let prevKeyframe = tween._prev;
+  while (prevKeyframe && prevKeyframe.target === tween.target && prevKeyframe.property === tween.property) {
+    tween = prevKeyframe;
+    prevKeyframe = tween._prev;
   }
-  return targetLookup[property] ? targetLookup[property] : targetLookup[property] = {
-    _head: null,
-    _tail: null,
-  }
+  return tween;
 }
 
 /**
- * @param  {Tween} p
- * @param  {Tween} c
- * @return {Number|Boolean}
- */
-const addTweenSortMethod = (p, c) => {
-  return p._isOverridden || p._absoluteStartTime > c._absoluteStartTime;
-}
-
-/**
+ * Replaces the tweens of a property for good.
  * @param {Tween} tween
  */
 export const overrideTween = tween => {
-  tween._isOverlapped = 1;
-  tween._isOverridden = 1;
-  tween._changeDuration = minValue;
-  tween._currentTime = minValue;
+  tween = getFirstKeyframe(tween);
+  for (let keyframe = tween; keyframe && keyframe.target === tween.target && keyframe.property === tween.property; keyframe = keyframe._next) {
+    keyframe._isOverridden = overrideTypes.PERMANENT;
+    // Set both times to minValue so a walk of simple tweens in progress stops writing the replaced tween.
+    keyframe._changeDuration = keyframe._currentTime = minValue;
+  }
+  // Clear _hasSimpleTweens so the animation takes the general gate that tests _isOverridden.
+  tween.parent._hasSimpleTweens = false;
+  const timeline = /** @type {Timeline} */(tween.parent.parent);
+  if (timeline) timeline.removeTakeover(tween);
+}
+
+/**
+ * Returns the tween that a new tween of an animation takes its property from, and replaces the tweens of its timeline that take over later.
+ * @param  {Target} target
+ * @param  {String} property
+ * @param  {JSAnimation} animation
+ * @param  {Number} tweenStartTime
+ * @return {Tween}
+ */
+export const getPreviousSibling = (target, property, animation, tweenStartTime) => {
+  const lookups = getReplaceLookups(target);
+  const sibling = lookups[property];
+  const timeline = animation.parent;
+  if (!sibling || !timeline || sibling.parent.parent !== timeline) return sibling;
+  return lookups[property] = /** @type {Timeline} */(timeline).getPreviousSibling(sibling, animation, tweenStartTime);
+}
+
+/**
+ * @param {Renderable} renderable
+ * @return {Boolean}
+ */
+const hasRenderingTweens = renderable => {
+  // Return at the first tween that can still render so an animation that must stay alive is not scanned further.
+  // Scan from the tail, a replacement overrides the tweens in list order so the tweens that can still render are at the end.
+  // A scan from the head grew with each override, 5 ms instead of 0.5 ms to replace 500 objects.
+  let child = renderable._tail;
+  while (child) {
+    if (renderable._hasChildren) {
+      if (hasRenderingTweens(/** @type {Renderable} */(child))) return true;
+    } else if (/** @type {Tween} */(child)._isOverridden !== overrideTypes.PERMANENT) {
+      return true;
+    }
+    child = child._prev;
+  }
+  return false;
 }
 
 /**
  * @param  {Tween} tween
- * @param  {TweenPropertySiblings} siblings
- * @return {Tween}
+ * @param  {Number} [tweenStartTime] The start of the tween in its animation, delay included
  */
-export const composeTween = (tween, siblings) => {
+export const composeTween = (tween, tweenStartTime = tween._startTime) => {
 
   const tweenCompositionType = tween._composition;
 
@@ -100,97 +123,35 @@ export const composeTween = (tween, siblings) => {
 
   if (tweenCompositionType === compositionTypes.replace) {
 
-    const tweenAbsStartTime = tween._absoluteStartTime;
+    // Read replace siblings from the target, a WeakMap scattered their tweens in memory when a hidden tab built them.
+    const lookups = getReplaceLookups(tween.target);
+    const prevSibling = lookups[tween.property];
+    const animation = tween.parent;
 
-    addChild(siblings, tween, addTweenSortMethod, '_prevRep', '_nextRep');
-
-    const prevSibling = tween._prevRep;
-
-    // Update the previous siblings for composition replace tweens
+    lookups[tween.property] = tween;
 
     if (prevSibling) {
 
-      const prevParent = prevSibling.parent;
-      const prevAbsEndTime = prevSibling._absoluteEndTime;
+      const prevAnimation = prevSibling.parent;
+      const timeline = /** @type {Timeline} */(animation.parent);
 
-      // Handle looped animations tween
+      if (prevAnimation === animation) {
 
-      if (
-        // Check if the previous tween is from a different animation
-        tween.parent.id !== prevParent.id &&
-        // Check if the animation has loops
-        prevParent.iterationCount> 1 &&
-        // Check if _absoluteChangeEndTime of last loop overlaps the current tween
-        prevAbsEndTime + (prevParent.duration - prevParent.iterationDuration) > tweenAbsStartTime
-      ) {
+        // Inherit _isOverridden from the previous keyframe so a replaced property stays replaced across its keyframes.
+        tween._isOverridden = prevSibling._isOverridden;
 
-        // TODO: Find a way to only override the iterations overlapping with the tween
-        overrideTween(prevSibling);
+      } else if (timeline && timeline === prevAnimation.parent) {
 
-        let prevPrevSibling = prevSibling._prevRep;
+        /** @type {Timeline} */(timeline).composeTween(tween, prevSibling, tweenStartTime);
 
-        // If the tween was part of a set of keyframes, override its siblings
-        while (prevPrevSibling && prevPrevSibling.parent.id === prevParent.id) {
-          overrideTween(prevPrevSibling);
-          prevPrevSibling = prevPrevSibling._prevRep;
-        }
+      } else {
 
-      }
-
-      // Read the precision-matched update-start instead of subtracting tween._delay live so sequential keyframes touching at a boundary don't trigger a phantom overlap from float drift.
-      const absoluteUpdateStartTime = tween._absoluteUpdateStartTime;
-
-      if (prevAbsEndTime > absoluteUpdateStartTime) {
-
-        const prevChangeStartTime = prevSibling._startTime;
-        const prevTLOffset = prevAbsEndTime - (prevChangeStartTime + prevSibling._updateDuration);
-        // Rounding is necessary here to minimize floating point errors when working in seconds
-        const updatedPrevChangeDuration = round(absoluteUpdateStartTime - prevTLOffset - prevChangeStartTime, 12);
-
-        prevSibling._changeDuration = updatedPrevChangeDuration;
-        prevSibling._currentTime = updatedPrevChangeDuration;
-        prevSibling._isOverlapped = 1;
-
-        // Override the previous tween if its new _changeDuration is lower than minValue
-        // TODO: See if it's even neceseeary to test against minValue, checking for 0 might be enough
-        if (updatedPrevChangeDuration < minValue) {
+        // Replace for good a previous tween outside a common timeline, if it can still play when the new one is created.
+        const previous = prevAnimation.parent || prevAnimation;
+        const previousEndTime = previous._offset + (previous._delay + previous.duration) / previous._speed;
+        if (round(previousEndTime - (timeline || animation)._offset, 12) > 0) {
           overrideTween(prevSibling);
-        }
-      }
-
-      // Skip the cancel cascade when both tweens share the same parent timeline, a timeline cannot replace itself.
-      const tweenParentTL = tween.parent.parent;
-      if (!tweenParentTL || tweenParentTL !== prevParent.parent) {
-
-        let pausePrevParentAnimation = true;
-
-        forEachChildren(prevParent, (/** @type Tween */t) => {
-          if (!t._isOverlapped) pausePrevParentAnimation = false;
-        });
-
-        if (pausePrevParentAnimation) {
-          const prevParentTL = prevParent.parent;
-          if (prevParentTL) {
-            let pausePrevParentTL = true;
-            forEachChildren(prevParentTL, (/** @type JSAnimation */a) => {
-              if (a !== prevParent) {
-                forEachChildren(a, (/** @type Tween */t) => {
-                  if (!t._isOverlapped) pausePrevParentTL = false;
-                });
-              }
-            });
-            if (pausePrevParentTL) {
-              prevParentTL.cancel();
-            }
-          } else {
-            prevParent.cancel();
-            // Previously, calling .cancel() on a timeline child would affect the render order of other children
-            // Worked around this by marking it as .completed and using .pause() for safe removal in the engine loop
-            // This is no longer needed since timeline tween composition is now handled separately
-            // Keeping this here for reference
-            // prevParent.completed = true;
-            // prevParent.pause();
-          }
+          if (!hasRenderingTweens(previous)) previous.cancel();
         }
 
       }
@@ -201,89 +162,26 @@ export const composeTween = (tween, siblings) => {
 
   } else if (tweenCompositionType === compositionTypes.blend) {
 
-    const additiveTweenSiblings = getTweenSiblings(tween.target, tween.property, '_add');
-    const additiveAnimation = addAdditiveAnimation(lookups._add);
-
-    let lookupTween = additiveTweenSiblings._head;
-
-    if (!lookupTween) {
-      lookupTween = { ...tween };
-      lookupTween._composition = compositionTypes.replace;
-      lookupTween._updateDuration = minValue;
-      lookupTween._startTime = 0;
-      lookupTween._numbers = cloneArray(tween._fromNumbers);
-      lookupTween._number = 0;
-      lookupTween._next = null;
-      lookupTween._prev = null;
-      addChild(additiveTweenSiblings, lookupTween);
-      addChild(additiveAnimation, lookupTween);
-    }
-
-    // Convert the values of TO to FROM and set TO to 0
-
-    const toNumber = tween._toNumber;
-    tween._fromNumber = lookupTween._fromNumber - toNumber;
-    tween._toNumber = 0;
-    tween._numbers = cloneArray(tween._fromNumbers);
-    tween._number = 0;
-    lookupTween._fromNumber = toNumber;
-
-    if (tween._toNumbers.length) {
-      const toNumbers = cloneArray(tween._toNumbers);
-      toNumbers.forEach((value, i) => {
-        tween._fromNumbers[i] = lookupTween._fromNumbers[i] - value;
-        tween._toNumbers[i] = 0;
-      });
-      lookupTween._fromNumbers = toNumbers;
-    }
-
-    addChild(additiveTweenSiblings, tween, null, '_prevAdd', '_nextAdd');
+    addAdditiveTween(tween);
 
   }
-
-  return tween;
 
 }
 
 /**
  * @param  {Tween} tween
- * @return {Tween}
  */
 export const removeTweenSliblings = tween => {
   const tweenComposition = tween._composition;
-  if (tweenComposition !== compositionTypes.none) {
-    const tweenTarget = tween.target;
+  if (tweenComposition === compositionTypes.replace) {
     const tweenProperty = tween.property;
-    const replaceTweensLookup = lookups._rep;
-    const replaceTargetProps = replaceTweensLookup.get(tweenTarget);
-    const tweenReplaceSiblings = replaceTargetProps[tweenProperty];
-    removeChild(tweenReplaceSiblings, tween, '_prevRep', '_nextRep');
-    if (tweenComposition === compositionTypes.blend) {
-      const addTweensLookup = lookups._add;
-      const addTargetProps = addTweensLookup.get(tweenTarget);
-      if (!addTargetProps) return;
-      const additiveTweenSiblings = addTargetProps[tweenProperty];
-      const additiveAnimation = additive.animation;
-      removeChild(additiveTweenSiblings, tween, '_prevAdd', '_nextAdd');
-      // If only one tween is left in the additive lookup, it's the tween lookup
-      const lookupTween = additiveTweenSiblings._head;
-      if (lookupTween && lookupTween === additiveTweenSiblings._tail) {
-        removeChild(additiveTweenSiblings, lookupTween, '_prevAdd', '_nextAdd');
-        removeChild(additiveAnimation, lookupTween);
-        let shouldClean = true;
-        for (let prop in addTargetProps) {
-          if (addTargetProps[prop]._head) {
-            shouldClean = false;
-            break;
-          }
-        }
-        if (shouldClean) {
-          addTweensLookup.delete(tweenTarget);
-        }
-      }
-    }
+    const replaceTargetProps = getReplaceLookups(tween.target);
+    // Release only a replace tween, removing a blend tween from the lookups would disconnect an unrelated replace animation.
+    // Release the property, the tween that this one replaced stays replaced.
+    if (replaceTargetProps[tweenProperty] === tween) replaceTargetProps[tweenProperty] = null;
+  } else if (tweenComposition === compositionTypes.blend) {
+    removeAdditiveTween(tween);
   }
-  return tween;
 }
 
 /**
@@ -299,16 +197,7 @@ const removeTargetsFromJSAnimation = (targetsSet, animation, propertyName) => {
     if (targetsSet.has(tweenTarget)) {
       const tweenName = tween.property;
       const tweenType = tween._tweenType;
-      const normalizePropName = sanitizePropertyName(propertyName, tweenTarget, tweenType);
-      if (!normalizePropName || normalizePropName && normalizePropName === tweenName) {
-        // Make sure to flag the previous CSS transform tween to renderTransform
-        if (tween.parent._tail === tween &&
-            tween._tweenType === tweenTypes.TRANSFORM &&
-            tween._prev &&
-            tween._prev._tweenType === tweenTypes.TRANSFORM
-        ) {
-          tween._prev._renderTransforms = 1;
-        }
+      if (!propertyName || sanitizePropertyName(propertyName, tweenTarget, tweenType) === tweenName) {
         // Removes the tween from the selected animation
         removeChild(animation, tween);
         // Detach the tween from its siblings to make sure blended tweens are correctlly removed
@@ -321,14 +210,14 @@ const removeTargetsFromJSAnimation = (targetsSet, animation, propertyName) => {
 }
 
 /**
- * @param  {TargetsArray|Set} targetsArray
+ * @param  {TargetsArray|Set} targets
  * @param  {Renderable} [renderable]
  * @param  {String} [propertyName]
  */
-export const removeTargetsFromRenderable = (targetsArray, renderable, propertyName) => {
+export const removeTargetsFromRenderable = (targets, renderable, propertyName) => {
   // Accept the public array, or on recursion the Set already built, so target membership stays
   // constant time and large target lists do not make removal scan quadratically.
-  const targetsSet = targetsArray instanceof Set ? targetsArray : new Set(targetsArray);
+  const targetsSet = targets instanceof Set ? targets : new Set(targets);
   const parent = /** @type {Renderable|typeof engine} **/(renderable ? renderable : engine);
   let removeMatches;
   if (parent._hasChildren) {
@@ -348,10 +237,7 @@ export const removeTargetsFromRenderable = (targetsArray, renderable, propertyNa
             iterationDuration = childDur;
           }
         }
-      }
-      // Make sure to also remove engine's children targets
-      // NOTE: Avoid recursion?
-      if (child._head) {
+      } else if (child._head) {
         removeTargetsFromRenderable(targetsSet, child, propertyName);
       } else {
         child._hasChildren = false;

@@ -1,12 +1,12 @@
 /**
  * Anime.js - easings - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
 
 import { emptyString, minValue } from '../../core/consts.js';
-import { pow, sin, sqrt, cos, isStr, stringStartsWith, isFnc, clamp, asin, PI } from '../../core/helpers.js';
+import { isStr, stringStartsWith, isFnc, pow, sin, sqrt, cos, clamp, asin, PI } from '../../core/helpers.js';
 import { none } from '../none.js';
 import { makeTweakable } from '../../core/globals.js';
 
@@ -20,7 +20,6 @@ import { makeTweakable } from '../../core/globals.js';
  *   PowerEasing,
  * } from '../../types/index.js'
 */
-
 
 /** @type {PowerEasing} */
 const easeInPower = (p = 1.68) => t => pow(t, +p);
@@ -140,18 +139,13 @@ const eases = (/*#__PURE__ */ (() => {
     for (let name in easeInFunctions) {
       const easeIn = easeInFunctions[name];
       const easeType = easeTypes[type];
+      // Wrap the factory eases for the editor, the wrapper runs at the call so the curve stays raw.
+      // Use the plain eases directly so they stay raw.
       list[type + name] = /** @type {EasingFunctionWithParams|EasingFunction} */(
         name === emptyString || name === 'Back' || name === 'Elastic' ?
-        (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b)) :
+        makeTweakable('Ease', type + name, (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b))) :
         easeType(/** @type {EasingFunction} */(easeIn))
       );
-    }
-  }
-  // Wrap the factory eases for the editor, the wrapper runs at the call so the per frame curve stays
-  // raw. Plain eases are used directly and stay raw.
-  for (const name in list) {
-    if (name === 'in' || name === 'out' || name === 'inOut' || name === 'outIn' || name.endsWith('Back') || name.endsWith('Elastic')) {
-      list[name] = makeTweakable('Ease', name, list[name]);
     }
   }
   return /** @type {EasesFunctions} */(list);

@@ -1,7 +1,4 @@
 import { createTimeline, scrambleText, stagger } from '../../../dist/modules/index.js';
-import { showGUI } from '../../../../../animatorkit/editor/gui/index.js';
-
-showGUI();
 
 const tl = createTimeline();
 

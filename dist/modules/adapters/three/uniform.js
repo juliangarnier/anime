@@ -1,6 +1,6 @@
 /**
  * Anime.js - adapters - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -12,7 +12,7 @@ import { readColorHex, COLOR_NORM, isVectorWith } from './helpers.js';
 /**
  * Bare `UniformNode` adapter. Auto-detects `UniformNode` instances and exposes their `.value` for animation. Scalars and booleans animate via `value`, `Color` uniforms via `color`, and `Vector2/3/4` uniforms via `x` / `y` / `z` / `w` axes.
  *
- *   import 'animejs/bindings/three';
+ *   import 'animejs/adapters/three';
  *   import { uniform } from 'three/tsl';
  *   animate(uniform(0),              { value: 1 });
  *   animate(uniform(new Color()),    { color: '#0f0' });
@@ -24,7 +24,7 @@ import { readColorHex, COLOR_NORM, isVectorWith } from './helpers.js';
 
 const uniformNode = threeAdapter.registerTargetAdapter((t) => !!(t && t.isUniformNode));
 
-// Scalar and bool uniforms animate via the engine OBJECT fallthrough on value, no adapter prop needed since the engine writes uniform value natively.
+// Scalar and bool uniforms need no adapter prop, the engine writes value through its object path.
 uniformNode.registerProperty('color',
   (t) => readColorHex(t.value),
   (t, _, tw) => {

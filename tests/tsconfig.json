@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "animejs": ["dist/modules/index.js"],
+      "animejs": ["../dist/modules/index.js"],
+      "animejs/adapters/three": ["../dist/modules/adapters/three/index.js"],
     }
   },
   "include": ["**/*.js"],
-  "exclude": ["run.js", "suites/node.test.js", "suites/build.test.js", "playground/assets/**"]
+  "exclude": ["run.js", "suites/node.test.js", "suites/build.test.js", "playground/assets/**", "results/**"]
 }

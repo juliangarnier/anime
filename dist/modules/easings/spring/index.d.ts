@@ -24,8 +24,8 @@ export class Spring {
     settlingDuration: number;
     /** @type {JSAnimation} */
     parent: JSAnimation;
-    /** @type {Callback<JSAnimation>} */
-    onComplete: Callback<JSAnimation>;
+    /** @type {Callback<JSAnimation, this>} */
+    onComplete: Callback<JSAnimation, this>;
     /** @type {EasingFunction} */
     ease: EasingFunction;
     solve(time: number): number;
@@ -33,9 +33,8 @@ export class Spring {
     calculateBDFromSD(): void;
     compute(): void;
     /**
-     * Lowest settlingDuration stretch can reach, the constant rest detection window scaled to the
-     * current time unit. stretch refuses any target at or below it since a shorter settle would no
-     * longer describe a resting motion.
+     * Lowest settlingDuration stretch can reach, the rest detection window scaled to the current
+     * time unit. stretch refuses any target at or below it.
      * @return {Number}
      */
     get minSettlingDuration(): number;

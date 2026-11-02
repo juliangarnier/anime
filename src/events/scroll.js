@@ -32,7 +32,6 @@ import {
 
 import {
   decomposeRawValue,
-  decomposedOriginalValue,
   getRelativeValue,
   setValue,
 } from '../core/values.js';
@@ -53,6 +52,10 @@ import {
 import {
   sync,
 } from '../utils/time.js';
+
+import {
+  damp,
+} from '../utils/number.js';
 
 import {
   none,
@@ -260,18 +263,13 @@ class ScrollContainer {
   refreshScrollObservers() {
     forEachChildren(this, (/** @type {ScrollObserver} */child) => {
       if (!child.ready) return;
-      if (child._debug) {
-        child.removeDebug();
-      }
+      if (child._debug && child.$debug) child.$debug.style.display = 'none';
     });
     this.updateBounds();
     forEachChildren(this, (/** @type {ScrollObserver} */child) => {
       if (!child.ready) return;
       child.refresh();
       child.onResize(child);
-      if (child._debug) {
-        child.debug();
-      }
     });
   }
 
@@ -338,12 +336,12 @@ const convertValueToPx = ($el, v, size, under, over) => {
                 v === 'bottom' || v === 'right' || v === 'end' || clampMax ? '100%' :
                 v === 'center' ? '50%' :
                 v;
-  const { n, u } = decomposeRawValue(value, decomposedOriginalValue);
+  const { t, n, u } = decomposeRawValue(value);
   let px = n;
   if (u === '%') {
     px = (n / 100) * size;
   } else if (u) {
-    px = convertValueUnit($el, decomposedOriginalValue, 'px', true).n;
+    px = convertValueUnit($el, n, u, 'px', t, true);
   }
   if (clampMax && under < 0) px += under;
   if (clampMin && over > 0) px += over;
@@ -408,7 +406,7 @@ const getAnimationDomTarget = linked => {
 
 let scrollerIndex = 0;
 
-const debugColors = ['#FF4B4B','#FF971B','#FFC730','#F9F640','#7AFF5A','#18FF74','#17E09B','#3CFFEC','#05DBE9','#33B3F1','#638CF9','#C563FE','#FF4FCF','#F93F8A'];
+const debugColors = ['#B7FF54', '#FF4B4B'];
 
 export class ScrollObserver {
   /**
@@ -532,7 +530,6 @@ export class ScrollObserver {
         this.target = target || doc.body;
         this.refresh();
       }
-      if (this._debug) this.debug();
     });
   }
 
@@ -607,43 +604,58 @@ export class ScrollObserver {
     }
     if (this.debugStyles) {
       this.debugStyles.revert();
-      this.$debug = null;
+      this.debugStyles = null;
     }
     return this;
   }
 
-  debug() {
-    this.removeDebug();
+  /**
+   * Rebuilds the debug overlay. Pass the previous observer to reuse its overlay element.
+   * @param {ScrollObserver} [previous]
+   * @return {this}
+   */
+  refreshDebug(previous) {
+    if (previous && !this._debug) return this;
+    if (previous && !this.$debug && previous.$debug
+      && previous.container.element === this.container.element) {
+      this.$debug = previous.$debug;
+      this.debugStyles = previous.debugStyles;
+      previous.$debug = null;
+      previous.debugStyles = null;
+    }
+    if (!this.ready) return this;
     const container = this.container;
     const isHori = this.horizontal;
-    const $existingDebug = container.element.querySelector(':scope > .animejs-onscroll-debug');
-    const $debug = doc.createElement('div');
-    const $thresholds = doc.createElement('div');
-    const $triggers = doc.createElement('div');
-    const color = debugColors[this.index % debugColors.length];
-    const useWin = container.useWin;
-    const containerWidth = useWin ? container.winWidth : container.width;
-    const containerHeight = useWin ? container.winHeight : container.height;
-    const scrollWidth = container.scrollWidth;
-    const scrollHeight = container.scrollHeight;
-    const size = this.container.width > 360 ? 320 : 260;
-    const offLeft = isHori ? 0 : 10;
-    const offTop = isHori ? 10 : 0;
-    const half = isHori ? 24 : size / 2;
-    const labelHeight = isHori ? half : 15;
-    const labelWidth = isHori ? 60 : half;
-    const labelSize = isHori ? labelWidth : labelHeight;
-    const repeat = isHori ? 'repeat-x' : 'repeat-y';
-    /**
-     * @param {Number} v
-     * @return {String}
-     */
-    const gradientOffset = v => isHori ? '0px '+(v)+'px' : (v)+'px'+' 2px';
-    /**
-     * @param {String} c
-     * @return {String}
-     */
-    const lineCSS = (c) => `linear-gradient(${isHori ? 90 : 0}deg, ${c} 2px, transparent 1px)`;
+    let $debug = this.$debug;
+    /** @type {HTMLElement} */
+    let $containerMarkers;
+    /** @type {HTMLElement} */
+    let $targetMarkers;
+    if (!$debug) {
+      $debug = doc.createElement('div');
+      $containerMarkers = doc.createElement('div');
+      $targetMarkers = doc.createElement('div');
+      $debug.classList.add('animejs-onscroll-debug');
+      for (let i = 0; i < 4; i++) {
+        const $marker = doc.createElement('div');
+        const $line = doc.createElement('div');
+        const $text = doc.createElement('div');
+        $marker.appendChild($line);
+        $marker.appendChild($text);
+        (i > 1 ? $containerMarkers : $targetMarkers).appendChild($marker);
+      }
+      $debug.appendChild($containerMarkers);
+      $debug.appendChild($targetMarkers);
+      this.$debug = $debug;
+    } else {
+      $containerMarkers = /** @type {HTMLElement} */($debug.children[0]);
+      $targetMarkers = /** @type {HTMLElement} */($debug.children[1]);
+    }
+    const inset = 10;
+    const containerSize = isHori ? container.width : container.height;
+    const scrollSize = isHori ? container.scrollWidth : container.scrollHeight;
+    const crossSize = Math.max(0, (isHori ? container.height : container.width) - inset * 2);
+    const zIndex = $debug.style.zIndex || container.zIndex++;
     /**
      * @param {String} p
      * @param {Number} l
@@ -653,92 +665,71 @@ export class ScrollObserver {
      * @return {String}
      */
     const baseCSS = (p, l, t, w, h) => `position:${p};left:${l}px;top:${t}px;width:${w}px;height:${h}px;`;
-    $debug.style.cssText = `${baseCSS('absolute', offLeft, offTop, isHori ? scrollWidth : size, isHori ? size : scrollHeight)}
+    $debug.style.cssText = `${baseCSS('absolute', isHori ? 0 : inset, isHori ? inset : 0, isHori ? scrollSize : crossSize, isHori ? crossSize : scrollSize)}
       pointer-events: none;
-      z-index: ${this.container.zIndex++};
-      display: flex;
-      flex-direction: ${isHori ? 'column' : 'row'};
-      filter: drop-shadow(0px 1px 0px rgba(0,0,0,.75));
+      z-index: ${zIndex};
     `;
-    $thresholds.style.cssText = `${baseCSS('sticky', 0, 0, isHori ? containerWidth : half, isHori ? half : containerHeight)}`;
-    if (!$existingDebug) {
-      $thresholds.style.cssText += `background:
-        ${lineCSS('#FFFF')}${gradientOffset(half-10)} / ${isHori ? '100px 100px' : '100px 100px'} ${repeat},
-        ${lineCSS('#FFF8')}${gradientOffset(half-10)} / ${isHori ? '10px 10px' : '10px 10px'} ${repeat};
-      `;
-    }
-    $triggers.style.cssText = `${baseCSS('relative', 0, 0, isHori ? scrollWidth : half, isHori ? half : scrollHeight)}`;
-    if (!$existingDebug) {
-      $triggers.style.cssText += `background:
-        ${lineCSS('#FFFF')}${gradientOffset(0)} / ${isHori ? '100px 10px' : '10px 100px'} ${repeat},
-        ${lineCSS('#FFF8')}${gradientOffset(0)} / ${isHori ? '10px 0px' : '0px 10px'} ${repeat};
-      `;
-    }
-    const labels = [' enter: ', ' leave: '];
+    $containerMarkers.style.cssText = `${baseCSS('sticky', 0, 0, isHori ? containerSize : crossSize, isHori ? crossSize : containerSize)}`;
+    $targetMarkers.style.cssText = `${baseCSS('absolute', 0, 0, isHori ? scrollSize : crossSize, isHori ? crossSize : scrollSize)}`;
     this.coords.forEach((v, i) => {
-      const isView = i > 1;
-      const value = (isView ? 0 : this.offset) + v;
-      const isTail = i % 2;
-      const isFirst = value < labelSize;
-      const isOver = value > (isView ? isHori ? containerWidth : containerHeight : isHori ? scrollWidth : scrollHeight) - labelSize;
-      const isFlip = (isView ? isTail && !isFirst : !isTail && !isFirst) || isOver;
-      const $label = doc.createElement('div');
-      const $text = doc.createElement('div');
-      const dirProp = isHori ? isFlip ? 'right' : 'left' : isFlip ? 'bottom' : 'top';
-      const flipOffset = isFlip ? (isHori ? labelWidth : labelHeight) + (!isView ? isHori ? -1 : -2 : isHori ? -1 : isOver ? 0 : -2) : !isView ? isHori ? 1 : 0 : isHori ? 1 : 0;
-      // $text.innerHTML = `${!isView ? '' : labels[isTail] + ' '}${this.id}: ${this.thresholds[i]} ${isView ? '' : labels[isTail]}`;
-      $text.innerHTML = `${this.id}${labels[isTail]}${this.thresholds[i]}`;
-      $label.style.cssText = `${baseCSS('absolute', 0, 0, labelWidth, labelHeight)}
-        display: flex;
-        flex-direction: ${isHori ? 'column' : 'row'};
-        justify-content: flex-${isView ? 'start' : 'end'};
-        align-items: flex-${isFlip ? 'end' : 'start'};
-        border-${dirProp}: 2px ${isTail ? 'solid' : 'solid'} ${color};
-      `;
+      const isContainer = i > 1;
+      const isLeave = i % 2 === 1;
+      const value = (isContainer ? 0 : this.offset) + v;
+      const axisSize = isContainer ? containerSize : scrollSize;
+      const alignBefore = value > axisSize / 2;
+      const lineOffset = value === 0 ? 1 : alignBefore ? -1 : 0;
+      const color = debugColors[+isLeave];
+      const crossCSS = isHori
+        ? isContainer ? 'top:0;' : 'bottom:0;'
+        : isContainer ? 'left:0;' : 'right:0;';
+      const axisCSS = isHori
+        ? alignBefore ? `right:${-lineOffset}px;` : `left:${lineOffset}px;`
+        : alignBefore ? `bottom:${-lineOffset}px;` : `top:${lineOffset}px;`;
+      const $layer = isContainer ? $containerMarkers : $targetMarkers;
+      const $marker = /** @type {HTMLElement} */($layer.children[+isLeave]);
+      const $line = /** @type {HTMLElement} */($marker.children[0]);
+      const $text = /** @type {HTMLElement} */($marker.children[1]);
+      $marker.style.cssText = isHori
+        ? baseCSS('absolute', value, 0, 0, crossSize)
+        : baseCSS('absolute', 0, value, crossSize, 0);
+      $line.style.cssText = isHori
+        ? `position:absolute;left:${lineOffset}px;top:0;width:1px;height:100%;background-image:repeating-linear-gradient(${color} 0 2px,transparent 2px 4px);background-position-y:${isContainer ? 0 : 2}px;`
+        : `position:absolute;left:0;top:${lineOffset}px;width:100%;height:1px;background-image:repeating-linear-gradient(90deg,${color} 0 2px,transparent 2px 4px);background-position-x:${isContainer ? 0 : 2}px;`;
+      $text.textContent = `${isContainer ? 'container' : 'target'}: ${this.thresholds[i]}`;
       $text.style.cssText = `
+        position: absolute;
+        ${crossCSS}
+        ${axisCSS}
+        max-width: 140px;
         overflow: hidden;
-        max-width: ${(size / 2) - 10}px;
-        height: ${labelHeight};
-        margin-${isHori ? isFlip ? 'right' : 'left' : isFlip ? 'bottom' : 'top'}: -2px;
-        padding: 1px;
+        padding: 2px 3px;
+        border-radius: 2px;
+        background-color: ${color};
+        color: #000;
         font-family: ui-monospace, monospace;
         font-size: 10px;
-        letter-spacing: -.025em;
-        line-height: 9px;
         font-weight: 600;
-        text-align: ${isHori && isFlip || !isHori && !isView ? 'right' : 'left'};
-        white-space: pre;
+        letter-spacing: -.025em;
+        line-height: 10px;
         text-overflow: ellipsis;
-        color: ${isTail ? color : 'rgba(0,0,0,.75)'};
-        background-color: ${isTail ? 'rgba(0,0,0,.65)' : color};
-        border: 2px solid ${isTail ? color : 'transparent'};
-        border-${isHori ? isFlip ? 'top-left' : 'top-right' : isFlip ? 'top-left' : 'bottom-left'}-radius: 5px;
-        border-${isHori ? isFlip ? 'bottom-left' : 'bottom-right' : isFlip ? 'top-right' : 'bottom-right'}-radius: 5px;
+        white-space: nowrap;
       `;
-      $label.appendChild($text);
-      let position = value - flipOffset + (isHori ? 1 : 0);
-      $label.style[isHori ? 'left' : 'top'] = `${position}px`;
-      // $label.style[isHori ? 'left' : 'top'] = value - flipOffset + (!isFlip && isFirst && !isView ? 1 : isFlip ? 0 : -2) + 'px';
-      (isView ? $thresholds : $triggers).appendChild($label);
     });
 
-    $debug.appendChild($thresholds);
-    $debug.appendChild($triggers);
-    container.element.appendChild($debug);
-
-    if (!$existingDebug) $debug.classList.add('animejs-onscroll-debug');
-    this.$debug = $debug;
-    const containerPosition = get(container.element, 'position');
-    if (containerPosition === 'static') {
+    if (!$debug.isConnected) container.element.appendChild($debug);
+    if (!this.debugStyles && get(container.element, 'position') === 'static') {
       this.debugStyles = set(container.element, { position: 'relative '});
     }
+    return this;
+  }
 
+  /** @return {this} */
+  debug() {
+    return this.refreshDebug();
   }
 
   updateBounds() {
-    if (this._debug) {
-      this.removeDebug();
-    }
+    if (this._debug && this.$debug) this.$debug.style.display = 'none';
     let stickys;
     const $target = this.target;
     const container = this.container;
@@ -885,7 +876,8 @@ export class ScrollObserver {
         if (/** @type {Number} */(syncSmooth) < 1) {
           const step = 0.0001;
           const snap = lp < p && p === 1 ? step : lp > p && !p ? -step : 0;
-          p = round(lerp(lp, p, lerp(.01, .2, /** @type {Number} */(syncSmooth))) + snap, 6);
+          const deltaTime = container.scrollTicker.deltaTime / globals.timeScale;
+          p = round(damp(lp, p, deltaTime, lerp(.006, .134, /** @type {Number} */(syncSmooth))) + snap, 6);
         }
       } else if (syncEase) {
         p = syncEase(p);

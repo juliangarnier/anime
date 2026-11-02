@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -28,6 +28,7 @@ const stepsFactory = (steps = 10, fromStart) => {
   return t => roundMethod(helpers.clamp(t, 0, 1) * steps) * (1 / steps);
 };
 
+/** Creates an easing that moves in equal steps. */
 const steps = /** @type {typeof stepsFactory} */(globals.makeTweakable('Ease', 'steps', stepsFactory));
 
 exports.steps = steps;

@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -13,8 +13,9 @@ var time = require('./time.cjs');
 var target = require('./target.cjs');
 var stagger = require('./stagger.cjs');
 var helpers = require('../core/helpers.cjs');
-var styles = require('../core/styles.cjs');
+var colors = require('../core/colors.cjs');
 var targets = require('../core/targets.cjs');
+var styles = require('../core/styles.cjs');
 
 
 
@@ -43,5 +44,6 @@ exports.stagger = stagger.stagger;
 exports.addChild = helpers.addChild;
 exports.forEachChildren = helpers.forEachChildren;
 exports.removeChild = helpers.removeChild;
-exports.cleanInlineStyles = styles.cleanInlineStyles;
+exports.parseColor = colors.convertColorStringValuesToRgbaArray;
 exports.$ = targets.registerTargets;
+exports.cleanInlineStyles = styles.cleanInlineStyles;

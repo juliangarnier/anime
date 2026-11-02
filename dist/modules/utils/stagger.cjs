@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -87,6 +87,7 @@ const staggerFactory = (val, params = {}) => {
   const useProp = params.use;
   const val1 = isRange ? helpers.parseNumber(val[0]) : helpers.parseNumber(val);
   const val2 = isRange ? helpers.parseNumber(val[1]) : 0;
+  const timelineRangeOffset = isRange && val1 > val2 ? val1 - val2 : 0;
   const unitMatch = consts.unitsExecRgx.exec((isRange ? val[1] : val) + consts.emptyString);
   const start = params.start || 0 + (isRange ? val1 : 0);
   const seed = params.seed;
@@ -102,9 +103,9 @@ const staggerFactory = (val, params = {}) => {
     const [ registeredTarget ] = targets.registerTargets(target);
     const total = helpers.isUnd(customTotal) ? t.length : customTotal;
     const customIndex = !helpers.isUnd(useProp) ? helpers.isFnc(useProp) ? useProp(registeredTarget, i, total) : values.getOriginalAnimatableValue(registeredTarget, useProp) : false;
-    const customIdx = helpers.isNum(customIndex) || helpers.isStr(customIndex) && helpers.isNum(+customIndex) ? +customIndex : i;
-    // Fall back to the natural index when the resolved value lands outside [0, total) so values[staggerIndex] never reads undefined.
-    const staggerIndex = customIdx >= 0 && customIdx < total ? customIdx : i;
+    const resolvedIndex = helpers.isNum(customIndex) || helpers.isStr(customIndex) && helpers.isNum(+customIndex) ? +customIndex : i;
+    // Fall back to i when resolvedIndex is outside total so values never reads undefined.
+    const staggerIndex = resolvedIndex >= 0 && resolvedIndex < total ? resolvedIndex : i;
     if (fromCenter) fromIndex = (total - 1) / 2;
     if (fromLast) fromIndex = total - 1;
     if (!values$1.length) {
@@ -164,7 +165,7 @@ const staggerFactory = (val, params = {}) => {
           if (fromArr) {
             fX = minPosX + from[0] * (maxPosX - minPosX);
             fY = minPosY + from[1] * (maxPosY - minPosY);
-            fZ = has3D ? minPosZ + (from.length >= 3 ? from[2] : 0.5) * (maxPosZ - minPosZ) : 0;
+            fZ = has3D ? minPosZ + (from.length >= 3 ? from[2] : .5) * (maxPosZ - minPosZ) : 0;
           } else if (fromCenter) {
             fX = (minPosX + maxPosX) / 2;
             fY = (minPosY + maxPosY) / 2;
@@ -208,29 +209,29 @@ const staggerFactory = (val, params = {}) => {
           if (!grid) {
             values$1.push(helpers.abs(fromIndex - index));
           } else {
-            const dims = grid.length;
-            const wh = grid[0] * grid[1];
+            const is3D = grid.length === 3;
+            const layerSize = grid[0] * grid[1];
             let fromX, fromY, fromZ;
             if (fromArr) {
               fromX = from[0] * (grid[0] - 1);
               fromY = from[1] * (grid[1] - 1);
-              fromZ = dims === 3 ? (from.length >= 3 ? from[2] : 0.5) * (grid[2] - 1) : 0;
+              fromZ = is3D ? (from.length >= 3 ? from[2] : .5) * (grid[2] - 1) : 0;
             } else if (fromCenter) {
               fromX = (grid[0] - 1) / 2;
               fromY = (grid[1] - 1) / 2;
-              fromZ = dims === 3 ? (grid[2] - 1) / 2 : 0;
+              fromZ = is3D ? (grid[2] - 1) / 2 : 0;
             } else {
               fromX = fromIndex % grid[0];
               fromY = helpers.floor(fromIndex / grid[0]) % grid[1];
-              fromZ = dims === 3 ? helpers.floor(fromIndex / wh) : 0;
+              fromZ = is3D ? helpers.floor(fromIndex / layerSize) : 0;
             }
             const toX = index % grid[0];
             const toY = helpers.floor(index / grid[0]) % grid[1];
-            const toZ = dims === 3 ? helpers.floor(index / wh) : 0;
+            const toZ = is3D ? helpers.floor(index / layerSize) : 0;
             const distanceX = fromX - toX;
             const distanceY = fromY - toY;
             const distanceZ = fromZ - toZ;
-            let value = helpers.sqrt(distanceX * distanceX + distanceY * distanceY + (dims === 3 ? distanceZ * distanceZ : 0));
+            let value = helpers.sqrt(distanceX * distanceX + distanceY * distanceY + (is3D ? distanceZ * distanceZ : 0));
             if (axis === 'x') value = -distanceX;
             if (axis === 'y') value = -distanceY;
             if (axis === 'z') value = -distanceZ;
@@ -256,14 +257,14 @@ const staggerFactory = (val, params = {}) => {
     }
     const spacing = isRange ? (val2 - val1) / maxValue : val1;
     if (helpers.isUnd(cachedOffset)) {
-      cachedOffset = tl ? position.parseTimelinePosition(tl, helpers.isUnd(params.start) ? tl.iterationDuration : start) : /** @type {Number} */(start);
+      cachedOffset = tl ? position.parseTimelinePosition(tl, helpers.isUnd(params.start) ? tl.iterationDuration + timelineRangeOffset : start) : /** @type {Number} */(start);
     }
     /** @type {String|Number} */
     let output = cachedOffset + ((spacing * helpers.round(values$1[staggerIndex], 2)) || 0);
     if (hasJitter) {
       const progress = maxValue ? values$1[staggerIndex] / maxValue : 0;
-      const mag = jitterStart + (jitterEnd - jitterStart) * progress;
-      output = /** @type {Number} */(output) + jitterSamples[staggerIndex] * mag;
+      const jitterMagnitude = jitterStart + (jitterEnd - jitterStart) * progress;
+      output = /** @type {Number} */(output) + jitterSamples[staggerIndex] * jitterMagnitude;
     }
     if (params.modifier) output = params.modifier(/** @type {Number} */(output));
     if (unitMatch) output = `${output}${unitMatch[2]}`;
@@ -271,10 +272,7 @@ const staggerFactory = (val, params = {}) => {
   }
 };
 
-/**
- * Creates a stagger function that distributes a value across an animation's targets.
- * @type {typeof staggerFactory}
- */
+/** Creates a stagger function that distributes a value across the targets of an animation. */
 const stagger = /** @type {typeof staggerFactory} */(globals.makeTweakable('Stagger', 'stagger', staggerFactory));
 
 exports.stagger = stagger;

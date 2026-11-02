@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -45,19 +45,44 @@ const tickModes = {
 };
 
 /** @enum {Number} */
+const overrideTypes = {
+  NONE: 0,
+  // A timeline child that waits for its property or has given it to a later child
+  TIMELINE: 1,
+  // Replaced for good by a later animation, or muted
+  PERMANENT: 2,
+};
+
+/** @enum {Number} */
 const compositionTypes = {
   replace: 0,
   none: 1,
   blend: 2,
+  // Mark a muted tween, it joins no sibling list and render skips it through _isOverridden.
+  // Keep the mute check out of render, which runs on every frame.
+  muted: 3,
+};
+
+// Map the public composition names so a minifier can inline every read of compositionTypes.
+const compositionNames = {
+  replace: compositionTypes.replace,
+  none: compositionTypes.none,
+  blend: compositionTypes.blend,
 };
 
 // Cache symbols
 
-const isRegisteredTargetSymbol = Symbol();
 const isDomSymbol = Symbol();
 const isSvgSymbol = Symbol();
 const transformsSymbol = Symbol();
 const proxyTargetSymbol = Symbol();
+// Hold the replace sibling lookups of a registered target, its presence marks the registration.
+// A module WeakMap made setup slower and doubled render time after a hidden tab load.
+const replaceLookupsSymbol = Symbol();
+// Hold the owner of a lookups object so a copy or proxy that carries it keeps its own apart.
+const lookupsOwnerSymbol = Symbol();
+// Mark a tween that read no original value so revert leaves its property to the sibling that did.
+const noOriginalValueSymbol = Symbol();
 
 // Numbers
 
@@ -73,16 +98,11 @@ const cssVarPrefix = 'var(';
 
 // Arrays
 
-// Shared sentinel for tween slots that don't hold array data. Never mutated, only read; COMPLEX and COLOR tweens always replace the slot before writing.
+// Share one empty array for tween slots without array data, never mutate it.
+// COMPLEX and COLOR tweens replace the slot before they write.
 const emptyArray = [];
 
-const shortTransforms = /*#__PURE__*/ (() => {
-  const map = new Map();
-  map.set('x', 'translateX');
-  map.set('y', 'translateY');
-  map.set('z', 'translateZ');
-  return map;
-})();
+const shortTransforms = /*#__PURE__*/ new Map([['x', 'translateX'], ['y', 'translateY'], ['z', 'translateZ']]);
 
 const validTransforms = [
   'perspective',
@@ -120,10 +140,8 @@ const noopModifier = v => v;
 
 const validRgbHslRgx = /\)\s*[-.\d]/;
 const hexTestRgx = /(^#([\da-f]{3}){1,2}$)|(^#([\da-f]{4}){1,2}$)/i;
-const rgbExecRgx = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i;
-const rgbaExecRgx = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/i;
-const hslExecRgx = /hsl\(\s*(-?\d+|-?\d*.\d+)\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)%\s*\)/i;
-const hslaExecRgx = /hsla\(\s*(-?\d+|-?\d*.\d+)\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/i;
+// Match the first three to five tokens of a color function, split on spaces, commas or a slash.
+const colorFunctionExecRgx = /\(\s*([^\s,/]+)[\s,]+([^\s,/]+)[\s,]+([^\s,/)]+)(?:[\s,/]+([^\s,/)]+))?(?:[\s,/]+([^\s,/)]+))?/;
 // export const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g;
 const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;
@@ -132,4 +150,4 @@ const lowerCaseRgx = /([a-z])([A-Z])/g;
 const relativeValuesExecRgx = /(\*=|\+=|-=)/;
 const cssVariableMatchRgx = /var\(\s*(--[\w-]+)(?:\s*,\s*([^)]+))?\s*\)/;
 
-export { K, compositionTypes, cssVarPrefix, cssVariableMatchRgx, digitWithExponentRgx, doc, emptyArray, emptyString, hexTestRgx, hslExecRgx, hslaExecRgx, isBrowser, isDomSymbol, isRegisteredTargetSymbol, isSvgSymbol, lowerCaseRgx, maxFps, maxValue, minValue, noop, noopModifier, proxyTargetSymbol, relativeValuesExecRgx, rgbExecRgx, rgbaExecRgx, shortTransforms, tickModes, transformsFragmentStrings, transformsSymbol, tweenTypes, unitsExecRgx, validRgbHslRgx, validTransforms, valueTypes, win };
+export { K, colorFunctionExecRgx, compositionNames, compositionTypes, cssVarPrefix, cssVariableMatchRgx, digitWithExponentRgx, doc, emptyArray, emptyString, hexTestRgx, isBrowser, isDomSymbol, isSvgSymbol, lookupsOwnerSymbol, lowerCaseRgx, maxFps, maxValue, minValue, noOriginalValueSymbol, noop, noopModifier, overrideTypes, proxyTargetSymbol, relativeValuesExecRgx, replaceLookupsSymbol, shortTransforms, tickModes, transformsFragmentStrings, transformsSymbol, tweenTypes, unitsExecRgx, validRgbHslRgx, validTransforms, valueTypes, win };

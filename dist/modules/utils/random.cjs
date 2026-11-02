@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -67,21 +67,33 @@ const createSeededRandom = (seed, seededMin = 0, seededMax = 1, seededDecimalLen
    * @return {Number}
    *
    * @overload
+   * @param {RandomParams & {
+   *   perTarget: true,
+   * }} opts
+   * @return {() => Number}
+   *
+   * @overload
+   * @param {RandomParams & {
+   *   perTarget?: false,
+   * }} opts
+   * @return {Number}
+   *
+   * @overload
    * @param {RandomParams} opts
-   * @return {Number|Function}
+   * @return {Number | (() => Number)}
    *
    * @param {Number|RandomParams} [minOrOpts]
    * @param {Number} [max]
    * @param {Number} [decimalLength]
-   * @return {Number|Function}
+   * @return {Number | (() => Number)}
    */
   function rng(minOrOpts = seededMin, max = seededMax, decimalLength = seededDecimalLength) {
     if (minOrOpts !== null && typeof minOrOpts === 'object') {
       const opts = minOrOpts;
-      const min = opts.min == null ? seededMin : opts.min;
-      const mx = opts.max == null ? seededMax : opts.max;
-      const d = opts.decimals == null ? seededDecimalLength : opts.decimals;
-      return opts.perTarget ? () => draw(min, mx, d) : draw(min, mx, d);
+      const optsMin = opts.min == null ? seededMin : opts.min;
+      const optsMax = opts.max == null ? seededMax : opts.max;
+      const optsDecimals = opts.decimals == null ? seededDecimalLength : opts.decimals;
+      return opts.perTarget ? () => draw(optsMin, optsMax, optsDecimals) : draw(optsMin, optsMax, optsDecimals);
     }
     return draw(minOrOpts, max, decimalLength);
   }
@@ -96,7 +108,7 @@ const createSeededRandom = (seed, seededMin = 0, seededMax = 1, seededDecimalLen
 const createRandomGenerator = (opts) => {
   const min = opts.min == null ? 0 : opts.min;
   const max = opts.max == null ? 1 : opts.max;
-  const decimals = opts.decimals || 0;
+  const decimals = opts.decimals == null ? 0 : opts.decimals;
   if (opts.seed === undefined || opts.seed === false) return () => randomNumber(min, max, decimals);
   const rng = createSeededRandom(/** @type {Number} */(opts.seed), min, max, decimals);
   return () => /** @type {Number} */(rng());
@@ -107,8 +119,8 @@ const createRandomGenerator = (opts) => {
  * @param {RandomParams} opts
  */
 const resolveRandomFromOpts = (opts) => {
-  const gen = createRandomGenerator(opts);
-  return opts.perTarget ? gen : gen();
+  const generator = createRandomGenerator(opts);
+  return opts.perTarget ? generator : generator();
 };
 
 const randomTweakable = globals.makeTweakable('Random', 'random', resolveRandomFromOpts);
@@ -118,37 +130,76 @@ const randomTweakable = globals.makeTweakable('Random', 'random', resolveRandomF
  * params object instead of positional args returns a value shared across targets, or a per target
  * generator when perTarget is true.
  *
+ * @overload
+ * @param {Number} [min]
+ * @param {Number} [max]
+ * @param {Number} [decimalLength]
+ * @return {Number}
+ *
+ * @overload
+ * @param {RandomParams & {
+ *   perTarget: true,
+ * }} opts
+ * @return {() => Number}
+ *
+ * @overload
+ * @param {RandomParams & {
+ *   perTarget?: false,
+ * }} opts
+ * @return {Number}
+ *
+ * @overload
+ * @param {RandomParams} opts
+ * @return {Number | (() => Number)}
+ *
  * @param  {Number|RandomParams} [min=0] The minimum value, or a params object.
  * @param  {Number} [max=1] The maximum value, inclusive.
  * @param  {Number} [decimalLength=0] Number of decimal places to round to.
- * @return {Number|Function|Object} A number, or a per target generator.
+ * @return {Number | (() => Number)} A number, or a per target generator.
  */
-const random = (min = 0, max = 1, decimalLength = 0) => {
+function random(min = 0, max = 1, decimalLength = 0) {
   if (min !== null && typeof min === 'object') return randomTweakable(/** @type {RandomParams} */(min));
   return randomNumber(/** @type {Number} */(min), max, decimalLength);
-};
+}
 
 /**
  * Picks a random element from an array or a string
  *
  * @template T
- * @param    {String|Array<T>} items - The array or string to pick from
- * @param    {RandomFunction} [rnd] - Optional RNG, defaults to random
- * @return   {String|T} A random element from the array or character from the string
+ * @overload
+ * @param {readonly T[]} items
+ * @param {RandomFunction} [rnd]
+ * @return {T}
+ *
+ * @overload
+ * @param {String} items
+ * @param {RandomFunction} [rnd]
+ * @return {String}
+ *
+ * @template T
+ * @overload
+ * @param {String | readonly T[]} items
+ * @param {RandomFunction} [rnd]
+ * @return {String | T}
+ *
+ * @template T
+ * @param    {String | readonly T[]} items - The array or string to pick from
+ * @param    {RandomFunction} [rng] - Optional RNG, defaults to random
+ * @return   {String | T} A random element from the array or character from the string
  */
-const randomPick = (items, rnd = /** @type {RandomFunction} */(random)) => items[rnd(0, items.length - 1)];
+const randomPick = (items, rng = /** @type {RandomFunction} */(random)) => items[rng(0, items.length - 1)];
 
 /**
  * Shuffles an array in-place using the Fisher-Yates algorithm
  * Adapted from https://bost.ocks.org/mike/shuffle/
  *
  * @param  {Array} items - The array to shuffle (will be modified in-place)
- * @param  {RandomFunction} [rnd] - Optional RNG, defaults to random
+ * @param  {RandomFunction} [rng] - Optional RNG, defaults to random
  * @return {Array} The same array reference, now shuffled
  */
-const shuffle = (items, rnd = /** @type {RandomFunction} */(random)) => {
+const shuffle = (items, rng = /** @type {RandomFunction} */(random)) => {
   let m = items.length, t, i;
-  while (m) { i = rnd(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
+  while (m) { i = rng(0, --m); t = items[m]; items[m] = items[i]; items[i] = t; }
   return items;
 };
 

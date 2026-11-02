@@ -10,6 +10,9 @@ import './suites/animations.test.js';
 import './suites/keyframes.test.js';
 import './suites/tweens.test.js';
 import './suites/timelines.test.js';
+import './suites/markers.test.js';
+import './suites/muted.test.js';
+import './suites/layout.test.js';
 import './suites/timings.test.js';
 import './suites/animatables.test.js';
 import './suites/callbacks.test.js';
@@ -31,4 +34,4 @@ import './suites/eases.test.js';
 import './suites/leaks.test.js';
 
 mocha.checkLeaks();
-mocha.run();
+export const runner = mocha.run();

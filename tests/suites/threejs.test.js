@@ -116,15 +116,17 @@ suite('Three.js adapter', () => {
     expect(resolveAdapterEntry(persp, 'right')).to.equal(null);
     expect(resolveAdapterEntry(persp, 'top')).to.equal(null);
     expect(resolveAdapterEntry(persp, 'bottom')).to.equal(null);
-    const audioLike = new Object3D();
-    audioLike.setVolume = () => {};
-    audioLike.getVolume = () => 0;
+    const audioLike = Object.assign(new Object3D(), {
+      setVolume: () => {},
+      getVolume: () => 0,
+    });
     expect(resolveAdapterEntry(audioLike, 'volume')).to.not.equal(null);
     expect(resolveAdapterEntry(new Object3D(), 'volume')).to.equal(null);
-    const positionalLike = new Object3D();
-    positionalLike.setRefDistance = () => {};
-    positionalLike.setRolloffFactor = () => {};
-    positionalLike.setMaxDistance = () => {};
+    const positionalLike = Object.assign(new Object3D(), {
+      setRefDistance: () => {},
+      setRolloffFactor: () => {},
+      setMaxDistance: () => {},
+    });
     expect(resolveAdapterEntry(positionalLike, 'refDistance')).to.not.equal(null);
     expect(resolveAdapterEntry(positionalLike, 'rolloffFactor')).to.not.equal(null);
     expect(resolveAdapterEntry(positionalLike, 'maxDistance')).to.not.equal(null);
@@ -265,12 +267,37 @@ suite('Three.js adapter', () => {
 
   test('Toggles visible based on scale being zero', () => {
     const mesh = createMesh();
-    mesh.visible = false;
     const animation = animate(mesh, { scale: [1, 0], duration: 100, ease: 'linear', autoplay: false });
     animation.seek(0);
     expect(mesh.visible).to.equal(true);
     animation.seek(100);
     expect(mesh.visible).to.equal(false);
+    animation.seek(50);
+    expect(mesh.visible).to.equal(true);
+  });
+
+  test('Keeps a mesh hidden by a visible tween while its scale animates without reaching zero', () => {
+    const mesh = createMesh();
+    const tl = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(mesh, { scale: [1, 2], duration: 100 }, 0)
+      .add(mesh, { visible: false, duration: 0 }, 50);
+    tl.seek(60);
+    expect(mesh.visible).to.equal(false);
+    tl.seek(70);
+    expect(mesh.visible).to.equal(false);
+    tl.cancel();
+  });
+
+  test('Starts a visible tween from true on a mesh that a zero scale hid', () => {
+    const mesh = createMesh();
+    const tl = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(mesh, { scale: [0, 1], duration: 100 }, 0)
+      .add(mesh, { visible: false, duration: 0 }, 150);
+    tl.seek(150);
+    expect(mesh.visible).to.equal(false);
+    tl.seek(120);
+    expect(mesh.visible).to.equal(true);
+    tl.cancel();
   });
 
   test('Animates visible from truthy to falsy', () => {
@@ -288,7 +315,6 @@ suite('Three.js adapter', () => {
   test('Writes opacity to material and toggles visible at zero', () => {
     const mesh = createMesh();
     mesh.material.opacity = 0.3;
-    mesh.visible = false;
     const animation = animate(mesh, { opacity: [1, 0], duration: 100, ease: 'linear', autoplay: false });
     animation.seek(0);
     expect(mesh.material.opacity).to.equal(1);
@@ -299,6 +325,55 @@ suite('Three.js adapter', () => {
     animation.seek(100);
     expect(mesh.material.opacity).to.equal(0);
     expect(mesh.visible).to.equal(false);
+    animation.seek(50);
+    expect(mesh.visible).to.equal(true);
+  });
+
+  test('Keeps a mesh hidden by a visible tween while its opacity animates without reaching zero', () => {
+    const mesh = createMesh();
+    const tl = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(mesh, { opacity: [1, 0.5], duration: 100 }, 0)
+      .add(mesh, { visible: false, duration: 0 }, 50);
+    tl.seek(60);
+    expect(mesh.visible).to.equal(false);
+    tl.seek(70);
+    expect(mesh.visible).to.equal(false);
+    tl.cancel();
+  });
+
+  test('Starts a visible tween from true on a mesh that a zero opacity hid', () => {
+    const mesh = createMesh();
+    const tl = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(mesh, { opacity: [0, 1], duration: 100 }, 0)
+      .add(mesh, { visible: false, duration: 0 }, 150);
+    tl.seek(150);
+    expect(mesh.visible).to.equal(false);
+    tl.seek(120);
+    expect(mesh.visible).to.equal(true);
+    tl.cancel();
+  });
+
+  test('Keeps a mesh hidden by visible false when its scale or opacity leaves zero', () => {
+    const mesh = createMesh();
+    utils.set(mesh, { visible: false });
+    utils.set(mesh, { scale: 0 });
+    utils.set(mesh, { scale: 1 });
+    expect(mesh.visible).to.equal(false);
+    utils.set(mesh, { opacity: 0 });
+    utils.set(mesh, { opacity: 1 });
+    expect(mesh.visible).to.equal(false);
+  });
+
+  test('Keeps a mesh at zero opacity hidden during a visible tween and its revert', () => {
+    const mesh = createMesh();
+    utils.set(mesh, { opacity: 0 });
+    const animation = animate(mesh, { visible: false, duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(50);
+    expect(mesh.visible).to.equal(false);
+    animation.revert();
+    expect(mesh.visible).to.equal(false);
+    utils.set(mesh, { opacity: 1 });
+    expect(mesh.visible).to.equal(true);
   });
 
   test('Writes opacity to every entry in material array', () => {
@@ -413,22 +488,24 @@ suite('Three.js adapter', () => {
   // Audio (method-bridged)
 
   test('Bridges volume, refDistance, rolloffFactor, maxDistance via setX and getX', () => {
-    const audio = new Object3D();
     let v = 0.5;
     let getterCalls = 0;
-    audio.setVolume = (val) => { v = val; };
-    audio.getVolume = () => { getterCalls++; return v; };
+    const audio = Object.assign(new Object3D(), {
+      setVolume: (val) => { v = val; },
+      getVolume: () => { getterCalls++; return v; },
+    });
     animate(audio, { volume: 1, duration: 100, ease: 'linear', autoplay: false }).seek(100);
     expect(v).to.equal(1);
     expect(getterCalls).to.be.greaterThan(0);
-    const positional = new Object3D();
     let rd = 1, rf = 1, md = 1000;
-    positional.setRefDistance = (val) => { rd = val; };
-    positional.setRolloffFactor = (val) => { rf = val; };
-    positional.setMaxDistance = (val) => { md = val; };
-    positional.getRefDistance = () => rd;
-    positional.getRolloffFactor = () => rf;
-    positional.getMaxDistance = () => md;
+    const positional = Object.assign(new Object3D(), {
+      setRefDistance: (val) => { rd = val; },
+      setRolloffFactor: (val) => { rf = val; },
+      setMaxDistance: (val) => { md = val; },
+      getRefDistance: () => rd,
+      getRolloffFactor: () => rf,
+      getMaxDistance: () => md,
+    });
     animate(positional, { refDistance: 10, rolloffFactor: 2, maxDistance: 500, duration: 100, ease: 'linear', autoplay: false }).seek(100);
     expect(rd).to.equal(10);
     expect(rf).to.equal(2);
@@ -497,6 +574,22 @@ suite('Three.js adapter', () => {
     utils.set(mesh, { x: 100, opacity: 0.4 });
     expect(mesh.position.x).to.equal(100);
     expect(mesh.material.opacity).to.equal(0.4);
+  });
+
+  test('Detects targets from a second three module copy through duck-typed flags', () => {
+    // Simulates an app whose bundler resolved another copy of three: its
+    // objects carry the is* flags but fail instanceof against this module's classes.
+    const foreign = {
+      isObject3D: true,
+      position: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+      visible: true,
+    };
+    utils.set(foreign, { z: 2.6, scale: .8 });
+    expect(foreign.position.z).to.equal(2.6);
+    expect(foreign.scale.x).to.equal(.8);
+    expect(foreign.scale.y).to.equal(.8);
   });
 
   test('Reverts numeric adapter props to pre-animation value', () => {
@@ -819,13 +912,13 @@ suite('Three.js adapter', () => {
   // NodeMaterial slots
 
   const makeNodeMaterial = () => {
-    const mat = new MeshStandardNodeMaterial();
-    mat.colorNode     = uniform(new Color('#000000'));
-    mat.metalnessNode = uniform(0);
-    mat.opacityNode   = uniform(1);
-    mat.offsetNode    = uniform(new Vector3(0, 0, 0));
-    mat.flagNode      = uniform(false);
-    return mat;
+    return Object.assign(new MeshStandardNodeMaterial(), {
+      colorNode: uniform(new Color('#000000')),
+      metalnessNode: uniform(0),
+      opacityNode: uniform(1),
+      offsetNode: uniform(new Vector3(0, 0, 0)),
+      flagNode: uniform(false),
+    });
   };
 
   test('Animates NodeMaterial scalar slot via metalnessNode value', () => {
@@ -929,6 +1022,51 @@ suite('Three.js adapter', () => {
     expect(bins[bid2].id).to.equal(bid2);
   });
 
+  test('Keeps composing an instance that a count shrink dropped from the instances array', () => {
+    const mesh = new InstancedMesh(new BoxGeometry(1, 1, 1), new MeshBasicMaterial(), 10);
+    const nine = getInstances(mesh)[9];
+    const animation = animate(nine, { rotateZ: 90, scale: 2, duration: 100, ease: 'linear', autoplay: false });
+    mesh.count = 5;
+    getInstances(mesh);
+    animation.seek(100);
+    commitChanges(mesh);
+    const m = new Matrix4().fromArray(mesh.instanceMatrix.array, 9 * 16);
+    expect(m.elements[0]).to.be.closeTo(0, 1e-6);
+    expect(m.elements[1]).to.be.closeTo(2, 1e-6);
+    // One dirty flag per instance slot.
+    expect(nine._binding.dirty.length).to.equal(10);
+    animation.cancel();
+  });
+
+  test('Writes an animated BatchedMesh instance into its reused slot and skips a deleted one', () => {
+    const reusedMesh = new BatchedMesh(4, 100, 300, new MeshBasicMaterial());
+    const reusedGeometry = reusedMesh.addGeometry(new BoxGeometry(1, 1, 1));
+    reusedMesh.addInstance(reusedGeometry);
+    reusedMesh.addInstance(reusedGeometry);
+    const held = getInstances(reusedMesh)[1];
+    const moving = animate(held, { x: 7, duration: 100, ease: 'linear', autoplay: false });
+    reusedMesh.deleteInstance(1);
+    getInstances(reusedMesh);
+    const reused = reusedMesh.addInstance(reusedGeometry);
+    getInstances(reusedMesh);
+    moving.seek(100);
+    commitChanges(reusedMesh);
+    const m = new Matrix4();
+    reusedMesh.getMatrixAt(reused, m);
+    expect(m.elements[12]).to.equal(7);
+    moving.cancel();
+    const deletedMesh = new BatchedMesh(4, 100, 300, new MeshBasicMaterial());
+    const deletedGeometry = deletedMesh.addGeometry(new BoxGeometry(1, 1, 1));
+    deletedMesh.addInstance(deletedGeometry);
+    deletedMesh.addInstance(deletedGeometry);
+    const deleted = animate(getInstances(deletedMesh)[1], { x: 5, rotateZ: 45, duration: 100, ease: 'linear', autoplay: false });
+    deletedMesh.deleteInstance(1);
+    getInstances(deletedMesh);
+    deleted.seek(60);
+    expect(() => commitChanges(deletedMesh)).to.not.throw();
+    deleted.cancel();
+  });
+
   test('Writes instance matrix, decomposes seeded matrix, coalesces transform writes', () => {
     const mesh = createInstanced(2);
     const seeded = new Matrix4().compose(new Vector3(5, 10, 15), new Quaternion(), new Vector3(2, 2, 2));
@@ -1007,6 +1145,30 @@ suite('Three.js adapter', () => {
     expect(m.elements[2]).to.be.closeTo(-1, 1e-6);
     expect(m.elements[8]).to.be.closeTo(1, 1e-6);
     expect(m.elements[10]).to.be.closeTo(0, 1e-6);
+  });
+
+  test('Writes each instance position, rotation, and scale property to its own axis', () => {
+    const mesh = createInstanced(2);
+    const [a, b] = getInstances(mesh);
+    const values = { x: 1, y: 2, z: 3, rotateX: 10, rotateY: 20, rotateZ: 30, scaleX: 4, scaleY: 5, scaleZ: 6 };
+    animate(a, { ...values, duration: 100, ease: 'linear', autoplay: false }).seek(100);
+    for (const name in values) expect(a[name]).to.be.closeTo(values[name], 1e-9);
+    // Position alone writes the matrix buffer, a later scale write seeds the composed rows from it.
+    animate(b, { x: 7, y: 8, z: 9, duration: 100, ease: 'linear', autoplay: false }).seek(100);
+    commitChanges(mesh);
+    const m = new Matrix4();
+    mesh.getMatrixAt(1, m);
+    expect([m.elements[12], m.elements[13], m.elements[14]]).to.deep.equal([7, 8, 9]);
+    animate(b, { scale: 3, duration: 100, ease: 'linear', autoplay: false }).seek(100);
+    expect([b.x, b.y, b.z, b.scaleX, b.scaleY, b.scaleZ]).to.deep.equal([7, 8, 9, 3, 3, 3]);
+  });
+
+  test('Builds instance position, rotation, and scale setters from one function', () => {
+    const [instance] = getInstances(createInstanced(1));
+    const names = ['x', 'y', 'z', 'rotateX', 'rotateY', 'rotateZ', 'scaleX', 'scaleY', 'scaleZ', 'scale'];
+    // Closures of one function keep the engine setter call inlinable, distinct functions make it megamorphic.
+    const sources = new Set(names.map((name) => resolveAdapterEntry(instance, name).set.toString()));
+    expect(sources.size).to.equal(1);
   });
 
   test('Writes instance opacity to parent shared material', () => {

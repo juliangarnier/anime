@@ -6,13 +6,19 @@ import {
   minValue,
   compositionTypes,
   valueTypes,
-  isRegisteredTargetSymbol,
+  replaceLookupsSymbol,
 } from '../core/consts.js';
 
 import {
   isUnd,
+  isStr,
+  isCol,
   round,
 } from '../core/helpers.js';
+
+import {
+  convertColorStringValuesToRgbaArray,
+} from '../core/colors.js';
 
 import {
   parseTargets,
@@ -28,7 +34,6 @@ import {
   getTweenType,
   getOriginalAnimatableValue,
   decomposeRawValue,
-  decomposedOriginalValue,
 } from '../core/values.js';
 
 import {
@@ -97,10 +102,10 @@ export { registerTargets as $ };
  * @param  {String|Boolean} [unit]
  */
 export function get(targetSelector, propName, unit) {
-  // Fast path for an already registered target, skips the parse and per call array allocation
-  // so repeated reads like editor live values stay allocation free.
-  /** @type {Target} */
-  let target = targetSelector && /** @type {Target} */(targetSelector)[isRegisteredTargetSymbol] ? /** @type {Target} */(targetSelector) : null;
+  // Skip registerTargets for an already registered target so repeated reads like editor live values
+  // stay allocation free.
+  /** @type {Target|null} */
+  let target = targetSelector && /** @type {Target} */(targetSelector)[replaceLookupsSymbol] ? /** @type {Target} */(targetSelector) : null;
   if (!target) {
     const targets = registerTargets(targetSelector);
     if (!targets.length) return;
@@ -110,15 +115,20 @@ export function get(targetSelector, propName, unit) {
   const normalizePropName = sanitizePropertyName(propName, target, tweenType);
   let originalValue = getOriginalAnimatableValue(target, normalizePropName);
   if (isUnd(unit)) {
+    // Return a color in the rgba form that animate writes, the browser computes some colors in oklab or color().
+    if (isStr(originalValue) && isCol(originalValue)) {
+      const [r, g, b, a] = convertColorStringValuesToRgbaArray(originalValue);
+      return `rgba(${r},${g},${b},${a})`;
+    }
     return originalValue;
   } else {
-    decomposeRawValue(originalValue, decomposedOriginalValue);
-    if (decomposedOriginalValue.t === valueTypes.NUMBER || decomposedOriginalValue.t === valueTypes.UNIT) {
+    const { t, n, u } = decomposeRawValue(originalValue);
+    if (t === valueTypes.NUMBER || t === valueTypes.UNIT) {
       if (unit === false) {
-        return decomposedOriginalValue.n;
+        return n;
       } else {
-        const convertedValue = convertValueUnit(/** @type {DOMTarget} */(target), decomposedOriginalValue, /** @type {String} */(unit), false);
-        return `${round(convertedValue.n, globals.precision)}${convertedValue.u}`;
+        const convertedValue = convertValueUnit(/** @type {DOMTarget} */(target), n, u, /** @type {String} */(unit), t, false);
+        return `${round(convertedValue, globals.precision)}${unit}`;
       }
     }
   }

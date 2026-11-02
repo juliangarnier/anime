@@ -18,6 +18,8 @@ import {
   minValue,
 } from '../../dist/modules/core/consts.js';
 
+/** @import { JSAnimation } from '../../dist/modules/index.js' */
+
 suite('Timelines', () => {
   function createTL() {
     return createTimeline({
@@ -579,6 +581,17 @@ suite('Timelines', () => {
     expect(tl.duration).to.equal(200);
   });
 
+  test('Plays a timeline whose first add uses a stagger position', resolve => {
+    const targets = [{ x: 0 }, { x: 0 }, { x: 0 }];
+    const tl = createTimeline().add(targets, { x: 100, duration: 100 }, stagger(10));
+    setTimeout(() => {
+      expect(tl.currentTime).to.be.above(0);
+      expect(targets[0].x).to.be.above(0);
+      tl.revert();
+      resolve();
+    }, 50);
+  });
+
   test('Add animation and timers as targets', resolve => {
     const [ $target ] = utils.$('#target-id');
     let timerLog = false;
@@ -710,6 +723,17 @@ suite('Timelines', () => {
     .call(() => {
       timer3Log += 1;
     }, 40);
+  });
+
+  test('Fires a call at position 0 once per loop when the progress of a looping timeline moves forward', () => {
+    let calls = 0;
+    const timeline = createTimeline({ loop: 9, autoplay: false })
+      .add({ scale: 1 }, { scale: [1, .97, 1], duration: 100 }, 0)
+      .call(() => calls++, 0);
+    // Half a loop per frame, like a timeline whose progress another animation drives, so each frame crosses at most one loop start.
+    for (let progress = .05; progress <= 1.0001; progress += .05) timeline.progress = Math.min(progress, 1);
+    expect(calls).to.equal(10);
+    timeline.cancel();
   });
 
   test('Call callbacks on a 0 duration timeline', resolve => {
@@ -1209,5 +1233,159 @@ suite('Timelines', () => {
     expect(target.y).to.equal(10); // midpoint of 14.5 down to 5.5, the bug gives 1.5 from the snapped start
   });
 
-});
+  test('Keeps unrelated timeline properties and callbacks after removal', () => {
+    const a = { x: 10, y: 20 };
+    const b = { x: 30 };
+    let calls = 0;
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(a, { x: 110, y: 220, duration: 100 }, 0)
+      .add(b, { x: 230, duration: 200 }, 0)
+      .call(() => calls++, 150);
+    timeline.seek(50);
+    timeline.remove(a, 'x').seek(75);
+    expect([a.x, a.y, b.x]).to.deep.equal([60, 170, 105]);
+    timeline.remove(a).seek(160);
+    expect([a.x, a.y, b.x]).to.deep.equal([60, 170, 190]);
+    expect(calls).to.equal(1);
+    expect(timeline.duration).to.equal(200);
+    expect(timeline.cancelled).to.equal(false);
+    timeline.seek(200);
+    expect(b.x).to.equal(230);
+    timeline.cancel();
+  });
 
+  test('Keeps the longest child duration after staggered additions', () => {
+    const targets = [{ x: 0 }, { x: 0 }, { x: 0 }];
+    const timeline = createTimeline({ autoplay: false, loop: 2 })
+      .add(targets, { x: 100, duration: (_, i) => [500, 20, 10][i] }, (_, i) => i * 100);
+    expect(timeline.iterationDuration).to.equal(500);
+    expect(timeline.duration).to.equal(1500);
+    timeline.cancel();
+  });
+
+  test('Includes a stretched child when extending a timeline', () => {
+    /** @type {JSAnimation} */
+    let child;
+    const timeline = createTimeline({ autoplay: false })
+      .add({ x: 0 }, { x: [0, 100], duration: 100, onRender: self => { child = self; } });
+    child.stretch(400);
+    timeline.add({ x: 0 }, { x: 100, duration: 50 }, 0);
+    expect(timeline.duration).to.equal(400);
+    timeline.cancel();
+  });
+
+  test('Updates timeline duration before appending after a child stretches', () => {
+    /** @type {JSAnimation} */
+    let child;
+    const next = { x: 0 };
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add({ x: 0 }, { x: [0, 100], duration: 100, onRender: self => { child = self; } });
+    child.stretch(200);
+    expect(timeline.duration).to.equal(200);
+    child.stretch(50);
+    expect(timeline.duration).to.equal(50);
+    timeline.add(next, { x: 100, duration: 50 });
+    expect(timeline.duration).to.equal(100);
+    timeline.seek(75);
+    expect(next.x).to.equal(50);
+    timeline.cancel();
+  });
+
+  test('Seeks a completed animation after syncing it to a timeline', async () => {
+    const target = { x: 0 };
+    const animation = animate(target, { x: 100, duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(100);
+    const completed = await animation;
+    const timeline = createTimeline({ autoplay: false }).sync(completed);
+    timeline.seek(50);
+    expect(target.x).to.equal(50);
+    timeline.cancel();
+    animation.cancel();
+  });
+
+  test('Ends a delayed duration 0 child tween on its to value at the timeline end', () => {
+    const target = { v: 1 };
+    const timeline = createTimeline({ autoplay: false })
+      .add(target, { v: { to: 0, duration: 0, delay: 8 } }, 130);
+    timeline.seek(timeline.duration);
+    // Before the fix, the default ease left 7.9e-9, which a boolean property such as visible reads as true.
+    expect(target.v).to.equal(0);
+    timeline.cancel();
+  });
+
+  test('Ends a child with a playback rate on its end value when a later child animates the same property', () => {
+    const target = { x: 0 };
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(target, { x: 2, duration: 50, playbackRate: 2 }, 100)
+      .add(target, { x: 80, duration: 50 }, 300);
+    timeline.seek(228.57);
+    expect(target.x).to.equal(2);
+    timeline.seek(100.2);
+    timeline.seek(228.57);
+    expect(target.x).to.equal(2);
+    timeline.cancel();
+  });
+
+  test('Shows the end value of a reversed child with keyframes in its delay after a seek before the child', () => {
+    const target = { u: 0 };
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(target, { u: 78, duration: 150 }, 0)
+      .add(target, { u: [{ to: 84, duration: 150, delay: 25 }, { to: 72, duration: 50 }], reversed: true }, 400)
+      .init();
+    timeline.seek(313.57);
+    timeline.seek(413.77);
+    expect(target.u).to.equal(72);
+    timeline.cancel();
+  });
+
+  test('Updates a parent when a backward seek leaves its final endpoint', () => {
+    const target = { x: 0 };
+    const events = [];
+    const timeline = createTimeline({
+      autoplay: false, loop: 1, defaults: { ease: 'linear' },
+      onUpdate: () => events.push('update'), onRender: () => events.push('render'),
+    }).add(target, { x: 100, duration: 100 });
+    try {
+      timeline.seek(200);
+      events.length = 0;
+      timeline.seek(195);
+      expect(target.x).to.equal(95);
+      expect(events).to.deep.equal(['update', 'render']);
+    } finally {
+      timeline.cancel();
+    }
+  });
+
+  test('Checks each child type once when removing a timeline property', () => {
+    const targets = Array.from({ length: 100 }, () => ({ x: 0, y: 0 }));
+    const timeline = createTimeline({ autoplay: false });
+    for (let i = 0; i < targets.length; i++) {
+      timeline.add(targets[i], { x: 100, y: 200, duration: 100, ease: 'linear' }, 0);
+    }
+    const restore = [];
+    let reads = 0;
+    let writes = 0;
+    for (let child = timeline._head; child; child = child._next) {
+      const current = child;
+      let value = child._hasChildren;
+      Object.defineProperty(current, '_hasChildren', {
+        configurable: true,
+        get() { reads++; return value; },
+        set(next) { writes++; value = next; },
+      });
+      restore.push(() => Object.defineProperty(current, '_hasChildren', { value, writable: true, configurable: true }));
+    }
+    try {
+      timeline.remove(targets[0], 'x');
+      expect(reads).to.equal(targets.length);
+      expect(writes).to.equal(0);
+      timeline.seek(50);
+      expect(targets.map(target => target.x)).to.deep.equal(targets.map((target, i) => i ? 50 : 0));
+      expect(targets.every(target => target.y === 100)).to.equal(true);
+    } finally {
+      for (let i = 0; i < restore.length; i++) restore[i]();
+      timeline.cancel();
+    }
+  });
+
+});

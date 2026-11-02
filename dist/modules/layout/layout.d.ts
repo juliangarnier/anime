@@ -82,8 +82,10 @@ export type LayoutSpecificAnimationParams = {
     swapAt?: LayoutStateParams;
     enterFrom?: LayoutStateParams;
     leaveTo?: LayoutStateParams;
+    onComplete?: Callback<Timeline, void>;
+    onPause?: Callback<Timeline, void>;
 };
-export type LayoutAnimationParams = LayoutSpecificAnimationParams & TimerParams & TickableCallbacks<Timeline> & RenderableCallbacks<Timeline>;
+export type LayoutAnimationParams = LayoutSpecificAnimationParams & Omit<TimerOptions, "muted"> & Omit<TickableCallbacks<Timeline>, "onComplete" | "onPause"> & RenderableCallbacks<Timeline>;
 export type LayoutOptions = {
     children?: LayoutChildrenParam;
     properties?: Array<string>;
@@ -144,6 +146,10 @@ export type LayoutNode = {
     _next: LayoutNode | null;
 };
 export type LayoutNodeIterator = (node: LayoutNode, index: number) => void;
+export type LayoutTransitionStates = {
+    oldState: LayoutSnapshot;
+    newState: LayoutSnapshot;
+};
 import type { DOMTarget } from '../types/index.js';
 declare class LayoutSnapshot {
     /**
@@ -212,7 +218,8 @@ import type { WAAPIAnimation } from '../waapi/waapi.js';
 import type { DOMTargetSelector } from '../types/index.js';
 import type { FunctionValue } from '../types/index.js';
 import type { EasingParam } from '../types/index.js';
-import type { TimerParams } from '../types/index.js';
+import type { Callback } from '../types/index.js';
+import type { TimerOptions } from '../types/index.js';
 import type { TickableCallbacks } from '../types/index.js';
 import type { RenderableCallbacks } from '../types/index.js';
 export {};

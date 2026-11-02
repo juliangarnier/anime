@@ -3,7 +3,9 @@ import {
 } from '../utils.js';
 
 import {
+  animate,
   createScope,
+  createTimer,
 } from '../../dist/modules/index.js';
 
 suite('Scope', () => {
@@ -44,6 +46,25 @@ suite('Scope', () => {
     const ref = { nativeElement: $root };
     const scope = createScope({ root: ref });
     expect(scope.root).to.equal($root);
+  });
+
+  test('Keeps later timers out of a scope whose callback threw', () => {
+    const scope = createScope();
+    expect(() => scope.add(() => { throw new Error('Scope callback error') })).to.throw('Scope callback error');
+    const timer = createTimer({ duration: 1000, autoplay: false }).seek(500);
+    scope.revert();
+    expect(timer.currentTime).to.equal(500);
+  });
+
+  test('Restores the global defaults when a scope callback threw', () => {
+    const before = animate('#square', { x: 10, autoplay: false });
+    const scope = createScope({ defaults: { duration: 123 } });
+    expect(() => scope.add(() => { throw new Error('Scope callback error') })).to.throw('Scope callback error');
+    const after = animate('#square', { x: 10, autoplay: false });
+    scope.revert();
+    expect(after.duration).to.equal(before.duration);
+    before.revert();
+    after.revert();
   });
 
 });

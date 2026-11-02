@@ -17,4 +17,4 @@ export * as easings from "./easings/index.js";
 export * as utils from "./utils/index.js";
 export * as svg from "./svg/index.js";
 export * as text from "./text/index.js";
-export { globals } from "./core/globals.js";
+export { globals, version } from "./core/globals.js";

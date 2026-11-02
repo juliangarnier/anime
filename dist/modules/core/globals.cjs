@@ -1,6 +1,6 @@
 /**
  * Anime.js - core - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -22,18 +22,17 @@ var consts = require('./consts.cjs');
 
 /**
  * @typedef {Object} EditorGlobals
- * @property {boolean} showPanel
  * @property {Function} addAnimation
- * @property {Function} addSet
+ * @property {Function|null} addSet
  * @property {Function} addTimeline
  * @property {Function} addTimelineChild
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
  * @property {Function|null} addTimelineTimer
+ * @property {Function} addLayout
+ * @property {Function} addLayoutTransition
  * @property {Function} createTweak
- * @property {Object|null} _head
- * @property {Object|null} _tail
  */
 
 /** @type {DefaultsParams} */
@@ -47,6 +46,7 @@ const defaults = {
   reversed: false,
   alternate: false,
   autoplay: true,
+  muted: false,
   persist: false,
   duration: consts.K,
   delay: 0,
@@ -99,7 +99,11 @@ const makeTweakable = (type, name, fn) => function() {
   return editor ? editor.createTweak(result, type, name, Array.prototype.slice.call(arguments)) : result;
 };
 
-const globalVersions = { version: '5.0.0-beta.2', engine: null };
+// The build writes the package version in place of the placeholder, the type stays a string.
+/** @type {string} */
+const version = '5.0.0-beta.3';
+
+const globalVersions = { version, engine: null };
 
 if (consts.isBrowser) {
   if (!consts.win.AnimeJS) consts.win.AnimeJS = [];
@@ -111,3 +115,4 @@ exports.globalVersions = globalVersions;
 exports.globals = globals;
 exports.makeTweakable = makeTweakable;
 exports.scope = scope;
+exports.version = version;

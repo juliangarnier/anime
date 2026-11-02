@@ -11,10 +11,7 @@ import { animate, createTimer, utils } from '../../../dist/modules/index.js';
 // animate() / utils.set() accept raw three.js meshes and per-instance adapters.
 import { getInstances } from '../../../dist/modules/adapters/three/index.js';
 
-import { syncTweaks } from 'tweaks';
 import { GUI } from 'tweaks/gui';
-
-syncTweaks('localStorage');
 
 // Scene + renderer. Colors come from the shared `examples/assets/css/styles.css` palette via `utils.set` and the engine's `var()` resolution path.
 

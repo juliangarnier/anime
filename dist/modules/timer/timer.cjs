@@ -1,6 +1,6 @@
 /**
  * Anime.js - timer - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -56,10 +56,19 @@ const reviveTimer = timer => {
   if (!timer._cancelled) return timer;
   if (timer._hasChildren) {
     helpers.forEachChildren(timer, reviveTimer);
+    /** @type {Timeline} */(timer).rebuildTakeovers();
   } else {
     helpers.forEachChildren(timer, (/** @type {Tween} tween */tween) => {
-      if (tween._composition !== consts.compositionTypes.none) {
-        composition.composeTween(tween, composition.getTweenSiblings(tween.target, tween.property));
+      // Set NaN so a revived tween writes its value at the next render.
+      // Keep the time of a blend tween that rests on one of its ends, its composition sets its number.
+      if (tween._composition !== consts.compositionTypes.blend || tween._currentTime > 0 && tween._currentTime < tween._changeDuration) tween._currentTime = NaN;
+      if (tween._composition === consts.compositionTypes.blend) {
+        composition.composeTween(tween);
+      } else if (tween._composition === consts.compositionTypes.replace && !timer.parent) {
+        // Leave the replace tweens of a child to its timeline, which composes them again when it is revived.
+        tween._isOverridden = consts.overrideTypes.NONE;
+        tween._changeDuration = tween._updateDuration;
+        composition.composeTween(tween);
       }
     });
   }
@@ -83,7 +92,10 @@ class Timer extends clock.Clock {
    */
   constructor(parameters = {}, parent = null, parentPosition = 0) {
 
-    super(0);
+    // Start _currentTime as negative zero so V8 stores it as a double, then reset it to zero for the public getters.
+    // An integer start moves each timer to a new class at its first decimal time, which makes the reads in render megamorphic.
+    super(-0);
+    this._currentTime = 0;
 
     ++timerId;
 
@@ -96,6 +108,7 @@ class Timer extends clock.Clock {
       loop,
       loopDelay,
       autoplay,
+      muted,
       frameRate,
       playbackRate,
       priority,
@@ -144,6 +157,8 @@ class Timer extends clock.Clock {
     /** @type {Boolean} */
     this.paused = true;
     /** @type {Boolean} */
+    this.muted = !!(parent && parent.muted) || !!values.setValue(muted, timerDefaults.muted);
+    /** @type {Boolean} */
     this.began = false;
     /** @type {Boolean} */
     this.completed = false;
@@ -159,6 +174,8 @@ class Timer extends clock.Clock {
     this.onPause = onPause || timerDefaults.onPause;
     /** @type {Callback<this>} */
     this.onComplete = onComplete || timerDefaults.onComplete;
+    // Swap the callbacks for noop once so render and pause never test a mute flag.
+    if (this.muted) this.onBegin = this.onBeforeUpdate = this.onUpdate = this.onLoop = this.onPause = this.onComplete = consts.noop;
     /** @type {Number} */
     this.iterationDuration = timerDuration; // Duration of one loop
     /** @type {Number} */
@@ -197,8 +214,6 @@ class Timer extends clock.Clock {
     this._lastTickTime = timerInitTime;
     /** @type {Number} */
     this._startTime = timerInitTime;
-    /** @type {Number} */
-    this._lastTime = timerInitTime;
     /** @type {Number} */
     this._fps = values.setValue(frameRate, timerDefaults.frameRate);
     /** @type {Number} */
@@ -247,8 +262,7 @@ class Timer extends clock.Clock {
   }
 
   set iterationProgress(progress) {
-    const iterationDuration = this.iterationDuration;
-    this.currentTime = (iterationDuration * this._currentIteration) + (iterationDuration * progress);
+    this.iterationCurrentTime = this.iterationDuration * progress;
   }
 
   get currentIteration() {
@@ -376,9 +390,12 @@ class Timer extends clock.Clock {
     // Recompose the tween siblings in case the timer has been cancelled
     reviveTimer(this);
     // If you seek a completed animation, otherwise the next play will starts at 0
-    this.completed = false;
+    // Keep it completed on a seek that stays at or past the end, so onComplete does not run again.
+    if (time < this.duration) this.completed = false;
     const isPaused = this.paused;
     this.paused = true;
+    // Give a child that seeks alone the properties that it owns at this time in its timeline.
+    if (this.parent && !internalRender) /** @type {Timeline} */(this.parent).updateTakeovers(this._offset + (time + this._delay) / this._speed);
     // timer, time, muteCallbacks, internalRender, tickMode
     render.tick(this, time + this._delay, ~~muteCallbacks, ~~internalRender, consts.tickModes.AUTO);
     return isPaused ? this : this.resume();
@@ -418,8 +435,7 @@ class Timer extends clock.Clock {
 
   /** @return {this} */
   cancel() {
-    // Skip the removal when already cancelled, a second removeTweenSliblings on unlinked tweens
-    // would null the siblings lookup _head and _tail and orphan every live tween in it.
+    // Skip the removal when already cancelled, the tweens already left their lookups.
     if (this._cancelled) return this.pause();
     if (this._hasChildren) {
       helpers.forEachChildren(this, (/** @type {Renderable} */child) => child.cancel(), true);
@@ -433,28 +449,34 @@ class Timer extends clock.Clock {
 
   /**
    * @param  {Number} newDuration
+   * @param  {Boolean} [isParentStretch]
    * @return {this}
    */
-  stretch(newDuration) {
+  stretch(newDuration, isParentStretch) {
     const currentDuration = this.duration;
     const normlizedDuration = helpers.normalizeTime(newDuration);
     if (currentDuration === normlizedDuration) return this;
     const timeScale = newDuration / currentDuration;
-    const isSetter = newDuration <= consts.minValue;
-    this.duration = isSetter ? consts.minValue : normlizedDuration;
-    this.iterationDuration = isSetter ? consts.minValue : helpers.normalizeTime(this.iterationDuration * timeScale);
-    this._offset *= timeScale;
+    this.duration = normlizedDuration;
+    this.iterationDuration = helpers.normalizeTime(this.iterationDuration * timeScale);
+    // Scale the time of the last render, so the next render compares times of the same scale.
+    this._currentTime *= timeScale;
+    // Scale the position of a child of a stretched timeline, a timer that stretches alone keeps its start.
+    if (isParentStretch) this._offset *= timeScale;
     this._delay *= timeScale;
     this._loopDelay *= timeScale;
+    // Update the timeline of a child that stretches alone, a stretched timeline updates itself after its children.
+    if (this.parent && !isParentStretch) /** @type {Timeline} */(this.parent).updateStretchedChild();
     return this;
   }
 
  /**
    * Cancels the timer by seeking it back to 0 and reverting the attached scroller if necessary
+   * @param {Boolean} [render] Pass false to skip the seek to 0 and leave the clock where it is
    * @return {this}
    */
-  revert() {
-    render.tick(this, 0, 1, 0, consts.tickModes.AUTO);
+  revert(render$1 = true) {
+    if (render$1) render.tick(this, 0, 1, 0, consts.tickModes.AUTO);
     const ap = /** @type {ScrollObserver} */(this._autoplay);
     if (ap && ap.linked && ap.linked === this) ap.revert();
     return this.cancel();
@@ -469,30 +491,10 @@ class Timer extends clock.Clock {
     return this.seek(this.duration, muteCallbacks).cancel();
   }
 
-  /**
-   * @typedef {this & {then: null}} ResolvedTimer
-   */
-
-  /**
-   * @param  {Callback<ResolvedTimer>} [callback]
-   * @return Promise<this>
-   */
-  then(callback = consts.noop) {
-    const then = this.then;
-    const onResolve = () => {
-      // this.then = null prevents infinite recursion if returned by an async function
-      // https://github.com/juliangarnierorg/anime-beta/issues/26
-      this.then = null;
-      callback(/** @type {ResolvedTimer} */(this));
-      this.then = then;
-      this._resolve = consts.noop;
-    };
-    return new Promise(r => {
-      this._resolve = () => r(onResolve());
-      // Make sure to resolve imediatly if the timer has already completed
-      if (this.completed) this._resolve();
-      return this;
-    });
+  // Define then as a getter so getCompletionThen can hide it during resolution without a field on each Timer.
+  /** @return {<T = Omit<this, 'then'>>(callback?: (this: void, self: Omit<this, 'then'>) => T) => Promise<Awaited<T>>} */
+  get then() {
+    return /** @type {any} */(helpers.getCompletionThen(this));
   }
 
 }

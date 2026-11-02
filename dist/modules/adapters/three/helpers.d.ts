@@ -16,7 +16,7 @@ export function applySkewOrigin(e: number[], skewX: number, skewY: number, skewZ
  */
 export function readColorHex(c: any): string | null;
 /**
- * Returns `true` when `v` is a `Vector2/3/4` instance whose dimension covers `axis`. `Quaternion` and plain `{x,y,z,w}`-shaped objects are intentionally rejected.
+ * Returns true when v is a Vector2, Vector3 or Vector4 whose dimension covers axis. Quaternion and plain objects return false.
  *
  * @param {any} v
  * @param {'x' | 'y' | 'z' | 'w'} axis
@@ -24,18 +24,13 @@ export function readColorHex(c: any): string | null;
  */
 export function isVectorWith(v: any, axis: "x" | "y" | "z" | "w"): boolean;
 /**
- * Classifies `target[name]` and returns a descriptor `{ kind, path, base, axis }` (or `null`). Used by the resolver entries in `resolvers.js` and by the `Object3D` adapter to build the matching access pattern for any three.js target (Object3D, Material, Texture, Fog, UniformNode).
+ * Classifies target[name] and returns the shared descriptor with kind, path, base and axis, or null when no adapter path matches.
  *
  * @param {any} target
  * @param {string} name
- * @return {{ kind: number, path: number, base: string, axis: 'x' | 'y' | 'z' | 'w' } | null}
+ * @return {PropDescriptor | null}
  */
-export function classifyTargetProp(target: any, name: string): {
-    kind: number;
-    path: number;
-    base: string;
-    axis: "x" | "y" | "z" | "w";
-} | null;
+export function classifyTargetProp(target: any, name: string): PropDescriptor | null;
 /**
  * @param {any} target
  * @param {string} name
@@ -81,9 +76,22 @@ export function readVectorAt(target: any, base: string, axis: "x" | "y" | "z" | 
  * @param {number} path
  */
 export function writeVectorAt(target: any, base: string, axis: "x" | "y" | "z" | "w", v: number, path: number): void;
+/**
+ * @typedef {Object} PropDescriptor
+ * @property {Number} kind
+ * @property {Number} path
+ * @property {String} base
+ * @property {'x' | 'y' | 'z' | 'w'} axis
+ */
 export const COLOR_NORM: number;
 export const AXIS_MAP: Record<string, "x" | "y" | "z" | "w">;
 export const PATH_DIRECT: 0;
 export const KIND_COLOR: 0;
 export const KIND_SCALAR: 1;
 export const KIND_VECTOR: 2;
+export type PropDescriptor = {
+    kind: number;
+    path: number;
+    base: string;
+    axis: "x" | "y" | "z" | "w";
+};

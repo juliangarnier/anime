@@ -10,18 +10,17 @@
 */
 /**
  * @typedef {Object} EditorGlobals
- * @property {boolean} showPanel
  * @property {Function} addAnimation
- * @property {Function} addSet
+ * @property {Function|null} addSet
  * @property {Function} addTimeline
  * @property {Function} addTimelineChild
  * @property {Function} addTimelineLabel
  * @property {Function} addTimelineCall
  * @property {Function} addTimelineSync
  * @property {Function|null} addTimelineTimer
+ * @property {Function} addLayout
+ * @property {Function} addLayoutTransition
  * @property {Function} createTweak
- * @property {Object|null} _head
- * @property {Object|null} _tail
  */
 /** @type {DefaultsParams} */
 export const defaults: DefaultsParams;
@@ -37,23 +36,24 @@ export namespace globals {
     export let editor: EditorGlobals | null;
 }
 export function makeTweakable(type: string, name: string, fn: Function): Function;
+/** @type {string} */
+export const version: string;
 export namespace globalVersions {
-    let version: string;
-    let engine: any;
+    export { version };
+    export let engine: any;
 }
 export type EditorGlobals = {
-    showPanel: boolean;
     addAnimation: Function;
-    addSet: Function;
+    addSet: Function | null;
     addTimeline: Function;
     addTimelineChild: Function;
     addTimelineLabel: Function;
     addTimelineCall: Function;
     addTimelineSync: Function;
     addTimelineTimer: Function | null;
+    addLayout: Function;
+    addLayoutTransition: Function;
     createTweak: Function;
-    _head: any | null;
-    _tail: any | null;
 };
 import type { DefaultsParams } from '../types/index.js';
 import type { Scope } from '../scope/index.js';

@@ -4,6 +4,7 @@ import {
 
 import {
   animate,
+  stagger,
   utils,
   eases,
   cubicBezier,
@@ -26,6 +27,61 @@ function getOpacityValue() {
 }
 
 suite('Eases', () => {
+
+  test('Sibling tweens keep their own ease and duration', () => {
+    const target = { x: 0, y: 0, z: 0 };
+    const animation = animate(target, {
+      x: { to: 100, ease: 'linear' },
+      y: { to: 100, ease: 'inQuad' },
+      z: { to: 100, ease: 'linear', duration: 50 },
+      duration: 100,
+      autoplay: false,
+    });
+    animation.seek(50);
+    expect(target.x).to.equal(50);
+    expect(target.y).to.equal(25);
+    expect(target.z).to.equal(100);
+  });
+
+  test('Sibling tweens share progress only when every tween agrees, whatever the order', () => {
+    const odd = { ease: { to: 100, ease: 'inQuad' }, duration: { to: 100, duration: 50 }, delay: { to: 100, delay: 50 } };
+    const oddValue = { ease: 25, duration: 100, delay: 0 };
+    for (const kind of Object.keys(odd)) {
+      for (const position of [0, 1, 2]) {
+        const target = { a: 0, b: 0, c: 0 };
+        const params = { duration: 100, ease: 'linear', autoplay: false };
+        ['a', 'b', 'c'].forEach((property, i) => { params[property] = i === position ? odd[kind] : 100; });
+        const animation = animate(target, params);
+        animation.seek(50);
+        expect([target.a, target.b, target.c], `${kind} at ${position}`).to.deep.equal([0, 1, 2].map(i => i === position ? oddValue[kind] : 50));
+      }
+    }
+    const target = { a: 0, b: 0, c: 0 };
+    const shared = animate(target, { a: 100, b: 100, c: 100, duration: 100, ease: 'inQuad', autoplay: false });
+    shared.seek(50);
+    expect(shared._hasSharedProgress).to.equal(true);
+    expect([target.a, target.b, target.c]).to.deep.equal([25, 25, 25]);
+    const linear = animate(target, { a: 100, b: 100, c: 100, duration: 100, ease: 'linear', autoplay: false });
+    expect(linear._hasSharedProgress).to.equal(false);
+  });
+
+  test('Shared progress needs two tweens on one clock and survives stretch', () => {
+    const single = animate({ a: 0 }, { a: 100, duration: 100, ease: 'inQuad', autoplay: false });
+    expect(single._hasSharedProgress).to.equal(false);
+    const staggered = animate([{ a: 0 }, { a: 0 }], { a: 100, duration: 100, ease: 'inQuad', delay: stagger(50), autoplay: false });
+    expect(staggered._hasSharedProgress).to.equal(false);
+    const keyframed = animate({ a: 0 }, { a: [{ to: 50, duration: 50 }, { to: 100, duration: 50 }], ease: 'inQuad', autoplay: false });
+    expect(keyframed._hasSharedProgress).to.equal(false);
+    const target = { a: 0, b: 0, c: 0 };
+    const muted = animate(target, { a: 100, b: { to: 100, muted: true }, c: 100, duration: 100, ease: 'inQuad', autoplay: false });
+    expect(muted._hasSharedProgress).to.equal(true);
+    muted.seek(50);
+    expect([target.a, target.b, target.c]).to.deep.equal([25, 0, 25]);
+    muted.stretch(200);
+    expect(muted._hasSharedProgress).to.equal(true);
+    muted.seek(150);
+    expect([target.a, target.b, target.c]).to.deep.equal([56.25, 0, 56.25]);
+  });
 
   test("'linear' / eases.linear", () => {
     const anim1 = animate('#target-id', createEasingParam('linear'));
@@ -348,4 +404,33 @@ suite('Eases', () => {
     cubicBezierIn.seek(100);
     expect(getOpacityValue()).to.equal(1);
   });
+
+  test('Applies each property easing independently', () => {
+    const target = { linear: 0, quadratic: 0 };
+    const animation = animate(target, {
+      linear: { to: 100, ease: 'linear' },
+      quadratic: { to: 100, ease: 'inQuad' },
+      duration: 100,
+      autoplay: false,
+    });
+    animation.seek(50);
+    expect([target.linear, target.quadratic]).to.deep.equal([50, 25]);
+    animation.cancel();
+  });
+
+  test('Passes the spring context and animation to completion', () => {
+    const calls = [];
+    const ease = spring({
+      duration: 100,
+      onComplete(self) { calls.push([this, self]); },
+    });
+    const animation = animate({ x: 0 }, { x: 100, ease, autoplay: false });
+    calls.length = 0;
+    animation.seek(animation.duration);
+    expect(calls.length).to.equal(1);
+    expect(calls[0][0]).to.equal(ease);
+    expect(calls[0][1]).to.equal(animation);
+    animation.cancel();
+  });
+
 });

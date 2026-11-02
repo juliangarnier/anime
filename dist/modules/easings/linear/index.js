@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -15,7 +15,7 @@ import { linearFactory } from './factory.js';
  * } from '../../types/index.js'
 */
 
-const taggedLinear = makeTweakable('Ease', 'linear', linearFactory);
+const tweakableLinear = makeTweakable('Ease', 'linear', linearFactory);
 
 /**
  * Without parameters, the linear function creates a non-eased transition.
@@ -24,6 +24,6 @@ const taggedLinear = makeTweakable('Ease', 'linear', linearFactory);
  * @param  {...(String|Number)} args - Points
  * @return {EasingFunction}
  */
-const linear = (...args) => args.length ? /** @type {EasingFunction} */(taggedLinear.apply(null, args)) : none;
+const linear = (...args) => args.length ? /** @type {EasingFunction} */(tweakableLinear.apply(null, args)) : none;
 
 export { linear };

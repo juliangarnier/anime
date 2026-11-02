@@ -108,7 +108,14 @@ export class ScrollObserver {
     get progress(): number;
     refresh(): this;
     removeDebug(): this;
-    debug(): void;
+    /**
+     * Rebuilds the debug overlay. Pass the previous observer to reuse its overlay element.
+     * @param {ScrollObserver} [previous]
+     * @return {this}
+     */
+    refreshDebug(previous?: ScrollObserver): this;
+    /** @return {this} */
+    debug(): this;
     updateBounds(): void;
     handleScroll(): void;
     revert(): this;

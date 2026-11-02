@@ -34,6 +34,7 @@ export {}
  * @property {Boolean} [reversed]
  * @property {Boolean} [alternate]
  * @property {Boolean} [persist]
+ * @property {Boolean} [muted]
  * @property {Boolean|ScrollObserver} [autoplay]
  * @property {Number|FunctionValue} [duration]
  * @property {Number|FunctionValue} [delay]
@@ -85,13 +86,8 @@ export {}
  * @property {Number} [total]
  * @property {EasingParam} [ease]
  * @property {TweenModifier} [modifier]
- * @property {Number|[Number, Number]} [jitter] Additive uniform noise on the
- *   computed stagger value. Number form gives flat `+/-jitter`; tuple form
- *   ramps the magnitude `start -> end` across the from/axis/grid ordering
- *   and respects `ease`.
- * @property {Boolean|Number} [seed] Seed for jitter draws and `from: 'random'`
- *   shuffling. `false` (default) uses Math.random. `true` seeds with `0`. A
- *   number is used directly as the seed.
+ * @property {Number|[Number, Number]} [jitter] Random offset added to each staggered value, a pair ramps the offset from the first to the last value
+ * @property {Boolean|Number} [seed] Seed of the random draws of jitter and from random, true seeds with 0 and false uses Math.random
  */
 
 // Targets types
@@ -160,14 +156,16 @@ export {}
  * @property {Number} [velocity=0] - Initial velocity, default 0
  * @property {Number} [bounce=0] - Initial bounce, default 0
  * @property {Number} [duration=0] - The perceived duration, default 0
- * @property {Callback<JSAnimation>} [onComplete] - Callback function called when the spring currentTime hits the perceived duration
+ * @property {Callback<JSAnimation, Spring>} [onComplete] - Callback function called when the spring currentTime hits the perceived duration
  */
 
  // Callback types
 
+// Type self and this apart, a callback can receive an animation and bind this to another object or to nothing.
 /**
  * @template T
- * @typedef {{ method(self: T): * }['method']} Callback
+ * @template [This=T]
+ * @typedef {{ method(this: This, self: T): * }['method']} Callback
  */
 
 /**
@@ -191,6 +189,7 @@ export {}
 
 /**
  * @typedef {Object} TimerOptions
+ * @property {Boolean} [muted]
  * @property {Number|String} [id]
  * @property {TweenParamValue} [duration]
  * @property {TweenParamValue} [delay]
@@ -234,7 +233,6 @@ export {}
 
 /**
  * @typedef {Object} Tween
- * @property {Number} id
  * @property {JSAnimation} parent
  * @property {String} property
  * @property {Target} target
@@ -252,26 +250,18 @@ export {}
  * @property {String} _unit
  * @property {TweenModifier} _modifier
  * @property {Number} _currentTime
- * @property {Number} _delay
  * @property {Number} _updateDuration
  * @property {Number} _startTime
  * @property {Number} _changeDuration
- * @property {Number} _absoluteStartTime
- * @property {Number} _absoluteUpdateStartTime
- * @property {Number} _absoluteEndTime
- * @property {Number} _hasFromValue
  * @property {tweenTypes} _tweenType
- * @property {((target: any, value: number, tween: Tween) => void) | null} _setter
+ * @property {((target: Target, value: Number, tween: Tween) => void) | null} _setter
  * @property {valueTypes} _valueType
  * @property {Number} _composition
- * @property {Number} _isOverlapped
  * @property {Number} _isOverridden
- * @property {Number} _renderTransforms
- * @property {String} _inlineValue
- * @property {Tween} _prevRep
- * @property {Tween} _nextRep
- * @property {Tween} _prevAdd
- * @property {Tween} _nextAdd
+ * @property {Number} _keyStart
+ * @property {Number} _keyEnd
+ * @property {Tween} _prevSibling
+ * @property {String|Number|null|undefined|Symbol} _inlineValue
  * @property {Tween} _prev
  * @property {Tween} _next
  */
@@ -286,10 +276,12 @@ export {}
  * @property {Array.<String>} s - Strings (complex value type)
  */
 
-/** @typedef {{_head: null|Tween, _tail: null|Tween}} TweenPropertySiblings */
-/** @typedef {Record<String, TweenPropertySiblings>} TweenLookups */
-/** @typedef {WeakMap.<Target, TweenLookups>} TweenReplaceLookups */
-/** @typedef {Map.<Target, TweenLookups>} TweenAdditiveLookups */
+/**
+ * @typedef {{
+ *   [property: string]: Tween,
+ *   [owner: symbol]: Target,
+ * }} TweenLookups
+ */
 
 // JSAnimation types
 
@@ -307,6 +299,7 @@ export {}
 
 /**
  * @typedef {Object} TweenParamsOptions
+ * @property {Boolean} [muted]
  * @property {TweenParamValue} [duration]
  * @property {TweenParamValue} [delay]
  * @property {EasingParam|FunctionValue} [ease]
@@ -691,4 +684,26 @@ export {}
  *   setAttribute(name: 'draw', value: `${number} ${number}`): void;
  *   draw: `${number} ${number}`;
  * }} DrawableSVGGeometry
+ */
+
+/**
+ * Identity of one timeline call or sync statement.
+ * @typedef {Object} TimelineMarkerParams
+ * @property {String|Number} [id]
+ * @property {Boolean} [muted]
+ */
+
+/**
+ * @template {Timer} [T=Timer]
+ * @typedef {TimelineMarkerParams & {
+ *   callback: Callback<T, void>
+ * }} TimelineCallParams
+ */
+
+/** @typedef {Omit<Tickable, 'then'>|Omit<WAAPIAnimation, 'then'>|globalThis.Animation} TimelineSyncTarget */
+
+/**
+ * @typedef {TimelineMarkerParams & {
+ *   target: TimelineSyncTarget|Array<TimelineSyncTarget>
+ * }} TimelineSyncParams
  */

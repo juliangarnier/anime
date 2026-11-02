@@ -1,6 +1,6 @@
 /**
  * Anime.js - layout - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -11,7 +11,7 @@ import { parseEase } from '../easings/eases/parser.js';
 import { setValue, getFunctionValue } from '../core/values.js';
 import { createTimeline } from '../timeline/timeline.js';
 import { waapi } from '../waapi/waapi.js';
-import { scope, defaults, globals } from '../core/globals.js';
+import { globals, defaults, scope } from '../core/globals.js';
 
 /**
  * @import {
@@ -19,7 +19,8 @@ import { scope, defaults, globals } from '../core/globals.js';
  *   RenderableCallbacks,
  *   TickableCallbacks,
  *   TimelineParams,
- *   TimerParams,
+ *   TimerOptions,
+ *   Callback,
  * } from '../types/index.js'
 */
 
@@ -85,10 +86,12 @@ import { scope, defaults, globals } from '../core/globals.js';
  * @property {LayoutStateParams} [swapAt]
  * @property {LayoutStateParams} [enterFrom]
  * @property {LayoutStateParams} [leaveTo]
+ * @property {Callback<Timeline, void>} [onComplete]
+ * @property {Callback<Timeline, void>} [onPause]
  */
 
 /**
- * @typedef {LayoutSpecificAnimationParams & TimerParams & TickableCallbacks<Timeline> & RenderableCallbacks<Timeline>} LayoutAnimationParams
+ * @typedef {LayoutSpecificAnimationParams & Omit<TimerOptions, 'muted'> & Omit<TickableCallbacks<Timeline>, 'onComplete' | 'onPause'> & RenderableCallbacks<Timeline>} LayoutAnimationParams
  */
 
 /**
@@ -167,8 +170,41 @@ import { scope, defaults, globals } from '../core/globals.js';
  * @return {void}
  */
 
+/**
+ * @typedef {Object} LayoutTransitionStates
+ * @property {LayoutSnapshot} oldState
+ * @property {LayoutSnapshot} newState
+ */
+
 let layoutId = 0;
 let nodeId = 0;
+
+/** @type {LayoutTransitionStates|null} */
+let activeLayoutTransition = null;
+
+/**
+ * Creates a transition builder that owns its captured layout states.
+ * @param {AutoLayout} layout
+ * @return {(params: LayoutAnimationParams) => Timeline}
+ */
+function createLayoutTransitionBuilder(layout) {
+  const transition = {
+    oldState: layout.oldState,
+    newState: layout.newState,
+  };
+  return params => {
+    const editor = globals.editor;
+    const previousTransition = activeLayoutTransition;
+    globals.editor = null;
+    activeLayoutTransition = transition;
+    try {
+      return layout.animate(params);
+    } finally {
+      activeLayoutTransition = previousTransition;
+      globals.editor = editor;
+    }
+  };
+}
 
 /**
  * @param {DOMTarget} root
@@ -450,12 +486,12 @@ const updateNodeProperties = (node, props) => {
  * @param  {LayoutAnimationTimingsParams} params
  */
 const updateNodeTimingParams = (node, params) => {
-  const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.targets, null, null);
+  const easeFunctionResult = getFunctionValue(params.ease, node.$el, node.index, node.targets, null);
   const keyEasing = isFnc(easeFunctionResult) ? easeFunctionResult : params.ease;
   const hasSpring = !isUnd(keyEasing) && !isUnd(/** @type {Spring} */(keyEasing).ease);
   node.ease = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
-  node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.targets, null, null);
-  node.delay = getFunctionValue(params.delay, node.$el, node.index, node.targets, null, null);
+  node.duration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : getFunctionValue(params.duration, node.$el, node.index, node.targets, null);
+  node.delay = getFunctionValue(params.delay, node.$el, node.index, node.targets, null);
 };
 
 /**
@@ -1045,7 +1081,8 @@ class AutoLayout {
       this.transformAnimation.cancel();
       this.transformAnimation = null;
     }
-    // Record the old state
+    const useFreshSnapshots = !!(globals.editor && globals.editor.addLayoutTransition);
+    if (useFreshSnapshots) this.oldState = new LayoutSnapshot(this);
     this.oldState.record();
     // Cancel any running timeline
     if (this.timeline) {
@@ -1054,6 +1091,7 @@ class AutoLayout {
     }
     // Restore previously captured inline styles
     this.newState.forEachRootNode(restoreNodeInlineStyles);
+    if (useFreshSnapshots) this.newState = new LayoutSnapshot(this);
     return this;
   }
 
@@ -1062,6 +1100,27 @@ class AutoLayout {
    * @return {Timeline}
    */
   animate(params = {}) {
+    const editor = globals.editor;
+    if (editor && editor.addLayoutTransition) return editor.addLayoutTransition(this, params, 'animate', createLayoutTransitionBuilder(this));
+    const editorTransition = activeLayoutTransition && activeLayoutTransition.oldState.layout === this
+      ? activeLayoutTransition : null;
+    const editorControlled = !!(editorTransition && !isUnd(params.id));
+    const oldState = editorTransition ? editorTransition.oldState : this.oldState;
+    const newState = editorTransition ? editorTransition.newState : this.newState;
+    if (editorTransition && newState.rootNode) {
+      // A rebuild uses the recorded layout, not the temporary styles of its previous frame.
+      if (this.transformAnimation) {
+        this.transformAnimation.cancel();
+        this.transformAnimation = null;
+      }
+      newState.forEachRootNode(restoreNodeInlineStyles);
+      newState.forEachNode(restoreNodeTransform);
+      this.root.classList.remove('is-animated');
+    }
+    /** @type {WAAPIAnimation} */
+    let transformAnimation = null;
+    /** @type {Timeline} */
+    let timeline = null;
     /** @type { LayoutAnimationTimingsParams } */
     const animationTimings = {
       ease: setValue(params.ease, this.params.ease),
@@ -1083,16 +1142,15 @@ class AutoLayout {
         }
       }
     }
+    tlParams.muted = false;
     tlParams.onComplete = () => {
       const ap = /** @type {ScrollObserver} */(params.autoplay);
-      const ed = globals.editor;
-      const isScrollControled = (ap && ap.linked) || (ed && ed.showPanel);
-      if (isScrollControled) {
-        if (onComplete) onComplete(this.timeline);
+      if (ap && ap.linked) {
+        if (onComplete) onComplete(timeline);
         return;
       }
       // Make sure to call .cancel() after restoreNodeInlineStyles(node); otehrwise the commited styles get reverted
-      if (this.transformAnimation) this.transformAnimation.cancel();
+      if (transformAnimation) transformAnimation.cancel();
       newState.forEachRootNode(node => {
         restoreNodeVisualState(node);
         restoreNodeInlineStyles(node);
@@ -1103,7 +1161,7 @@ class AutoLayout {
       }
       if (this.root.classList.contains('is-animated')) {
         this.root.classList.remove('is-animated');
-        if (onComplete) onComplete(this.timeline);
+        if (onComplete) onComplete(timeline);
       }
       // Avoid CSS transitions at the end of the animation by restoring them on the next frame
       requestAnimationFrame(() => {
@@ -1113,18 +1171,23 @@ class AutoLayout {
     };
     tlParams.onPause = () => {
       const ap = /** @type {ScrollObserver} */(params.autoplay);
-      const isScrollControled = ap && ap.linked;
-      if (isScrollControled) {
-        if (onComplete) onComplete(this.timeline);
-        if (onPause) onPause(this.timeline);
+      const isScrollLinked = ap && ap.linked;
+      if (isScrollLinked) {
+        if (onComplete) onComplete(timeline);
+        if (onPause) onPause(timeline);
+        return;
+      }
+      if (editorControlled) {
+        // Report onPause only when is-animated is set, so this branch matches the native one below.
+        if (onPause && this.root.classList.contains('is-animated')) onPause(timeline);
         return;
       }
       if (!this.root.classList.contains('is-animated')) return;
-      if (this.transformAnimation) this.transformAnimation.cancel();
+      if (transformAnimation) transformAnimation.cancel();
       newState.forEachRootNode(restoreNodeVisualState);
       this.root.classList.remove('is-animated');
-      if (onComplete) onComplete(this.timeline);
-      if (onPause) onPause(this.timeline);
+      if (onComplete) onComplete(timeline);
+      if (onPause) onPause(timeline);
     };
     tlParams.composition = false;
 
@@ -1135,8 +1198,6 @@ class AutoLayout {
     const [ enterFromProps, enterFromTimings ] = splitPropertiesFromParams(enterFromParams);
     const [ leaveToProps, leaveToTimings ] = splitPropertiesFromParams(leaveToParams);
 
-    const oldState = this.oldState;
-    const newState = this.newState;
     const animating = this.animating;
     const swapping = this.swapping;
     const entering = this.entering;
@@ -1148,8 +1209,14 @@ class AutoLayout {
     // Mute old state CSS transitions to prevent wrong properties calculation
     oldState.forEachRootNode(muteNodeTransition);
     // Capture the new state before animation
-    newState.record();
-    newState.forEachRootNode(recordNodeInlineStyles);
+    if (!editorTransition || !newState.rootNode) {
+      newState.record();
+      newState.forEachRootNode(recordNodeInlineStyles);
+    }
+    if (editorControlled) {
+      this.oldState = oldState;
+      this.newState = newState;
+    }
 
     const targets = [];
     const animated = [];
@@ -1316,8 +1383,8 @@ class AutoLayout {
 
       // Computes all values up front so we can check for changes and we don't have to re-compute them inside the animation props
       for (let prop in nodeProperties) {
-        nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.targets, null, null);
-        oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.targets, null, null);
+        nodeProperties[prop] = getFunctionValue(nodeProperties[prop], $el, node.index, node.targets, null);
+        oldStateNodeProperties[prop] = getFunctionValue(oldStateNodeProperties[prop], $el, oldStateNode.index, oldStateNode.targets, null);
       }
 
       // Use a 1px tolerance to detect dimensions changes to prevent width / height animations on barelly visible elements
@@ -1357,6 +1424,8 @@ class AutoLayout {
     });
 
     const timingParams = {
+      // Keep the child animations unmuted so a muted global default does not stop the layout.
+      muted: false,
       delay: (/** @type {HTMLElement} */$el) => newState.getNode($el).delay,
       duration: (/** @type {HTMLElement} */$el) => newState.getNode($el).duration,
       ease: (/** @type {HTMLElement} */$el) => newState.getNode($el).ease,
@@ -1364,7 +1433,7 @@ class AutoLayout {
 
     tlParams.defaults = timingParams;
 
-    this.timeline = createTimeline(tlParams);
+    timeline = this.timeline = createTimeline(tlParams);
 
     // Imediatly return the timeline if no layout changes detected
     if (!animated.length && !transformed.length && !swapping.length) {
@@ -1543,11 +1612,11 @@ class AutoLayout {
         }
         $el.style.transform = oldState.getComputedValue($el, 'transform');
         if (animatedSwap.includes($el)) {
-          node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.targets, null, null);
-          node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.targets, null, null);
+          node.ease = getFunctionValue(swapAtParams.ease, $el, node.index, node.targets, null);
+          node.duration = getFunctionValue(swapAtParams.duration, $el, node.index, node.targets, null);
         }
       }
-      this.transformAnimation = waapi.animate(transformed, {
+      transformAnimation = this.transformAnimation = waapi.animate(transformed, {
         translate: (/** @type {HTMLElement} */$el) => {
           const node = newState.getNode($el);
           // Don't animate translate for inlined elements (to avoid text reflow)
@@ -1559,13 +1628,13 @@ class AutoLayout {
           if (!animatedSwap.includes($el)) return newValue;
           const oldValue = oldState.getComputedValue($el, 'transform');
           const node = newState.getNode($el);
-          return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.targets, null, null), newValue]
+          return [oldValue, getFunctionValue(swapAtProps.transform, $el, node.index, node.targets, null), newValue]
         },
         autoplay: false,
         // persist: true,
         ...timingParams,
       });
-      this.timeline.sync(this.transformAnimation, 0);
+      this.timeline.sync(transformAnimation, 0);
     }
 
     return this.timeline.init();
@@ -1579,6 +1648,8 @@ class AutoLayout {
   update(callback, params = {}) {
     this.record();
     callback(this);
+    const editor = globals.editor;
+    if (editor && editor.addLayoutTransition) return editor.addLayoutTransition(this, params, 'update', createLayoutTransitionBuilder(this));
     return this.animate(params);
   }
 }
@@ -1588,6 +1659,9 @@ class AutoLayout {
  * @param {AutoLayoutParams} [params]
  * @return {AutoLayout}
  */
-const createLayout = (root, params) => new AutoLayout(root, params);
+const createLayout = (root, params) => {
+  const editor = globals.editor;
+  return editor && editor.addLayout ? editor.addLayout(root, params) : new AutoLayout(root, params);
+};
 
 export { AutoLayout, createLayout };

@@ -135,7 +135,13 @@
   </div>
 </body>
 <script type="importmap">
-{ "imports": { "three": "../../../node_modules/three/build/three.module.min.js" } }
+{
+  "imports": {
+    "animejs": "https://esm.sh/animejs@4.5.0?external=three",
+    "animejs/adapters/three": "https://esm.sh/animejs@4.5.0/adapters/three?external=three",
+    "three": "../../../node_modules/three/build/three.module.min.js"
+  }
+}
 </script>
-<script type="module" src="index.js"></script>
+<script type="module" src="../benchmark/index.js"></script>
 </html>

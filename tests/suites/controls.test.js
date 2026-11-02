@@ -1,6 +1,7 @@
 import {
   expect,
   getChildAtIndex,
+  getTweenDelay,
   forEachChildren,
 } from '../utils.js';
 
@@ -8,12 +9,17 @@ import {
   animate,
   createTimeline,
   createTimer,
+  Timer,
   utils,
 } from '../../dist/modules/index.js';
 
 import {
   minValue,
 } from '../../dist/modules/core/consts.js';
+
+import { registerAdapter } from '../../dist/modules/adapters/index.js';
+
+/** @import { JSAnimation } from '../../dist/modules/index.js' */
 
 suite('Controls', () => {
   test('Alternate the direction of an animation', resolve => {
@@ -904,36 +910,36 @@ suite('Controls', () => {
     const tween0 = getChildAtIndex(animation1, 0);
     const tween1 = getChildAtIndex(animation1, 1);
     const tween2 = getChildAtIndex(animation1, 2);
-    expect(tween0._delay).to.equal(0);
+    expect(getTweenDelay(tween0)).to.equal(0);
     expect(tween0._updateDuration).to.equal(100);
     expect(tween0._startTime).to.equal(0);
-    expect(tween1._delay).to.equal(200);
+    expect(getTweenDelay(tween1)).to.equal(200);
     expect(tween1._updateDuration).to.equal(500);
     expect(tween1._startTime).to.equal(300);
-    expect(tween2._delay).to.equal(150);
+    expect(getTweenDelay(tween2)).to.equal(150);
     expect(tween2._updateDuration).to.equal(100);
     expect(tween2._startTime).to.equal(950);
 
     animation1.stretch(2100);
     expect(animation1.duration).to.equal(2100);
-    expect(tween0._delay).to.equal(0);
+    expect(getTweenDelay(tween0)).to.equal(0);
     expect(tween0._updateDuration).to.equal(200);
     expect(tween0._startTime).to.equal(0);
-    expect(tween1._delay).to.equal(400);
+    expect(getTweenDelay(tween1)).to.equal(400);
     expect(tween1._updateDuration).to.equal(1000);
     expect(tween1._startTime).to.equal(600);
-    expect(tween2._delay).to.equal(300);
+    expect(getTweenDelay(tween2)).to.equal(300);
     expect(tween2._updateDuration).to.equal(200);
     expect(tween2._startTime).to.equal(1900);
 
     animation1.stretch(525);
     expect(animation1.duration).to.equal(525);
-    expect(tween0._delay).to.equal(0);
+    expect(getTweenDelay(tween0)).to.equal(0);
     expect(tween0._updateDuration).to.equal(50);
-    expect(tween1._delay).to.equal(100);
+    expect(getTweenDelay(tween1)).to.equal(100);
     expect(tween1._updateDuration).to.equal(250);
     expect(tween1._startTime).to.equal(150);
-    expect(tween2._delay).to.equal(75);
+    expect(getTweenDelay(tween2)).to.equal(75);
     expect(tween2._updateDuration).to.equal(50);
     expect(tween2._startTime).to.equal(475);
   });
@@ -952,18 +958,18 @@ suite('Controls', () => {
     expect(animation1._delay).to.equal(50);
     const tween0 = getChildAtIndex(animation1, 0);
     const tween1 = getChildAtIndex(animation1, 1);
-    expect(tween0._delay).to.equal(0);
+    expect(getTweenDelay(tween0)).to.equal(0);
     expect(tween0._updateDuration).to.equal(100);
-    expect(tween1._delay).to.equal(200);
+    expect(getTweenDelay(tween1)).to.equal(200);
     expect(tween1._updateDuration).to.equal(300);
     expect(tween1._startTime).to.equal(300);
 
     animation1.stretch(1200);
     expect(animation1.duration).to.equal(1200);
     expect(animation1._delay).to.equal(100);
-    expect(tween0._delay).to.equal(0);
+    expect(getTweenDelay(tween0)).to.equal(0);
     expect(tween0._updateDuration).to.equal(200);
-    expect(tween1._delay).to.equal(400);
+    expect(getTweenDelay(tween1)).to.equal(400);
     expect(tween1._updateDuration).to.equal(600);
     expect(tween1._startTime).to.equal(600);
   });
@@ -992,23 +998,23 @@ suite('Controls', () => {
     const c0t1 = getChildAtIndex(child0, 1);
     const c1t0 = getChildAtIndex(child1, 0);
     const c1t1 = getChildAtIndex(child1, 1);
-    expect(c0t1._delay).to.equal(200);
+    expect(getTweenDelay(c0t1)).to.equal(200);
     expect(c0t1._updateDuration).to.equal(300);
-    expect(c1t1._delay).to.equal(100);
+    expect(getTweenDelay(c1t1)).to.equal(100);
     expect(c1t1._updateDuration).to.equal(200);
 
     tl.stretch(2000);
     expect(tl.duration).to.equal(2000);
     expect(child0.duration).to.equal(1200);
     expect(child1.duration).to.equal(800);
-    expect(c0t0._delay).to.equal(0);
+    expect(getTweenDelay(c0t0)).to.equal(0);
     expect(c0t0._updateDuration).to.equal(200);
-    expect(c0t1._delay).to.equal(400);
+    expect(getTweenDelay(c0t1)).to.equal(400);
     expect(c0t1._updateDuration).to.equal(600);
     expect(c0t1._startTime).to.equal(600);
-    expect(c1t0._delay).to.equal(0);
+    expect(getTweenDelay(c1t0)).to.equal(0);
     expect(c1t0._updateDuration).to.equal(200);
-    expect(c1t1._delay).to.equal(200);
+    expect(getTweenDelay(c1t1)).to.equal(200);
     expect(c1t1._updateDuration).to.equal(400);
     expect(c1t1._startTime).to.equal(400);
   });
@@ -1087,6 +1093,217 @@ suite('Controls', () => {
         resolve();
       }
     });
+  });
+
+  test('Restores object originals across keyframes and render modes', () => {
+    const shapes = {
+      implicitFrom: () => ({ x: 100, duration: 200 }),
+      explicitFrom: () => ({ x: [20, 100], duration: 200 }),
+      keyframes: () => ({ x: [{ to: 50, duration: 100 }, { to: 100, duration: 100 }] }),
+      mutedFirstKeyframe: () => ({ x: [{ to: 50, duration: 100, muted: true }, { to: 100, duration: 100 }] }),
+    };
+    const midValue = {
+      implicitFrom: from => from + (100 - from) * .75,
+      explicitFrom: () => 80,
+      keyframes: () => 75,
+      mutedFirstKeyframe: from => from + (100 - from) * .5,
+    };
+    for (const original of [null, undefined, '', '0', -0, 0, 10]) {
+      for (const shape in shapes) {
+        for (const render of [true, false]) {
+          const target = { x: original };
+          let modifierCalls = 0;
+          const animation = animate(target, { ...shapes[shape](), ease: 'linear', autoplay: false, modifier: value => { modifierCalls++; return value; } });
+          animation.seek(150, true);
+          const label = `${shape}, original ${String(original)}, render ${render}`;
+          expect(target.x, `${label}: mid value`).to.equal(midValue[shape](+original || 0));
+          const clock = animation.currentTime;
+          modifierCalls = 0;
+          animation.revert(render);
+          expect(Object.is(target.x, original), `${label}: original restored`).to.equal(true);
+          if (!render) {
+            expect(modifierCalls, `${label}: no modifier runs without a render`).to.equal(0);
+            expect(animation.currentTime, `${label}: the clock stays`).to.equal(clock);
+          }
+        }
+      }
+    }
+  });
+
+  test('Restores an adapter value after an explicit start', () => {
+    class Scalar { constructor() { this.n = 0; } }
+    registerAdapter().registerTargetAdapter(target => target instanceof Scalar)
+      .registerProperty('value', target => target.n, (target, value) => { target.n = value; });
+    const target = new Scalar();
+    const animation = animate(target, { value: [20, 100], autoplay: false });
+    animation.seek(100, true);
+    animation.revert();
+    expect(target.n).to.equal(0);
+  });
+
+  test('Restores original values and cancels timeline children on revert', () => {
+    const target = { x: 10, y: 20 };
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(target, { x: [50, 110], duration: 100 }, 0)
+      .add(target, { y: [60, 220], duration: 100 }, 0);
+    const first = /** @type {JSAnimation} */(timeline._head);
+    const second = /** @type {JSAnimation} */(timeline._tail);
+    timeline.seek(50).revert();
+    expect([target.x, target.y]).to.deep.equal([10, 20]);
+    expect(timeline.cancelled && first.cancelled && second.cancelled).to.equal(true);
+  });
+
+  test('Leaves a later timeline child value to its earlier sibling on revert', () => {
+    const target = { x: 3 };
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(target, { x: 100, duration: 100 })
+      .add(target, { x: 200, duration: 100 });
+    timeline.seek(150);
+    /** @type {JSAnimation} */(timeline._tail).revert();
+    expect(target.x).to.equal(100);
+    timeline.revert();
+    expect(target.x).to.equal(3);
+  });
+
+  test('Restores replacement playback after cancellation and restart', () => {
+    const target = { x: 0 };
+    const timeline = createTimeline({ autoplay: false, defaults: { ease: 'linear' } })
+      .add(target, { x: 100, duration: 100 })
+      .add(target, { x: 200, duration: 100 });
+    timeline.seek(200).cancel().cancel();
+    timeline.restart().pause().seek(150);
+    expect(target.x).to.equal(150);
+    timeline.seek(50);
+    expect(target.x).to.equal(50);
+    timeline.cancel();
+  });
+
+  test('Refreshes adapter values from the current target and destination', () => {
+    class Vector {
+      constructor(x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+      }
+    }
+    registerAdapter().registerTargetAdapter(target => target instanceof Vector).registerProperty('vector',
+      target => `${target.x} ${target.y} ${target.z}`,
+      (target, number, tween) => {
+        target.x = tween._numbers[0];
+        target.y = tween._numbers[1];
+        target.z = tween._numbers[2];
+      },
+    );
+    const target = new Vector(10, 20, 30);
+    let end = '100 200 300';
+    const animation = animate(target, { vector: () => end, duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(50);
+    expect([target.x, target.y, target.z]).to.deep.equal([55, 110, 165]);
+    end = '155 310 465';
+    animation.refresh().seek(50);
+    expect([target.x, target.y, target.z]).to.deep.equal([105, 210, 315]);
+    animation.cancel();
+  });
+
+  test('Keeps literal start values when refreshing constant destinations', () => {
+    for (const value of [[10, 100], { from: 10, to: 100 }]) {
+      const target = { x: 0 };
+      const animation = animate(target, { x: value, duration: 100, ease: 'linear', autoplay: false });
+      animation.seek(50);
+      expect(target.x).to.equal(55);
+      target.x = 40;
+      animation.refresh().seek(0);
+      expect(target.x).to.equal(10);
+      animation.seek(50);
+      expect(target.x).to.equal(55);
+      animation.cancel();
+    }
+  });
+
+  test('Refreshes an implicit start from the current target', () => {
+    const target = { x: 10 };
+    const animation = animate(target, { x: () => 100, duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(50);
+    expect(target.x).to.equal(55);
+    target.x = 40;
+    animation.refresh().seek(0);
+    expect(target.x).to.equal(40);
+    animation.seek(50);
+    expect(target.x).to.equal(70);
+    animation.cancel();
+  });
+
+  test('Reports positive zero times and progress on a new timer', () => {
+    const timer = new Timer({ duration: 1000 });
+    for (const value of [timer.currentTime, timer.iterationCurrentTime, timer.progress, timer.iterationProgress, timer.deltaTime]) {
+      expect(Object.is(value, 0)).to.equal(true);
+    }
+  });
+
+  test('Measures deltaTime in the timer time from the first frames', resolve => {
+    const deltaTimes = [];
+    createTimer({
+      onUpdate: self => {
+        deltaTimes.push(self.deltaTime);
+        if (deltaTimes.length < 3) return;
+        self.cancel();
+        expect(deltaTimes.every(deltaTime => deltaTime >= 0 && deltaTime < 1000)).to.equal(true);
+        resolve();
+      },
+    });
+  });
+
+  test('Removes empty styles after restoring a property with later keyframes', () => {
+    for (const cleanOnly of [false, true]) {
+      const target = document.createElement('div');
+      document.body.appendChild(target);
+      const animation = animate(target, {
+        opacity: [{ to: .5, duration: 100 }, { to: .25, duration: 100 }],
+        ease: 'linear', autoplay: false,
+      });
+      try {
+        animation.seek(150);
+        if (cleanOnly) utils.cleanInlineStyles(animation);
+        else animation.revert(false);
+        expect(target.hasAttribute('style')).to.equal(false);
+      } finally {
+        animation.cancel();
+        target.remove();
+      }
+    }
+  });
+
+  test('Renders a delayed loop after seeking back from completion', () => {
+    const cases = [[0, 100, 95], ['0px', '100px', '95px'], ['0px 0px', '100px 200px', '95px 190px']];
+    for (const [from, to, expected] of cases) {
+      const target = { x: from };
+      const animation = animate(target, {
+        x: to, duration: 100, delay: 20, loop: 1, ease: 'linear', autoplay: false,
+      });
+      try {
+        animation.seek(200).seek(195);
+        expect(target.x).to.equal(expected);
+      } finally {
+        animation.cancel();
+      }
+    }
+  });
+
+  test('Restores reversed values after seeking before a delayed start', () => {
+    for (const [from, to] of [[0, 100], ['0px', '100px'], ['0px 0px', '100px 200px']]) {
+      const target = { x: from };
+      const animation = animate(target, {
+        x: to, duration: 100, delay: 100, reversed: true, ease: 'linear', autoplay: false,
+      });
+      try {
+        animation.seek(10).seek(-10);
+        expect(target.x).to.equal(to);
+        animation.seek(-20);
+        expect(target.x).to.equal(to);
+      } finally {
+        animation.cancel();
+      }
+    }
   });
 
 });

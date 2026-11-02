@@ -38,19 +38,44 @@ export const tickModes = {
 }
 
 /** @enum {Number} */
+export const overrideTypes = {
+  NONE: 0,
+  // A timeline child that waits for its property or has given it to a later child
+  TIMELINE: 1,
+  // Replaced for good by a later animation, or muted
+  PERMANENT: 2,
+}
+
+/** @enum {Number} */
 export const compositionTypes = {
   replace: 0,
   none: 1,
   blend: 2,
+  // Mark a muted tween, it joins no sibling list and render skips it through _isOverridden.
+  // Keep the mute check out of render, which runs on every frame.
+  muted: 3,
+}
+
+// Map the public composition names so a minifier can inline every read of compositionTypes.
+export const compositionNames = {
+  replace: compositionTypes.replace,
+  none: compositionTypes.none,
+  blend: compositionTypes.blend,
 }
 
 // Cache symbols
 
-export const isRegisteredTargetSymbol = Symbol();
 export const isDomSymbol = Symbol();
 export const isSvgSymbol = Symbol();
 export const transformsSymbol = Symbol();
 export const proxyTargetSymbol = Symbol();
+// Hold the replace sibling lookups of a registered target, its presence marks the registration.
+// A module WeakMap made setup slower and doubled render time after a hidden tab load.
+export const replaceLookupsSymbol = Symbol();
+// Hold the owner of a lookups object so a copy or proxy that carries it keeps its own apart.
+export const lookupsOwnerSymbol = Symbol();
+// Mark a tween that read no original value so revert leaves its property to the sibling that did.
+export const noOriginalValueSymbol = Symbol();
 
 // Numbers
 
@@ -66,16 +91,11 @@ export const cssVarPrefix = 'var(';
 
 // Arrays
 
-// Shared sentinel for tween slots that don't hold array data. Never mutated, only read; COMPLEX and COLOR tweens always replace the slot before writing.
+// Share one empty array for tween slots without array data, never mutate it.
+// COMPLEX and COLOR tweens replace the slot before they write.
 export const emptyArray = [];
 
-export const shortTransforms = /*#__PURE__*/ (() => {
-  const map = new Map();
-  map.set('x', 'translateX');
-  map.set('y', 'translateY');
-  map.set('z', 'translateZ');
-  return map;
-})();
+export const shortTransforms = /*#__PURE__*/ new Map([['x', 'translateX'], ['y', 'translateY'], ['z', 'translateZ']]);
 
 export const validTransforms = [
   'perspective',
@@ -113,10 +133,8 @@ export const noopModifier = v => v;
 
 export const validRgbHslRgx = /\)\s*[-.\d]/;
 export const hexTestRgx = /(^#([\da-f]{3}){1,2}$)|(^#([\da-f]{4}){1,2}$)/i;
-export const rgbExecRgx = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i
-export const rgbaExecRgx = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/i
-export const hslExecRgx = /hsl\(\s*(-?\d+|-?\d*.\d+)\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)%\s*\)/i;
-export const hslaExecRgx = /hsla\(\s*(-?\d+|-?\d*.\d+)\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)\s*\)/i;
+// Match the first three to five tokens of a color function, split on spaces, commas or a slash.
+export const colorFunctionExecRgx = /\(\s*([^\s,/]+)[\s,]+([^\s,/]+)[\s,]+([^\s,/)]+)(?:[\s,/]+([^\s,/)]+))?(?:[\s,/]+([^\s,/)]+))?/;
 // export const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g;
 export const digitWithExponentRgx = /[-+]?\d*\.?\d+(?:e[-+]?\d)?/gi;
 // export const unitsExecRgx = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)+([a-z]+|%)$/i;

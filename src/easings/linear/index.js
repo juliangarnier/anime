@@ -16,7 +16,7 @@ import {
  * } from '../../types/index.js'
 */
 
-const taggedLinear = makeTweakable('Ease', 'linear', linearFactory);
+const tweakableLinear = makeTweakable('Ease', 'linear', linearFactory);
 
 /**
  * Without parameters, the linear function creates a non-eased transition.
@@ -25,4 +25,4 @@ const taggedLinear = makeTweakable('Ease', 'linear', linearFactory);
  * @param  {...(String|Number)} args - Points
  * @return {EasingFunction}
  */
-export const linear = (...args) => args.length ? /** @type {EasingFunction} */(taggedLinear.apply(null, args)) : none;
+export const linear = (...args) => args.length ? /** @type {EasingFunction} */(tweakableLinear.apply(null, args)) : none;

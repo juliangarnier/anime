@@ -102,7 +102,9 @@ class Engine extends Clock {
   pause() {
     if (!this.reqId) return;
     this.paused = true;
-    return killEngine();
+    engineCancelMethod(/** @type {NodeJS.Immediate & Number} */(this.reqId));
+    this.reqId = 0;
+    return this;
   }
 
   resume() {
@@ -166,7 +168,6 @@ export const engine = /*#__PURE__*/(() => {
   return engine;
 })();
 
-
 const tickEngine = () => {
   if (engine._head) {
     engine.reqId = engineTickMethod(tickEngine);
@@ -176,8 +177,3 @@ const tickEngine = () => {
   }
 }
 
-const killEngine = () => {
-  engineCancelMethod(/** @type {NodeJS.Immediate & Number} */(engine.reqId));
-  engine.reqId = 0;
-  return engine;
-}

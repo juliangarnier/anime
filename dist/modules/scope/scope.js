@@ -1,6 +1,6 @@
 /**
  * Anime.js - scope - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -103,11 +103,14 @@ class Scope {
     globals.defaults = this.defaults;
     const mqs = this.mediaQueryLists;
     for (let mq in mqs) this.matches[mq] = mqs[mq].matches;
-    const returned = cb(this);
-    scope.current = activeScope;
-    scope.root = activeRoot;
-    globals.defaults = activeDefaults;
-    return returned;
+    // Restore the outer scope even when cb throws, so later objects never register to this scope.
+    try {
+      return cb(this);
+    } finally {
+      scope.current = activeScope;
+      scope.root = activeRoot;
+      globals.defaults = activeDefaults;
+    }
   }
 
   /**

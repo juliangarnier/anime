@@ -10,7 +10,23 @@ import {
   valueTypes,
 } from '../../dist/modules/core/consts.js';
 
+/** @import { JSAnimation } from '../../dist/modules/index.js' */
+
 suite('Keyframes', () => {
+  test('Calls onRender when a paused value array applies its initial value', () => {
+    let renders = 0;
+    const target = { x: 0 };
+    const animation = animate(target, {
+      x: [10, 110, 210], duration: 200, autoplay: false, onRender: () => renders++,
+    });
+    try {
+      expect(target.x).to.equal(10);
+      expect(renders).to.equal(1);
+    } finally {
+      animation.cancel();
+    }
+  });
+
   test('An array of one raw value should be considered as a simple value', () => {
     const animation = animate('#target-id', {
       translateX: [50],
@@ -404,11 +420,13 @@ suite('Keyframes', () => {
 
     const inGap = [];
     let i = 0;
-    let tw = tl._head._head;
+    const child = /** @type {JSAnimation} */(tl._head);
+    const childStart = child._offset + child._delay;
+    let tw = child._head;
     while (tw) {
-      const kf1End = tw._absoluteStartTime + tw._changeDuration;
+      const kf1End = childStart + tw._startTime + tw._changeDuration;
       tw = tw._next;
-      const kf2Start = tw._absoluteStartTime;
+      const kf2Start = childStart + tw._startTime;
       if (kf1End < 700 && kf2Start > 700) inGap.push(i);
       tw = tw._next;
       i++;
@@ -435,9 +453,9 @@ suite('Keyframes', () => {
           { to: 2, duration: 200, delay: stagger(90, { from: 'center' }) },
         ],
       });
-      let tw = tl._head._head;
+      let tw = /** @type {JSAnimation} */(tl._head)._head;
       while (tw) {
-        expect(tw._isOverlapped, `kf1 overlap at offset=${offset}`).to.equal(0);
+        expect(tw._changeDuration, `kf1 overlap at offset=${offset}`).to.equal(tw._updateDuration);
         tw = tw._next;
         tw = tw._next;
       }
@@ -591,6 +609,101 @@ suite('Keyframes', () => {
     animation.seek(0);
     expect(target.x).to.equal(0);
     expect(target.y).to.equal(0);
+  });
+
+  test('Preserves sparse duration keyframes across backward seeks', () => {
+    const target = { x: 10, y: 20 };
+    const animation = animate(target, {
+      autoplay: false, ease: 'linear',
+      keyframes: [
+        { x: 110, duration: 100 },
+        { y: 220, duration: 200 },
+        { x: 210, y: 420, duration: 100 },
+      ],
+    });
+    expect(animation.duration).to.equal(400);
+    for (const [time, x, y] of [[50, 60, 20], [200, 110, 120], [350, 160, 320], [400, 210, 420], [100, 110, 20]]) {
+      animation.seek(time);
+      expect([target.x, target.y]).to.deep.equal([x, y]);
+    }
+    animation.cancel();
+  });
+
+  test('Animates keyframe properties that shadow Object.prototype', () => {
+    const target = { x: 0, toString: 10, hasOwnProperty: 20 };
+    const animation = animate(target, {
+      autoplay: false, ease: 'linear',
+      keyframes: [
+        { x: 100, toString: 110, hasOwnProperty: 220, duration: 100 },
+        { x: 200, toString: 210, hasOwnProperty: 420, duration: 100 },
+      ],
+    });
+    animation.seek(50);
+    expect([target.x, target.toString, target.hasOwnProperty]).to.deep.equal([50, 60, 120]);
+    animation.seek(150);
+    expect([target.x, target.toString, target.hasOwnProperty]).to.deep.equal([150, 160, 320]);
+    animation.cancel();
+  });
+
+  test('Holds the previous complex value through an empty keyframe', () => {
+    const target = { vector: '1 2 3' };
+    const animation = animate(target, {
+      vector: [{ to: '4 5 6', duration: 50 }, { duration: 50 }],
+      ease: 'linear',
+      autoplay: false,
+    });
+    for (const [time, value] of /** @type {const} */([[25, '2.5 3.5 4.5'], [75, '4 5 6'], [25, '2.5 3.5 4.5']])) {
+      animation.seek(time);
+      expect(target.vector).to.equal(value);
+    }
+    animation.cancel();
+  });
+
+  test('Resets three keyframes to their first from value when a looping timeline wraps forward', () => {
+    const target = { s: 1 };
+    const tl = createTimeline({ loop: true, autoplay: false })
+      .add(target, { s: [{ from: .4, to: 1.5, duration: 100 }, { to: .6, duration: 100 }, { to: 1, duration: 100 }], ease: 'linear' }, 1000)
+      .add({ v: 0 }, { v: 1, duration: 2000 }, 0);
+    tl.seek(1900);
+    expect(target.s).to.equal(1);
+    tl.seek(2300);
+    expect(target.s).to.equal(.4);
+    tl.cancel();
+  });
+
+  test('Resets three keyframes to their first from value on a backward seek shorter than the tick threshold', () => {
+    const target = { s: 1 };
+    const tl = createTimeline({ autoplay: false })
+      .add(target, { s: [{ from: .4, to: 1.5, duration: 30 }, { to: .6, duration: 30 }, { to: 1, duration: 30 }], ease: 'linear' }, 100);
+    tl.seek(250);
+    expect(target.s).to.equal(1);
+    tl.seek(60);
+    expect(target.s).to.equal(.4);
+    tl.cancel();
+  });
+
+  test('Holds the previous keyframe end value until the next keyframe start after a stretch', () => {
+    const target = { x: 0 };
+    const animation = animate(target, { x: [{ to: 13, duration: 50, delay: 25 }, { to: 22, duration: 25, delay: 25 }], ease: 'linear', loop: 2, alternate: true, autoplay: false });
+    animation.stretch(200);
+    animation.seek(150);
+    // The stretch leaves the iteration time 1e-14 before the next keyframe start, inside the gap after the first keyframe.
+    animation.seek(50);
+    expect(target.x).to.equal(13);
+    animation.cancel();
+  });
+
+  test('Keeps the earlier animation keyframe after a loop wrap when a later animation overrode its last keyframe', () => {
+    const target = { x: 0 };
+    const tl = createTimeline({ loop: true, autoplay: false, defaults: { ease: 'linear' } })
+      .add(target, { x: [{ to: 10, duration: 100 }, { to: 20, duration: 100 }, { to: 30, duration: 100 }] }, 0)
+      .add(target, { x: [{ from: -50, to: 50, duration: 100, delay: 50 }, { to: 80, duration: 100 }, { to: 20, duration: 100 }] }, 200);
+    tl.seek(500);
+    expect(target.x).to.equal(50);
+    // The wrap lands inside the first keyframe of the earlier animation, before the later animation starts.
+    tl.seek(600);
+    expect(target.x).to.equal(5);
+    tl.cancel();
   });
 
 });

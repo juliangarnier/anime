@@ -6,10 +6,10 @@
 //
 // Requires a local Chrome/Chromium (puppeteer-core does not bundle one).
 
-import http from 'http';
-import { readFile } from 'fs/promises';
-import { extname, dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
+import http from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { extname, dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -22,7 +22,7 @@ const server = http.createServer(async (req, res) => {
     const url = decodeURIComponent(req.url.split('?')[0]);
     let data = await readFile(ROOT + url);
     if (url === '/tests/index.html') {
-      data = Buffer.from(String(data).replaceAll('https://unpkg.com/three@0.184.0/build/', '/node_modules/three/build/'));
+      data = Buffer.from(String(data).replaceAll(/https:\/\/unpkg\.com\/three@[^/]+\/build\//g, '/node_modules/three/build/'));
     }
     res.writeHead(200, { 'Content-Type': MIME[extname(url)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(data);
@@ -31,45 +31,40 @@ const server = http.createServer(async (req, res) => {
 await new Promise(r => server.listen(0, r));
 const port = server.address().port;
 
-async function launch() {
-  const args = ['--no-sandbox', '--use-gl=angle', '--ignore-gpu-blocklist'];
-  if (process.env.CHROME_BIN) return puppeteer.launch({ headless: 'new', args, executablePath: process.env.CHROME_BIN });
-  try { return await puppeteer.launch({ headless: 'new', args, channel: 'chrome' }); }
-  catch { return puppeteer.launch({ headless: 'new', args, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' }); }
-}
-
-const browser = await launch();
+const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--use-gl=angle', '--ignore-gpu-blocklist'],
+  ...(process.env.CHROME_BIN ? { executablePath: process.env.CHROME_BIN } : { channel: 'chrome' }) });
 const page = await browser.newPage();
 await page.setViewport({ width: 1200, height: 900 });
 const pageErrors = [];
 page.on('pageerror', e => pageErrors.push(e.message));
 
-await page.goto(`http://localhost:${port}/tests/index.html`, { waitUntil: 'load', timeout: 90000 });
+try {
+  await page.goto(`http://localhost:${port}/tests/index.html`, { waitUntil: 'load', timeout: 90000 });
+  // A quiet test is not a finished test. Wait for Mocha's actual end state.
+  let timeout;
+  const s = await Promise.race([
+    page.evaluate(async () => {
+      const { runner } = await import('/tests/run.js');
+      return new Promise(resolve => {
+        const finish = () => resolve({ ...runner.stats, total: runner.total });
+        if (runner.stats.end) finish();
+        else runner.once('end', finish);
+      });
+    }),
+    new Promise((_, reject) => {
+      timeout = setTimeout(() => reject(new Error('Mocha did not finish within 90 seconds')), 90000);
+    }),
+  ]).finally(() => clearTimeout(timeout));
+  const fails = await page.evaluate(() => [...document.querySelectorAll('#mocha .test.fail')].map(t => ({
+    title: (t.querySelector('h2')?.textContent || '').trim(),
+    err: (t.querySelector('.error')?.textContent || '').split('\n')[0].trim(),
+  })));
 
-// Poll mocha's stats until they stop changing (suite finished).
-const stat = () => page.evaluate(() => {
-  const num = (sel) => { const el = document.querySelector(sel); return el ? +el.textContent : -1; };
-  return { passes: num('#mocha-stats .passes em'), failures: num('#mocha-stats .failures em'),
-    tests: document.querySelectorAll('#mocha .test').length };
-});
-let last = '', stable = 0, start = Date.now();
-while (stable < 4 && Date.now() - start < 90000) {
-  await new Promise(r => setTimeout(r, 500));
-  const s = await stat();
-  const key = `${s.passes}/${s.failures}/${s.tests}`;
-  if (s.tests > 0 && key === last) stable++; else { stable = 0; last = key; }
+  console.log(`\nMocha: ${s.passes} passing, ${s.failures} failing (${s.tests}/${s.total} tests finished)`);
+  for (const f of fails.slice(0, 40)) console.log(`  ✗ ${f.title}\n      ${f.err}`);
+  if (pageErrors.length) console.log(`\npage errors: ${[...new Set(pageErrors)].slice(0, 5).join(' | ')}`);
+  process.exitCode = s.tests > 0 && s.tests === s.total && s.failures === 0 && !pageErrors.length ? 0 : 1;
+} finally {
+  await browser.close();
+  server.close();
 }
-const s = await stat();
-const fails = await page.evaluate(() => [...document.querySelectorAll('#mocha .test.fail')].map(t => ({
-  title: (t.querySelector('h2')?.textContent || '').trim(),
-  err: (t.querySelector('.error')?.textContent || '').split('\n')[0].trim(),
-})));
-
-console.log(`\nMocha: ${s.passes} passing, ${s.failures} failing (${s.tests} tests)`);
-for (const f of fails.slice(0, 40)) console.log(`  ✗ ${f.title}\n      ${f.err}`);
-
-await browser.close();
-server.close();
-const ok = s.tests > 0 && s.failures === 0;
-if (!ok && pageErrors.length) console.log(`\npage errors: ${[...new Set(pageErrors)].slice(0, 5).join(' | ')}`);
-process.exit(ok ? 0 : 1);

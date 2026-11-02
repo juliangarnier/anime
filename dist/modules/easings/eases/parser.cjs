@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -22,7 +22,6 @@ var globals = require('../../core/globals.cjs');
  *   PowerEasing,
  * } from '../../types/index.js'
 */
-
 
 /** @type {PowerEasing} */
 const easeInPower = (p = 1.68) => t => helpers.pow(t, +p);
@@ -142,18 +141,13 @@ const eases = (/*#__PURE__ */ (() => {
     for (let name in easeInFunctions) {
       const easeIn = easeInFunctions[name];
       const easeType = easeTypes[type];
+      // Wrap the factory eases for the editor, the wrapper runs at the call so the curve stays raw.
+      // Use the plain eases directly so they stay raw.
       list[type + name] = /** @type {EasingFunctionWithParams|EasingFunction} */(
         name === consts.emptyString || name === 'Back' || name === 'Elastic' ?
-        (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b)) :
+        globals.makeTweakable('Ease', type + name, (a, b) => easeType(/** @type {EasingFunctionWithParams} */(easeIn)(a, b))) :
         easeType(/** @type {EasingFunction} */(easeIn))
       );
-    }
-  }
-  // Wrap the factory eases for the editor, the wrapper runs at the call so the per frame curve stays
-  // raw. Plain eases are used directly and stay raw.
-  for (const name in list) {
-    if (name === 'in' || name === 'out' || name === 'inOut' || name === 'outIn' || name.endsWith('Back') || name.endsWith('Elastic')) {
-      list[name] = globals.makeTweakable('Ease', name, list[name]);
     }
   }
   return /** @type {EasesFunctions} */(list);

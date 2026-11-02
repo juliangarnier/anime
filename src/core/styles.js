@@ -1,8 +1,10 @@
 import {
   tweenTypes,
+  compositionTypes,
   shortTransforms,
   isDomSymbol,
   transformsSymbol,
+  noOriginalValueSymbol,
   emptyString,
 } from './consts.js';
 
@@ -19,7 +21,6 @@ import {
 
 import {
   decomposeRawValue,
-  decomposedOriginalValue,
 } from './values.js';
 
 /**
@@ -55,14 +56,7 @@ export const sanitizePropertyName = (propertyName, target, tweenType) => {
     // but properties like "baseFrequency" should stay in lowerCamelCase
     (tweenType === tweenTypes.ATTRIBUTE && (isSvg(target) && propertyName in /** @type {DOMTarget} */(target).style))
   ) {
-    const cachedPropertyName = propertyNamesCache[propertyName];
-    if (cachedPropertyName) {
-      return cachedPropertyName;
-    } else {
-      const lowerCaseName = propertyName ? toLowerCase(propertyName) : propertyName;
-      propertyNamesCache[propertyName] = lowerCaseName;
-      return lowerCaseName;
-    }
+    return propertyNamesCache[propertyName] || (propertyNamesCache[propertyName] = toLowerCase(propertyName));
   } else {
     return propertyName;
   }
@@ -81,59 +75,66 @@ export const revertValues = (renderable, inlineStylesOnly = false) => {
   } else {
     const animation = /** @type {JSAnimation} */(renderable);
     animation.pause();
+    // Restore each property from its first tween, later keyframes do not hold its original value.
+    /** @type {Tween|null} */
+    let previousTween = null;
     forEachChildren(animation, (/** @type {Tween} */tween) => {
+      // A muted tween never wrote its target, so there is nothing to restore.
+      if (tween._composition === compositionTypes.muted) return;
       const tweenProperty = tween.property;
       const tweenTarget = tween.target;
-      const tweenType = tween._tweenType;
-      const originalInlinedValue = tween._inlineValue;
-      const tweenHadNoInlineValue = isNil(originalInlinedValue) || originalInlinedValue === emptyString;
-      if (tween._setter) {
-        if (!inlineStylesOnly && !tweenHadNoInlineValue) {
-          // Re-seed the original value to the _number / _numbers props so the setter can write the original state instead of re-applying the current frame.
-          decomposeRawValue(originalInlinedValue, decomposedOriginalValue);
-          if (decomposedOriginalValue.d) {
-            const src = decomposedOriginalValue.d;
-            const dst = tween._numbers;
-            for (let i = 0, l = src.length; i < l; i++) dst[i] = src[i];
+      const restoresProperty = !previousTween || tweenTarget !== previousTween.target || tweenProperty !== previousTween.property;
+      previousTween = tween;
+      if (restoresProperty) {
+        const tweenType = tween._tweenType;
+        const originalInlinedValue = tween._inlineValue;
+        const tweenHadNoInlineValue = originalInlinedValue === noOriginalValueSymbol || isNil(originalInlinedValue) || originalInlinedValue === emptyString;
+        if (tween._setter) {
+          if (!inlineStylesOnly && !tweenHadNoInlineValue) {
+            // Re-seed the original value to the _number / _numbers props so the setter can write the original state instead of re-applying the current frame.
+            const { d, n } = decomposeRawValue(originalInlinedValue);
+            if (d) {
+              const numbers = tween._numbers;
+              for (let i = 0, l = d.length; i < l; i++) numbers[i] = d[i];
+            } else {
+              tween._number = n;
+            }
+            tween._setter(tweenTarget, tween._number, tween);
+          }
+        } else if (tweenType === tweenTypes.OBJECT) {
+          // Restore null and undefined on plain objects, only DOM styles treat them as missing values.
+          if (!inlineStylesOnly && originalInlinedValue !== noOriginalValueSymbol) {
+            tweenTarget[tweenProperty] = originalInlinedValue;
+          }
+        } else if (tweenTarget[isDomSymbol]) {
+          if (tweenType === tweenTypes.ATTRIBUTE) {
+            if (!inlineStylesOnly) {
+              if (tweenHadNoInlineValue) {
+                /** @type {DOMTarget} */(tweenTarget).removeAttribute(tweenProperty);
+              } else {
+                /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(originalInlinedValue));
+              }
+            }
           } else {
-            tween._number = decomposedOriginalValue.n;
-          }
-          tween._setter(tween.target, tween._number, tween);
-        }
-      } else if (tweenType === tweenTypes.OBJECT) {
-        if (!inlineStylesOnly && !tweenHadNoInlineValue) {
-          tweenTarget[tweenProperty] = originalInlinedValue;
-        }
-      } else if (tweenTarget[isDomSymbol]) {
-        if (tweenType === tweenTypes.ATTRIBUTE) {
-          if (!inlineStylesOnly) {
-            if (tweenHadNoInlineValue) {
-              /** @type {DOMTarget} */(tweenTarget).removeAttribute(tweenProperty);
-            } else {
-              /** @type {DOMTarget} */(tweenTarget).setAttribute(tweenProperty, /** @type {String} */(originalInlinedValue));
-            }
-          }
-        } else {
-          const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
-          if (tweenType === tweenTypes.TRANSFORM) {
-            const cachedTransforms = tweenTarget[transformsSymbol];
-            if (tweenHadNoInlineValue) {
-              delete cachedTransforms[tweenProperty];
-            } else {
-              cachedTransforms[tweenProperty] = originalInlinedValue;
-            }
-            if (tween._renderTransforms) {
+            const targetStyle = /** @type {DOMTarget} */(tweenTarget).style;
+            if (tweenType === tweenTypes.TRANSFORM) {
+              const cachedTransforms = tweenTarget[transformsSymbol];
+              if (tweenHadNoInlineValue) {
+                delete cachedTransforms[tweenProperty];
+              } else {
+                cachedTransforms[tweenProperty] = originalInlinedValue;
+              }
               if (!Object.keys(cachedTransforms).length) {
                 targetStyle.removeProperty('transform');
               } else {
                 targetStyle.transform = buildTransformString(cachedTransforms);
               }
-            }
-          } else {
-            if (tweenHadNoInlineValue) {
-              targetStyle.removeProperty(toLowerCase(tweenProperty));
             } else {
-              targetStyle[tweenProperty] = originalInlinedValue;
+              if (tweenHadNoInlineValue) {
+                targetStyle.removeProperty(toLowerCase(tweenProperty));
+              } else {
+                targetStyle[tweenProperty] = originalInlinedValue;
+              }
             }
           }
         }

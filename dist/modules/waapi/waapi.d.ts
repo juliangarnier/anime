@@ -64,16 +64,8 @@ export class WAAPIAnimation {
     complete(): this;
     cancel(): this;
     revert(): this;
-    /**
-     * @typedef {this & {then: null}} ResolvedWAAPIAnimation
-     */
-    /**
-     * @param  {Callback<ResolvedWAAPIAnimation>} [callback]
-     * @return Promise<this>
-     */
-    then(callback?: Callback<this & {
-        then: null;
-    }>): Promise<any>;
+    /** @return {<T = Omit<this, 'then'>>(callback?: (this: void, self: Omit<this, 'then'>) => T) => Promise<Awaited<T>>} */
+    get then(): <T = Omit<this, "then">>(callback?: (this: void, self: Omit<this, "then">) => T) => Promise<Awaited<T>>;
 }
 export namespace waapi {
     export function animate(targets: DOMTargetsParam, params: WAAPIAnimationParams): WAAPIAnimation;

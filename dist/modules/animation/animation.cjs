@@ -1,6 +1,6 @@
 /**
  * Anime.js - animation - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -15,14 +15,16 @@ var registry = require('../adapters/registry.cjs');
 var values = require('../core/values.cjs');
 var styles = require('../core/styles.cjs');
 var units = require('../core/units.cjs');
+var none = require('../easings/none.cjs');
 var parser = require('../easings/eases/parser.cjs');
 var timer = require('../timer/timer.cjs');
 var composition = require('./composition.cjs');
-var additive = require('./additive.cjs');
 
 /**
+ * @import { InlineValueStore } from '../core/values.js'
  * @import {
  *   Tween,
+ *   TweenDecomposedValue,
  *   TweenKeyValue,
  *   TweenParamsOptions,
  *   TweenValues,
@@ -33,7 +35,6 @@ var additive = require('./additive.cjs');
  *   ArraySyntaxValue,
  *   TargetsParam,
  *   TimerParams,
- *   TweenParamValue,
  *   DOMTarget,
  *   TargetsArray,
  *   Callback,
@@ -49,23 +50,19 @@ var additive = require('./additive.cjs');
  * } from '../easings/spring/index.js'
  */
 
-// Defines decomposed values target objects only once and mutate their properties later to avoid GC
-// TODO: Maybe move the objects creation to values.js and use the decompose function to create the base object
-const fromTargetObject = values.createDecomposedValueTargetObject();
-const toTargetObject = values.createDecomposedValueTargetObject();
-const inlineStylesStore = {};
-const toFunctionStore = { func: null };
-const fromFunctionStore = { func: null };
-const keyframesTargetArray = [null];
-const fastSetValuesArray = [null, null];
-/** @type {TweenKeyValue} */
-const keyObjectTarget = { to: null };
+// Use a named slot for inlineValueStore so numeric originals do not slow later updates.
+/** @type {InlineValueStore} */
+const inlineValueStore = Object.create(null);
+// Seed value with noOriginalValueSymbol so revert leaves a property whose start value came from a sibling
+// to that sibling instead of restoring undefined.
+inlineValueStore.value = consts.noOriginalValueSymbol;
 
-let tweenId = 0;
+// Jump to the to value at any time past the start, floating point cannot resolve minValue after a delay
+// so a ramp over a duration 0 tween stops short of the to value.
+/** @type {EasingFunction} */
+const jumpEase = t => t > 0 ? 1 : 0;
+
 let JSAnimationId = 0;
-let keyframes;
-/** @type {TweenParamsOptions & TweenValues} */
-let key;
 
 /**
  * @param {DurationKeyframes | PercentageKeyframes} keyframes
@@ -76,10 +73,16 @@ const generateKeyframes = (keyframes, parameters) => {
   /** @type {AnimationParams} */
   const properties = {};
   if (helpers.isArr(keyframes)) {
-    const propertyNames = [].concat(.../** @type {DurationKeyframes} */(keyframes).map(key => Object.keys(key))).filter(helpers.isKey);
-    for (let i = 0, l = propertyNames.length; i < l; i++) {
-      const propName = propertyNames[i];
-      const propArray = /** @type {DurationKeyframes} */(keyframes).map(key => {
+    const frames = /** @type {DurationKeyframes} */(keyframes);
+    // Store the names in properties directly instead of a filtered array and a Set.
+    for (let i = 0, l = frames.length; i < l; i++) {
+      const frame = frames[i];
+      for (let name in frame) {
+        if (helpers.isKey(name)) properties[name] = null;
+      }
+    }
+    for (let propName in properties) {
+      const propArray = frames.map(key => {
         /** @type {TweenKeyValue} */
         const newKey = {};
         for (let p in key) {
@@ -110,8 +113,8 @@ const generateKeyframes = (keyframes, parameters) => {
           let propArray = /** @type {Array} */(properties[name]);
           if (!propArray) propArray = properties[name] = [];
           const duration = offset * totalDuration;
-          let length = propArray.length;
-          let prevKey = propArray[length - 1];
+          const length = propArray.length;
+          const prevKey = propArray[length - 1];
           const keyObj = { to: prop[name] };
           let durProgress = 0;
           for (let i = 0; i < length; i++) {
@@ -127,7 +130,6 @@ const generateKeyframes = (keyframes, parameters) => {
           propArray.push(keyObj);
         }
       }
-      return key;
     });
 
     for (let name in properties) {
@@ -153,6 +155,41 @@ const generateKeyframes = (keyframes, parameters) => {
   }
 
   return properties;
+};
+
+/**
+ * Sets _hasSharedProgress and _hasSimpleTweens from the tween list.
+ * @param {JSAnimation} animation
+ */
+const classifyTweens = (animation) => {
+  const head = animation._head;
+  // Share the ease when every tween has one timing, the identity ease has no call to save.
+  // Shared progress holds while every tween keeps _changeDuration equal to _updateDuration,
+  // so the timeline composition clears it when it shortens one.
+  let shared = !!(head && head._next && head._ease !== none.none);
+  // Simple tweens lerp a number into a JavaScript object, directly or through an adapter setter, with no keyframe,
+  // sibling or blend, so they take renderSimpleTweens and skip the gate clauses of the general loop.
+  let simple = !!head;
+  let previous = null;
+  let tween = head;
+  while (tween && (shared || simple)) {
+    if (shared && (
+      tween._ease !== head._ease ||
+      tween._startTime !== head._startTime ||
+      tween._updateDuration !== head._updateDuration
+    )) shared = false;
+    if (simple && (
+      tween._valueType !== consts.valueTypes.NUMBER ||
+      tween._tweenType !== consts.tweenTypes.OBJECT ||
+      tween._composition === consts.compositionTypes.blend ||
+      tween._isOverridden ||
+      (previous && previous.target === tween.target && previous.property === tween.property)
+    )) simple = false;
+    previous = tween;
+    tween = tween._next;
+  }
+  animation._hasSharedProgress = shared;
+  animation._hasSimpleTweens = simple;
 };
 
 class JSAnimation extends timer.Timer {
@@ -181,6 +218,11 @@ class JSAnimation extends timer.Timer {
     this._head;
     /** @type {Tween} */
     this._tail;
+    // Define both flags before the loop, composition clears them while the tweens are created.
+    /** @type {Boolean} */
+    this._hasSharedProgress = false;
+    /** @type {Boolean} */
+    this._hasSimpleTweens = false;
 
     ++JSAnimationId;
 
@@ -214,24 +256,21 @@ class JSAnimation extends timer.Timer {
     const tModifier = modifier || animDefaults.modifier;
     // If no composition is defined and the targets length is high (>= 1000) set the composition to 'none' (0) for faster tween creation
     const tComposition = helpers.isUnd(composition$1) && targetsLength >= consts.K ? consts.compositionTypes.none : !helpers.isUnd(composition$1) ? composition$1 : animDefaults.composition;
-    // const absoluteOffsetTime = this._offset;
-    const absoluteOffsetTime = this._offset + (parent ? parent._offset : 0);
     // This allows targeting the current animation in the spring onComplete callback
     if (hasSpring) /** @type {Spring} */(animEase).parent = this;
 
+    const animationMuted = this.muted;
+
     let iterationDuration = NaN;
     let iterationDelay = NaN;
-    let animationAnimationLength = 0;
     let shouldTriggerRender = 0;
+
+    const tl = allTargets || parsedTargets;
 
     for (let targetIndex = 0; targetIndex < targetsLength; targetIndex++) {
 
       const target = parsedTargets[targetIndex];
       const ti = index || targetIndex;
-      const tl = allTargets || parsedTargets;
-
-      let lastTransformGroupIndex = NaN;
-      let lastTransformGroupLength = NaN;
 
       for (let p in params) {
 
@@ -242,242 +281,240 @@ class JSAnimation extends timer.Timer {
 
           const propName = styles.sanitizePropertyName(p, target, tweenType);
 
-          let propValue = params[p];
-
+          const propValue = /** @type {TweenPropValue} */(params[p]);
           const isPropValueArray = helpers.isArr(propValue);
 
+          /** @type {Array<TweenPropValue>} */
+          let keyframes = null;
+          let firstFromValue;
+          let firstToValue;
+          let hasFirstFrameValues = false;
+
           if (fastSet && !isPropValueArray) {
-            fastSetValuesArray[0] = propValue;
-            fastSetValuesArray[1] = propValue;
-            propValue = fastSetValuesArray;
+            firstFromValue = firstToValue = propValue;
+            hasFirstFrameValues = true;
           }
 
           // TODO: Allow nested keyframes inside ObjectValue value (prop: { to: [.5, 1, .75, 2, 3] })
-          // Normalize property values to valid keyframe syntax:
-          // [x, y] to [{to: [x, y]}] or {to: x} to [{to: x}] or keep keys syntax [{}, {}, {}...]
-          // const keyframes = isArr(propValue) ? propValue.length === 2 && !isObj(propValue[0]) ? [{ to: propValue }] : propValue : [propValue];
           if (isPropValueArray) {
             const arrayLength = /** @type {Array} */(propValue).length;
             const isNotObjectValue = !helpers.isObj(propValue[0]);
-            // Convert [x, y] to [{to: [x, y]}]
-            if (arrayLength === 2 && isNotObjectValue) {
-              keyObjectTarget.to = /** @type {TweenParamValue} */(/** @type {unknown} */(propValue));
-              keyframesTargetArray[0] = keyObjectTarget;
-              keyframes = keyframesTargetArray;
-            // Convert [x, y, z] to [[x, y], z]
-            } else if (arrayLength > 2 && isNotObjectValue) {
+            if (arrayLength > 2 && isNotObjectValue) {
+              // Read propValue before resolving frames so its getters keep their original order.
               keyframes = [];
               /** @type {Array.<Number>} */(propValue).forEach((v, i) => {
                 if (!i) {
-                  fastSetValuesArray[0] = v;
+                  firstFromValue = v;
                 } else if (i === 1) {
-                  fastSetValuesArray[1] = v;
-                  keyframes.push(fastSetValuesArray);
+                  firstToValue = v;
+                  hasFirstFrameValues = true;
+                  keyframes.push(v);
                 } else {
                   keyframes.push(v);
                 }
               });
-            } else {
-              keyframes = /** @type {Array.<TweenKeyValue>} */(propValue);
+            } else if (arrayLength !== 2 || !isNotObjectValue) {
+              keyframes = /** @type {Array.<TweenPropValue>} */(propValue);
             }
-          } else {
-            keyframesTargetArray[0] = propValue;
-            keyframes = keyframesTargetArray;
           }
 
-          let siblings = null;
           let prevTween = null;
-          let firstTweenChangeStartTime = NaN;
+          let prevKeyTween = null;
           let lastTweenChangeEndTime = 0;
           let tweenIndex = 0;
+          let firstTween = null;
 
-          for (let l = keyframes.length; tweenIndex < l; tweenIndex++) {
+          for (let l = keyframes ? keyframes.length : 1; tweenIndex < l; tweenIndex++) {
 
-            const keyframe = keyframes[tweenIndex];
+            const keyframe = keyframes ? keyframes[tweenIndex] : propValue;
+            const isFirstFrameValues = !tweenIndex && hasFirstFrameValues;
+            /** @type {TweenParamsOptions & TweenValues} */
+            let key = !isFirstFrameValues && helpers.isObj(keyframe) ?
+              /** @type {TweenParamsOptions & TweenValues} */(keyframe) : null;
 
-            if (helpers.isObj(keyframe)) {
-              key = keyframe;
-            } else {
-              keyObjectTarget.to = /** @type {TweenParamValue} */(keyframe);
-              key = keyObjectTarget;
-            }
-
-            toFunctionStore.func = null;
-            fromFunctionStore.func = null;
-
-            const computedComposition = values.getFunctionValue(values.setValue(key.composition, tComposition), target, ti, tl, null, null);
-            const tweenComposition = helpers.isNum(computedComposition) ? computedComposition : consts.compositionTypes[computedComposition];
-            if (!siblings && tweenComposition !== consts.compositionTypes.none) siblings = composition.getTweenSiblings(target, propName);
+            const computedComposition = values.getFunctionValue(values.setValue(key?.composition, tComposition), target, ti, tl, null);
+            let tweenComposition = helpers.isNum(computedComposition) ? computedComposition : consts.compositionNames[computedComposition];
+            const tweenMuted = animationMuted || !!key?.muted;
+            // A muted tween keeps its timing and its place in the tween list but joins no sibling list.
+            if (tweenMuted) tweenComposition = consts.compositionTypes.none;
             // Timelines pass the last sibling tween if it belongs to the same timeline
             // Standalone animations only pass prevTween when the property has multiple keyframes
-            const tailTween = siblings ? siblings._tail : null;
+            const tailTween = tweenComposition !== consts.compositionTypes.none ? targets.getReplaceLookups(target)[propName] : null;
             const prevSiblingTween = parent && tailTween && tailTween.parent.parent === parent ? tailTween : prevTween;
-            const computedToValue = values.getFunctionValue(key.to, target, ti, tl, toFunctionStore, prevSiblingTween);
+            // Sample the previous child at the position of the new one, a function value can read its value.
+            if (prevSiblingTween && prevSiblingTween !== prevTween && prevSiblingTween.parent !== this) parent.sampleChild(prevSiblingTween.parent, this, this._offset);
+            const rawToValue = isFirstFrameValues ? firstToValue : key ? key.to : keyframe;
+            let toFunc = isFirstFrameValues ? null : values.getValueResolver(rawToValue, target, ti, tl, prevSiblingTween);
+            const computedToValue = toFunc ? toFunc() : rawToValue;
 
             let tweenToValue;
             // Allows function based values to return an object syntax value ({to: v})
-            if (helpers.isObj(computedToValue) && !helpers.isUnd(computedToValue.to)) {
+            if (!isFirstFrameValues && helpers.isObj(computedToValue) && !helpers.isUnd(computedToValue.to)) {
               key = computedToValue;
               tweenToValue = computedToValue.to;
             } else {
               tweenToValue = computedToValue;
             }
-            const tweenFromValue = values.getFunctionValue(key.from, target, ti, tl, fromFunctionStore, prevSiblingTween);
-            const easeToParse = key.ease || tEasing;
+            const rawFromValue = key?.from;
+            let fromFunc = values.getValueResolver(rawFromValue, target, ti, tl, prevSiblingTween);
+            const tweenFromValue = fromFunc ? fromFunc() : rawFromValue;
+            const easeToParse = key?.ease || tEasing;
 
-            const easeFunctionResult = values.getFunctionValue(easeToParse, target, ti, tl, null, prevSiblingTween);
+            const easeFunctionResult = values.getFunctionValue(easeToParse, target, ti, tl, prevSiblingTween);
             const keyEasing = helpers.isFnc(easeFunctionResult) || helpers.isStr(easeFunctionResult) ? easeFunctionResult : easeToParse;
 
             const hasSpring = !helpers.isUnd(keyEasing) && !helpers.isUnd(/** @type {Spring} */(keyEasing).ease);
             const tweenEasing = hasSpring ? /** @type {Spring} */(keyEasing).ease : keyEasing;
             // Calculate default individual keyframe duration by dividing the tl of keyframes
-            const tweenDuration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : values.getFunctionValue(values.setValue(key.duration, (l > 1 ? values.getFunctionValue(tDuration, target, ti, tl, null, prevSiblingTween) / l : tDuration)), target, ti, tl, null, prevSiblingTween);
+            const tweenDuration = hasSpring ? /** @type {Spring} */(keyEasing).settlingDuration : values.getFunctionValue(values.setValue(key?.duration, (l > 1 ? values.getFunctionValue(tDuration, target, ti, tl, prevSiblingTween) / l : tDuration)), target, ti, tl, prevSiblingTween);
             // Default delay value should only be applied to the first tween
-            const tweenDelay = values.getFunctionValue(values.setValue(key.delay, (!tweenIndex ? tDelay : 0)), target, ti, tl, null, prevSiblingTween);
+            const tweenDelay = values.getFunctionValue(values.setValue(key?.delay, (!tweenIndex ? tDelay : 0)), target, ti, tl, prevSiblingTween);
             // Modifiers are treated differently and don't accept function based value to prevent having to pass a function wrapper
-            const tweenModifier = key.modifier || tModifier;
+            const tweenModifier = key?.modifier || tModifier;
             const hasFromvalue = !helpers.isUnd(tweenFromValue);
-            const hasToValue = !helpers.isUnd(tweenToValue);
+            const hasToValue = isFirstFrameValues || !helpers.isUnd(tweenToValue);
             const isFromToArray = helpers.isArr(tweenToValue);
-            const isFromToValue = isFromToArray || (hasFromvalue && hasToValue);
-            // Capture the update-start in local time, the previous sibling's end for keyframes after the first, zero for the first keyframe. Used to derive a precision-matched _absoluteUpdateStartTime below.
-            const tweenUpdateStartLocal = prevTween ? lastTweenChangeEndTime : 0;
-            const tweenStartTime = prevTween ? lastTweenChangeEndTime + tweenDelay : tweenDelay;
-            // Rounding is necessary here to minimize floating point errors when working in seconds
-            const absoluteStartTime = helpers.round(absoluteOffsetTime + tweenStartTime, 12);
-            // Match the rounding pattern of prevSibling._absoluteEndTime so the composition overlap check compares cleanly when keyframes touch at a boundary.
-            const absoluteUpdateStartTime = helpers.round(absoluteOffsetTime + tweenUpdateStartLocal, 12);
+            const isFromToValue = isFirstFrameValues || isFromToArray || (hasFromvalue && hasToValue);
+            // prevTween skips muted keyframes, so only the index tells a first keyframe from a later one.
+            const tweenStartTime = tweenIndex ? lastTweenChangeEndTime + tweenDelay : tweenDelay;
 
             // Force a onRender callback if the animation contains at least one from value and autoplay is set to false
-            if (!shouldTriggerRender && (hasFromvalue || isFromToArray)) shouldTriggerRender = 1;
+            if (!shouldTriggerRender && !tweenMuted && (hasFromvalue || isFromToArray || isFirstFrameValues)) shouldTriggerRender = 1;
 
             let prevSibling = prevTween;
-
-            if (tweenComposition !== consts.compositionTypes.none) {
-              let nextSibling = siblings._head;
-              // Overrides every sibling when they all start after the new tween, the walk below never enters in that case and they would otherwise stay live and only lose by render order.
-              if (nextSibling && nextSibling._absoluteStartTime > absoluteStartTime) {
-                while (nextSibling) {
-                  composition.overrideTween(nextSibling);
-                  nextSibling = nextSibling._nextRep;
-                }
-              }
-              // Walk prior siblings up to the new tween, skipping overridden ones so the chain resolves to the latest live value instead of stopping at the first override.
-              while (nextSibling && nextSibling._absoluteStartTime <= absoluteStartTime) {
-                if (!nextSibling._isOverridden) prevSibling = nextSibling;
-                nextSibling = nextSibling._nextRep;
-                // Overrides all the next siblings if the next sibling starts at the same time of after as the new tween start time
-                if (nextSibling && nextSibling._absoluteStartTime >= absoluteStartTime) {
-                  while (nextSibling) {
-                    composition.overrideTween(nextSibling);
-                    // This will ends both the current while loop and the upper one once all the next sibllings have been overriden
-                    nextSibling = nextSibling._nextRep;
-                  }
-                }
-              }
-            }
+            if (!prevTween && tweenComposition !== consts.compositionTypes.none) prevSibling = composition.getPreviousSibling(target, propName, this, tweenStartTime);
 
             // Decompose values
+            /** @type {valueTypes} */
+            let fromType, toType;
+            /** @type {Number} */
+            let fromNumber, toNumber;
+            /** @type {String} */
+            let fromUnit, toUnit, fromOperator, toOperator;
+            /** @type {TweenDecomposedValue['d']} */
+            let fromNumbers, toNumbers;
+            /** @type {TweenDecomposedValue['s']} */
+            let fromStrings, toStrings;
+            /** @type {InlineValueStore['value']} */
+            let inlineValue = consts.noOriginalValueSymbol;
             if (isFromToValue) {
-              values.decomposeRawValue(isFromToArray ? values.getFunctionValue(tweenToValue[0], target, ti, tl, fromFunctionStore, prevSiblingTween) : tweenFromValue, fromTargetObject);
-              values.decomposeRawValue(isFromToArray ? values.getFunctionValue(tweenToValue[1], target, ti, tl, toFunctionStore, prevSiblingTween) : tweenToValue, toTargetObject);
+              const fromValue = isFirstFrameValues ? firstFromValue : isFromToArray ? tweenToValue[0] : tweenFromValue;
+              const fromValueFunc = isFirstFrameValues || isFromToArray ? values.getValueResolver(fromValue, target, ti, tl, prevSiblingTween) : null;
+              if (fromValueFunc) fromFunc = fromValueFunc;
+              ({ t: fromType, n: fromNumber, u: fromUnit, o: fromOperator, d: fromNumbers, s: fromStrings } = values.decomposeRawValue(fromValueFunc ? fromValueFunc() : fromValue));
+              const toValue = isFirstFrameValues ? firstToValue : isFromToArray ? tweenToValue[1] : tweenToValue;
+              const toValueFunc = isFirstFrameValues || isFromToArray ? values.getValueResolver(toValue, target, ti, tl, prevSiblingTween) : null;
+              if (toValueFunc) toFunc = toValueFunc;
+              ({ t: toType, n: toNumber, u: toUnit, o: toOperator, d: toNumbers, s: toStrings } = values.decomposeRawValue(toValueFunc ? toValueFunc() : toValue));
               // Needed to force an inline style registration
-              const originalValue = values.getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore);
-              if (fromTargetObject.t === consts.valueTypes.NUMBER) {
-                if (prevSibling) {
-                  if (prevSibling._valueType === consts.valueTypes.UNIT) {
-                    fromTargetObject.t = consts.valueTypes.UNIT;
-                    fromTargetObject.u = prevSibling._unit;
-                  }
-                } else {
-                  values.decomposeRawValue(
-                    originalValue,
-                    values.decomposedOriginalValue
-                  );
-                  if (values.decomposedOriginalValue.t === consts.valueTypes.UNIT) {
-                    fromTargetObject.t = consts.valueTypes.UNIT;
-                    fromTargetObject.u = values.decomposedOriginalValue.u;
-                  }
+              // Capture originalValue only once so later keyframes do not replace the value used for restoration.
+              const originalValue = prevTween ? undefined : values.getOriginalAnimatableValue(target, propName, tweenType, inlineValueStore);
+              if (!prevTween) {
+                inlineValue = inlineValueStore.value;
+                inlineValueStore.value = consts.noOriginalValueSymbol;
+              }
+              if (fromType === consts.valueTypes.NUMBER) {
+                if (!prevSibling) values.decomposeRawValue(originalValue);
+                if ((prevSibling ? prevSibling._valueType : values.decomposedOriginalValue.t) === consts.valueTypes.UNIT) {
+                  fromType = consts.valueTypes.UNIT;
+                  fromUnit = prevSibling ? prevSibling._unit : values.decomposedOriginalValue.u;
                 }
               }
             } else {
               if (hasToValue) {
-                values.decomposeRawValue(tweenToValue, toTargetObject);
+                values.decomposeRawValue(tweenToValue);
+              } else if (prevTween) {
+                values.decomposeTweenValue(prevTween);
               } else {
-                if (prevTween) {
-                  values.decomposeTweenValue(prevTween, toTargetObject);
-                } else {
-                  // No need to get and parse the original value if the tween is part of a timeline and has a previous sibling part of the same timeline
-                  values.decomposeRawValue(parent && prevSibling && prevSibling.parent.parent === parent ? prevSibling._value :
-                  values.getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore), toTargetObject);
+                // No need to get and parse the original value if the tween is part of a timeline and has a previous sibling part of the same timeline
+                const useSibling = parent && prevSibling && prevSibling.parent.parent === parent;
+                const originalValue = useSibling ? prevSibling._value : values.getOriginalAnimatableValue(target, propName, tweenType, inlineValueStore);
+                if (!useSibling) {
+                  inlineValue = inlineValueStore.value;
+                  inlineValueStore.value = consts.noOriginalValueSymbol;
                 }
+                values.decomposeRawValue(originalValue);
               }
+              ({ t: toType, n: toNumber, u: toUnit, o: toOperator, d: toNumbers, s: toStrings } = values.decomposedOriginalValue);
               if (hasFromvalue) {
-                values.decomposeRawValue(tweenFromValue, fromTargetObject);
+                values.decomposeRawValue(tweenFromValue);
+              } else if (prevTween) {
+                values.decomposeTweenValue(prevTween);
               } else {
-                if (prevTween) {
-                  values.decomposeTweenValue(prevTween, fromTargetObject);
-                } else {
-                  // No need to get and parse the original value if the tween is part of a timeline and has a previous sibling part of the same timeline
-                  values.decomposeRawValue(parent && prevSibling && prevSibling.parent.parent === parent ? prevSibling._value :
-                  values.getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore), fromTargetObject);
+                // No need to get and parse the original value if the tween is part of a timeline and has a previous sibling part of the same timeline
+                const useSibling = parent && prevSibling && prevSibling.parent.parent === parent;
+                const originalValue = useSibling ? prevSibling._value : values.getOriginalAnimatableValue(target, propName, tweenType, inlineValueStore);
+                if (!useSibling) {
+                  inlineValue = inlineValueStore.value;
+                  inlineValueStore.value = consts.noOriginalValueSymbol;
                 }
+                values.decomposeRawValue(originalValue);
               }
+              ({ t: fromType, n: fromNumber, u: fromUnit, o: fromOperator, d: fromNumbers, s: fromStrings } = values.decomposedOriginalValue);
             }
 
             // Apply operators
-            if (fromTargetObject.o) {
-              fromTargetObject.n = values.getRelativeValue(
-                !prevSibling ? values.decomposeRawValue(
-                  values.getOriginalAnimatableValue(target, propName, tweenType, inlineStylesStore),
-                  values.decomposedOriginalValue
-                ).n : prevSibling._toNumber,
-                fromTargetObject.n,
-                fromTargetObject.o
-              );
+            if (fromOperator) {
+              let originalNumber;
+              if (!prevSibling) {
+                const originalValue = values.getOriginalAnimatableValue(target, propName, tweenType, inlineValueStore);
+                inlineValue = inlineValueStore.value;
+                inlineValueStore.value = consts.noOriginalValueSymbol;
+                originalNumber = values.decomposeRawValue(originalValue).n;
+              } else {
+                originalNumber = prevSibling._toNumber;
+              }
+              fromNumber = values.getRelativeValue(originalNumber, fromNumber, fromOperator);
             }
 
-            if (toTargetObject.o) {
-              toTargetObject.n = values.getRelativeValue(fromTargetObject.n, toTargetObject.n, toTargetObject.o);
+            if (toOperator) {
+              toNumber = values.getRelativeValue(fromNumber, toNumber, toOperator);
             }
 
             // Values omogenisation in cases of type difference between "from" and "to"
-            if (fromTargetObject.t !== toTargetObject.t) {
-              if (fromTargetObject.t === consts.valueTypes.COMPLEX || toTargetObject.t === consts.valueTypes.COMPLEX) {
-                const complexValue = fromTargetObject.t === consts.valueTypes.COMPLEX ? fromTargetObject : toTargetObject;
-                const notComplexValue = fromTargetObject.t === consts.valueTypes.COMPLEX ? toTargetObject : fromTargetObject;
-                notComplexValue.t = consts.valueTypes.COMPLEX;
-                notComplexValue.s = helpers.cloneArray(complexValue.s);
-                notComplexValue.d = complexValue.d.map(() => notComplexValue.n);
-              } else if (fromTargetObject.t === consts.valueTypes.UNIT || toTargetObject.t === consts.valueTypes.UNIT) {
-                const unitValue = fromTargetObject.t === consts.valueTypes.UNIT ? fromTargetObject : toTargetObject;
-                const notUnitValue = fromTargetObject.t === consts.valueTypes.UNIT ? toTargetObject : fromTargetObject;
-                notUnitValue.t = consts.valueTypes.UNIT;
-                notUnitValue.u = unitValue.u;
-              } else if (fromTargetObject.t === consts.valueTypes.COLOR || toTargetObject.t === consts.valueTypes.COLOR) {
-                fromTargetObject.t === consts.valueTypes.COLOR ? fromTargetObject : toTargetObject;
-                const notColorValue = fromTargetObject.t === consts.valueTypes.COLOR ? toTargetObject : fromTargetObject;
-                notColorValue.t = consts.valueTypes.COLOR;
+            if (fromType !== toType) {
+              if (fromType === consts.valueTypes.COMPLEX || toType === consts.valueTypes.COMPLEX) {
+                if (fromType === consts.valueTypes.COMPLEX) {
+                  toStrings = helpers.cloneArray(fromStrings);
+                  toNumbers = fromNumbers.map(() => toNumber);
+                } else {
+                  fromStrings = helpers.cloneArray(toStrings);
+                  fromNumbers = toNumbers.map(() => fromNumber);
+                }
+                fromType = toType = consts.valueTypes.COMPLEX;
+              } else if (fromType === consts.valueTypes.UNIT || toType === consts.valueTypes.UNIT) {
+                if (fromType === consts.valueTypes.UNIT) toUnit = fromUnit;
+                else fromUnit = toUnit;
+                fromType = toType = consts.valueTypes.UNIT;
+              } else {
                 // Default to opaque black so a number side never drags alpha to transparent.
-                notColorValue.d = [0, 0, 0, 1];
+                if (fromType === consts.valueTypes.COLOR) toNumbers = [0, 0, 0, 1];
+                else fromNumbers = [0, 0, 0, 1];
+                fromType = toType = consts.valueTypes.COLOR;
               }
             }
 
             // Unit conversion
-            if (fromTargetObject.u !== toTargetObject.u) {
-              let valueToConvert = toTargetObject.u ? fromTargetObject : toTargetObject;
-              valueToConvert = units.convertValueUnit(/** @type {DOMTarget} */(target), valueToConvert, toTargetObject.u ? toTargetObject.u : fromTargetObject.u, false);
-              // TODO:
-              // convertValueUnit(target, to.u ? from : to, to.u ? to.u : from.u);
+            if (fromUnit !== toUnit) {
+              if (toUnit) {
+                fromNumber = units.convertValueUnit(/** @type {DOMTarget} */(target), fromNumber, fromUnit, toUnit, fromType);
+                fromUnit = toUnit;
+              } else {
+                toNumber = units.convertValueUnit(/** @type {DOMTarget} */(target), toNumber, toUnit, fromUnit, toType);
+                toUnit = fromUnit;
+              }
             }
 
             // Fill in non existing complex values
-            if (toTargetObject.d && fromTargetObject.d && (toTargetObject.d.length !== fromTargetObject.d.length)) {
-              const longestValue = fromTargetObject.d.length > toTargetObject.d.length ? fromTargetObject : toTargetObject;
-              const shortestValue = longestValue === fromTargetObject ? toTargetObject : fromTargetObject;
+            if (toNumbers && fromNumbers && (toNumbers.length !== fromNumbers.length)) {
               // TODO: Check if n should be used instead of 0 for default complex values
-              shortestValue.d = longestValue.d.map((/** @type {Number} */_, /** @type {Number} */i) => helpers.isUnd(shortestValue.d[i]) ? 0 : shortestValue.d[i]);
-              shortestValue.s = helpers.cloneArray(longestValue.s);
+              if (fromNumbers.length > toNumbers.length) {
+                toNumbers = fromNumbers.map((/** @type {Number} */_, /** @type {Number} */i) => helpers.isUnd(toNumbers[i]) ? 0 : toNumbers[i]);
+                toStrings = helpers.cloneArray(fromStrings);
+              } else {
+                fromNumbers = toNumbers.map((/** @type {Number} */_, /** @type {Number} */i) => helpers.isUnd(fromNumbers[i]) ? 0 : fromNumbers[i]);
+                fromStrings = helpers.cloneArray(toStrings);
+              }
             }
 
             // Tween factory
@@ -485,88 +522,78 @@ class JSAnimation extends timer.Timer {
             // Rounding is necessary here to minimize floating point errors when working in seconds
             const tweenUpdateDuration = helpers.round(+tweenDuration || consts.minValue, 12);
 
-            // Copy the value of the iniline style if it exist and imediatly nullify it to prevents false positive on other targets
-            let inlineValue = inlineStylesStore[propName];
-            if (!helpers.isNil(inlineValue)) inlineStylesStore[propName] = null;
-
             // Resolve the adapter setter once so render skips the lookup per frame.
             const tweenSetter = adapterProp ? adapterProp.set : null;
 
             // Rounding is necessary here to minimize floating point errors when working in seconds
             lastTweenChangeEndTime = helpers.round(tweenStartTime + tweenUpdateDuration, 12);
 
-            const fromD = fromTargetObject.d;
-            const toD = toTargetObject.d;
-            const toS = toTargetObject.s;
-
             /** @type {Tween} */
             const tween = {
               parent: this,
-              id: tweenId++,
               property: propName,
               target: target,
               _value: null,
-              _toFunc: toFunctionStore.func,
-              _fromFunc: fromFunctionStore.func,
-              _ease: parser.parseEase(tweenEasing),
-              _fromNumbers: fromD ? helpers.cloneArray(fromD) : consts.emptyArray,
-              _toNumbers: toD ? helpers.cloneArray(toD) : consts.emptyArray,
-              _strings: toS ? helpers.cloneArray(toS) : consts.emptyArray,
-              _fromNumber: fromTargetObject.n,
-              _toNumber: toTargetObject.n,
-              _numbers: fromD ? helpers.cloneArray(fromD) : consts.emptyArray, // For additive tween and animatables
-              _number: fromTargetObject.n, // For additive tween and animatables
-              _unit: toTargetObject.u,
+              _toFunc: toFunc,
+              // Store noop in _fromFunc for a literal start value so no tween needs a _hasFromValue field.
+              _fromFunc: fromFunc || (hasFromvalue || isFromToArray || isFirstFrameValues ? consts.noop : null),
+              _ease: tweenUpdateDuration === consts.minValue ? jumpEase : parser.parseEase(tweenEasing),
+              _fromNumbers: fromNumbers ? helpers.cloneArray(fromNumbers) : consts.emptyArray,
+              _toNumbers: toNumbers ? helpers.cloneArray(toNumbers) : consts.emptyArray,
+              _strings: toStrings ? helpers.cloneArray(toStrings) : consts.emptyArray,
+              _fromNumber: fromNumber,
+              _toNumber: toNumber,
+              _numbers: fromNumbers ? helpers.cloneArray(fromNumbers) : consts.emptyArray, // For additive tween and animatables
+              _number: fromNumber, // For additive tween and animatables
+              _unit: toUnit,
               _modifier: tweenModifier,
               _currentTime: 0,
               _startTime: tweenStartTime,
-              _delay: +tweenDelay,
               _updateDuration: tweenUpdateDuration,
               _changeDuration: tweenUpdateDuration,
-              _absoluteStartTime: absoluteStartTime,
-              _absoluteUpdateStartTime: absoluteUpdateStartTime,
-              _absoluteEndTime: helpers.round(absoluteOffsetTime + lastTweenChangeEndTime, 12),
-              _hasFromValue: hasFromvalue || isFromToArray ? 1 : 0,
               // NOTE: Investigate bit packing to stores ENUM / BOOL
               _tweenType: tweenType,
               _setter: tweenSetter,
-              _valueType: toTargetObject.t,
-              _composition: tweenComposition,
-              _isOverlapped: 0,
-              _isOverridden: 0,
-              _renderTransforms: 0,
+              _valueType: toType,
+              // Encode muting in fields the render gate reads, so render needs no mute check.
+              _composition: tweenMuted ? consts.compositionTypes.muted : tweenComposition,
+              _isOverridden: tweenMuted ? consts.overrideTypes.PERMANENT : consts.overrideTypes.NONE,
+              _keyStart: prevKeyTween && tweenComposition !== consts.compositionTypes.blend ? tweenStartTime : -Infinity,
+              _keyEnd: Infinity,
+              _prevSibling: null, // The previous owner of the property in a timeline, or the blend tween added before this one
               _inlineValue: inlineValue,
-              _prevRep: null, // For replaced tween
-              _nextRep: null, // For replaced tween
-              _prevAdd: null, // For additive tween
-              _nextAdd: null, // For additive tween
               _prev: null,
               _next: null,
             };
 
             if (tweenComposition !== consts.compositionTypes.none) {
-              composition.composeTween(tween, siblings);
+              composition.composeTween(tween);
             }
 
             // Pre-compute the tween end value for function-based value chaining (ie morphTo / scrambleText in keyframe arrays and timelines)
-            const vt = tween._valueType;
-            if (vt === consts.valueTypes.COMPLEX) {
-              tween._value = values.composeComplexValue(tween, 1, -1);
-            } else if (vt === consts.valueTypes.UNIT) {
-              tween._value = `${tweenModifier(tween._toNumber)}${tween._unit}`;
-            } else if (vt === consts.valueTypes.COLOR) {
-              const d = toTargetObject.d;
-              tween._value = `rgba(${helpers.round(d[0], 0)},${helpers.round(d[1], 0)},${helpers.round(d[2], 0)},${d[3]})`;
-            } else {
-              tween._value = tweenModifier(tween._toNumber);
+            if (!tweenMuted) {
+              const vt = tween._valueType;
+              if (vt === consts.valueTypes.COMPLEX) {
+                tween._value = values.composeComplexValue(tween, 1, -1);
+              } else if (vt === consts.valueTypes.UNIT) {
+                tween._value = `${tweenModifier(tween._toNumber)}${tween._unit}`;
+              } else if (vt === consts.valueTypes.COLOR) {
+                tween._value = `rgba(${helpers.round(tweenModifier(toNumbers[0]), 0)},${helpers.round(tweenModifier(toNumbers[1]), 0)},${helpers.round(tweenModifier(toNumbers[2]), 0)},${tweenModifier(toNumbers[3])})`;
+              } else {
+                tween._value = tweenModifier(tween._toNumber);
+              }
             }
 
-            if (isNaN(firstTweenChangeStartTime)) {
-              firstTweenChangeStartTime = tween._startTime;
-            }
+            if (!firstTween) firstTween = tween;
 
-            prevTween = tween;
-            animationAnimationLength++;
+            if (!tweenMuted) {
+              prevTween = tween;
+              // Hold the keyframe before a blend keyframe until the next one that replaces it, a blend adds to the property at every time.
+              if (tweenComposition !== consts.compositionTypes.blend) {
+                if (prevKeyTween) prevKeyTween._keyEnd = tweenStartTime;
+                prevKeyTween = tween;
+              }
+            }
 
             helpers.addChild(this, tween);
 
@@ -574,40 +601,16 @@ class JSAnimation extends timer.Timer {
 
           // Update animation timings with the added tweens properties
 
-          if (isNaN(iterationDelay) || firstTweenChangeStartTime < iterationDelay) {
-            iterationDelay = firstTweenChangeStartTime;
+          if (firstTween && (isNaN(iterationDelay) || firstTween._startTime < iterationDelay)) {
+            iterationDelay = firstTween._startTime;
           }
 
           if (isNaN(iterationDuration) || lastTweenChangeEndTime > iterationDuration) {
             iterationDuration = lastTweenChangeEndTime;
           }
 
-          // TODO: Find a way to inline tween._renderTransforms = 1 here
-          if (tweenType === consts.tweenTypes.TRANSFORM) {
-            lastTransformGroupIndex = animationAnimationLength - tweenIndex;
-            lastTransformGroupLength = animationAnimationLength;
-          }
-
         }
 
-      }
-
-      // Set _renderTransforms to last transform property to correctly render the transforms list
-      if (!isNaN(lastTransformGroupIndex)) {
-        let i = 0;
-        helpers.forEachChildren(this, (/** @type {Tween} */tween) => {
-          if (i >= lastTransformGroupIndex && i < lastTransformGroupLength) {
-            tween._renderTransforms = 1;
-            if (tween._composition === consts.compositionTypes.blend) {
-              helpers.forEachChildren(additive.additive.animation, (/** @type {Tween} */additiveTween) => {
-                if (additiveTween.id === tween.id) {
-                  additiveTween._renderTransforms = 1;
-                }
-              });
-            }
-          }
-          i++;
-        });
       }
 
     }
@@ -618,11 +621,9 @@ class JSAnimation extends timer.Timer {
 
     if (iterationDelay) {
       helpers.forEachChildren(this, (/** @type {Tween} */tween) => {
-        // If (startTime - delay) equals 0, this means the tween is at the begining of the animation so we need to trim the delay too
-        if (!(tween._startTime - tween._delay)) {
-          tween._delay -= iterationDelay;
-        }
         tween._startTime -= iterationDelay;
+        tween._keyStart -= iterationDelay;
+        tween._keyEnd -= iterationDelay;
       });
       iterationDuration -= iterationDelay;
     } else {
@@ -641,10 +642,13 @@ class JSAnimation extends timer.Timer {
     this.id = !helpers.isUnd(id) ? id : JSAnimationId;
     /** @type {Number} */
     this.duration = iterationDuration === consts.minValue ? consts.minValue : helpers.clampInfinity(((iterationDuration + this._loopDelay) * this.iterationCount) - this._loopDelay) || consts.minValue;
+    // Swap onRender for noop once so render never tests a mute flag.
     /** @type {Callback<this>} */
-    this.onRender = onRender || animDefaults.onRender;
+    this.onRender = animationMuted ? consts.noop : onRender || animDefaults.onRender;
     /** @type {EasingFunction} */
     this._ease = parsedAnimPlaybackEase;
+    // Classify in a module function, more constructor code can move setup to a slower V8 tier.
+    classifyTweens(this);
     /** @type {Number} */
     this._delay = iterationDelay;
     // NOTE: I'm keeping delay values separated from offsets in timelines because delays can override previous tweens and it could be confusing to debug a timeline with overridden tweens and no associated visible delays.
@@ -658,9 +662,10 @@ class JSAnimation extends timer.Timer {
 
   /**
    * @param  {Number} newDuration
+   * @param  {Boolean} [isParentStretch]
    * @return {this}
    */
-  stretch(newDuration) {
+  stretch(newDuration, isParentStretch) {
     const currentDuration = this.duration;
     if (currentDuration === helpers.normalizeTime(newDuration)) return this;
     const timeScale = newDuration / currentDuration;
@@ -670,13 +675,11 @@ class JSAnimation extends timer.Timer {
       tween._updateDuration = helpers.normalizeTime(tween._updateDuration * timeScale);
       tween._changeDuration = helpers.normalizeTime(tween._changeDuration * timeScale);
       tween._currentTime *= timeScale;
-      tween._delay *= timeScale;
       tween._startTime *= timeScale;
-      tween._absoluteStartTime *= timeScale;
-      tween._absoluteUpdateStartTime *= timeScale;
-      tween._absoluteEndTime *= timeScale;
+      tween._keyStart *= timeScale;
+      tween._keyEnd *= timeScale;
     });
-    return super.stretch(newDuration);
+    return super.stretch(newDuration, isParentStretch);
   }
 
   /**
@@ -686,26 +689,45 @@ class JSAnimation extends timer.Timer {
     helpers.forEachChildren(this, (/** @type {Tween} */tween) => {
       const toFunc = tween._toFunc;
       const fromFunc = tween._fromFunc;
-      if (toFunc || fromFunc) {
-        if (fromFunc) {
-          values.decomposeRawValue(fromFunc(), fromTargetObject);
-          if (fromTargetObject.u !== tween._unit && tween.target[consts.isDomSymbol]) {
-            units.convertValueUnit(/** @type {DOMTarget} */(tween.target), fromTargetObject, tween._unit, true);
+      // Treat noop as a literal start value so only a real _fromFunc runs again.
+      const hasFromFunc = fromFunc && fromFunc !== consts.noop;
+      if (toFunc || hasFromFunc) {
+        // Set NaN so the tween writes its new values at the next render.
+        tween._currentTime = NaN;
+        if (hasFromFunc) {
+          const { t, n, u, d } = values.decomposeRawValue(fromFunc());
+          let number = n;
+          if (u !== tween._unit && tween.target[consts.isDomSymbol]) {
+            number = units.convertValueUnit(/** @type {DOMTarget} */(tween.target), n, u, tween._unit, t, true);
           }
-          tween._fromNumbers = helpers.cloneArray(fromTargetObject.d);
-          tween._fromNumber = fromTargetObject.n;
+          tween._fromNumbers = helpers.cloneArray(d);
+          tween._fromNumber = number;
         } else if (toFunc) {
           // When only toFunc exists, get from value from target
-          values.decomposeRawValue(values.getOriginalAnimatableValue(tween.target, tween.property, tween._tweenType), values.decomposedOriginalValue);
-          tween._fromNumbers = helpers.cloneArray(values.decomposedOriginalValue.d);
-          tween._fromNumber = values.decomposedOriginalValue.n;
+          const { d, n } = values.decomposeRawValue(values.getOriginalAnimatableValue(tween.target, tween.property, tween._tweenType));
+          tween._fromNumbers = helpers.cloneArray(d);
+          tween._fromNumber = n;
         }
         if (toFunc) {
-          values.decomposeRawValue(toFunc(), toTargetObject);
-          tween._toNumbers = helpers.cloneArray(toTargetObject.d);
-          tween._strings = helpers.cloneArray(toTargetObject.s);
+          const computedToValue = toFunc();
+          const toValue = helpers.isObj(computedToValue) && !helpers.isUnd(computedToValue.to) ? computedToValue.to : computedToValue;
+          if (helpers.isArr(toValue)) {
+            const { t, n, u, o, d } = values.decomposeRawValue(toValue[0]);
+            let number = n;
+            if (u !== tween._unit && tween.target[consts.isDomSymbol]) {
+              number = units.convertValueUnit(/** @type {DOMTarget} */(tween.target), n, u, tween._unit, t, true);
+            }
+            tween._fromNumbers = helpers.cloneArray(d);
+            tween._fromNumber = o ? values.getRelativeValue(tween._fromNumber, number, o) : number;
+            values.decomposeRawValue(toValue[1]);
+          } else {
+            values.decomposeRawValue(toValue);
+          }
+          const { d, s, o, n } = values.decomposedOriginalValue;
+          tween._toNumbers = helpers.cloneArray(d);
+          tween._strings = helpers.cloneArray(s);
           // Make sure to apply relative operators https://github.com/juliangarnier/anime/issues/1025
-          tween._toNumber = toTargetObject.o ? values.getRelativeValue(tween._fromNumber, toTargetObject.n, toTargetObject.o) : toTargetObject.n;
+          tween._toNumber = o ? values.getRelativeValue(tween._fromNumber, n, o) : n;
         }
       }
     });
@@ -716,23 +738,12 @@ class JSAnimation extends timer.Timer {
 
   /**
    * Cancel the animation and revert all the values affected by this animation to their original state
+   * @param {Boolean} [render] Pass false to restore the values without rendering the animation at 0
    * @return {this}
    */
-  revert() {
-    super.revert();
+  revert(render = true) {
+    super.revert(render);
     return styles.revertValues(this);
-  }
-
-  /**
-   * @typedef {this & {then: null}} ResolvedJSAnimation
-   */
-
-  /**
-   * @param  {Callback<ResolvedJSAnimation>} [callback]
-   * @return Promise<this>
-   */
-  then(callback) {
-    return super.then(callback);
   }
 
 }
@@ -746,7 +757,7 @@ const animate = (targets, parameters) => {
   if (globals.globals.editor) {
     return globals.globals.editor.addAnimation(targets, parameters);
   } else {
-    return new JSAnimation(targets, parameters, null, 0, false).init();
+    return new JSAnimation(targets, parameters).init();
   }
 };
 

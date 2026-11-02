@@ -10,7 +10,6 @@ import {
   makeTweakable,
 } from '../../core/globals.js';
 
-
 /**
  * @import {
  *   EasingFunction,
@@ -39,4 +38,5 @@ const irregularFactory = (length = 10, randomness = 1) => {
   return linearFactory(...values);
 }
 
+/** Creates an easing that moves in random steps. */
 export const irregular = /** @type {typeof irregularFactory} */(makeTweakable('Ease', 'irregular', irregularFactory));

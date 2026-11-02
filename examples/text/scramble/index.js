@@ -1,10 +1,8 @@
 import { animate, createTimer, createTimeline, scrambleText, $ } from '../../../dist/modules/index.js';
-import { createTweaks, syncTweaks, Float, Int, Str, Bool, Select, registerType, registerTypeGUI } from 'tweaks';
-import { GUI } from 'tweaks/gui';
+import { createTweaks, Float, Int, Str, Bool, Select, registerType } from 'tweaks';
+import { GUI, registerTypeGUI } from 'tweaks/gui';
 
 // Debug panel start
-
-syncTweaks('localStorage');
 
 const Override = registerType('Override', false);
 const overrideModes = { false: 0, true: 0, string: 0 };

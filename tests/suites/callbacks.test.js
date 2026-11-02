@@ -5,6 +5,8 @@ import {
 import {
   animate,
   createTimeline,
+  createTimer,
+  Timeline,
   utils,
 } from '../../dist/modules/index.js';
 
@@ -1342,5 +1344,96 @@ suite('Callbacks', () => {
     expect(value).to.equal(1);
 
   });
+
+  test('Orders timeline callbacks across forward and backward seeks', () => {
+    const calls = [];
+    const target = { x: 0 };
+    const timeline = createTimeline({ autoplay: false })
+      .add(target, { x: 100, duration: 100, ease: 'linear' })
+      .call(() => calls.push('first'), 25)
+      .call(() => calls.push('second'), 75);
+    timeline.seek(100);
+    expect(calls.splice(0)).to.deep.equal(['first', 'second']);
+    timeline.seek(50);
+    expect(calls.splice(0)).to.deep.equal(['second']);
+    expect(target.x).to.equal(50);
+    timeline.seek(0);
+    expect(calls.splice(0)).to.deep.equal(['first']);
+    timeline.seek(100);
+    calls.length = 0;
+    timeline.seek(0);
+    expect(calls.splice(0)).to.deep.equal(['second', 'first']);
+    timeline.cancel();
+  });
+
+  test('Passes the instance as callback context and argument', () => {
+    const calls = [];
+    function onUpdate(self) { calls.push([this, self]); }
+    const timer = createTimer({ duration: 100, autoplay: false, onUpdate });
+    const animation = animate({ x: 0 }, { x: 100, duration: 100, autoplay: false, onUpdate });
+    const timeline = createTimeline({ autoplay: false, onUpdate }).add({ x: 0 }, { x: 100, duration: 100 });
+    calls.length = 0;
+    for (const instance of [timer, animation, timeline]) {
+      instance.seek(50);
+      const [context, argument] = calls.pop();
+      expect(context).to.equal(instance);
+      expect(argument).to.equal(instance);
+      instance.cancel();
+    }
+  });
+
+  test('Passes the containing timeline to an unbound call callback', () => {
+    class CustomTimeline extends Timeline { customValue = 42; }
+    const timeline = new CustomTimeline({ autoplay: false });
+    let calls = 0;
+    timeline.call(function(self) {
+      expect(this).to.equal(undefined);
+      expect(self).to.equal(timeline);
+      expect(self.customValue).to.equal(42);
+      calls++;
+    }, 50).seek(100);
+    expect(calls).to.equal(1);
+    timeline.cancel();
+  });
+
+  for (const kind of ['timer', 'animation', 'timeline']) {
+    for (const reversed of [false, true]) {
+      test(`Mutes ${kind} callbacks across alternating seeks starting ${reversed ? 'reversed' : 'forward'}`, async () => {
+        const calls = [];
+        const callbacks = Object.fromEntries(['onBegin', 'onBeforeUpdate', 'onUpdate', 'onRender', 'onLoop', 'onComplete', 'onPause']
+          .map(name => [name, () => calls.push(name)]));
+        const target = { x: 0 };
+        const params = { autoplay: false, duration: 100, loop: 2, alternate: true, reversed, ...callbacks };
+        const instance = kind === 'timer' ? createTimer(params) : kind === 'animation' ?
+          animate(target, { ...params, x: [0, 100], ease: 'linear' }) :
+          createTimeline(params).add(target, { x: [0, 100], duration: 100, ease: 'linear', ...callbacks });
+        calls.length = 0;
+        let resolutions = 0;
+        const done = instance.then(() => { resolutions++; });
+        try {
+          for (const [time, value] of [[25, 25], [125, 75], [225, 25], [300, 100]]) {
+            instance.seek(time, true);
+            expect(calls).to.deep.equal([]);
+            expect(instance.currentTime).to.equal(time);
+            if (kind !== 'timer') expect(target.x).to.equal(reversed ? 100 - value : value);
+          }
+          expect(instance.completed).to.equal(true);
+          expect(resolutions).to.equal(0);
+          instance.seek(125, true).seek(0, true);
+          expect(calls).to.deep.equal([]);
+          expect(instance.completed).to.equal(false);
+          instance.seek(25);
+          expect(calls.includes('onBegin')).to.equal(true);
+          if (kind !== 'timer') expect(target.x).to.equal(reversed ? 75 : 25);
+          instance.seek(instance.duration);
+          await done;
+          expect(resolutions).to.equal(1);
+          expect(calls.includes('onComplete')).to.equal(true);
+        } finally {
+          instance.cancel();
+        }
+      });
+    }
+  }
 
 });

@@ -16,11 +16,71 @@ import {
 import {
   compositionTypes,
   valueTypes,
+  replaceLookupsSymbol,
 } from '../../dist/modules/core/consts.js';
+
+import { additive } from '../../dist/modules/animation/additive.js';
+import { registerAdapter } from '../../dist/modules/adapters/index.js';
 
 /** @import { Tween, JSAnimation } from '../../dist/modules/index.js' */
 
 suite('Tweens', () => {
+  test('Keeps the blend sum when a setter changes another contribution', () => {
+    class BlendTarget {
+      constructor() {
+        this.x = 0;
+        this.y = 0;
+      }
+    }
+    let changeContribution = null;
+    registerAdapter().registerTargetAdapter(target => target instanceof BlendTarget).registerProperty('x',
+      target => target.x,
+      (target, value) => {
+        target.x = value;
+        if (changeContribution) {
+          const change = changeContribution;
+          changeContribution = null;
+          change();
+        }
+      }
+    );
+    const target = new BlendTarget();
+    const params = { duration: 100, ease: 'linear', autoplay: false, composition: 'blend' };
+    const first = animate(target, { ...params, x: 100 });
+    const second = animate(target, { ...params, y: 200 });
+    try {
+      first.seek(50, true);
+      second.seek(50, true);
+      changeContribution = () => second.seek(100, true);
+      additive.update();
+      expect([target.x, target.y]).to.deep.equal([50, 100]);
+      additive.update();
+      expect([target.x, target.y]).to.deep.equal([50, 200]);
+    } finally {
+      changeContribution = null;
+      first.cancel();
+      second.cancel();
+    }
+  });
+
+  test('Keeps writing blended transforms after the animation that blended a second transform is cancelled', () => {
+    const element = document.body.appendChild(document.createElement('div'));
+    const first = animate(element, { x: 100, rotate: 90, composition: 'blend', duration: 100, ease: 'linear', autoplay: false });
+    const second = animate(element, { x: 50, composition: 'blend', duration: 100, ease: 'linear', autoplay: false });
+    first.seek(50);
+    second.seek(50);
+    additive.update();
+    first.cancel();
+    second.seek(60);
+    additive.update();
+    const afterCancel = element.style.transform;
+    second.seek(100);
+    additive.update();
+    expect(element.style.transform).to.not.equal(afterCancel);
+    second.cancel();
+    element.remove();
+  });
+
   test('Single tween timings', () => {
     const delay = 200;
     const duration = 300;
@@ -138,10 +198,10 @@ suite('Tweens', () => {
         animation1.pause();
         animation2.pause();
         expect(animation1.paused).to.equal(true);
-        // This one should be null since the first should have been cancel
-        expect(animation1._head._nextRep).to.be.null;
+        // The second animation replaced the first one
+        expect(animation1._cancelled).to.equal(1);
         expect(animation2.paused).to.equal(true);
-        expect(animation2._head._nextRep).to.not.be.null;
+        expect(animation2._cancelled).to.equal(0);
         resolve();
       }
     });
@@ -155,11 +215,8 @@ suite('Tweens', () => {
       onComplete: () => {
         expect(animation1.paused).to.equal(true);
         expect(animation1._cancelled).to.equal(1);
-        expect(animation1._head._prevRep).to.be.null;
-
         expect(animation2.paused).to.equal(true);
         expect(animation2._cancelled).to.equal(1);
-        expect(animation2._head._nextRep).to.be.null;
         resolve();
       }
     });
@@ -181,11 +238,10 @@ suite('Tweens', () => {
             animation1.pause();
             animation2.pause();
             expect(animation1.paused).to.equal(true);
-            expect(animation1._cancelled).to.equal(0);
-            expect(animation1._head._prevRep).to.not.be.null;
+            // The animation that restarts last takes the property
+            expect(animation1._cancelled).to.equal(1);
             expect(animation2.paused).to.equal(true);
             expect(animation2._cancelled).to.equal(0);
-            expect(animation2._head._nextRep).to.not.be.null;
             resolve();
           }
         });
@@ -210,11 +266,10 @@ suite('Tweens', () => {
             animation1.pause();
             animation2.pause();
             expect(animation1.paused).to.equal(true);
-            expect(animation1._cancelled).to.equal(0);
-            expect(animation1._head._prevRep).to.not.be.null;
+            // The animation that restarts last takes the property
+            expect(animation1._cancelled).to.equal(1);
             expect(animation2.paused).to.equal(true);
             expect(animation2._cancelled).to.equal(0);
-            expect(animation2._head._nextRep).to.not.be.null;
             resolve();
             engine.timeUnit = 'ms';
           }
@@ -282,8 +337,8 @@ suite('Tweens', () => {
       duration: 80,
     }, 0);
     // The later added child renders after the first on every frame, so the first never wins
-    expect(tl._head._head._isOverridden).to.equal(1);
-    expect(tl._head._next._head._isOverridden).to.equal(0);
+    expect(/** @type {JSAnimation} */(tl._head)._head._isOverridden).to.equal(2);
+    expect(/** @type {JSAnimation} */(tl._head._next)._head._isOverridden).to.equal(0);
     // Without the override the first child would render 225 here, its 300 target eased past the later child's held 100
     tl.seek(100);
     expect(utils.get('#target-id', 'x', false)).to.equal(100);
@@ -334,6 +389,13 @@ suite('Tweens', () => {
       tl1.pause();
       resolve();
     });
+  });
+
+  test('Stores replace siblings on the animated target', () => {
+    const target = { x: 0 };
+    const animation = animate(target, { x: 100, duration: 100, autoplay: false });
+    // A WeakMap of targets scattered the tweens in memory when a hidden tab built them, so the siblings live on the target.
+    expect(target[replaceLookupsSymbol].x).to.equal(animation._head);
   });
 
   test('Do not override tweens with composition none', resolve => {

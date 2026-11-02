@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -31,7 +31,7 @@ var values = require('../../core/values.cjs');
  * (c) 2016 Webkit - Apple Inc
  */
 
-// K * K puts the ceiling where the w0 clamp saturates anyway, so a stretch can compress any
+// K * K puts the ceiling where the w0 clamp saturates, so a stretch can compress any
 // spring down to its rest window instead of stalling on an artificial parameter bound.
 const maxSpringParamValue = consts.K * consts.K;
 
@@ -62,7 +62,7 @@ class Spring {
     this.settlingDuration = 0;
     /** @type {JSAnimation} */
     this.parent = null;
-    /** @type {Callback<JSAnimation>} */
+    /** @type {Callback<JSAnimation, this>} */
     this.onComplete = parameters.onComplete || consts.noop;
     if (hasBounceOrDuration) this.calculateSDFromBD();
     this.compute();
@@ -177,9 +177,8 @@ class Spring {
   }
 
   /**
-   * Lowest settlingDuration stretch can reach, the constant rest detection window scaled to the
-   * current time unit. stretch refuses any target at or below it since a shorter settle would no
-   * longer describe a resting motion.
+   * Lowest settlingDuration stretch can reach, the rest detection window scaled to the current
+   * time unit. stretch refuses any target at or below it.
    * @return {Number}
    */
   get minSettlingDuration() {
@@ -194,8 +193,8 @@ class Spring {
    * @return {this}
    */
   stretch(duration) {
-    // Rest detection appends the constant restDuration window and is not scale invariant,
-    // so the factor derives from the response part and refines against the solver
+    // Derive the factor from the response part and refine against the solver,
+    // the constant restDuration window makes rest detection not scale invariant.
     const rest = this.minSettlingDuration;
     const tolerance = this.timeStep * consts.K * globals.globals.timeScale;
     if (!(duration > rest)) return this;
@@ -203,12 +202,12 @@ class Spring {
       const previous = this.settlingDuration;
       if (helpers.abs(previous - duration) <= tolerance) break;
       // Bound the factor so no parameter clamps on its own, a lone clamp would break zeta and
-      // turn the retune into a different spring
-      const lowest = Math.max(helpers.sqrt(this.s / maxSpringParamValue), this.d / maxSpringParamValue, helpers.abs(this.v) / maxSpringParamValue);
-      const highest = Math.min(helpers.sqrt(this.s / consts.minValue), this.d / consts.minValue);
+      // turn the retune into a different spring.
+      const lowest = helpers.max(helpers.sqrt(this.s / maxSpringParamValue), this.d / maxSpringParamValue, helpers.abs(this.v) / maxSpringParamValue);
+      const highest = helpers.min(helpers.sqrt(this.s / consts.minValue), this.d / consts.minValue);
       const factor = helpers.clamp((duration - rest) / (previous - rest), lowest, highest);
       if (!(factor > 0) || factor === Infinity || factor === 1) break;
-      // Scale each parameter by its time dimension so zeta holds and the response time scales exactly
+      // Scale each parameter by its time dimension so zeta holds and the response time scales exactly.
       this.s = helpers.clamp(helpers.round(this.s / (factor * factor), 6), consts.minValue, maxSpringParamValue);
       this.d = helpers.clamp(helpers.round(this.d / factor, 6), consts.minValue, maxSpringParamValue);
       this.v = helpers.clamp(helpers.round(this.v / factor, 6), -maxSpringParamValue, maxSpringParamValue);
@@ -284,6 +283,7 @@ class Spring {
  */
 const springFactory = (parameters) => new Spring(parameters);
 
+/** Creates a spring easing from its physical parameters. */
 const spring = /** @type {typeof springFactory} */(globals.makeTweakable('Ease', 'spring', springFactory));
 
 /**

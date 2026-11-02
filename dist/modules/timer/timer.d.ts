@@ -18,6 +18,8 @@ export class Timer extends Clock {
     /** @type {Boolean} */
     paused: boolean;
     /** @type {Boolean} */
+    muted: boolean;
+    /** @type {Boolean} */
     began: boolean;
     /** @type {Boolean} */
     completed: boolean;
@@ -116,30 +118,24 @@ export class Timer extends Clock {
     cancel(): this;
     /**
      * @param  {Number} newDuration
+     * @param  {Boolean} [isParentStretch]
      * @return {this}
      */
-    stretch(newDuration: number): this;
+    stretch(newDuration: number, isParentStretch?: boolean): this;
     /**
       * Cancels the timer by seeking it back to 0 and reverting the attached scroller if necessary
+      * @param {Boolean} [render] Pass false to skip the seek to 0 and leave the clock where it is
       * @return {this}
       */
-    revert(): this;
+    revert(render?: boolean): this;
     /**
       * Imediatly completes the timer, cancels it and triggers the onComplete callback
       * @param  {Boolean|Number} [muteCallbacks]
       * @return {this}
       */
     complete(muteCallbacks?: boolean | number): this;
-    /**
-     * @typedef {this & {then: null}} ResolvedTimer
-     */
-    /**
-     * @param  {Callback<ResolvedTimer>} [callback]
-     * @return Promise<this>
-     */
-    then(callback?: Callback<this & {
-        then: null;
-    }>): Promise<any>;
+    /** @return {<T = Omit<this, 'then'>>(callback?: (this: void, self: Omit<this, 'then'>) => T) => Promise<Awaited<T>>} */
+    get then(): <T = Omit<this, "then">>(callback?: (this: void, self: Omit<this, "then">) => T) => Promise<Awaited<T>>;
 }
 export function createTimer(parameters?: TimerParams): Timer;
 import { Clock } from '../core/clock.js';

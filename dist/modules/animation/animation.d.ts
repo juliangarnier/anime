@@ -13,6 +13,10 @@ export class JSAnimation extends Timer {
     _head: Tween;
     /** @type {Tween} */
     _tail: Tween;
+    /** @type {Boolean} */
+    _hasSharedProgress: boolean;
+    /** @type {Boolean} */
+    _hasSimpleTweens: boolean;
     /** @type {TargetsArray} */
     targets: TargetsArray;
     /** @type {Callback<this>} */
@@ -21,28 +25,20 @@ export class JSAnimation extends Timer {
     _ease: EasingFunction;
     /**
      * @param  {Number} newDuration
+     * @param  {Boolean} [isParentStretch]
      * @return {this}
      */
-    stretch(newDuration: number): this;
+    stretch(newDuration: number, isParentStretch?: boolean): this;
     /**
      * @return {this}
      */
     refresh(): this;
     /**
      * Cancel the animation and revert all the values affected by this animation to their original state
+     * @param {Boolean} [render] Pass false to restore the values without rendering the animation at 0
      * @return {this}
      */
-    revert(): this;
-    /**
-     * @typedef {this & {then: null}} ResolvedJSAnimation
-     */
-    /**
-     * @param  {Callback<ResolvedJSAnimation>} [callback]
-     * @return Promise<this>
-     */
-    then(callback?: Callback<this & {
-        then: null;
-    }>): Promise<any>;
+    revert(render?: boolean): this;
 }
 export function animate(targets: TargetsParam, parameters: AnimationParams): JSAnimation;
 import { Timer } from '../timer/timer.js';

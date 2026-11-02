@@ -16,6 +16,49 @@ import {
 
 suite('Values', () => {
 
+  for (let explicit = 0; explicit < 2; explicit++) {
+    test(`Restores inline styles after ${explicit ? 'explicit' : 'implicit'} keyframes`, () => {
+      const element = document.createElement('div');
+      element.style.cssText = 'left: 7px; transform: translateX(9px)';
+      document.body.appendChild(element);
+      const animation = animate(element, {
+        left: explicit ? [{ from: '20px', to: '40px' }, { from: '60px', to: '80px' }] : [{ to: '40px' }, { to: '80px' }],
+        x: explicit ? [{ from: 30, to: 50 }, { from: 70, to: 90 }] : [{ to: 50 }, { to: 90 }],
+        duration: 200,
+        ease: 'linear',
+        autoplay: false,
+      });
+      try {
+        animation.seek(150);
+        expect(element.style.left).to.equal(explicit ? '70px' : '60px');
+        expect(element.style.transform).to.equal(explicit ? 'translateX(80px)' : 'translateX(70px)');
+        animation.revert();
+        expect(element.style.left).to.equal('7px');
+        expect(element.style.transform).to.equal('translateX(9px)');
+      } finally {
+        animation.cancel();
+        element.remove();
+      }
+    });
+  }
+
+  test('Restores absent inline styles after animating an object', () => {
+    const element = document.createElement('div');
+    document.body.appendChild(element);
+    const objectAnimation = animate({ x: '12px' }, { x: '24px', autoplay: false });
+    const styleAnimation = animate(element, { left: '100px', duration: 100, ease: 'linear', autoplay: false });
+    try {
+      styleAnimation.seek(50);
+      expect(element.style.left).to.equal('50px');
+      styleAnimation.revert();
+      expect(element.style.left).to.equal('');
+    } finally {
+      objectAnimation.cancel();
+      styleAnimation.cancel();
+      element.remove();
+    }
+  });
+
   const numberTypeTestTarget = {
     number: 1,
     decimals: 1.2,
@@ -674,18 +717,61 @@ suite('Values', () => {
       ease: 'linear',
     });
     // Reproduce the floating point drift that occurs in real runs when engine timing produces an _offset
-    // whose round-to-12-decimal value is strictly greater than the float itself. animation.js
-    // rounds _absoluteStartTime, render.js does not round absoluteTime, so the boundary check
-    // absoluteTime >= prev._absoluteStartTime + prev._changeDuration flips at the exact tween end.
-    const drifted = 0.49999999999999;
-    animation._offset = drifted;
-    let tween = animation._head;
-    while (tween) {
-      tween._absoluteStartTime = Math.round((drifted + tween._startTime) * 1e12) / 1e12;
-      tween = tween._next;
-    }
+    // whose round-to-12-decimal value is strictly greater than the float itself.
+    animation._offset = 0.49999999999999;
     animation.seek(animation.duration * .5);
     expect(relativeEl.style.transform).to.equal('rotate(8turn)');
+  });
+
+  test('Uses the target value when only from is provided', () => {
+    const target = { x: 20 };
+    const animation = animate(target, { x: { from: 0 }, duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(50);
+    expect(target.x).to.equal(10);
+    animation.seek(100);
+    expect(target.x).to.equal(20);
+    animation.cancel();
+  });
+
+  test('Applies modifiers to numeric and unit values', () => {
+    const target = { number: 0, unit: '0px' };
+    const animation = animate(target, {
+      number: 100, unit: '100px', modifier: value => Math.floor(value / 10) * 10,
+      duration: 100, ease: 'linear', autoplay: false,
+    });
+    animation.seek(37);
+    expect([target.number, target.unit]).to.deep.equal([30, '30px']);
+    animation.cancel();
+  });
+
+  test('Preserves complex text and endpoint precision', () => {
+    const target = { path: 'M0,0 L10,20 Z' };
+    const animation = animate(target, {
+      path: 'M1.123456,2.123456 L30,40 Z', duration: 100, ease: 'linear', autoplay: false,
+    });
+    animation.seek(50);
+    expect(target.path).to.equal('M0.5617,1.0617 L20,30 Z');
+    animation.seek(100);
+    expect(target.path).to.equal('M1.123456,2.123456 L30,40 Z');
+    animation.seek(0);
+    expect(target.path).to.equal('M0,0 L10,20 Z');
+    animation.cancel();
+  });
+
+  test('Keeps an accessor value when both endpoints are omitted', () => {
+    let value = 20;
+    const target = {
+      get x() { return value; },
+      set x(next) { value = next; },
+    };
+    const animation = animate(target, { x: {}, duration: 100, ease: 'linear', autoplay: false });
+    for (const time of [50, 100, 0]) {
+      value = 40;
+      animation.seek(time);
+      expect(value).to.equal(20);
+    }
+    animation.revert();
+    expect(value).to.equal(20);
   });
 
 });

@@ -1,16 +1,13 @@
 # Anime.js
 
 <p align="center">
-  <picture align="center">
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/images/animejs-v4-logo-animation-dark.gif">
-    <img align="center" alt="Anime.js V4 logo animation" src="./assets/images/animejs-v4-logo-animation.gif" width="560">
-  </picture>
+  <img align="center" alt="The Anime.js v5 logo animation in the Anime.js editor" src="./assets/images/animejs-v5-editor-logo.png" width="812">
 </p>
 
 <p align="center">
   <strong>
-  <em>Anime.js</em> is a fast, multipurpose and lightweight JavaScript animation library with a simple, yet powerful API.<br>
-  It works with CSS properties, SVG, DOM attributes and JavaScript Objects.
+  <em>Anime.js</em> is a fast, versatile and lightweight animation engine for the web, with a simple yet powerful API and a visual editor.<br>
+  It works with CSS, SVG, HTML, WebGL, WebGPU and Canvas2D objects.
   </strong>
 </p>
 
@@ -62,9 +59,10 @@ Help the project become sustainable by sponsoring us on <a target="_blank" href=
   <tbody>
     <tr>
       <td>
-        <a target="_blank" href="https://github.com/sponsors/juliangarnier">
+        <a target="_blank" href="https://www.testmuai.com/?utm_medium=sponsor&utm_source=animejs">
           <picture>
-            <img align="center" src="./assets/sponsors/placeholder-small.png?v=200126" width="141">
+            <source media="(prefers-color-scheme: dark)" srcset="./assets/sponsors/testmu-ai-logomark.png?v=200126">
+            <img align="center" src="./assets/sponsors/testmu-ai-logomark-dark.png?v=200126" width="141">
           </picture>
         </a>
       </td>
@@ -112,7 +110,7 @@ Get featured here by becoming a <a target="_blank" href="https://github.com/spon
 
 ## Usage
 
-Anime.js V4 works by importing ES modules like so:
+Anime.js works by importing ES modules like so:
 
 
 <table>
@@ -143,13 +141,14 @@ animate('.square', {
 </tr>
 </table>
 
-## V4 Documentation
+## Documentation
 
 The full documentation is available [here](https://animejs.com/documentation).
 
-## V3 Migration guide
+## Migration guides
 
-You can find the v3 to v4 migration guide [here](https://github.com/juliangarnier/anime/wiki/Migrating-from-v3-to-v4).
+Coming from V4, the breaking changes are listed in the V5 [release notes](https://github.com/juliangarnier/anime/releases).
+Coming from V3, follow the v3 to v4 migration guide [here](https://github.com/juliangarnier/anime/wiki/Migrating-from-v3-to-v4) first.
 
 ## NPM development scripts
 
@@ -158,12 +157,14 @@ Then, execute the following scripts with `npm run <script>`.
 
 | script | action |
 | ------ | ------ |
-| `dev` | Watches for changes in `src/**/*.js`, bundles the ESM version to `lib/` and creates type declarations in `types/` |
+| `dev` | Watches for changes in `src/**/*.js`, builds the ESM and CJS modules to `dist/modules/` and creates type declarations next to them |
 | `dev:test` | Runs `dev` and `test:browser` concurrently |
-| `build` | Bundles ESM / UMD / CJS / IIFE versions to `lib/` and creates type declarations in `types/` |
+| `build` | Builds the ESM and CJS modules to `dist/modules/`, the ESM and UMD bundles to `dist/bundles/`, and creates type declarations in `dist/modules/` |
+| `test` | Builds, then runs the type checks, the Node and browser test suites, and a browser performance comparison |
 | `test:browser` | Starts a local server and runs all browser-related tests |
 | `test:headless` | Runs the browser test suite in headless Chrome and reports pass / fail |
 | `test:node` | Starts Node-related tests |
+| `typecheck` | Checks the types of the source, the tests and the examples |
 | `open:examples` | Starts a local server to browse the examples locally |
 
 © [Julian Garnier](http://juliangarnier.com) | [MIT License](LICENSE.md)

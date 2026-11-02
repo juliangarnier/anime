@@ -1,6 +1,6 @@
 /**
  * Anime.js - easings - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -17,7 +17,7 @@ var factory = require('./factory.cjs');
  * } from '../../types/index.js'
 */
 
-const taggedLinear = globals.makeTweakable('Ease', 'linear', factory.linearFactory);
+const tweakableLinear = globals.makeTweakable('Ease', 'linear', factory.linearFactory);
 
 /**
  * Without parameters, the linear function creates a non-eased transition.
@@ -26,6 +26,6 @@ const taggedLinear = globals.makeTweakable('Ease', 'linear', factory.linearFacto
  * @param  {...(String|Number)} args - Points
  * @return {EasingFunction}
  */
-const linear = (...args) => args.length ? /** @type {EasingFunction} */(taggedLinear.apply(null, args)) : none.none;
+const linear = (...args) => args.length ? /** @type {EasingFunction} */(tweakableLinear.apply(null, args)) : none.none;
 
 exports.linear = linear;

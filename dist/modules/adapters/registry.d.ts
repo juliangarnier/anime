@@ -15,21 +15,22 @@ export function registerAdapter(detect?: (t: any) => boolean): Adapter;
 export function resolveAdapterEntry(target: any, name: string): TargetAdapterEntry | null;
 export type TargetAdapterEntry = {
     get: (t: any) => any;
-    set: (target: any, value: number, tween: any) => void;
+    set: (target: any, value: number, tween: Tween) => void;
     gate?: (t: any) => boolean;
 };
+export type PropertyResolver = (target: any, name: string) => TargetAdapterEntry | null;
 declare class Adapter {
     /**
      * @param {((t: any) => boolean) | null} [detect]
-     *   Optional gate. When provided, every lookup against this Adapter's target adapters and resolvers is skipped if `detect(target)` returns falsy. Lets the Adapter as a whole short-circuit on unrelated targets.
+     *   Skips every lookup against this Adapter when detect(target) returns falsy.
      */
     constructor(detect?: ((t: any) => boolean) | null);
     /** @type {((t: any) => boolean) | null} */
     detect: ((t: any) => boolean) | null;
     /** @type {TargetAdapter[]} */
     targetAdapters: TargetAdapter[];
-    /** @type {((target: any, name: string) => TargetAdapterEntry | null)[]} */
-    propertyResolvers: ((target: any, name: string) => TargetAdapterEntry | null)[];
+    /** @type {PropertyResolver[]} */
+    propertyResolvers: PropertyResolver[];
     /**
      * Creates and registers a `TargetAdapter` scoped to this Adapter.
      *
@@ -38,12 +39,13 @@ declare class Adapter {
      */
     registerTargetAdapter(detect: (t: any) => boolean): TargetAdapter;
     /**
-     * Registers a property resolver scoped to this Adapter. Resolvers are functions invoked at tween creation when no target adapter has claimed the name; the function returns an entry for names it handles or `null` to defer. Use for runtime-matched patterns (Color / Vector axis detection, name-prefix conventions, etc.).
+     * Registers a property resolver scoped to this Adapter. The resolver returns an entry for the names it handles, or null to defer.
      *
-     * @param {(target: any, name: string) => TargetAdapterEntry | null} resolver
+     * @param {PropertyResolver} resolver
      */
-    registerPropertyResolver(resolver: (target: any, name: string) => TargetAdapterEntry | null): void;
+    registerPropertyResolver(resolver: PropertyResolver): void;
 }
+import type { Tween } from '../types/index.js';
 declare class TargetAdapter {
     /**
      * @param {(t: any) => boolean} detect
@@ -57,9 +59,9 @@ declare class TargetAdapter {
      *
      * @param {string} name
      * @param {(t: any) => any} getter
-     * @param {(target: any, value: number, tween: any) => void} setter
+     * @param {(target: any, value: number, tween: Tween) => void} setter
      * @param {(t: any) => boolean} [gate]
      */
-    registerProperty(name: string, getter: (t: any) => any, setter: (target: any, value: number, tween: any) => void, gate?: (t: any) => boolean): void;
+    registerProperty(name: string, getter: (t: any) => any, setter: (target: any, value: number, tween: Tween) => void, gate?: (t: any) => boolean): void;
 }
 export {};

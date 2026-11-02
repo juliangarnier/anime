@@ -40,7 +40,11 @@ export const browserIs = {
 //   return t._startTime + ((t._startTime - ((t._prev && t._prev.property === t.property) ? t._prev._startTime + t._prev._updateDuration : 0)) - t.parent._delay);
 // }
 
-export const getTweenDelay = t => t._delay;
+// Read a keyframe delay as the gap after the previous keyframe of the same property, the first keyframe from the animation start.
+export const getTweenDelay = t => {
+  const prev = t._prev && t._prev.target === t.target && t._prev.property === t.property ? t._prev : null;
+  return t._startTime - (prev ? prev._startTime + prev._updateDuration : 0);
+}
 
 export {
   addChild,

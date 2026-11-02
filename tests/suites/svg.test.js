@@ -122,6 +122,17 @@ suite('SVG', () => {
     expect(getComputedStyle($path).strokeLinecap).to.equal('butt');
   });
 
+  test('Cancels and reverts a timeline that animates a drawable proxy and its own element', () => {
+    const [ $line ] = utils.$('#tests line');
+    const timeline = createTimeline({ autoplay: false })
+      .add(svg.createDrawable($line), { draw: ['0 0', '0 1'], duration: 100 })
+      .add($line, { opacity: [1, .5], duration: 100 });
+    timeline.seek(150);
+    expect(() => timeline.cancel()).to.not.throw();
+    expect(() => timeline.revert()).to.not.throw();
+    expect($line.style.opacity).to.equal('');
+  });
+
   test('SVG Filters', () => {
     // Filters tests
     /** @type {HTMLElement} */

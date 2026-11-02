@@ -152,6 +152,26 @@ suite('Colors', () => {
   createColorTestsByType('rgba', 'rgb');
   createColorTestsByType('rgba', 'rgba');
 
+  test('Keeps alpha opaque when animating a color by a relative zero value', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    targetEl.style.backgroundColor = 'rgb(255, 0, 0)';
+    const animation = animate(targetEl, { backgroundColor: '+=0', autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COLOR);
+    expect(getChildAtIndex(animation, 0)._toNumbers).to.deep.equal([0, 0, 0, 1]);
+    animation.seek(animation.duration);
+    expect(targetEl.style.backgroundColor).to.equal('rgb(0, 0, 0)');
+  });
+
+  test('Defaults alpha to opaque when animating a color from a number value', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    const animation = animate(targetEl, { color: [0, '#ff0000'], autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COLOR);
+    expect(getChildAtIndex(animation, 0)._fromNumbers).to.deep.equal([0, 0, 0, 1]);
+    expect(targetEl.style.color).to.equal('rgb(0, 0, 0)');
+    animation.seek(animation.duration);
+    expect(targetEl.style.color).to.equal('rgb(255, 0, 0)');
+  });
+
   test('Timeline color sibling chain: each add starts from the previous add end-color', () => {
     const [ targetEl ] = utils.$('#target-id');
     targetEl.style.backgroundColor = 'rgb(0, 0, 0)';
@@ -193,5 +213,69 @@ suite('Colors', () => {
     expect(targetEl.style.backgroundColor).to.equal(`rgb(${midR}, ${midG}, 0)`);
     tl.seek(tl.duration);
     expect(targetEl.style.backgroundColor).to.equal('rgb(0, 255, 0)');
+  });
+});
+
+// Browsers serialize a computed color in the syntax it was authored in, so a
+// `color-mix()` result or a relative color reaches the parser as `oklab()`,
+// `oklch()`, or `color()`.
+const modernColorInputs = {
+  'oklch': { input: 'oklch(0.67079 0.21657 25.1938)', output: [255, 75, 75, 1] },
+  'oklch with alpha': { input: 'oklch(0.67079 0.21657 25.1938 / 0.5)', output: [255, 75, 75, .5] },
+  'oklch with none': { input: 'oklch(0.5 none none)', output: [99, 99, 99, 1] },
+  'oklab': { input: 'oklab(0.968124 0.00133958 0.00319093)', output: [246, 244, 242, 1] },
+  'color srgb': { input: 'color(srgb 1 0.294118 0.294118)', output: [255, 75, 75, 1] },
+  'color srgb with percent alpha': { input: 'color(srgb 1 0 0 / 50%)', output: [255, 0, 0, .5] },
+  'color srgb-linear': { input: 'color(srgb-linear 0.3 0.3 0.3)', output: [149, 149, 149, 1] },
+  'color display-p3 out of gamut': { input: 'color(display-p3 1 0 0)', output: [255, 0, 0, 1] },
+};
+
+suite('Modern colors', () => {
+  for (const name in modernColorInputs) {
+    const { input, output } = modernColorInputs[name];
+    test(`Parses ${name}`, () => {
+      expect(utils.parseColor(input)).to.deep.equal(output);
+    });
+    test(`Animates to ${name}`, () => {
+      const [ targetEl ] = utils.$('#target-id');
+      const animation = animate(targetEl, { color: input, autoplay: false });
+      expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COLOR);
+      expect(getChildAtIndex(animation, 0)._toNumbers).to.deep.equal(output);
+    });
+  }
+
+  test('Reads a computed modern color as the from value', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    targetEl.style.color = 'oklch(0.67079 0.21657 25.1938)';
+    const animation = animate(targetEl, { color: '#ffffff', autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COLOR);
+    expect(getChildAtIndex(animation, 0)._fromNumbers).to.deep.equal([255, 75, 75, 1]);
+    animation.seek(animation.duration);
+    expect(targetEl.style.color).to.equal('rgb(255, 255, 255)');
+    targetEl.style.color = '';
+  });
+
+  test('Animates between modern color formats in sRGB and writes rgb values', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    const animation = animate(targetEl, { color: ['oklch(70% 0.2 30)', 'color(display-p3 0 0.8 1)'], duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(50);
+    expect(targetEl.style.color).to.equal('rgb(180, 162, 188)');
+    animation.seek(100);
+    expect(targetEl.style.color).to.equal('rgb(0, 208, 255)');
+    animation.revert();
+  });
+
+  test('Clips a color outside sRGB to the nearest sRGB color', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    const animation = animate(targetEl, { color: ['color(display-p3 1 0 0)', 'color(display-p3 0 1 0)'], duration: 100, ease: 'linear', autoplay: false });
+    animation.seek(100);
+    expect(targetEl.style.color).to.equal('rgb(0, 255, 0)');
+    animation.revert();
+  });
+
+  test('A shadow with a modern color is not parsed as a color', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    const animation = animate(targetEl, { boxShadow: ['oklch(0.67 0.22 25) 0px 0px 6px 0px', 'oklch(0.9 0.2 110) 0px 0px 20px 0px'], autoplay: false });
+    expect(getChildAtIndex(animation, 0)._valueType).to.equal(valueTypes.COMPLEX);
   });
 });

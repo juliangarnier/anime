@@ -1,6 +1,6 @@
 /**
  * Anime.js - adapters - ESM
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -9,9 +9,18 @@ import { SRGBColorSpace } from 'three';
 import { degToRad } from '../../utils/number.js';
 
 /**
- * Generic read/write helpers for the three.js bindings. Each operates on a target (or target array) and walks to the leaf via a path tag - direct (`target[name]`), uniform (`target.uniforms[name].value`), or TSL node (`target[name].value`). Adapter and resolver files pass the matching `PATH_*` constant; the JIT specializes each call site so the branch in `leafAt` / `writeLeafScalar` constant-folds.
+ * Read and write helpers for the three.js adapters. Each one takes a target or a target array and a PATH constant that selects the leaf, target[name] for PATH_DIRECT, target.uniforms[name].value for PATH_UNIFORM, target[name].value for PATH_NODE.
+ * Each call site passes its constant, so the JIT folds the branch of leafAt and writeLeafScalar.
  */
 
+
+/**
+ * @typedef {Object} PropDescriptor
+ * @property {Number} kind
+ * @property {Number} path
+ * @property {String} base
+ * @property {'x' | 'y' | 'z' | 'w'} axis
+ */
 
 const COLOR_NORM = 1 / 255;
 
@@ -26,7 +35,8 @@ const KIND_SCALAR = 1;
 const KIND_VECTOR = 2;
 
 // Reuse one mutable descriptor across calls, callers must consume immediately since the next call mutates it.
-const desc = { kind: 0, path: 0, base: '', axis: /** @type {'x' | 'y' | 'z' | 'w'} */('x') };
+/** @type {PropDescriptor} */
+const descriptor = { kind: 0, path: 0, base: '', axis: 'x' };
 
 /**
  * Patches a column-major `Matrix4.elements` array in place with CSS-style `skewX(α)` / `skewY(β)`, the 3D extension `skewZ(γ)` (shears z by x), and a `transform-origin` shift.
@@ -74,7 +84,7 @@ function readColorHex(c) {
 }
 
 /**
- * Returns `true` when `v` is a `Vector2/3/4` instance whose dimension covers `axis`. `Quaternion` and plain `{x,y,z,w}`-shaped objects are intentionally rejected.
+ * Returns true when v is a Vector2, Vector3 or Vector4 whose dimension covers axis. Quaternion and plain objects return false.
  *
  * @param {any} v
  * @param {'x' | 'y' | 'z' | 'w'} axis
@@ -88,49 +98,55 @@ function isVectorWith(v, axis) {
 }
 
 /**
- * Classifies `target[name]` and returns a descriptor `{ kind, path, base, axis }` (or `null`). Used by the resolver entries in `resolvers.js` and by the `Object3D` adapter to build the matching access pattern for any three.js target (Object3D, Material, Texture, Fog, UniformNode).
+ * Classifies target[name] and returns the shared descriptor with kind, path, base and axis, or null when no adapter path matches.
  *
  * @param {any} target
  * @param {string} name
- * @return {{ kind: number, path: number, base: string, axis: 'x' | 'y' | 'z' | 'w' } | null}
+ * @return {PropDescriptor | null}
  */
 function classifyTargetProp(target, name) {
   const value = target[name];
   if (value !== undefined) {
     if (value && value.isColor) {
-      desc.kind = KIND_COLOR; desc.path = PATH_DIRECT;
-      return desc;
+      descriptor.kind = KIND_COLOR;
+      descriptor.path = PATH_DIRECT;
+      return descriptor;
     }
     if (value && value.isUniformNode) {
       // Route TSL slot writes through node value, booleans share the scalar entry.
       const v = value.value;
       if (v && v.isColor) {
-        desc.kind = KIND_COLOR; desc.path = PATH_NODE;
-        return desc;
+        descriptor.kind = KIND_COLOR;
+        descriptor.path = PATH_NODE;
+        return descriptor;
       }
       if (typeof v === 'number' || typeof v === 'boolean') {
-        desc.kind = KIND_SCALAR; desc.path = PATH_NODE;
-        return desc;
+        descriptor.kind = KIND_SCALAR;
+        descriptor.path = PATH_NODE;
+        return descriptor;
       }
       return null;
     }
     if (typeof value === 'number' || typeof value === 'boolean') {
-      desc.kind = KIND_SCALAR; desc.path = PATH_DIRECT;
-      return desc;
+      descriptor.kind = KIND_SCALAR;
+      descriptor.path = PATH_DIRECT;
+      return descriptor;
     }
     return null;
   }
   const uniforms = target.uniforms;
-  const u = uniforms && uniforms[name];
-  if (u) {
-    const uv = u.value;
-    if (uv && uv.isColor) {
-      desc.kind = KIND_COLOR; desc.path = PATH_UNIFORM;
-      return desc;
+  const uniform = uniforms && uniforms[name];
+  if (uniform) {
+    const uniformValue = uniform.value;
+    if (uniformValue && uniformValue.isColor) {
+      descriptor.kind = KIND_COLOR;
+      descriptor.path = PATH_UNIFORM;
+      return descriptor;
     }
-    if (typeof uv === 'number') {
-      desc.kind = KIND_SCALAR; desc.path = PATH_UNIFORM;
-      return desc;
+    if (typeof uniformValue === 'number') {
+      descriptor.kind = KIND_SCALAR;
+      descriptor.path = PATH_UNIFORM;
+      return descriptor;
     }
   }
   // Decompose vector axis for names like posX, uOffsetY, uVec4W, colorNodeX.
@@ -138,18 +154,27 @@ function classifyTargetProp(target, name) {
   if (axis) {
     const base = name.slice(0, -1);
     if (isVectorWith(target[base], axis)) {
-      desc.kind = KIND_VECTOR; desc.path = PATH_DIRECT; desc.base = base; desc.axis = axis;
-      return desc;
+      descriptor.kind = KIND_VECTOR;
+      descriptor.path = PATH_DIRECT;
+      descriptor.base = base;
+      descriptor.axis = axis;
+      return descriptor;
     }
     const baseSlot = target[base];
     if (baseSlot && baseSlot.isUniformNode && isVectorWith(baseSlot.value, axis)) {
-      desc.kind = KIND_VECTOR; desc.path = PATH_NODE; desc.base = base; desc.axis = axis;
-      return desc;
+      descriptor.kind = KIND_VECTOR;
+      descriptor.path = PATH_NODE;
+      descriptor.base = base;
+      descriptor.axis = axis;
+      return descriptor;
     }
-    const ub = uniforms && uniforms[base];
-    if (ub && isVectorWith(ub.value, axis)) {
-      desc.kind = KIND_VECTOR; desc.path = PATH_UNIFORM; desc.base = base; desc.axis = axis;
-      return desc;
+    const baseUniform = uniforms && uniforms[base];
+    if (baseUniform && isVectorWith(baseUniform.value, axis)) {
+      descriptor.kind = KIND_VECTOR;
+      descriptor.path = PATH_UNIFORM;
+      descriptor.base = base;
+      descriptor.axis = axis;
+      return descriptor;
     }
   }
   return null;
@@ -158,24 +183,27 @@ function classifyTargetProp(target, name) {
 function leafAt(target, name, path) {
   if (path === PATH_DIRECT) return target[name];
   if (path === PATH_UNIFORM) {
-    const u = target.uniforms;
-    const e = u && u[name];
-    return e ? e.value : null;
+    const uniforms = target.uniforms;
+    const entry = uniforms && uniforms[name];
+    return entry ? entry.value : null;
   }
-  const n = target[name];
-  return n ? n.value : null;
+  const node = target[name];
+  return node ? node.value : null;
 }
 
 function writeLeafScalar(target, name, v, path) {
-  if (path === PATH_DIRECT) { target[name] = v; return; }
-  if (path === PATH_UNIFORM) {
-    const u = target.uniforms;
-    const e = u && u[name];
-    if (e) e.value = v;
+  if (path === PATH_DIRECT) {
+    target[name] = v;
     return;
   }
-  const n = target[name];
-  if (n) n.value = v;
+  if (path === PATH_UNIFORM) {
+    const uniforms = target.uniforms;
+    const entry = uniforms && uniforms[name];
+    if (entry) entry.value = v;
+    return;
+  }
+  const node = target[name];
+  if (node) node.value = v;
 }
 
 /**
@@ -185,9 +213,7 @@ function writeLeafScalar(target, name, v, path) {
  * @param {number} [defaultValue]
  * @return {number}
  */
-function readScalar(target, name, path, defaultValue) {
-  if (defaultValue === undefined) defaultValue = 0;
-  if (!target) return defaultValue;
+function readScalar(target, name, path, defaultValue = 0) {
   const first = Array.isArray(target) ? target[0] : target;
   if (!first) return defaultValue;
   const v = leafAt(first, name, path);
@@ -216,7 +242,6 @@ function writeScalar(target, name, v, path) {
  * @return {String | null}
  */
 function readColorAt(target, name, path) {
-  if (!target) return null;
   const first = Array.isArray(target) ? target[0] : target;
   return readColorHex(first ? leafAt(first, name, path) : null);
 }
@@ -251,7 +276,6 @@ function writeColorAt(target, name, ns, path) {
  * @return {number}
  */
 function readVectorAt(target, base, axis, path) {
-  if (!target) return 0;
   const first = Array.isArray(target) ? target[0] : target;
   const vec = first ? leafAt(first, base, path) : null;
   return vec ? vec[axis] : 0;

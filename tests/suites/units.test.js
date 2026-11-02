@@ -212,4 +212,48 @@ suite('Units', () => {
     expect(getChildAtIndex(animation, 0)._toNumber).to.equal(180);
   });
 
+  test('Inherits target units for numeric endpoints', () => {
+    const target = { x: '10px' };
+    const animation = animate(target, { x: [0, 20], duration: 100, ease: 'linear', autoplay: false });
+    for (const [time, value] of /** @type {const} */([[25, '5px'], [75, '15px'], [25, '5px']])) {
+      animation.seek(time);
+      expect(target.x).to.equal(value);
+    }
+    animation.cancel();
+  });
+
+});
+
+suite('Decomposition reentry', () => {
+  test('Keeps endpoints and the inline original across DOM unit conversion', () => {
+    const element = document.createElement('div');
+    element.style.cssText = 'position:absolute;font-size:10px;width:17px';
+    document.body.appendChild(element);
+    const cloneNode = element.cloneNode;
+    const nested = [];
+    let clones = 0;
+    element.cloneNode = function (deep) {
+      clones++;
+      nested.push(animate({ y: 0 }, {
+        y: [300, 400], duration: 100, ease: 'linear', autoplay: false,
+      }));
+      return cloneNode.call(this, deep);
+    };
+    let animation;
+    try {
+      animation = animate(element, {
+        width: ['13.7px', '110em'], duration: 100, ease: 'linear', autoplay: false,
+      });
+      expect(clones).to.equal(1);
+      animation.seek(50);
+      expect(parseFloat(element.style.width)).to.be.closeTo(55.685, .0001);
+      expect(element.style.width.endsWith('em')).to.equal(true);
+      animation.revert(false);
+      expect(element.style.width).to.equal('17px');
+    } finally {
+      if (animation) animation.cancel();
+      nested.forEach(child => child.cancel());
+      element.remove();
+    }
+  });
 });

@@ -191,6 +191,29 @@ suite('Stagger', () => {
     }
   });
 
+  test('Renders each target at its own jittered delay and shuffled value', () => {
+    const staggers = () => ({ delay: stagger(20, { jitter: 5, seed: 7 }), x: stagger([100, 500], { from: 'random', seed: 3 }) });
+    const targets = [0, 1, 2, 3, 4].map(() => ({ x: 0 }));
+    const used = staggers();
+    const animation = animate(targets, { x: used.x, delay: used.delay, duration: 200, ease: 'inQuad', autoplay: false });
+    // The same seeds replay the stagger values for identical targets.
+    const expected = staggers();
+    const references = [0, 1, 2, 3, 4].map(() => ({ x: 0 }));
+    const delays = references.map((target, i) => expected.delay(target, i, references));
+    const xs = references.map((target, i) => expected.x(target, i, references));
+    expect(new Set(xs).size).to.equal(targets.length);
+    // The smallest delay becomes the animation delay, seek times start after it.
+    const firstDelay = Math.min(...delays);
+    for (const time of [10, 60, 150, 260, 60]) {
+      animation.seek(time);
+      targets.forEach((target, i) => {
+        const progress = Math.min(1, Math.max(0, (time - (delays[i] - firstDelay)) / 200));
+        expect(target.x).to.be.closeTo(xs[i] * progress * progress, 1e-9);
+      });
+    }
+    animation.cancel();
+  });
+
   test('Ramps jitter magnitude across order', () => {
     const animation = animate('#stagger div', {
       translateX: 10,
@@ -573,6 +596,20 @@ suite('Stagger', () => {
     expect(getChildAtIndex(tl, 2).id).to.equal('staggered-2');
     expect(getChildAtIndex(tl, 3).id).to.equal('staggered-3');
     expect(tl.duration).to.equal(310); // 300 + 10
+  });
+
+  test('Anchors timeline position ranges at their lowest value', () => {
+    const ascending = createTimeline({ defaults: { duration: 10 }, autoplay: false })
+    .add('.target-class', { translateX: 50 }, stagger([0, 300]));
+    const descending = createTimeline({ defaults: { duration: 10 }, autoplay: false })
+    .add('.target-class', { translateX: 50 }, stagger([300, 0]));
+
+    for (let i = 0; i < 4; i++) {
+      expect(getChildAtIndex(ascending, i)._offset).to.equal(i * 100);
+      expect(getChildAtIndex(descending, i)._offset).to.equal(300 - i * 100);
+    }
+    expect(ascending.duration).to.equal(310);
+    expect(descending.duration).to.equal(310);
   });
 
   test('Staggers timeline positions with a numeric start', () => {

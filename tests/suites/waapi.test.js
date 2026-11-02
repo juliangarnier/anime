@@ -12,6 +12,271 @@ import {
 
 suite('WAAPI', () => {
 
+  const nextFrames = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+  test('Passes colors outside sRGB and named colors to the browser', () => {
+    const target = utils.$('#target-id')[0];
+    // The browser normalizes the keyframes it receives, compare with its own reading of each color.
+    const probe = document.createElement('div');
+    const normalized = color => { probe.style.color = color; return probe.style.color; };
+    for (const [from, to] of [['color(display-p3 1 0 0)', 'color(display-p3 0 1 0)'], ['red', 'oklch(50% 0.1 200)']]) {
+      const animation = waapi.animate(target, { color: [from, to], duration: 1000, ease: 'linear', autoplay: false });
+      const keyframes = /** @type {KeyframeEffect} */(animation.animations[0].effect).getKeyframes();
+      expect([keyframes[0].color, keyframes[1].color]).to.deep.equal([normalized(from), normalized(to)]);
+      animation.seek(0);
+      const start = getComputedStyle(target).color;
+      animation.seek(500);
+      const middle = getComputedStyle(target).color;
+      expect(middle).to.not.equal(start);
+      animation.seek(1000);
+      expect(getComputedStyle(target).color).to.not.equal(middle);
+      if (from.startsWith('color(')) expect(getComputedStyle(target).color).to.not.equal('rgb(0, 255, 0)');
+      animation.revert();
+    }
+  });
+
+  for (const autoplay of [false, true]) {
+    test(`A muted end seek skips completion and can replay (autoplay: ${autoplay})`, async () => {
+      let completes = 0;
+      let resolutions = 0;
+      const target = utils.$('#target-id')[0];
+      const animation = waapi.animate(target, {
+        opacity: [0, 1], duration: 1000, autoplay, ease: 'linear',
+        onComplete: () => completes++,
+      });
+      const keys = Object.keys(animation);
+      const done = animation.then(() => { resolutions++; });
+      try {
+        await Promise.all(animation.animations.map(native => native.ready));
+        animation.seek(animation.duration, true);
+        await nextFrames();
+        expect(completes).to.equal(0);
+        expect(resolutions).to.equal(0);
+        expect(animation.completed).to.equal(true);
+        expect(animation.paused).to.equal(true);
+        expect(+getComputedStyle(target).opacity).to.equal(1);
+        expect(await animation.then(() => 42)).to.equal(42);
+        expect(resolutions).to.equal(0);
+        expect(Object.keys(animation)).to.deep.equal(keys);
+
+        animation.restart().pause().seek(500);
+        expect(+getComputedStyle(target).opacity).to.be.closeTo(.5, .001);
+        animation.complete();
+        await done;
+        expect(completes).to.equal(1);
+        expect(resolutions).to.equal(1);
+      } finally {
+        animation.revert();
+      }
+    });
+  }
+
+  test('A muted seek before the end does not mute later playback completion', async () => {
+    let completes = 0;
+    const animation = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 80, autoplay: false,
+      onComplete: () => completes++,
+    });
+    try {
+      const done = animation.then(() => 42);
+      animation.seek(40, true).play();
+      expect(await done).to.equal(42);
+      expect(completes).to.equal(1);
+    } finally {
+      animation.revert();
+    }
+  });
+
+  for (const waitForFrame of [false, true]) {
+    test(`An unmuted completion after a muted end seek resolves all properties (wait: ${waitForFrame})`, async () => {
+      let completes = 0;
+      const targets = utils.$('.target-class');
+      const animation = waapi.animate(targets, {
+        opacity: [0, 1], width: ['0px', '100px'],
+        duration: 100, delay: stagger(10), autoplay: false, ease: 'linear',
+        onComplete: () => completes++,
+      });
+      try {
+        const done = animation.then(() => 42);
+        animation.seek(animation.duration, true);
+        if (waitForFrame) await nextFrames();
+        expect(completes).to.equal(0);
+        animation.complete();
+        expect(await done).to.equal(42);
+        expect(completes).to.equal(1);
+        for (const target of targets) {
+          expect(+getComputedStyle(target).opacity).to.equal(1);
+          expect(getComputedStyle(target).width).to.equal('100px');
+        }
+      } finally {
+        animation.revert();
+      }
+    });
+  }
+
+  test('Cancelling after a muted end seek does not run completion callbacks', async () => {
+    let calls = 0;
+    const animation = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 100, autoplay: false,
+      onComplete: () => calls++,
+    });
+    animation.then(() => { calls++; });
+    animation.seek(100, true).cancel();
+    await nextFrames();
+    expect(calls).to.equal(0);
+    animation.revert();
+  });
+
+  test('A muted rewind ignores a finish event queued before the seek', async () => {
+    let calls = 0;
+    const animation = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 1000, autoplay: false,
+      onComplete: () => calls++,
+    });
+    try {
+      const done = animation.then(() => 42);
+      animation.complete();
+      await Promise.all(animation.animations.map(native => native.finished));
+      animation.seek(100, true).pause();
+      await nextFrames();
+      expect(calls).to.equal(0);
+      expect(animation.completed).to.equal(false);
+      animation.complete();
+      expect(await done).to.equal(42);
+      expect(calls).to.equal(1);
+    } finally {
+      animation.revert();
+    }
+  });
+
+  for (const muted of [false, true]) {
+    test(`A queued finish respects a later ${muted ? 'muted end seek' : 'pause at the end'}`, async () => {
+      let calls = 0;
+      let resolutions = 0;
+      const animation = waapi.animate('#target-id', {
+        opacity: [0, 1], duration: 1000, autoplay: true,
+        onComplete: () => calls++,
+      });
+      try {
+        const done = animation.then(() => { resolutions++; });
+        animation.complete();
+        await Promise.all(animation.animations.map(native => native.finished));
+        if (muted) animation.seek(animation.duration, true);
+        else animation.pause();
+        await nextFrames();
+        expect(calls).to.equal(muted ? 0 : 1);
+        expect(resolutions).to.equal(muted ? 0 : 1);
+        if (muted) animation.complete();
+        await done;
+        expect(calls).to.equal(1);
+        expect(resolutions).to.equal(1);
+      } finally {
+        animation.revert();
+      }
+    });
+  }
+
+  test('A muted end seek during reverse playback skips completion and can play again', async () => {
+    let calls = 0;
+    const target = utils.$('#target-id')[0];
+    const animation = waapi.animate(target, {
+      opacity: [0, 1], duration: 1000, autoplay: false, ease: 'linear',
+      onComplete: () => calls++,
+    });
+    try {
+      const done = animation.then(() => 42);
+      animation.seek(500).reverse();
+      await Promise.all(animation.animations.map(native => native.ready));
+      animation.seek(0, true);
+      await nextFrames();
+      expect(calls).to.equal(0);
+      expect(animation.completed).to.equal(true);
+      expect(animation.paused).to.equal(true);
+      expect(animation.currentTime).to.equal(0);
+      expect(+getComputedStyle(target).opacity).to.equal(0);
+      animation.play().seek(500).pause();
+      expect(+getComputedStyle(target).opacity).to.be.closeTo(.5, .001);
+      animation.complete();
+      expect(await done).to.equal(42);
+      expect(calls).to.equal(1);
+    } finally {
+      animation.revert();
+    }
+  });
+
+  test('A muted seek works immediately after reverse(), before the browser applies its playback rate', async () => {
+    let calls = 0;
+    const animation = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 1000, autoplay: false,
+      onComplete: () => calls++,
+    });
+    try {
+      const done = animation.then(() => 42);
+      animation.seek(500).reverse().seek(0, true);
+      await nextFrames();
+      expect(calls).to.equal(0);
+      expect(animation.completed).to.equal(true);
+      expect(animation.currentTime).to.equal(0);
+      animation.play();
+      expect(animation.completed).to.equal(false);
+      animation.complete();
+      expect(await done).to.equal(42);
+      expect(calls).to.equal(1);
+    } finally {
+      animation.revert();
+    }
+  });
+
+  test('A muted seek to the start does not stop a playing animation', async () => {
+    let calls = 0;
+    const animation = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 80,
+      onComplete: () => calls++,
+    });
+    try {
+      const done = animation.then(() => 42);
+      animation.seek(0, true);
+      expect(animation.completed).to.equal(false);
+      expect(animation.paused).to.equal(false);
+      expect(await done).to.equal(42);
+      expect(calls).to.equal(1);
+    } finally {
+      animation.revert();
+    }
+  });
+
+  test('A muted seek before the start preserves the requested negative time', async () => {
+    const animation = waapi.animate('#target-id', { opacity: [0, 1], duration: 80 });
+    try {
+      const done = animation.then(() => 42);
+      animation.seek(-50, true);
+      expect(animation.currentTime).to.equal(-50);
+      expect(animation.paused).to.equal(false);
+      expect(await done).to.equal(42);
+    } finally {
+      animation.revert();
+    }
+  });
+
+  test('A muted seek to the start of reverse playback does not stop it', async () => {
+    let calls = 0;
+    const animation = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 80, autoplay: false,
+      onComplete: () => calls++,
+    });
+    try {
+      const done = animation.then(() => 42);
+      animation.seek(40).reverse().seek(80, true);
+      expect(animation.completed).to.equal(false);
+      expect(animation.paused).to.equal(false);
+      expect(await done).to.equal(42);
+      expect(calls).to.equal(1);
+      expect(animation.currentTime).to.equal(0);
+    } finally {
+      animation.revert();
+    }
+  });
+
   CSS.registerProperty({
     name: '--translateX',
     syntax: '<length-percentage>',
@@ -43,6 +308,26 @@ suite('WAAPI', () => {
     setTimeout(() => {
       instance.complete();
     }, 10);
+  });
+
+  test('Completion callbacks keep their receivers and native promise results', async () => {
+    const calls = [];
+    const instance = waapi.animate('#target-id', {
+      opacity: [0, 1], duration: 100, autoplay: false,
+      onComplete(self) { calls.push([this, self]); },
+    });
+    const then = instance.then;
+    const done = instance.then(function(self) {
+      expect(this).to.equal(undefined);
+      expect(self).to.equal(instance);
+      return 42;
+    });
+    instance.complete();
+    expect(await done).to.equal(42);
+    expect(calls).to.deep.equal([[instance, instance]]);
+    expect(instance.then).to.equal(then);
+    expect(await Promise.resolve().then(() => instance)).to.equal(instance);
+    instance.revert();
   });
 
   test('Animate multiple elements', resolve => {
@@ -199,12 +484,12 @@ suite('WAAPI', () => {
       onComplete: () => {
         targets.forEach($el => {
           expect(utils.get($el, 'opacity')).to.equal('1');
-          expect(utils.get($el, 'backgroundColor')).to.equal('rgb(0, 0, 255)');
+          expect(utils.get($el, 'backgroundColor')).to.equal('rgba(0,0,255,1)');
         });
         animation.revert();
         targets.forEach($el => {
           expect(utils.get($el, 'opacity')).to.equal('0.5');
-          expect(utils.get($el, 'backgroundColor')).to.equal('rgb(255, 0, 0)');
+          expect(utils.get($el, 'backgroundColor')).to.equal('rgba(255,0,0,1)');
           expect(utils.get($el, 'transform')).to.equal('none');
           // expect(utils.get($el, '--translateX')).to.equal('0px');
           // expect(utils.get($el, '--translateY')).to.equal('0px');

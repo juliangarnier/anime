@@ -8,6 +8,7 @@ export type DefaultsParams = {
     reversed?: boolean;
     alternate?: boolean;
     persist?: boolean;
+    muted?: boolean;
     autoplay?: boolean | ScrollObserver;
     duration?: number | FunctionValue;
     delay?: number | FunctionValue;
@@ -45,16 +46,11 @@ export type StaggerParams = {
     ease?: EasingParam;
     modifier?: TweenModifier;
     /**
-     * Additive uniform noise on the
-     * computed stagger value. Number form gives flat `+/-jitter`; tuple form
-     * ramps the magnitude `start -> end` across the from/axis/grid ordering
-     * and respects `ease`.
+     * Random offset added to each staggered value, a pair ramps the offset from the first to the last value
      */
     jitter?: number | [number, number];
     /**
-     * Seed for jitter draws and `from: 'random'`
-     * shuffling. `false` (default) uses Math.random. `true` seeds with `0`. A
-     * number is used directly as the seed.
+     * Seed of the random draws of jitter and from random, true seeds with 0 and false uses Math.random
      */
     seed?: boolean | number;
 };
@@ -106,10 +102,10 @@ export type SpringParams = {
     /**
      * - Callback function called when the spring currentTime hits the perceived duration
      */
-    onComplete?: Callback<JSAnimation>;
+    onComplete?: Callback<JSAnimation, Spring>;
 };
-export type Callback<T> = {
-    method(self: T): any;
+export type Callback<T, This = T> = {
+    method(this: This, self: T): any;
 }["method"];
 export type TickableCallbacks<T extends unknown> = {
     onBegin?: Callback<T>;
@@ -123,6 +119,7 @@ export type RenderableCallbacks<T extends unknown> = {
     onRender?: Callback<T>;
 };
 export type TimerOptions = {
+    muted?: boolean;
     id?: number | string;
     duration?: TweenParamValue;
     delay?: TweenParamValue;
@@ -141,7 +138,6 @@ export type FunctionValue<T = FunctionValueReturn> = (target?: Target, index?: n
 export type TweenModifier = (value: number) => number | string;
 export type ColorArray = [number, number, number, number];
 export type Tween = {
-    id: number;
     parent: JSAnimation;
     property: string;
     target: Target;
@@ -159,26 +155,18 @@ export type Tween = {
     _unit: string;
     _modifier: TweenModifier;
     _currentTime: number;
-    _delay: number;
     _updateDuration: number;
     _startTime: number;
     _changeDuration: number;
-    _absoluteStartTime: number;
-    _absoluteUpdateStartTime: number;
-    _absoluteEndTime: number;
-    _hasFromValue: number;
     _tweenType: tweenTypes;
-    _setter: ((target: any, value: number, tween: Tween) => void) | null;
+    _setter: ((target: Target, value: number, tween: Tween) => void) | null;
     _valueType: valueTypes;
     _composition: number;
-    _isOverlapped: number;
     _isOverridden: number;
-    _renderTransforms: number;
-    _inlineValue: string;
-    _prevRep: Tween;
-    _nextRep: Tween;
-    _prevAdd: Tween;
-    _nextAdd: Tween;
+    _keyStart: number;
+    _keyEnd: number;
+    _prevSibling: Tween;
+    _inlineValue: string | number | null | undefined | Symbol;
     _prev: Tween;
     _next: Tween;
 };
@@ -208,17 +196,15 @@ export type TweenDecomposedValue = {
      */
     s: Array<string>;
 };
-export type TweenPropertySiblings = {
-    _head: null | Tween;
-    _tail: null | Tween;
+export type TweenLookups = {
+    [property: string]: Tween;
+    [owner: symbol]: Target;
 };
-export type TweenLookups = Record<string, TweenPropertySiblings>;
-export type TweenReplaceLookups = WeakMap<Target, TweenLookups>;
-export type TweenAdditiveLookups = Map<Target, TweenLookups>;
 export type TweenParamValue = number | string | FunctionValue | EasingParam | TweakRegister;
 export type TweenPropValue = TweenParamValue | [TweenParamValue, TweenParamValue];
 export type TweenComposition = (string & {}) | "none" | "replace" | "blend" | compositionTypes;
 export type TweenParamsOptions = {
+    muted?: boolean;
     duration?: TweenParamValue;
     delay?: TweenParamValue;
     ease?: EasingParam | FunctionValue;
@@ -488,6 +474,20 @@ export type ScrambleTextParams = {
 export type DrawableSVGGeometry = SVGGeometryElement & {
     setAttribute(name: "draw", value: `${number} ${number}`): void;
     draw: `${number} ${number}`;
+};
+/**
+ * Identity of one timeline call or sync statement.
+ */
+export type TimelineMarkerParams = {
+    id?: string | number;
+    muted?: boolean;
+};
+export type TimelineCallParams<T extends Timer = Timer> = TimelineMarkerParams & {
+    callback: Callback<T, void>;
+};
+export type TimelineSyncTarget = Omit<Tickable, "then"> | Omit<WAAPIAnimation, "then"> | globalThis.Animation;
+export type TimelineSyncParams = TimelineMarkerParams & {
+    target: TimelineSyncTarget | Array<TimelineSyncTarget>;
 };
 import type { ScrollObserver } from '../events/scroll.js';
 import type { compositionTypes } from '../core/consts.js';

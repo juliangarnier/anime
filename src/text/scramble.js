@@ -18,7 +18,6 @@ import {
   noop,
 } from '../core/consts.js';
 
-
 /**
  * @import {
  *   ScrambleTextParams,

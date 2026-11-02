@@ -9,7 +9,7 @@ declare class Engine extends Clock {
     reqId: number | NodeJS.Immediate;
     update(): void;
     wake(): this;
-    pause(): Engine;
+    pause(): this;
     resume(): this;
     set timeUnit(unit: "ms" | "s");
     get timeUnit(): "ms" | "s";

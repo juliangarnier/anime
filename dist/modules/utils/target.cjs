@@ -1,6 +1,6 @@
 /**
  * Anime.js - utils - CJS
- * @version v5.0.0-beta.2
+ * @version v5.0.0-beta.3
  * @license MIT
  * @copyright 2026 - Julian Garnier
  */
@@ -10,6 +10,7 @@
 var globals = require('../core/globals.cjs');
 var consts = require('../core/consts.cjs');
 var helpers = require('../core/helpers.cjs');
+var colors = require('../core/colors.cjs');
 var targets = require('../core/targets.cjs');
 var styles = require('../core/styles.cjs');
 var values = require('../core/values.cjs');
@@ -66,10 +67,10 @@ var animation = require('../animation/animation.cjs');
  * @param  {String|Boolean} [unit]
  */
 function get(targetSelector, propName, unit) {
-  // Fast path for an already registered target, skips the parse and per call array allocation
-  // so repeated reads like editor live values stay allocation free.
-  /** @type {Target} */
-  let target = targetSelector && /** @type {Target} */(targetSelector)[consts.isRegisteredTargetSymbol] ? /** @type {Target} */(targetSelector) : null;
+  // Skip registerTargets for an already registered target so repeated reads like editor live values
+  // stay allocation free.
+  /** @type {Target|null} */
+  let target = targetSelector && /** @type {Target} */(targetSelector)[consts.replaceLookupsSymbol] ? /** @type {Target} */(targetSelector) : null;
   if (!target) {
     const targets$1 = targets.registerTargets(targetSelector);
     if (!targets$1.length) return;
@@ -79,15 +80,20 @@ function get(targetSelector, propName, unit) {
   const normalizePropName = styles.sanitizePropertyName(propName, target, tweenType);
   let originalValue = values.getOriginalAnimatableValue(target, normalizePropName);
   if (helpers.isUnd(unit)) {
+    // Return a color in the rgba form that animate writes, the browser computes some colors in oklab or color().
+    if (helpers.isStr(originalValue) && helpers.isCol(originalValue)) {
+      const [r, g, b, a] = colors.convertColorStringValuesToRgbaArray(originalValue);
+      return `rgba(${r},${g},${b},${a})`;
+    }
     return originalValue;
   } else {
-    values.decomposeRawValue(originalValue, values.decomposedOriginalValue);
-    if (values.decomposedOriginalValue.t === consts.valueTypes.NUMBER || values.decomposedOriginalValue.t === consts.valueTypes.UNIT) {
+    const { t, n, u } = values.decomposeRawValue(originalValue);
+    if (t === consts.valueTypes.NUMBER || t === consts.valueTypes.UNIT) {
       if (unit === false) {
-        return values.decomposedOriginalValue.n;
+        return n;
       } else {
-        const convertedValue = units.convertValueUnit(/** @type {DOMTarget} */(target), values.decomposedOriginalValue, /** @type {String} */(unit), false);
-        return `${helpers.round(convertedValue.n, globals.globals.precision)}${convertedValue.u}`;
+        const convertedValue = units.convertValueUnit(/** @type {DOMTarget} */(target), n, u, /** @type {String} */(unit), t, false);
+        return `${helpers.round(convertedValue, globals.globals.precision)}${unit}`;
       }
     }
   }
