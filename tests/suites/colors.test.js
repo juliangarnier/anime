@@ -103,6 +103,14 @@ suite('Colors', () => {
     });
   });
 
+  test('Convert HSL and HSLA grays with 0% saturation', () => {
+    const [ targetEl ] = utils.$('#target-id');
+    const animation = animate(targetEl, { color: ['hsl(0, 0%, 50%)', 'hsla(120, 0%, 100%, .5)'], autoplay: false });
+    expect(getChildAtIndex(animation, 0)._fromNumbers).to.deep.equal([128, 128, 128, 1]);
+    expect(getChildAtIndex(animation, 0)._toNumbers).to.deep.equal([255, 255, 255, .5]);
+    expect(targetEl.style.color).to.equal('rgb(128, 128, 128)');
+  });
+
   createColorTestsByType('rgb', 'rgb');
   createColorTestsByType('rgb', 'rgba');
   createColorTestsByType('rgba', 'rgb');
