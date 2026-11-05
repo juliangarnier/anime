@@ -380,6 +380,51 @@ suite('Values', () => {
     expect($target.style.transform).to.equal('translateX(100px) translateY(100px) translateZ(100px) rotate(360deg) rotateX(360deg) rotateY(360deg) rotateZ(360deg) skew(45deg) skewX(45deg) skewY(45deg) scale(10) scaleX(10) scaleY(10) scaleZ(10) perspective(1000px)');
   });
 
+  test('Animate CSS individual rotate without composing a second transform rotation', () => {
+    /** @type {HTMLElement} */
+    const $target = document.querySelector('#target-id');
+    $target.style.rotate = '45deg';
+    const animation = animate($target, {
+      rotate: 90,
+      duration: 10,
+      autoplay: false,
+    });
+    animation.pause().seek(animation.duration);
+    expect($target.style.rotate).to.equal('90deg');
+    expect($target.style.transform).to.equal('');
+
+    const stylesheet = document.createElement('style');
+    stylesheet.textContent = '.individual-rotate-from-stylesheet { rotate: 45deg; }';
+    document.head.append(stylesheet);
+    const stylesheetTarget = document.createElement('div');
+    stylesheetTarget.className = 'individual-rotate-from-stylesheet';
+    document.body.append(stylesheetTarget);
+    const stylesheetAnimation = animate(stylesheetTarget, {
+      rotate: 90,
+      duration: 10,
+      autoplay: false,
+    });
+    stylesheetAnimation.pause().seek(stylesheetAnimation.duration);
+    expect(stylesheetTarget.style.rotate).to.equal('90deg');
+    expect(stylesheetTarget.style.transform).to.equal('');
+    stylesheetTarget.remove();
+    stylesheet.remove();
+  });
+
+  test('Accept an explicit from/to object for rotate', () => {
+    const $target = document.createElement('div');
+    const animation = animate($target, {
+      rotate: {
+        from: 90,
+        to: 180,
+      },
+      duration: 10,
+      autoplay: false,
+    });
+    animation.pause().seek(animation.duration);
+    expect($target.style.transform).to.equal('rotate(180deg)');
+  });
+
   test('Get inline transforms values', () => {
     /** @type {HTMLElement} */
     const $target = document.querySelector('#target-id');
