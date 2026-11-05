@@ -4627,7 +4627,8 @@
      */
     revert() {
       super.revert();
-      forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert, true);
+      // Issue #1167: Invoke child.revert() so child animations/timers and observers properly clean up
+      forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert(), true);
       return revertValues(this);
     }
 
@@ -7163,7 +7164,16 @@
         if (this.reverted) return;
         if (!this.target) {
           const target = /** @type {HTMLElement} */(parseTargets(parameters.target)[0]);
-          this.target = target || doc.body;
+          let $linkedTarget = target;
+          // Issue #1167: If no target was explicitly defined, infer from linked timeline's children
+          if (!$linkedTarget && this.linked) {
+            forEachChildren(/** @type {Timeline} */(this.linked), (/** @type {JSAnimation} */child) => {
+              if (child.targets && !$linkedTarget) {
+                $linkedTarget = getAnimationDomTarget(/** @type {JSAnimation} */(child));
+              }
+            });
+          }
+          this.target = $linkedTarget || doc.body;
           this.refresh();
         }
         if (this._debug) this.debug();
@@ -7195,9 +7205,11 @@
               }
             });
           }
-          // Fallback to body if no target found
-          this.target = $linkedTarget || doc.body;
-          this.refresh();
+          // Issue #1167: Only assign target if resolved immediately; do not eagerly fall back to doc.body
+          if ($linkedTarget) {
+            this.target = $linkedTarget;
+            this.refresh();
+          }
         }
       }
       return this;

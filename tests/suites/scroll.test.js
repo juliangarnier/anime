@@ -1,5 +1,6 @@
 import {
   expect,
+  getChildAtIndex,
 } from '../utils.js';
 
 import {
@@ -188,5 +189,46 @@ suite('Scroll', () => {
     $container.style.width = '100px';
     animation.revert();
     expect(scrollContainers.get($container)).to.equal(undefined);
+  });
+
+  test('ScrollObserver automatically infers target from chained timeline child', resolve => {
+    const observer = onScroll();
+    const tl = createTimeline({
+      autoplay: observer,
+    }).add('#target-id', {
+      x: 100,
+    });
+    utils.sync(() => {
+      const [ $target ] = utils.$('#target-id');
+      expect(observer.target).to.equal($target);
+      tl.revert();
+      resolve();
+    });
+  });
+
+  test('Timeline revert properly cascades to child animations and attached observers', () => {
+    const [ $container ] = utils.$('#css-tests');
+    const observer = onScroll({
+      container: '#css-tests',
+      target: '#target-id',
+    });
+    const tl = createTimeline({
+      autoplay: observer,
+    }).add('#target-id', {
+      rotate: 360,
+    });
+    expect(scrollContainers.get($container)).to.not.equal(undefined);
+    expect(observer.reverted).to.equal(false);
+    const child = getChildAtIndex(tl, 0);
+    let childRevertCalled = false;
+    const originalRevert = child.revert;
+    child.revert = function() {
+      childRevertCalled = true;
+      return originalRevert.apply(this, arguments);
+    };
+    tl.revert();
+    expect(scrollContainers.get($container)).to.equal(undefined);
+    expect(observer.reverted).to.equal(true);
+    expect(childRevertCalled).to.equal(true);
   });
 });

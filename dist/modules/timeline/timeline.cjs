@@ -323,7 +323,8 @@ class Timeline extends timer.Timer {
    */
   revert() {
     super.revert();
-    helpers.forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert, true);
+    // Issue #1167: Invoke child.revert() so child animations/timers and observers properly clean up
+    helpers.forEachChildren(this, (/** @type {JSAnimation|Timer} */child) => child.revert(), true);
     return styles.revertValues(this);
   }
 
