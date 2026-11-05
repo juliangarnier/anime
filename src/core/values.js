@@ -92,9 +92,19 @@ export const getFunctionValue = (value, target, index, total, store) => {
  * @return {tweenTypes}
  */
 export const getTweenType = (target, prop) => {
+  let isIndividualRotate = false;
+  if (prop === 'rotate' && target[isDomSymbol] && !target[isSvgSymbol]) {
+    const style = /** @type {DOMTarget} */(target).style;
+    if ('rotate' in style) {
+      const rotate = style.rotate || getComputedStyle(/** @type {DOMTarget} */(target)).rotate;
+      isIndividualRotate = !!rotate && rotate !== 'none';
+    }
+  }
   return !target[isDomSymbol] ? tweenTypes.OBJECT :
     // Handle SVG attributes
     target[isSvgSymbol] && isValidSVGAttribute(target, prop) ? tweenTypes.ATTRIBUTE :
+    // CSS individual rotate composes with transform: rotate(), so animate it directly when already set.
+    isIndividualRotate ? tweenTypes.CSS :
     // Handle CSS Transform properties differently than CSS to allow individual animations
     validTransforms.includes(prop) || shortTransforms.get(prop) ? tweenTypes.TRANSFORM :
     // CSS variables
