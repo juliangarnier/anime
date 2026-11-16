@@ -75,6 +75,39 @@ suite('Stagger', () => {
     expect(staggerEls[4].style.transform).to.equal('translateX(10px)');
   });
 
+  test('Starts a numeric range at an explicit zero', () => {
+    const targets = [{ x: 0 }, { x: 0 }, { x: 0 }];
+    const animation = animate(targets, {
+      x: stagger([10, 30], { start: 0 }),
+      duration: 10,
+      autoplay: false,
+    });
+
+    animation.seek(animation.duration);
+
+    expect(targets.map(target => target.x)).to.deep.equal([0, 10, 20]);
+  });
+
+  test('Starts a unit range at an explicit zero', () => {
+    /** @type {NodeListOf<HTMLElement>} */
+    const staggerEls = document.querySelectorAll('#stagger div');
+    const animation = animate(staggerEls, {
+      translateX: stagger(['-10rem', '10rem'], { start: 0 }),
+      duration: 10,
+      autoplay: false,
+    });
+
+    animation.seek(animation.duration);
+
+    expect(Array.from(staggerEls, el => el.style.transform)).to.deep.equal([
+      'translateX(0rem)',
+      'translateX(5rem)',
+      'translateX(10rem)',
+      'translateX(15rem)',
+      'translateX(20rem)',
+    ]);
+  });
+
   test('Specific staggered ranged value unit', () => {
     /** @type {NodeListOf<HTMLElement>} */
     const staggerEls = document.querySelectorAll('#stagger div');
@@ -283,6 +316,17 @@ suite('Stagger', () => {
     expect(getChildAtIndex(tl, 2).id).to.equal('staggered-2');
     expect(getChildAtIndex(tl, 3).id).to.equal('staggered-3');
     expect(tl.duration).to.equal(410); // 400 + 10
+  });
+
+  test('Starts timeline positions from a range at an explicit zero', () => {
+    const tl = createTimeline({ defaults: { duration: 10 }, autoplay: false })
+    .add('.target-class', { translateX: 50 }, stagger([100, 400], { start: 0 }));
+
+    expect(getChildAtIndex(tl, 0)._offset).to.equal(0);
+    expect(getChildAtIndex(tl, 1)._offset).to.equal(100);
+    expect(getChildAtIndex(tl, 2)._offset).to.equal(200);
+    expect(getChildAtIndex(tl, 3)._offset).to.equal(300);
+    expect(tl.duration).to.equal(310);
   });
 
   test('Staggered timeline time positions with a label as start value', () => {
