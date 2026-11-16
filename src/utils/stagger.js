@@ -100,7 +100,7 @@ export const stagger = (val, params = {}) => {
   const val1 = isRange ? parseNumber(val[0]) : parseNumber(val);
   const val2 = isRange ? parseNumber(val[1]) : 0;
   const unitMatch = unitsExecRgx.exec((isRange ? val[1] : val) + emptyString);
-  const start = params.start || 0 + (isRange ? val1 : 0);
+  const start = isUnd(params.start) ? (isRange ? val1 : 0) : params.start;
   let fromIndex = fromFirst ? 0 : isNum(from) ? from : 0;
   return (target, i, t, tl) => {
     const [ registeredTarget ] = registerTargets(target);
