@@ -79,7 +79,7 @@ const hslToRgba = hslValue => {
   const a = !isUnd(hsla[4]) ? +hsla[4] : 1;
   let r, g, b;
   if (s === 0) {
-    r = g = b = l;
+    r = g = b = round(l * 255, 0);
   } else {
     const q = l < .5 ? l * (1 + s) : l + s - l * s;
     const p = 2 * l - q;

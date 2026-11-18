@@ -91,6 +91,18 @@ function createColorTestsByType(fromType, toType) {
 
 suite('Colors', () => {
 
+  createColorTest('Convert achromatic HSL from black to white',
+    'hsl(0, 0%, 0%)', 'hsl(240, 0%, 100%)',
+    [0, 0, 0, 1], [255, 255, 255, 1], 'rgb', 'rgb');
+
+  createColorTest('Convert achromatic HSL from gray to white',
+    'hsl(120, 0%, 50%)', 'hsl(240, 0%, 100%)',
+    [128, 128, 128, 1], [255, 255, 255, 1], 'rgb', 'rgb');
+
+  createColorTest('Convert achromatic HSLA with transparency',
+    'hsla(60, 0%, 25%, .4)', 'hsla(180, 0%, 75%, .8)',
+    [64, 64, 64, .4], [191, 191, 191, .8], 'rgba', 'rgba');
+
   test('Properly apply transparency from computed styles', resolve => {
     const [ targetEl ] = utils.$('#target-id');
     animate(targetEl, {
